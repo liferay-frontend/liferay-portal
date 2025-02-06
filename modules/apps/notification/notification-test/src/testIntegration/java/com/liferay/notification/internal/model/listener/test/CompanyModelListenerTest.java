@@ -18,6 +18,7 @@ import com.liferay.notification.service.NotificationRecipientSettingLocalService
 import com.liferay.notification.service.NotificationTemplateLocalService;
 import com.liferay.notification.test.util.NotificationTemplateUtil;
 import com.liferay.notification.util.NotificationRecipientSettingUtil;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
@@ -59,40 +60,47 @@ public class CompanyModelListenerTest {
 
 	@Test
 	public void testOnBeforeDelete() throws Exception {
-		long originalCompanyId = CompanyThreadLocal.getCompanyId();
+		NotificationQueueEntry notificationQueueEntry = null;
+		NotificationRecipient notificationRecipient = null;
+		NotificationRecipientSetting notificationRecipientSetting = null;
+		NotificationTemplate notificationTemplate = null;
 
-		CompanyThreadLocal.setCompanyId(_companyId);
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(_companyId)) {
 
-		NotificationRecipientSetting notificationRecipientSetting =
-			NotificationRecipientSettingUtil.createNotificationRecipientSetting(
-				"userScreenName", _user.getScreenName());
+			notificationRecipientSetting =
+				NotificationRecipientSettingUtil.
+					createNotificationRecipientSetting(
+						"userScreenName", _user.getScreenName());
 
-		Assert.assertEquals(
-			_companyId, notificationRecipientSetting.getCompanyId());
+			Assert.assertEquals(
+				_companyId, notificationRecipientSetting.getCompanyId());
 
-		NotificationContext notificationContext =
-			NotificationTemplateUtil.createNotificationContext(
-				Collections.singletonList(notificationRecipientSetting),
-				NotificationConstants.TYPE_USER_NOTIFICATION);
+			NotificationContext notificationContext =
+				NotificationTemplateUtil.createNotificationContext(
+					Collections.singletonList(notificationRecipientSetting),
+					NotificationConstants.TYPE_USER_NOTIFICATION);
 
-		NotificationQueueEntry notificationQueueEntry =
-			_notificationQueueEntryLocalService.addNotificationQueueEntry(
-				notificationContext);
+			notificationQueueEntry =
+				_notificationQueueEntryLocalService.addNotificationQueueEntry(
+					notificationContext);
 
-		Assert.assertEquals(_companyId, notificationQueueEntry.getCompanyId());
+			Assert.assertEquals(
+				_companyId, notificationQueueEntry.getCompanyId());
 
-		NotificationTemplate notificationTemplate =
-			_notificationTemplateLocalService.addNotificationTemplate(
-				notificationContext);
+			notificationTemplate =
+				_notificationTemplateLocalService.addNotificationTemplate(
+					notificationContext);
 
-		Assert.assertEquals(_companyId, notificationTemplate.getCompanyId());
+			Assert.assertEquals(
+				_companyId, notificationTemplate.getCompanyId());
 
-		NotificationRecipient notificationRecipient =
-			notificationTemplate.getNotificationRecipient();
+			notificationRecipient =
+				notificationTemplate.getNotificationRecipient();
 
-		Assert.assertEquals(_companyId, notificationRecipient.getCompanyId());
-
-		CompanyThreadLocal.setCompanyId(originalCompanyId);
+			Assert.assertEquals(
+				_companyId, notificationRecipient.getCompanyId());
+		}
 
 		_companyLocalService.deleteCompany(_companyId);
 

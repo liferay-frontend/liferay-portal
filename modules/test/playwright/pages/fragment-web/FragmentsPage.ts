@@ -236,6 +236,22 @@ export class FragmentsPage {
 		await waitForAlert(this.page);
 	}
 
+	async importFile(fileName: string, zipFolder: string) {
+		const fileChooserPromise = this.page.waitForEvent('filechooser');
+
+		await this.page
+			.getByRole('button', {exact: true, name: 'Select File'})
+			.click();
+
+		const fileChooser = await fileChooserPromise;
+
+		await fileChooser.setFiles(zipFolder);
+
+		await this.page.getByText(fileName).waitFor();
+
+		await this.page.getByRole('button', {name: 'Import'}).click();
+	}
+
 	async markAsCacheable(title: string) {
 		this.page.on('dialog', (dialog) => dialog.accept());
 

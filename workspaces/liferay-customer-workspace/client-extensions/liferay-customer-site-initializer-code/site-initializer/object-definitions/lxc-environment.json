@@ -21,6 +21,16 @@
 			"indexed": true,
 			"indexedAsKeyword": false,
 			"label": {
+				"en-US": "Analytics Cloud Owner"
+			},
+			"name": "analyticsCloudOwner",
+			"required": false
+		},
+		{
+			"DBType": "String",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"label": {
 				"en-US": "Incident Management Full Name"
 			},
 			"name": "incidentManagementFullName",

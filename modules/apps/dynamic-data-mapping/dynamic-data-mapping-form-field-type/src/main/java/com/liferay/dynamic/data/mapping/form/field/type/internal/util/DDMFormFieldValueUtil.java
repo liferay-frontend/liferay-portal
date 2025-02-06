@@ -9,12 +9,14 @@ import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.model.Value;
+import com.liferay.dynamic.data.mapping.render.DDMFormFieldRenderingContext;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
@@ -132,12 +134,24 @@ public class DDMFormFieldValueUtil {
 		return value.getString(locale);
 	}
 
-	public static boolean isManualDataSourceType(DDMFormField ddmFormField) {
-		if (Objects.equals(ddmFormField.getDataSourceType(), "manual")) {
-			return true;
+	public static JSONObject getValueJSONObject(
+		DDMFormFieldRenderingContext ddmFormFieldRenderingContext) {
+
+		try {
+			return JSONFactoryUtil.createJSONObject(
+				ddmFormFieldRenderingContext.getValue());
+		}
+		catch (JSONException jsonException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(jsonException);
+			}
 		}
 
-		return false;
+		return JSONFactoryUtil.createJSONObject();
+	}
+
+	public static boolean isManualDataSourceType(DDMFormField ddmFormField) {
+		return Objects.equals(ddmFormField.getDataSourceType(), "manual");
 	}
 
 	private static DDMFormFieldOptions _getDDMFormFieldOptions(

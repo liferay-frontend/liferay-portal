@@ -151,444 +151,76 @@ public class NestedFieldsWriterInterceptorTest {
 
 	@Test
 	public void testGetNestedFieldsForMultipleItems() throws Exception {
-		Product product1 = _toProduct(1L, null);
-		Product product2 = _toProduct(2L, null);
-
-		Mockito.when(
-			_writerInterceptorContext.getEntity()
-		).thenReturn(
-			Arrays.asList(product1, product2)
-		);
-
-		Mockito.doReturn(
-			new NestedFieldsHttpServletRequestWrapperTest.
-				MockHttpServletRequest()
-		).when(
-			_nestedFieldServiceTrackerCustomizer
-		).getHttpServletRequest(
-			Mockito.any(Message.class)
-		);
-
-		NestedFieldsContextThreadLocal.setNestedFieldsContext(
-			new NestedFieldsContext(
-				1, Arrays.asList("productOptions", "skus"), _getMessageImpl(),
-				new MultivaluedHashMap<>(), "v1.0",
-				new MultivaluedHashMap<>()));
-
-		_nestedFieldsWriterInterceptor.aroundWriteTo(_writerInterceptorContext);
-
-		Sku[] skus = product1.getSkus();
-
-		Assert.assertEquals(Arrays.toString(skus), 4, skus.length);
-
-		ProductOption[] productOptions = product1.getProductOptions();
-
-		Assert.assertEquals(
-			Arrays.toString(productOptions), 3, productOptions.length);
+		_testGetNestedFieldsForMultipleItems(false);
+		_testGetNestedFieldsForMultipleItems(true);
 	}
 
 	@Test
 	public void testGetNestedFieldsForSingleItem() throws Exception {
-		Product product = _toProduct(1L, null);
-
-		Mockito.when(
-			_writerInterceptorContext.getEntity()
-		).thenReturn(
-			product
-		);
-
-		Mockito.doReturn(
-			new NestedFieldsHttpServletRequestWrapperTest.
-				MockHttpServletRequest()
-		).when(
-			_nestedFieldServiceTrackerCustomizer
-		).getHttpServletRequest(
-			Mockito.any(Message.class)
-		);
-
-		NestedFieldsContextThreadLocal.setNestedFieldsContext(
-			new NestedFieldsContext(
-				1, Arrays.asList("productOptions", "skus"), _getMessageImpl(),
-				_getPathParameters(), "v1.0", new MultivaluedHashMap<>()));
-
-		_nestedFieldsWriterInterceptor.aroundWriteTo(_writerInterceptorContext);
-
-		Sku[] skus = product.getSkus();
-
-		Assert.assertEquals(Arrays.toString(skus), 4, skus.length);
-
-		ProductOption[] productOptions = product.getProductOptions();
-
-		Assert.assertEquals(
-			Arrays.toString(productOptions), 3, productOptions.length);
+		_testGetNestedFieldsForSingleItem(false);
+		_testGetNestedFieldsForSingleItem(true);
 	}
 
 	@Test
 	public void testGetNestedFieldsWithDeeplyNestedFields() throws Exception {
-		Product product1 = _toProduct(1L, null);
-		Product product2 = _toProduct(2L, null);
-
-		Mockito.when(
-			_writerInterceptorContext.getEntity()
-		).thenReturn(
-			Arrays.asList(product1, product2)
-		);
-
-		Mockito.doReturn(
-			new NestedFieldsHttpServletRequestWrapperTest.
-				MockHttpServletRequest()
-		).when(
-			_nestedFieldServiceTrackerCustomizer
-		).getHttpServletRequest(
-			Mockito.any(Message.class)
-		);
-
-		NestedFieldsContextThreadLocal.setNestedFieldsContext(
-			new NestedFieldsContext(
-				1,
-				Arrays.asList(
-					"productOptions", "productOptions.productOptionValues"),
-				_getMessageImpl(), _getPathParameters(), "v1.0",
-				new MultivaluedHashMap<>()));
-
-		_nestedFieldsWriterInterceptor.aroundWriteTo(_writerInterceptorContext);
-
-		ProductOption[] productOptions = product1.getProductOptions();
-
-		Assert.assertEquals(
-			Arrays.toString(productOptions), 3, productOptions.length);
-
-		ProductOptionValue[] productOptionValues =
-			productOptions[0].getProductOptionValues();
-
-		Assert.assertEquals(
-			Arrays.toString(productOptionValues), 3,
-			productOptionValues.length);
-
-		productOptionValues = productOptions[1].getProductOptionValues();
-
-		Assert.assertEquals(
-			Arrays.toString(productOptionValues), 2,
-			productOptionValues.length);
-
-		productOptionValues = productOptions[2].getProductOptionValues();
-
-		Assert.assertEquals(
-			Arrays.toString(productOptionValues), 0,
-			productOptionValues.length);
+		_testGetNestedFieldsWithDeeplyNestedFields(false);
+		_testGetNestedFieldsWithDeeplyNestedFields(true);
 	}
 
 	@Test
 	public void testGetNestedFieldsWithNestedFieldId() throws Exception {
-		Product product = _toProduct(1L, "externalCode");
-
-		Mockito.when(
-			_writerInterceptorContext.getEntity()
-		).thenReturn(
-			product
-		);
-
-		Mockito.doReturn(
-			new NestedFieldsHttpServletRequestWrapperTest.
-				MockHttpServletRequest()
-		).when(
-			_nestedFieldServiceTrackerCustomizer
-		).getHttpServletRequest(
-			Mockito.any(Message.class)
-		);
-
-		NestedFieldsContextThreadLocal.setNestedFieldsContext(
-			new NestedFieldsContext(
-				1, Collections.singletonList("categories"), _getMessageImpl(),
-				_getPathParameters(), "v1.0", new MultivaluedHashMap<>()));
-
-		_nestedFieldsWriterInterceptor.aroundWriteTo(_writerInterceptorContext);
-
-		Category[] categories = product.getCategories();
-
-		Assert.assertEquals(Arrays.toString(categories), 3, categories.length);
-
-		NestedFieldsContextThreadLocal.setNestedFieldsContext(
-			new NestedFieldsContext(
-				1, Collections.singletonList("categories"), _getMessageImpl(),
-				_getPathParameters(), "v2.0", new MultivaluedHashMap<>()));
-
-		_nestedFieldsWriterInterceptor.aroundWriteTo(_writerInterceptorContext);
-
-		categories = product.getCategories();
-
-		Assert.assertEquals(Arrays.toString(categories), 2, categories.length);
+		_testGetNestedFieldsWithNestedFieldId(false);
+		_testGetNestedFieldsWithNestedFieldId(true);
 	}
 
 	@Test
 	public void testGetNestedFieldsWithNonexistendFieldName() throws Exception {
-		Product product = _toProduct(1L, null);
-
-		Mockito.when(
-			_writerInterceptorContext.getEntity()
-		).thenReturn(
-			product
-		);
-
-		NestedFieldsContextThreadLocal.setNestedFieldsContext(
-			new NestedFieldsContext(
-				1, Collections.emptyList(), _getMessageImpl(),
-				_getPathParameters(), "v1.0", new MultivaluedHashMap<>()));
-
-		_nestedFieldsWriterInterceptor.aroundWriteTo(_writerInterceptorContext);
-
-		Assert.assertNull(product.getSkus());
-
-		NestedFieldsContextThreadLocal.setNestedFieldsContext(
-			new NestedFieldsContext(
-				1, Collections.singletonList("nonexistent"), _getMessageImpl(),
-				_getPathParameters(), "v1.0", new MultivaluedHashMap<>()));
-
-		_nestedFieldsWriterInterceptor.aroundWriteTo(_writerInterceptorContext);
-
-		Assert.assertNull(product.getSkus());
+		_testGetNestedFieldsWithNonexistendFieldName(false);
+		_testGetNestedFieldsWithNonexistendFieldName(true);
 	}
 
 	@Test
 	public void testGetNestedFieldsWithoutContextAnnotation() throws Exception {
-		Product product = _toProduct(1L, null);
-
-		Mockito.when(
-			_writerInterceptorContext.getEntity()
-		).thenReturn(
-			product
-		);
-
-		Mockito.doReturn(
-			new NestedFieldsHttpServletRequestWrapperTest.
-				MockHttpServletRequest("skus")
-		).when(
-			_nestedFieldServiceTrackerCustomizer
-		).getHttpServletRequest(
-			Mockito.any(Message.class)
-		);
-
-		NestedFieldsContextThreadLocal.setNestedFieldsContext(
-			new NestedFieldsContext(
-				1, Arrays.asList("productOptions", "skus"), _getMessageImpl(),
-				_getPathParameters(), "v1.0", new MultivaluedHashMap<>()));
-
-		Assert.assertNull(_productResource_v1_0_Impl.contextThemeDisplay);
-
-		_nestedFieldsWriterInterceptor.aroundWriteTo(_writerInterceptorContext);
-
-		Assert.assertNotNull(_productResource_v1_0_Impl.contextThemeDisplay);
+		_testGetNestedFieldsWithoutContextAnnotation(false);
+		_testGetNestedFieldsWithoutContextAnnotation(true);
 	}
 
 	@Test
 	public void testGetNestedFieldsWithoutOverridingMethod()
 		throws IOException {
 
-		Product product = _toProduct(1L, "externalCode");
-
-		Mockito.when(
-			_writerInterceptorContext.getEntity()
-		).thenReturn(
-			product
-		);
-
-		Mockito.doReturn(
-			new NestedFieldsHttpServletRequestWrapperTest.
-				MockHttpServletRequest("externalCode")
-		).when(
-			_nestedFieldServiceTrackerCustomizer
-		).getHttpServletRequest(
-			Mockito.any(Message.class)
-		);
-
-		MultivaluedHashMap<String, String> queryParameters =
-			new MultivaluedHashMap<String, String>() {
-				{
-					putSingle("externalCode.AcceptLanguage", "es_ES");
-				}
-			};
-
-		NestedFieldsContextThreadLocal.setNestedFieldsContext(
-			new NestedFieldsContext(
-				1, Collections.singletonList("externalCode"), _getMessageImpl(),
-				_getPathParameters(), "v1.0", queryParameters));
-
-		_nestedFieldsWriterInterceptor.aroundWriteTo(_writerInterceptorContext);
-
-		Assert.assertEquals("codigoExterno", product.getExternalCode());
+		_testGetNestedFieldsWithoutOverridingMethod(false);
+		_testGetNestedFieldsWithoutOverridingMethod(true);
 	}
 
 	@Test
 	public void testGetNestedFieldsWithPagination() throws Exception {
-		Product product = _toProduct(1L, null);
-
-		Mockito.when(
-			_writerInterceptorContext.getEntity()
-		).thenReturn(
-			product
-		);
-
-		Mockito.doReturn(
-			new NestedFieldsHttpServletRequestWrapperTest.
-				MockHttpServletRequest(
-					"skus", "page", String.valueOf(1), "pageSize",
-					String.valueOf(2))
-		).when(
-			_nestedFieldServiceTrackerCustomizer
-		).getHttpServletRequest(
-			Mockito.any(Message.class)
-		);
-
-		NestedFieldsContextThreadLocal.setNestedFieldsContext(
-			new NestedFieldsContext(
-				1, Collections.singletonList("skus"), _getMessageImpl(),
-				_getPathParameters(), "v1.0", new MultivaluedHashMap<>()));
-
-		_nestedFieldsWriterInterceptor.aroundWriteTo(_writerInterceptorContext);
-
-		Sku[] skus = product.getSkus();
-
-		Assert.assertEquals(Arrays.toString(skus), 2, skus.length);
+		_testGetNestedFieldsWithPagination(false);
+		_testGetNestedFieldsWithPagination(true);
 	}
 
 	@Test
 	public void testGetNestedFieldsWithQueryParameter() throws IOException {
-		Product product = _toProduct(1L, null);
-
-		Mockito.when(
-			_writerInterceptorContext.getEntity()
-		).thenReturn(
-			product
-		);
-
-		Mockito.doReturn(
-			new NestedFieldsHttpServletRequestWrapperTest.
-				MockHttpServletRequest("productOptions")
-		).when(
-			_nestedFieldServiceTrackerCustomizer
-		).getHttpServletRequest(
-			Mockito.any(Message.class)
-		);
-
-		MultivaluedHashMap<String, String> queryParameters =
-			new MultivaluedHashMap<String, String>() {
-				{
-					putSingle(
-						"productOptions.createDate",
-						"2019-02-19T08:03:11.763Z");
-					putSingle("productOptions.name", "test2");
-				}
-			};
-
-		NestedFieldsContextThreadLocal.setNestedFieldsContext(
-			new NestedFieldsContext(
-				1, Collections.singletonList("productOptions"),
-				_getMessageImpl(), _getPathParameters(), "v1.0",
-				queryParameters));
-
-		_nestedFieldsWriterInterceptor.aroundWriteTo(_writerInterceptorContext);
-
-		ProductOption[] productOptions = product.getProductOptions();
-
-		Assert.assertEquals(
-			Arrays.toString(productOptions), 1, productOptions.length);
-
-		ProductOption productOption = productOptions[0];
-
-		Assert.assertEquals("test2", productOption.getName());
+		_testGetNestedFieldsWithQueryParameter(false);
+		_testGetNestedFieldsWithQueryParameter(true);
 	}
 
 	@Test
 	public void testGetNestedFieldsWithResourceVersioning() throws Exception {
-		Product product = _toProduct(1L, null);
-
-		Mockito.when(
-			_writerInterceptorContext.getEntity()
-		).thenReturn(
-			product
-		);
-
-		Mockito.doReturn(
-			new NestedFieldsHttpServletRequestWrapperTest.
-				MockHttpServletRequest()
-		).when(
-			_nestedFieldServiceTrackerCustomizer
-		).getHttpServletRequest(
-			Mockito.any(Message.class)
-		);
-
-		NestedFieldsContextThreadLocal.setNestedFieldsContext(
-			new NestedFieldsContext(
-				1, Collections.singletonList("skus"), _getMessageImpl(),
-				_getPathParameters(), "v2.0", new MultivaluedHashMap<>()));
-
-		_nestedFieldsWriterInterceptor.aroundWriteTo(_writerInterceptorContext);
-
-		Sku[] skus = product.getSkus();
-
-		Assert.assertEquals(Arrays.toString(skus), 6, skus.length);
+		_testGetNestedFieldsWithResourceVersioning(false);
+		_testGetNestedFieldsWithResourceVersioning(true);
 	}
 
 	@Test
 	public void testGetNestedFieldsWithSubitem() throws Exception {
-		Subproduct subproduct = _toSubproduct(1L, null);
-
-		Mockito.when(
-			_writerInterceptorContext.getEntity()
-		).thenReturn(
-			subproduct
-		);
-
-		Mockito.doReturn(
-			new NestedFieldsHttpServletRequestWrapperTest.
-				MockHttpServletRequest()
-		).when(
-			_nestedFieldServiceTrackerCustomizer
-		).getHttpServletRequest(
-			Mockito.any(Message.class)
-		);
-
-		NestedFieldsContextThreadLocal.setNestedFieldsContext(
-			new NestedFieldsContext(
-				1, Collections.singletonList("skus"), _getMessageImpl(),
-				_getPathParameters(), "v2.0", new MultivaluedHashMap<>()));
-
-		_nestedFieldsWriterInterceptor.aroundWriteTo(_writerInterceptorContext);
-
-		Sku[] skus = subproduct.getSkus();
-
-		Assert.assertEquals(Arrays.toString(skus), 6, skus.length);
+		_testGetNestedFieldsWithSubitem(false);
+		_testGetNestedFieldsWithSubitem(true);
 	}
 
 	@Test
 	public void testInjectResourceContexts() throws Exception {
-		Product product = _toProduct(1L, null);
-
-		Mockito.when(
-			_writerInterceptorContext.getEntity()
-		).thenReturn(
-			product
-		);
-
-		Mockito.doReturn(
-			new NestedFieldsHttpServletRequestWrapperTest.
-				MockHttpServletRequest("skus")
-		).when(
-			_nestedFieldServiceTrackerCustomizer
-		).getHttpServletRequest(
-			Mockito.any(Message.class)
-		);
-
-		NestedFieldsContextThreadLocal.setNestedFieldsContext(
-			new NestedFieldsContext(
-				1, Arrays.asList("productOptions", "skus"), _getMessageImpl(),
-				_getPathParameters(), "v1.0", new MultivaluedHashMap<>()));
-
-		Assert.assertNull(_productResource_v1_0_Impl.themeDisplay);
-
-		_nestedFieldsWriterInterceptor.aroundWriteTo(_writerInterceptorContext);
-
-		Assert.assertNotNull(_productResource_v1_0_Impl.themeDisplay);
+		_testInjectResourceContexts(false);
+		_testInjectResourceContexts(true);
 	}
 
 	private static Category _toCategory(long id) {
@@ -599,7 +231,18 @@ public class NestedFieldsWriterInterceptorTest {
 		return category;
 	}
 
-	private static Product _toProduct(long id, String externalCode) {
+	private static Product _toProduct(
+		String externalCode, long id, boolean inlineInitialization) {
+
+		if (inlineInitialization) {
+			return new Product() {
+				{
+					setExternalCode(externalCode);
+					setId(id);
+				}
+			};
+		}
+
 		Product product = new Product();
 
 		product.setExternalCode(externalCode);
@@ -649,7 +292,482 @@ public class NestedFieldsWriterInterceptorTest {
 		};
 	}
 
-	private Subproduct _toSubproduct(long id, String externalCode) {
+	private void _testGetNestedFieldsForMultipleItems(
+			boolean inlineInitialization)
+		throws Exception {
+
+		Product product1 = _toProduct(null, 1L, inlineInitialization);
+		Product product2 = _toProduct(null, 2L, inlineInitialization);
+
+		Mockito.when(
+			_writerInterceptorContext.getEntity()
+		).thenReturn(
+			Arrays.asList(product1, product2)
+		);
+
+		Mockito.doReturn(
+			new NestedFieldsHttpServletRequestWrapperTest.
+				MockHttpServletRequest()
+		).when(
+			_nestedFieldServiceTrackerCustomizer
+		).getHttpServletRequest(
+			Mockito.any(Message.class)
+		);
+
+		NestedFieldsContextThreadLocal.setNestedFieldsContext(
+			new NestedFieldsContext(
+				1, _getMessageImpl(), Arrays.asList("productOptions", "skus"),
+				new MultivaluedHashMap<>(), new MultivaluedHashMap<>(),
+				"v1.0"));
+
+		_nestedFieldsWriterInterceptor.aroundWriteTo(_writerInterceptorContext);
+
+		Sku[] skus = product1.getSkus();
+
+		Assert.assertEquals(Arrays.toString(skus), 4, skus.length);
+
+		ProductOption[] productOptions = product1.getProductOptions();
+
+		Assert.assertEquals(
+			Arrays.toString(productOptions), 3, productOptions.length);
+	}
+
+	private void _testGetNestedFieldsForSingleItem(boolean inlineInitialization)
+		throws Exception {
+
+		Product product = _toProduct(null, 1L, inlineInitialization);
+
+		Mockito.when(
+			_writerInterceptorContext.getEntity()
+		).thenReturn(
+			product
+		);
+
+		Mockito.doReturn(
+			new NestedFieldsHttpServletRequestWrapperTest.
+				MockHttpServletRequest()
+		).when(
+			_nestedFieldServiceTrackerCustomizer
+		).getHttpServletRequest(
+			Mockito.any(Message.class)
+		);
+
+		NestedFieldsContextThreadLocal.setNestedFieldsContext(
+			new NestedFieldsContext(
+				1, _getMessageImpl(), Arrays.asList("productOptions", "skus"),
+				_getPathParameters(), new MultivaluedHashMap<>(), "v1.0"));
+
+		_nestedFieldsWriterInterceptor.aroundWriteTo(_writerInterceptorContext);
+
+		Sku[] skus = product.getSkus();
+
+		Assert.assertEquals(Arrays.toString(skus), 4, skus.length);
+
+		ProductOption[] productOptions = product.getProductOptions();
+
+		Assert.assertEquals(
+			Arrays.toString(productOptions), 3, productOptions.length);
+	}
+
+	private void _testGetNestedFieldsWithDeeplyNestedFields(
+			boolean inlineInitialization)
+		throws Exception {
+
+		Product product1 = _toProduct(null, 1L, inlineInitialization);
+		Product product2 = _toProduct(null, 2L, inlineInitialization);
+
+		Mockito.when(
+			_writerInterceptorContext.getEntity()
+		).thenReturn(
+			Arrays.asList(product1, product2)
+		);
+
+		Mockito.doReturn(
+			new NestedFieldsHttpServletRequestWrapperTest.
+				MockHttpServletRequest()
+		).when(
+			_nestedFieldServiceTrackerCustomizer
+		).getHttpServletRequest(
+			Mockito.any(Message.class)
+		);
+
+		NestedFieldsContextThreadLocal.setNestedFieldsContext(
+			new NestedFieldsContext(
+				1, _getMessageImpl(),
+				Arrays.asList(
+					"productOptions", "productOptions.productOptionValues"),
+				_getPathParameters(), new MultivaluedHashMap<>(), "v1.0"));
+
+		_nestedFieldsWriterInterceptor.aroundWriteTo(_writerInterceptorContext);
+
+		ProductOption[] productOptions = product1.getProductOptions();
+
+		Assert.assertEquals(
+			Arrays.toString(productOptions), 3, productOptions.length);
+
+		ProductOptionValue[] productOptionValues =
+			productOptions[0].getProductOptionValues();
+
+		Assert.assertEquals(
+			Arrays.toString(productOptionValues), 3,
+			productOptionValues.length);
+
+		productOptionValues = productOptions[1].getProductOptionValues();
+
+		Assert.assertEquals(
+			Arrays.toString(productOptionValues), 2,
+			productOptionValues.length);
+
+		productOptionValues = productOptions[2].getProductOptionValues();
+
+		Assert.assertEquals(
+			Arrays.toString(productOptionValues), 0,
+			productOptionValues.length);
+	}
+
+	private void _testGetNestedFieldsWithNestedFieldId(
+			boolean inlineInitialization)
+		throws Exception {
+
+		Product product = _toProduct("externalCode", 1L, inlineInitialization);
+
+		Mockito.when(
+			_writerInterceptorContext.getEntity()
+		).thenReturn(
+			product
+		);
+
+		Mockito.doReturn(
+			new NestedFieldsHttpServletRequestWrapperTest.
+				MockHttpServletRequest()
+		).when(
+			_nestedFieldServiceTrackerCustomizer
+		).getHttpServletRequest(
+			Mockito.any(Message.class)
+		);
+
+		NestedFieldsContextThreadLocal.setNestedFieldsContext(
+			new NestedFieldsContext(
+				1, _getMessageImpl(), Collections.singletonList("categories"),
+				_getPathParameters(), new MultivaluedHashMap<>(), "v1.0"));
+
+		_nestedFieldsWriterInterceptor.aroundWriteTo(_writerInterceptorContext);
+
+		Category[] categories = product.getCategories();
+
+		Assert.assertEquals(Arrays.toString(categories), 3, categories.length);
+
+		NestedFieldsContextThreadLocal.setNestedFieldsContext(
+			new NestedFieldsContext(
+				1, _getMessageImpl(), Collections.singletonList("categories"),
+				_getPathParameters(), new MultivaluedHashMap<>(), "v2.0"));
+
+		_nestedFieldsWriterInterceptor.aroundWriteTo(_writerInterceptorContext);
+
+		categories = product.getCategories();
+
+		Assert.assertEquals(Arrays.toString(categories), 2, categories.length);
+	}
+
+	private void _testGetNestedFieldsWithNonexistendFieldName(
+			boolean inlineInitialization)
+		throws Exception {
+
+		Product product = _toProduct(null, 1L, inlineInitialization);
+
+		Mockito.when(
+			_writerInterceptorContext.getEntity()
+		).thenReturn(
+			product
+		);
+
+		NestedFieldsContextThreadLocal.setNestedFieldsContext(
+			new NestedFieldsContext(
+				1, _getMessageImpl(), Collections.emptyList(),
+				_getPathParameters(), new MultivaluedHashMap<>(), "v1.0"));
+
+		_nestedFieldsWriterInterceptor.aroundWriteTo(_writerInterceptorContext);
+
+		Assert.assertNull(product.getSkus());
+
+		NestedFieldsContextThreadLocal.setNestedFieldsContext(
+			new NestedFieldsContext(
+				1, _getMessageImpl(), Collections.singletonList("nonexistent"),
+				_getPathParameters(), new MultivaluedHashMap<>(), "v1.0"));
+
+		_nestedFieldsWriterInterceptor.aroundWriteTo(_writerInterceptorContext);
+
+		Assert.assertNull(product.getSkus());
+	}
+
+	private void _testGetNestedFieldsWithoutContextAnnotation(
+			boolean inlineInitialization)
+		throws Exception {
+
+		_productResource_v1_0_Impl.contextThemeDisplay = null;
+
+		Product product = _toProduct(null, 1L, inlineInitialization);
+
+		Mockito.when(
+			_writerInterceptorContext.getEntity()
+		).thenReturn(
+			product
+		);
+
+		Mockito.doReturn(
+			new NestedFieldsHttpServletRequestWrapperTest.
+				MockHttpServletRequest("skus")
+		).when(
+			_nestedFieldServiceTrackerCustomizer
+		).getHttpServletRequest(
+			Mockito.any(Message.class)
+		);
+
+		NestedFieldsContextThreadLocal.setNestedFieldsContext(
+			new NestedFieldsContext(
+				1, _getMessageImpl(), Arrays.asList("productOptions", "skus"),
+				_getPathParameters(), new MultivaluedHashMap<>(), "v1.0"));
+
+		Assert.assertNull(_productResource_v1_0_Impl.contextThemeDisplay);
+
+		_nestedFieldsWriterInterceptor.aroundWriteTo(_writerInterceptorContext);
+
+		Assert.assertNotNull(_productResource_v1_0_Impl.contextThemeDisplay);
+	}
+
+	private void _testGetNestedFieldsWithoutOverridingMethod(
+			boolean inlineInitialization)
+		throws IOException {
+
+		Product product = _toProduct("externalCode", 1L, inlineInitialization);
+
+		Mockito.when(
+			_writerInterceptorContext.getEntity()
+		).thenReturn(
+			product
+		);
+
+		Mockito.doReturn(
+			new NestedFieldsHttpServletRequestWrapperTest.
+				MockHttpServletRequest("externalCode")
+		).when(
+			_nestedFieldServiceTrackerCustomizer
+		).getHttpServletRequest(
+			Mockito.any(Message.class)
+		);
+
+		MultivaluedHashMap<String, String> queryParameters =
+			new MultivaluedHashMap<String, String>() {
+				{
+					putSingle("externalCode.AcceptLanguage", "es_ES");
+				}
+			};
+
+		NestedFieldsContextThreadLocal.setNestedFieldsContext(
+			new NestedFieldsContext(
+				1, _getMessageImpl(), Collections.singletonList("externalCode"),
+				_getPathParameters(), queryParameters, "v1.0"));
+
+		_nestedFieldsWriterInterceptor.aroundWriteTo(_writerInterceptorContext);
+
+		Assert.assertEquals("codigoExterno", product.getExternalCode());
+	}
+
+	private void _testGetNestedFieldsWithPagination(
+			boolean inlineInitialization)
+		throws Exception {
+
+		Product product = _toProduct(null, 1L, inlineInitialization);
+
+		Mockito.when(
+			_writerInterceptorContext.getEntity()
+		).thenReturn(
+			product
+		);
+
+		Mockito.doReturn(
+			new NestedFieldsHttpServletRequestWrapperTest.
+				MockHttpServletRequest(
+					"skus", "page", String.valueOf(1), "pageSize",
+					String.valueOf(2))
+		).when(
+			_nestedFieldServiceTrackerCustomizer
+		).getHttpServletRequest(
+			Mockito.any(Message.class)
+		);
+
+		NestedFieldsContextThreadLocal.setNestedFieldsContext(
+			new NestedFieldsContext(
+				1, _getMessageImpl(), Collections.singletonList("skus"),
+				_getPathParameters(), new MultivaluedHashMap<>(), "v1.0"));
+
+		_nestedFieldsWriterInterceptor.aroundWriteTo(_writerInterceptorContext);
+
+		Sku[] skus = product.getSkus();
+
+		Assert.assertEquals(Arrays.toString(skus), 2, skus.length);
+	}
+
+	private void _testGetNestedFieldsWithQueryParameter(
+			boolean inlineInitialization)
+		throws IOException {
+
+		Product product = _toProduct(null, 1L, inlineInitialization);
+
+		Mockito.when(
+			_writerInterceptorContext.getEntity()
+		).thenReturn(
+			product
+		);
+
+		Mockito.doReturn(
+			new NestedFieldsHttpServletRequestWrapperTest.
+				MockHttpServletRequest("productOptions")
+		).when(
+			_nestedFieldServiceTrackerCustomizer
+		).getHttpServletRequest(
+			Mockito.any(Message.class)
+		);
+
+		MultivaluedHashMap<String, String> queryParameters =
+			new MultivaluedHashMap<String, String>() {
+				{
+					putSingle(
+						"productOptions.createDate",
+						"2019-02-19T08:03:11.763Z");
+					putSingle("productOptions.name", "test2");
+				}
+			};
+
+		NestedFieldsContextThreadLocal.setNestedFieldsContext(
+			new NestedFieldsContext(
+				1, _getMessageImpl(),
+				Collections.singletonList("productOptions"),
+				_getPathParameters(), queryParameters, "v1.0"));
+
+		_nestedFieldsWriterInterceptor.aroundWriteTo(_writerInterceptorContext);
+
+		ProductOption[] productOptions = product.getProductOptions();
+
+		Assert.assertEquals(
+			Arrays.toString(productOptions), 1, productOptions.length);
+
+		ProductOption productOption = productOptions[0];
+
+		Assert.assertEquals("test2", productOption.getName());
+	}
+
+	private void _testGetNestedFieldsWithResourceVersioning(
+			boolean inlineInitialization)
+		throws Exception {
+
+		Product product = _toProduct(null, 1L, inlineInitialization);
+
+		Mockito.when(
+			_writerInterceptorContext.getEntity()
+		).thenReturn(
+			product
+		);
+
+		Mockito.doReturn(
+			new NestedFieldsHttpServletRequestWrapperTest.
+				MockHttpServletRequest()
+		).when(
+			_nestedFieldServiceTrackerCustomizer
+		).getHttpServletRequest(
+			Mockito.any(Message.class)
+		);
+
+		NestedFieldsContextThreadLocal.setNestedFieldsContext(
+			new NestedFieldsContext(
+				1, _getMessageImpl(), Collections.singletonList("skus"),
+				_getPathParameters(), new MultivaluedHashMap<>(), "v2.0"));
+
+		_nestedFieldsWriterInterceptor.aroundWriteTo(_writerInterceptorContext);
+
+		Sku[] skus = product.getSkus();
+
+		Assert.assertEquals(Arrays.toString(skus), 6, skus.length);
+	}
+
+	private void _testGetNestedFieldsWithSubitem(boolean inlineInitialization)
+		throws Exception {
+
+		Subproduct subproduct = _toSubproduct(null, 1L, inlineInitialization);
+
+		Mockito.when(
+			_writerInterceptorContext.getEntity()
+		).thenReturn(
+			subproduct
+		);
+
+		Mockito.doReturn(
+			new NestedFieldsHttpServletRequestWrapperTest.
+				MockHttpServletRequest()
+		).when(
+			_nestedFieldServiceTrackerCustomizer
+		).getHttpServletRequest(
+			Mockito.any(Message.class)
+		);
+
+		NestedFieldsContextThreadLocal.setNestedFieldsContext(
+			new NestedFieldsContext(
+				1, _getMessageImpl(), Collections.singletonList("skus"),
+				_getPathParameters(), new MultivaluedHashMap<>(), "v2.0"));
+
+		_nestedFieldsWriterInterceptor.aroundWriteTo(_writerInterceptorContext);
+
+		Sku[] skus = subproduct.getSkus();
+
+		Assert.assertEquals(Arrays.toString(skus), 6, skus.length);
+	}
+
+	private void _testInjectResourceContexts(boolean inlineInitialization)
+		throws Exception {
+
+		_productResource_v1_0_Impl.themeDisplay = null;
+
+		Product product = _toProduct(null, 1L, inlineInitialization);
+
+		Mockito.when(
+			_writerInterceptorContext.getEntity()
+		).thenReturn(
+			product
+		);
+
+		Mockito.doReturn(
+			new NestedFieldsHttpServletRequestWrapperTest.
+				MockHttpServletRequest("skus")
+		).when(
+			_nestedFieldServiceTrackerCustomizer
+		).getHttpServletRequest(
+			Mockito.any(Message.class)
+		);
+
+		NestedFieldsContextThreadLocal.setNestedFieldsContext(
+			new NestedFieldsContext(
+				1, _getMessageImpl(), Arrays.asList("productOptions", "skus"),
+				_getPathParameters(), new MultivaluedHashMap<>(), "v1.0"));
+
+		Assert.assertNull(_productResource_v1_0_Impl.themeDisplay);
+
+		_nestedFieldsWriterInterceptor.aroundWriteTo(_writerInterceptorContext);
+
+		Assert.assertNotNull(_productResource_v1_0_Impl.themeDisplay);
+	}
+
+	private Subproduct _toSubproduct(
+		String externalCode, long id, boolean inlineInitialization) {
+
+		if (inlineInitialization) {
+			return new Subproduct() {
+				{
+					setExternalCode(externalCode);
+					setId(id);
+				}
+			};
+		}
+
 		Subproduct subproduct = new Subproduct();
 
 		subproduct.setExternalCode(externalCode);
@@ -834,98 +952,98 @@ public class NestedFieldsWriterInterceptorTest {
 	private static class Product {
 
 		public Category[] getCategories() {
-			return categories;
+			return _categories;
 		}
 
 		public String getExternalCode() {
-			return externalCode;
+			return _externalCode;
 		}
 
 		public Long getId() {
-			return id;
+			return _id;
 		}
 
 		public ProductOption[] getProductOptions() {
-			return productOptions;
+			return _productOptions;
 		}
 
 		public Sku[] getSkus() {
-			return skus;
+			return _skus;
 		}
 
 		public void setCategories(Category[] categories) {
-			this.categories = categories;
+			_categories = categories;
 		}
 
 		public void setExternalCode(String externalCode) {
-			this.externalCode = externalCode;
+			_externalCode = externalCode;
 		}
 
 		public void setId(Long id) {
-			this.id = id;
+			_id = id;
 		}
 
 		public void setProductOptions(ProductOption[] productOptions) {
-			this.productOptions = productOptions;
+			_productOptions = productOptions;
 		}
 
 		public void setSkus(Sku[] skus) {
-			this.skus = skus;
+			_skus = skus;
 		}
 
-		protected Category[] categories;
-		protected String externalCode;
-		protected Long id;
-		protected ProductOption[] productOptions;
-		protected Sku[] skus;
+		private Category[] _categories;
+		private String _externalCode;
+		private Long _id;
+		private ProductOption[] _productOptions;
+		private Sku[] _skus;
 
 	}
 
 	private static class ProductOption {
 
 		public Long getId() {
-			return id;
+			return _id;
 		}
 
 		public String getName() {
-			return name;
+			return _name;
 		}
 
 		public ProductOptionValue[] getProductOptionValues() {
-			return productOptionValues;
+			return _productOptionValues;
 		}
 
 		public void setId(Long id) {
-			this.id = id;
+			_id = id;
 		}
 
 		public void setName(String name) {
-			this.name = name;
+			_name = name;
 		}
 
 		public void setProductOptionValues(
 			ProductOptionValue[] productOptionValues) {
 
-			this.productOptionValues = productOptionValues;
+			_productOptionValues = productOptionValues;
 		}
 
-		protected Long id;
-		protected String name;
-		protected ProductOptionValue[] productOptionValues;
+		private Long _id;
+		private String _name;
+		private ProductOptionValue[] _productOptionValues;
 
 	}
 
 	private static class ProductOptionValue {
 
 		public Long getId() {
-			return id;
+			return _id;
 		}
 
 		public void setId(Long id) {
-			this.id = id;
+			_id = id;
 		}
 
-		protected Long id;
+		private Long _id;
 
 	}
 
@@ -972,7 +1090,8 @@ public class NestedFieldsWriterInterceptorTest {
 		@Path("/products")
 		@Produces("application/*")
 		public List<Product> getProducts() {
-			return Arrays.asList(_toProduct(1, null), _toProduct(2, null));
+			return Arrays.asList(
+				_toProduct(null, 1, false), _toProduct(null, 2, false));
 		}
 
 		@NestedField("skus")
@@ -1061,7 +1180,8 @@ public class NestedFieldsWriterInterceptorTest {
 		@Path("/products")
 		@Produces("application/*")
 		public List<Product> getProducts() {
-			return Arrays.asList(_toProduct(1, null), _toProduct(2, null));
+			return Arrays.asList(
+				_toProduct(null, 1, false), _toProduct(null, 2, false));
 		}
 
 		@NestedField(parentClass = Product.class, value = "skus")
@@ -1099,14 +1219,14 @@ public class NestedFieldsWriterInterceptorTest {
 	private static class Sku {
 
 		public Long getId() {
-			return id;
+			return _id;
 		}
 
 		public void setId(Long id) {
-			this.id = id;
+			_id = id;
 		}
 
-		protected Long id;
+		private Long _id;
 
 	}
 

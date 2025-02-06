@@ -9,9 +9,11 @@ import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.service.AssetEntryService;
 import com.liferay.asset.kernel.service.persistence.AssetEntryQuery;
 import com.liferay.info.collection.provider.CollectionQuery;
+import com.liferay.info.collection.provider.DeprecatedInfoCollectionProvider;
 import com.liferay.info.collection.provider.InfoCollectionProvider;
 import com.liferay.info.pagination.InfoPage;
 import com.liferay.info.sort.Sort;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -30,7 +32,8 @@ import org.osgi.service.component.annotations.Reference;
 @Component(service = InfoCollectionProvider.class)
 public class MostViewedAssetsInfoCollectionProvider
 	extends BaseAssetsInfoCollectionProvider
-	implements InfoCollectionProvider<AssetEntry> {
+	implements DeprecatedInfoCollectionProvider<AssetEntry>,
+			   InfoCollectionProvider<AssetEntry> {
 
 	@Override
 	public InfoPage<AssetEntry> getCollectionInfoPage(
@@ -61,6 +64,11 @@ public class MostViewedAssetsInfoCollectionProvider
 	@Override
 	public String getLabel(Locale locale) {
 		return _language.get(locale, "most-viewed-assets");
+	}
+
+	@Override
+	public boolean isAvailable() {
+		return FeatureFlagManagerUtil.isEnabled("LPD-40530");
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

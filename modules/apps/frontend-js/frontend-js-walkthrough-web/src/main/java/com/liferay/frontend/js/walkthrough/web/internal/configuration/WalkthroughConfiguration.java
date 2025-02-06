@@ -13,7 +13,7 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
  * @author Matuzalem Teles
  */
 @ExtendedObjectClassDefinition(
-	category = "frontend-walkthrough",
+	category = "frontend-walkthrough", featureFlagKey = "LPD-44091",
 	scope = ExtendedObjectClassDefinition.Scope.GROUP, strictScope = true
 )
 @Meta.OCD(

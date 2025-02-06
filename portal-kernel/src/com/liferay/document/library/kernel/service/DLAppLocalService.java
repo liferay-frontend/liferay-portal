@@ -529,6 +529,9 @@ public interface DLAppLocalService extends BaseLocalService {
 			ServiceContext serviceContext)
 		throws PortalException;
 
+	public void subscribeFileEntry(long userId, long groupId, long fileEntryId)
+		throws PortalException;
+
 	/**
 	 * Subscribe the user to changes in documents of the file entry type. This
 	 * method is only supported by the Liferay repository.
@@ -552,6 +555,10 @@ public interface DLAppLocalService extends BaseLocalService {
 	 * @throws PortalException if a portal exception occurred
 	 */
 	public void subscribeFolder(long userId, long groupId, long folderId)
+		throws PortalException;
+
+	public void unsubscribeFileEntry(
+			long userId, long groupId, long fileEntryId)
 		throws PortalException;
 
 	/**

@@ -5,12 +5,28 @@
 
 package com.liferay.headless.admin.site.internal.resource.v1_0;
 
+import com.liferay.fragment.contributor.FragmentCollectionContributorRegistry;
+import com.liferay.fragment.service.FragmentEntryLinkLocalService;
+import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.headless.admin.site.dto.v1_0.PageElement;
-import com.liferay.headless.admin.site.internal.resource.util.GroupUtil;
+import com.liferay.headless.admin.site.internal.resource.v1_0.layout.structure.item.importer.CollectionItemLayoutStructureItemImporter;
+import com.liferay.headless.admin.site.internal.resource.v1_0.layout.structure.item.importer.CollectionLayoutStructureItemImporter;
+import com.liferay.headless.admin.site.internal.resource.v1_0.layout.structure.item.importer.ColumnLayoutStructureItemImporter;
+import com.liferay.headless.admin.site.internal.resource.v1_0.layout.structure.item.importer.ContainerLayoutStructureItemImporter;
+import com.liferay.headless.admin.site.internal.resource.v1_0.layout.structure.item.importer.DropZoneLayoutStructureItemImporter;
+import com.liferay.headless.admin.site.internal.resource.v1_0.layout.structure.item.importer.FormLayoutStructureItemImporter;
+import com.liferay.headless.admin.site.internal.resource.v1_0.layout.structure.item.importer.FormStepContainerLayoutStructureItemImporter;
+import com.liferay.headless.admin.site.internal.resource.v1_0.layout.structure.item.importer.FormStepItemLayoutStructureItemImporter;
+import com.liferay.headless.admin.site.internal.resource.v1_0.layout.structure.item.importer.FragmentDropZoneLayoutStructureItemImporter;
+import com.liferay.headless.admin.site.internal.resource.v1_0.layout.structure.item.importer.FragmentLayoutStructureItemImporter;
+import com.liferay.headless.admin.site.internal.resource.v1_0.layout.structure.item.importer.LayoutStructureItemImporter;
+import com.liferay.headless.admin.site.internal.resource.v1_0.layout.structure.item.importer.RowLayoutStructureItemImporter;
+import com.liferay.headless.admin.site.internal.resource.v1_0.layout.structure.item.importer.context.LayoutStructureItemImporterContext;
+import com.liferay.headless.admin.site.internal.resource.v1_0.util.GroupUtil;
+import com.liferay.headless.admin.site.internal.resource.v1_0.util.LayoutStructureUtil;
 import com.liferay.headless.admin.site.resource.v1_0.PageElementResource;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
-import com.liferay.layout.util.constants.LayoutDataItemTypeConstants;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructureItemUtil;
@@ -18,16 +34,19 @@ import com.liferay.layout.util.structure.exception.NoSuchLayoutStructureItemExce
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.LayoutLocalService;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
+import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
+import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 
+import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ServiceScope;
@@ -146,7 +165,8 @@ public class PageElementResourceImpl extends BasePageElementResourceImpl {
 			throw new NoSuchLayoutStructureItemException();
 		}
 
-		return _pageElementDTOConverter.toDTO(layoutStructureItem);
+		return _pageElementDTOConverter.toDTO(
+			_getDTOConverterContext(layoutStructure), layoutStructureItem);
 	}
 
 	@Override
@@ -199,6 +219,7 @@ public class PageElementResourceImpl extends BasePageElementResourceImpl {
 				LayoutStructureItemUtil.getChildrenItemIds(
 					layoutStructureItem.getItemId(), layoutStructure),
 				itemId -> _pageElementDTOConverter.toDTO(
+					_getDTOConverterContext(layoutStructure),
 					layoutStructure.getLayoutStructureItem(itemId))));
 	}
 
@@ -247,6 +268,7 @@ public class PageElementResourceImpl extends BasePageElementResourceImpl {
 				LayoutStructureItemUtil.getChildrenItemIds(
 					layoutStructure.getMainItemId(), layoutStructure),
 				itemId -> _pageElementDTOConverter.toDTO(
+					_getDTOConverterContext(layoutStructure),
 					layoutStructure.getLayoutStructureItem(itemId))));
 	}
 
@@ -291,7 +313,9 @@ public class PageElementResourceImpl extends BasePageElementResourceImpl {
 			layoutPageTemplateStructure.getData(
 				segmentsExperience.getSegmentsExperienceId()));
 
-		return _addPageElement(layout, layoutStructure, pageElement);
+		return _addPageElement(
+			groupId, layout, layoutStructure, pageElement,
+			segmentsExperience.getSegmentsExperienceId());
 	}
 
 	@Override
@@ -339,7 +363,9 @@ public class PageElementResourceImpl extends BasePageElementResourceImpl {
 				pageElementExternalReferenceCode);
 
 		if (layoutStructureItem == null) {
-			return _addPageElement(layout, layoutStructure, pageElement);
+			return _addPageElement(
+				groupId, layout, layoutStructure, pageElement,
+				segmentsExperience.getSegmentsExperienceId());
 		}
 
 		LayoutStructureItem parentLayoutStructureItem =
@@ -357,7 +383,8 @@ public class PageElementResourceImpl extends BasePageElementResourceImpl {
 
 			layoutStructure.moveLayoutStructureItem(
 				layoutStructureItem.getItemId(),
-				pageElement.getParentExternalReferenceCode(),
+				LayoutStructureUtil.getParentExternalReferenceCode(
+					pageElement, layoutStructure),
 				pageElement.getPosition());
 
 			_layoutPageTemplateStructureLocalService.
@@ -366,69 +393,111 @@ public class PageElementResourceImpl extends BasePageElementResourceImpl {
 					layoutStructure.toString());
 		}
 
-		return _pageElementDTOConverter.toDTO(layoutStructureItem);
+		return _pageElementDTOConverter.toDTO(
+			_getDTOConverterContext(layoutStructure), layoutStructureItem);
 	}
 
-	private void _addChildPageElements(
-		LayoutStructure layoutStructure, PageElement pageElement) {
-
-		for (PageElement childPageElement : pageElement.getPageElements()) {
-			layoutStructure.addLayoutStructureItem(
-				_externalToInternalValuesMap.get(childPageElement.getType()),
-				childPageElement.getParentExternalReferenceCode(),
-				childPageElement.getPosition());
-
-			_addChildPageElements(layoutStructure, childPageElement);
-		}
+	@Activate
+	protected void activate(BundleContext bundleContext) {
+		_layoutStructureItemImporters.put(
+			PageElement.Type.COLLECTION,
+			new CollectionLayoutStructureItemImporter());
+		_layoutStructureItemImporters.put(
+			PageElement.Type.COLLECTION_ITEM,
+			new CollectionItemLayoutStructureItemImporter());
+		_layoutStructureItemImporters.put(
+			PageElement.Type.COLUMN, new ColumnLayoutStructureItemImporter());
+		_layoutStructureItemImporters.put(
+			PageElement.Type.CONTAINER,
+			new ContainerLayoutStructureItemImporter());
+		_layoutStructureItemImporters.put(
+			PageElement.Type.DROP_ZONE,
+			new DropZoneLayoutStructureItemImporter());
+		_layoutStructureItemImporters.put(
+			PageElement.Type.FORM, new FormLayoutStructureItemImporter());
+		_layoutStructureItemImporters.put(
+			PageElement.Type.FORM_STEP,
+			new FormStepItemLayoutStructureItemImporter());
+		_layoutStructureItemImporters.put(
+			PageElement.Type.FORM_STEP_CONTAINER,
+			new FormStepContainerLayoutStructureItemImporter());
+		_layoutStructureItemImporters.put(
+			PageElement.Type.FRAGMENT_DROP_ZONE,
+			new FragmentDropZoneLayoutStructureItemImporter());
+		_layoutStructureItemImporters.put(
+			PageElement.Type.FRAGMENT,
+			new FragmentLayoutStructureItemImporter(
+				_fragmentCollectionContributorRegistry,
+				_fragmentEntryLinkLocalService, _fragmentEntryLocalService));
+		_layoutStructureItemImporters.put(
+			PageElement.Type.ROW, new RowLayoutStructureItemImporter());
 	}
 
-	private PageElement _addPageElement(
-			Layout layout, LayoutStructure layoutStructure,
+	private LayoutStructureItem _addLayoutStructureItem(
+			LayoutStructure layoutStructure,
+			LayoutStructureItemImporterContext
+				layoutStructureItemImporterContext,
 			PageElement pageElement)
 		throws Exception {
 
-		LayoutStructureItem layoutStructureItem =
-			layoutStructure.addLayoutStructureItem(
-				pageElement.getExternalReferenceCode(),
-				_externalToInternalValuesMap.get(pageElement.getType()),
-				pageElement.getParentExternalReferenceCode(),
-				pageElement.getPosition());
+		LayoutStructureItemImporter layoutStructureItemImporter =
+			_layoutStructureItemImporters.get(pageElement.getType());
 
-		_addChildPageElements(layoutStructure, pageElement);
+		LayoutStructureItem layoutStructureItem =
+			layoutStructureItemImporter.addLayoutStructureItem(
+				layoutStructure, layoutStructureItemImporterContext,
+				pageElement);
+
+		for (PageElement childPageElement : pageElement.getPageElements()) {
+			_addLayoutStructureItem(
+				layoutStructure, layoutStructureItemImporterContext,
+				childPageElement);
+		}
+
+		return layoutStructureItem;
+	}
+
+	private PageElement _addPageElement(
+			long groupId, Layout layout, LayoutStructure layoutStructure,
+			PageElement pageElement, long segmentsExperienceId)
+		throws Exception {
+
+		LayoutStructureItem layoutStructureItem = _addLayoutStructureItem(
+			layoutStructure,
+			new LayoutStructureItemImporterContext(
+				groupId, layout, segmentsExperienceId, contextUser.getUserId()),
+			pageElement);
 
 		_layoutPageTemplateStructureLocalService.
 			updateLayoutPageTemplateStructureData(
 				layout.getGroupId(), layout.getPlid(),
 				layoutStructure.toString());
 
-		return _pageElementDTOConverter.toDTO(layoutStructureItem);
+		return _pageElementDTOConverter.toDTO(
+			_getDTOConverterContext(layoutStructure), layoutStructureItem);
 	}
 
-	private static final Map<PageElement.Type, String>
-		_externalToInternalValuesMap = HashMapBuilder.put(
-			PageElement.Type.COLLECTION,
-			LayoutDataItemTypeConstants.TYPE_COLLECTION
-		).put(
-			PageElement.Type.COLLECTION_ITEM,
-			LayoutDataItemTypeConstants.TYPE_COLLECTION_ITEM
-		).put(
-			PageElement.Type.COLUMN, LayoutDataItemTypeConstants.TYPE_COLUMN
-		).put(
-			PageElement.Type.CONTAINER,
-			LayoutDataItemTypeConstants.TYPE_CONTAINER
-		).put(
-			PageElement.Type.DROP_ZONE,
-			LayoutDataItemTypeConstants.TYPE_DROP_ZONE
-		).put(
-			PageElement.Type.FORM, LayoutDataItemTypeConstants.TYPE_FORM
-		).put(
-			PageElement.Type.FRAGMENT, LayoutDataItemTypeConstants.TYPE_FRAGMENT
-		).put(
-			PageElement.Type.FRAGMENT_DROP_ZONE,
-			LayoutDataItemTypeConstants.TYPE_FRAGMENT_DROP_ZONE
-		).put(
-			PageElement.Type.ROW, LayoutDataItemTypeConstants.TYPE_ROW
-		).build();
+	private DTOConverterContext _getDTOConverterContext(
+		LayoutStructure layoutStructure) {
+
+		DTOConverterContext dtoConverterContext =
+			new DefaultDTOConverterContext(null, null, null, null, null);
+
+		dtoConverterContext.setAttribute(
+			LayoutStructure.class.getName(), layoutStructure);
+
+		return dtoConverterContext;
+	}
+
+	@Reference
+	private FragmentCollectionContributorRegistry
+		_fragmentCollectionContributorRegistry;
+
+	@Reference
+	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
+
+	@Reference
+	private FragmentEntryLocalService _fragmentEntryLocalService;
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
@@ -436,6 +505,9 @@ public class PageElementResourceImpl extends BasePageElementResourceImpl {
 	@Reference
 	private LayoutPageTemplateStructureLocalService
 		_layoutPageTemplateStructureLocalService;
+
+	private final EnumMap<PageElement.Type, LayoutStructureItemImporter>
+		_layoutStructureItemImporters = new EnumMap<>(PageElement.Type.class);
 
 	@Reference(
 		target = "(component.name=com.liferay.headless.admin.site.internal.dto.v1_0.converter.PageElementDTOConverter)"

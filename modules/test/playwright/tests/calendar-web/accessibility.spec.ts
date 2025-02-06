@@ -19,7 +19,7 @@ export const test = mergeTests(
 	apiHelpersTest,
 	calendarPagesTest,
 	featureFlagsTest({
-		'LPS-178052': true,
+		'LPS-178052': {enabled: true},
 	}),
 	isolatedSiteTest,
 	loginTest(),
@@ -68,5 +68,36 @@ test.describe('Add new event modal', () => {
 				.frameLocator('iframe[title="editor"]')
 				.getByLabel('Description')
 		).toHaveAttribute('aria-label', 'Description');
+	});
+});
+
+test.describe('Event creation pop-up', () => {
+	test('has necessary roles to indicate when its open', async ({
+		calendarWidgetPage,
+		page,
+	}) => {
+		await calendarWidgetPage.addEventOnGrid();
+
+		await page.getByRole('button', {name: 'Save'}).click();
+
+		await page.waitForTimeout(1000);
+
+		const eventTitle = page.getByTitle('e.g. Meeting');
+
+		if (await calendarWidgetPage.toggleSideBarButton.isVisible()) {
+			await calendarWidgetPage.toggleSideBarButton.click();
+		}
+
+		await expect(eventTitle).toHaveAttribute('aria-haspopup', 'dialog');
+		await expect(eventTitle).toHaveAttribute('aria-expanded', 'false');
+
+		await eventTitle.click();
+
+		await expect(page.getByRole('dialog')).toHaveAttribute(
+			'tabindex',
+			'-1'
+		);
+		await expect(eventTitle).toHaveAttribute('aria-haspopup', 'dialog');
+		await expect(eventTitle).toHaveAttribute('aria-expanded', 'true');
 	});
 });

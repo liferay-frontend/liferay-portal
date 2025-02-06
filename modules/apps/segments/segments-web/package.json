@@ -3,21 +3,20 @@
 		"@clayui/alert": "3.111.0",
 		"@clayui/badge": "3.111.0",
 		"@clayui/button": "3.116.0",
-		"@clayui/date-picker": "3.123.1",
-		"@clayui/drop-down": "3.123.1",
+		"@clayui/date-picker": "3.127.0",
+		"@clayui/drop-down": "3.127.0",
 		"@clayui/empty-state": "3.116.0",
-		"@clayui/form": "3.122.0",
+		"@clayui/form": "3.125.0",
 		"@clayui/icon": "3.111.0",
 		"@clayui/label": "3.111.0",
 		"@clayui/layout": "3.111.0",
 		"@clayui/link": "3.111.0",
 		"@clayui/loading-indicator": "3.111.0",
-		"@clayui/localized-input": "3.123.1",
+		"@clayui/localized-input": "3.127.0",
 		"@clayui/panel": "3.119.0",
 		"@liferay/frontend-js-react-web": "*",
 		"@liferay/layout-js-components-web": "*",
 		"classnames": "2.3.1",
-		"date-fns": "2.29.3",
 		"formik": "2.1.4",
 		"frontend-js-web": "*",
 		"prop-types": "15.7.2",
@@ -42,5 +41,5 @@
 		"test": "USE_REACT_16=true node-scripts test",
 		"test:watch": "USE_REACT_16=true node-scripts test --watch"
 	},
-	"version": "3.0.133"
+	"version": "3.0.135"
 }

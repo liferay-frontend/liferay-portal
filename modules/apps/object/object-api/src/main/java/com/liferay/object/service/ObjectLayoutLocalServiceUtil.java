@@ -334,6 +334,12 @@ public class ObjectLayoutLocalServiceUtil {
 		return getService().getObjectLayoutsCount(objectDefinitionId);
 	}
 
+	public static Map<Long, List<ObjectLayout>> getObjectLayoutsMap(
+		long companyId) {
+
+		return getService().getObjectLayoutsMap(companyId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *

@@ -5,8 +5,8 @@
 
 package com.liferay.marketplace;
 
-import com.liferay.client.extension.util.spring.boot.BaseRestController;
-import com.liferay.client.extension.util.spring.boot.LiferayOAuth2AccessTokenManager;
+import com.liferay.client.extension.util.spring.boot3.BaseRestController;
+import com.liferay.client.extension.util.spring.boot3.LiferayOAuth2AccessTokenManager;
 import com.liferay.headless.admin.user.client.dto.v1_0.UserAccount;
 import com.liferay.headless.commerce.admin.order.client.dto.v1_0.Order;
 import com.liferay.headless.commerce.admin.order.client.pagination.Page;
@@ -31,6 +31,8 @@ import java.net.URL;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -52,6 +54,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 /**
  * @author Keven Leone
@@ -172,18 +175,31 @@ public class TrialRestController extends BaseRestController {
 		_marketplaceService.updateOrder(
 			null, orderId, MarketplaceConstants.ORDER_STATUS_PROCESSING);
 
-		UserAccount userAccount = _marketplaceService.getUserAccount(
-			modelDTOOrderJSONObject.getString("creatorEmailAddress"));
+		Order order = _marketplaceService.getOrder(orderId);
 
-		_postNotificationQueueEntry(
-			modelDTOOrderJSONObject.getString("creatorEmailAddress"),
-			"TRY-IT-NOW-PROCESSING-ORDER",
-			new HashMapBuilder<String, Object>().put(
-				"[%COMMERCEORDER_AUTHOR_FIRST_NAME%]",
-				userAccount.getGivenName()
-			).put(
-				"[%COMMERCEORDER_ID%]", String.valueOf(orderId)
-			).build());
+		UserAccount userAccount = _marketplaceService.getUserAccount(
+			order.getCreatorEmailAddress());
+
+		Map<String, String> customFields =
+			(Map<String, String>)order.getCustomFields();
+
+		JSONObject trialSettingsJSONObject = new JSONObject(
+			customFields.getOrDefault("trial-settings", "{}"));
+
+		boolean sendNotificationEmail = trialSettingsJSONObject.optBoolean(
+			"sendNotificationEmail", true);
+
+		if (sendNotificationEmail) {
+			_postNotificationQueueEntry(
+				modelDTOOrderJSONObject.getString("creatorEmailAddress"),
+				"TRY-IT-NOW-PROCESSING-ORDER",
+				new HashMapBuilder<String, Object>().put(
+					"[%COMMERCEORDER_AUTHOR_FIRST_NAME%]",
+					userAccount.getGivenName()
+				).put(
+					"[%COMMERCEORDER_ID%]", String.valueOf(orderId)
+				).build());
+		}
 
 		PortalInstance portalInstance = _postPortalInstance(
 			jwt, modelDTOOrderJSONObject.getString("creatorEmailAddress"),
@@ -191,20 +207,22 @@ public class TrialRestController extends BaseRestController {
 
 		try {
 			_consoleService.setUpProject(
+				_toStringArray(
+					trialSettingsJSONObject.optJSONArray(
+						"consoleInviteEmailAddresses")),
 				portalInstance.getVirtualHost(), orderId);
-		}
-		catch (Exception exception) {
-			_log.error(
-				"Unable to set up project for order " + orderId + ":",
-				exception);
-
-			_deletePortalInstance(orderId);
 
 			_marketplaceService.updateOrder(
 				HashMapBuilder.put(
-					"trial-error", exception.toString()
+					"trial-end-date",
+					ZonedDateTime.now(
+					).plusDays(
+						7
+					).format(
+						DateTimeFormatter.ISO_INSTANT
+					)
 				).put(
-					"trial-error-date",
+					"trial-start-date",
 					ZonedDateTime.now(
 					).format(
 						DateTimeFormatter.ISO_INSTANT
@@ -212,42 +230,30 @@ public class TrialRestController extends BaseRestController {
 				).put(
 					"trial-virtualhost", portalInstance.getVirtualHost()
 				).build(),
-				orderId, MarketplaceConstants.ORDER_STATUS_CANCELLED);
+				orderId, MarketplaceConstants.ORDER_STATUS_IN_PROGRESS);
 
-			return;
+			if (sendNotificationEmail) {
+				_postNotificationQueueEntry(
+					modelDTOOrderJSONObject.getString("creatorEmailAddress"),
+					"TRY-IT-NOW-COMPLETED-ORDER",
+					new HashMapBuilder<String, Object>().put(
+						"%EMAIL%",
+						modelDTOOrderJSONObject.getString("creatorEmailAddress")
+					).put(
+						"%NAME%", userAccount.getGivenName()
+					).put(
+						"%URL%", portalInstance.getVirtualHost()
+					).build());
+			}
 		}
-
-		_marketplaceService.updateOrder(
-			HashMapBuilder.put(
-				"trial-end-date",
-				ZonedDateTime.now(
-				).plusDays(
-					7
-				).format(
-					DateTimeFormatter.ISO_INSTANT
-				)
-			).put(
-				"trial-start-date",
-				ZonedDateTime.now(
-				).format(
-					DateTimeFormatter.ISO_INSTANT
-				)
-			).put(
-				"trial-virtualhost", portalInstance.getVirtualHost()
-			).build(),
-			orderId, MarketplaceConstants.ORDER_STATUS_IN_PROGRESS);
-
-		_postNotificationQueueEntry(
-			modelDTOOrderJSONObject.getString("creatorEmailAddress"),
-			"TRY-IT-NOW-COMPLETED-ORDER",
-			new HashMapBuilder<String, Object>().put(
-				"%EMAIL%",
-				modelDTOOrderJSONObject.getString("creatorEmailAddress")
-			).put(
-				"%NAME%", userAccount.getGivenName()
-			).put(
-				"%URL%", portalInstance.getVirtualHost()
-			).build());
+		catch (WebClientResponseException webClientResponseException) {
+			_rollBackTrial(
+				webClientResponseException.getResponseBodyAsString(), orderId,
+				portalInstance);
+		}
+		catch (Exception exception) {
+			_rollBackTrial(exception.getMessage(), orderId, portalInstance);
+		}
 	}
 
 	@PostMapping("provisioning/{orderId}")
@@ -467,6 +473,42 @@ public class TrialRestController extends BaseRestController {
 		}
 
 		return string;
+	}
+
+	private void _rollBackTrial(
+			String errorMessage, long orderId, PortalInstance portalInstance)
+		throws Exception {
+
+		_log.error(
+			StringBundler.concat(
+				"Unable to set up project for order ", orderId, ": \n",
+				errorMessage));
+
+		_deletePortalInstance(orderId);
+
+		_marketplaceService.updateOrder(
+			HashMapBuilder.put(
+				"trial-error", errorMessage
+			).put(
+				"trial-error-date",
+				ZonedDateTime.now(
+				).format(
+					DateTimeFormatter.ISO_INSTANT
+				)
+			).put(
+				"trial-virtualhost", portalInstance.getVirtualHost()
+			).build(),
+			orderId, MarketplaceConstants.ORDER_STATUS_CANCELLED);
+	}
+
+	private String[] _toStringArray(JSONArray jsonArray) {
+		List<String> list = new ArrayList<>();
+
+		for (int i = 0; i < jsonArray.length(); i++) {
+			list.add(jsonArray.getString(i));
+		}
+
+		return list.toArray(new String[0]);
 	}
 
 	private static final int _TRIAL_MAX_INSTANCES = GetterUtil.getInteger(

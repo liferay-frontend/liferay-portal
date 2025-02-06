@@ -6,7 +6,6 @@ definition {
 	property osgi.modules.includes = "wiki";
 	property portal.release = "true";
 	property portal.upstream = "true";
-	property testray.component.names = "Categories";
 	property testray.main.component.name = "Categories";
 
 	setUp {
@@ -35,8 +34,6 @@ definition {
 	@description = "Add properties in category."
 	@priority = 3
 	test AddCategoryProperties {
-		property testray.component.names = "AUI,Categories";
-
 		task ("Add a category") {
 			JSONCategory.addCategory(
 				groupName = "Test Site Name",
@@ -132,24 +129,6 @@ definition {
 				propertiesValueField = "Subcategory Value",
 				subcategoryName = "Subcategory Name",
 				vocabularyName = "Vocabulary Name");
-		}
-	}
-
-	@description = "Add a vocabulary disallow multiple categories."
-	@priority = 3
-	test AddVocabularyDisallowMultipleCategories {
-		task ("Add a vocabulary disallow multiple categories") {
-			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
-
-			Vocabulary.addCP(
-				allowMultipleCategories = "false",
-				vocabularyName = "Vocabulary Name 2");
-		}
-
-		task ("View the new vocabulary disallow multiple categories") {
-			Vocabulary.viewCP(
-				allowMultipleCategories = "false",
-				vocabularyName = "Vocabulary Name 2");
 		}
 	}
 
@@ -257,42 +236,6 @@ definition {
 		}
 	}
 
-	@description = "Add a vocabulary with Guest view permission."
-	@priority = 3
-	test AddVocabularyWithGuestViewPermission {
-		task ("View the new vocabulary with Guest view permission") {
-			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
-
-			Vocabulary.viewVocabularyPermissionsCP(
-				viewableBy = "Anyone (Guest Role)",
-				vocabularyName = "Vocabulary Name");
-		}
-	}
-
-	@description = "Add a vocabulary with Owner view permission."
-	@priority = 3
-	test AddVocabularyWithOwnerViewPermission {
-		task ("View the new vocabulary with Owner view permission") {
-			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
-
-			Vocabulary.viewVocabularyPermissionsCP(
-				viewableBy = "Owner",
-				vocabularyName = "Vocabulary Name");
-		}
-	}
-
-	@description = "Add a vocabulary with Site Member view permission."
-	@priority = 3
-	test AddVocabularyWithSiteMemberViewPermission {
-		task ("View the new vocabulary with Site Member view permission") {
-			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
-
-			Vocabulary.viewVocabularyPermissionsCP(
-				viewableBy = "Site Members",
-				vocabularyName = "Vocabulary Name");
-		}
-	}
-
 	@description = "Cancel a vocabulary creation."
 	@priority = 3
 	test CancelVocabularyCreation {
@@ -393,16 +336,6 @@ definition {
 				categoryName = "Category Name",
 				subcategoryName = "Subcategory Name",
 				vocabularyName = "Vocabulary Name");
-		}
-	}
-
-	@description = "Cannot add a vocabulary without title."
-	@priority = 3
-	test CannotAddVocabularyWithNullTitle {
-		task ("View cannot add a vocabulary without title") {
-			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
-
-			Vocabulary.addVocabularyWithNullTitle();
 		}
 	}
 

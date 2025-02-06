@@ -78,20 +78,22 @@ public class JSBundleConfigRegistryUtil {
 
 			String jsConfig = headers.get("Liferay-JS-Config");
 
-			if (jsConfig != null) {
-				URL url = bundle.getEntry(jsConfig);
-
-				if (url != null) {
-					ServletContext servletContext = _bundleContext.getService(
-						serviceReference);
-
-					_lastModified = System.currentTimeMillis();
-
-					return new JSConfig(servletContext, url);
-				}
+			if (jsConfig == null) {
+				return null;
 			}
 
-			return null;
+			URL url = bundle.getEntry(jsConfig);
+
+			if (url == null) {
+				return null;
+			}
+
+			ServletContext servletContext = _bundleContext.getService(
+				serviceReference);
+
+			_lastModified = System.currentTimeMillis();
+
+			return new JSConfig(servletContext, url);
 		}
 
 		@Override

@@ -119,81 +119,46 @@ renderResponse.setTitle(categoryDisplayName);
 					}
 					%>
 
-					<h2>
-						<%= HtmlUtil.escape(configurationTitle) %>
+					<clay:content-row
+						cssClass="autofit-padded-no-gutters-x sheet-title"
+					>
+						<clay:content-col
+							containerElement="h2"
+							expand="<%= true %>"
+						>
+							<clay:content-row
+								cssClass="autofit-padded-no-gutters-x"
+							>
+								<clay:content-col>
+									<%= HtmlUtil.escape(configurationTitle) %>
+								</clay:content-col>
+
+								<c:if test="<%= configurationModel.isDeprecated() %>">
+									<clay:content-col>
+										<liferay-frontend:feature-indicator
+											interactive="<%= true %>"
+											type="deprecated"
+										/>
+									</clay:content-col>
+								</c:if>
+							</clay:content-row>
+						</clay:content-col>
 
 						<c:if test="<%= configurationModel.hasScopeConfiguration(configurationScopeDisplayContext.getScope()) %>">
-							<liferay-ui:icon-menu
-								cssClass="float-right"
-								direction="right"
-								markupView="lexicon"
-								showWhenSingleIcon="<%= true %>"
-							>
-								<c:choose>
-									<c:when test="<%= configurationModel.isFactory() %>">
-										<portlet:actionURL name="/configuration_admin/delete_configuration" var="deleteConfigActionURL">
-											<portlet:param name="redirect" value="<%= currentURL %>" />
-											<portlet:param name="factoryPid" value="<%= configurationModel.getFactoryPid() %>" />
-											<portlet:param name="pid" value="<%= configurationModel.getID() %>" />
-										</portlet:actionURL>
-
-										<liferay-ui:icon
-											message="delete"
-											method="post"
-											url="<%= deleteConfigActionURL %>"
-										/>
-									</c:when>
-									<c:otherwise>
-										<portlet:actionURL name="/configuration_admin/delete_configuration" var="deleteConfigActionURL">
-											<portlet:param name="redirect" value="<%= currentURL %>" />
-											<portlet:param name="factoryPid" value="<%= configurationModel.getFactoryPid() %>" />
-											<portlet:param name="pid" value="<%= configurationModel.getID() %>" />
-										</portlet:actionURL>
-
-										<liferay-ui:icon
-											message="reset-default-values"
-											method="post"
-											url="<%= deleteConfigActionURL %>"
-										/>
-									</c:otherwise>
-								</c:choose>
-
-								<portlet:resourceURL id="/configuration_admin/export_configuration" var="exportURL">
-									<portlet:param name="factoryPid" value="<%= configurationModel.getFactoryPid() %>" />
-									<portlet:param name="pid" value="<%= configurationModel.getID() %>" />
-								</portlet:resourceURL>
-
-								<liferay-ui:icon
-									message="export"
-									method="get"
-									url="<%= exportURL %>"
-								/>
+							<clay:content-col>
 
 								<%
-								List<ConfigurationMenuItem> configurationMenuItems = (List<ConfigurationMenuItem>)request.getAttribute(ConfigurationAdminWebKeys.CONFIGURATION_MENU_ITEMS);
+								EditConfigurationDisplayContext editConfigurationDisplayContext = new EditConfigurationDisplayContext(request, renderRequest, renderResponse);
 								%>
 
-								<c:if test="<%= ListUtil.isNotEmpty(configurationMenuItems) %>">
-
-									<%
-									for (ConfigurationMenuItem configurationMenuItem : configurationMenuItems) {
-										Configuration configuration = configurationModel.getConfiguration();
-									%>
-
-										<liferay-ui:icon
-											message="<%= configurationMenuItem.getLabel(locale) %>"
-											url="<%= configurationMenuItem.getURL(renderRequest, renderResponse, configurationModel.getID(), configurationModel.getFactoryPid(), configuration.getProperties()) %>"
-											useDialog="<%= true %>"
-										/>
-
-									<%
-									}
-									%>
-
-								</c:if>
-							</liferay-ui:icon-menu>
+								<clay:dropdown-actions
+									dropdownItems="<%= editConfigurationDisplayContext.getDropdownItems() %>"
+									propsTransformer="{EditConfigurationActionDropdownPropsTransformer} from configuration-admin-web"
+									title='<%= LanguageUtil.get(request, "actions") %>'
+								/>
+							</clay:content-col>
 						</c:if>
-					</h2>
+					</clay:content-row>
 
 					<c:if test="<%= configurationModel.hasScopeConfiguration(configurationScopeDisplayContext.getScope()) && configurationModel.isReadOnly() %>">
 						<clay:alert

@@ -9,18 +9,28 @@ import {apiHelpersTest} from '../../fixtures/apiHelpersTest';
 import {featureFlagsTest} from '../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../fixtures/loginTest';
+import {pageEditorPagesTest} from '../../fixtures/pageEditorPagesTest';
+import {pageTemplatesPagesTest} from '../../fixtures/pageTemplatesPagesTest';
+import {pageViewModePagesTest} from '../../fixtures/pageViewModePagesTest';
 import {pagesAdminPagesTest} from '../../fixtures/pagesAdminPagesTest';
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../utils/getRandomString';
+import {hoverAndExpectToBeVisible} from '../../utils/hoverAndExpectToBeVisible';
+import {waitForAlert} from '../../utils/waitForAlert';
+import getFragmentDefinition from '../layout-content-page-editor-web/utils/getFragmentDefinition';
+import getPageDefinition from '../layout-content-page-editor-web/utils/getPageDefinition';
 
 const test = mergeTests(
 	apiHelpersTest,
 	featureFlagsTest({
-		'LPS-178052': true,
+		'LPS-178052': {enabled: true},
 	}),
 	isolatedSiteTest,
 	loginTest(),
-	pagesAdminPagesTest
+	pageEditorPagesTest,
+	pageTemplatesPagesTest,
+	pagesAdminPagesTest,
+	pageViewModePagesTest
 );
 
 test.describe('Keyboard movement and navigation', () => {
@@ -382,50 +392,10 @@ test.describe('Keyboard movement and navigation', () => {
 				getItem('Page 2-1').locator('.miller-columns-item-mask')
 			).toBeFocused();
 
-			// Check dropdowns work well
-
-			await expect(async () => {
-				await page.keyboard.press('Tab');
-
-				await expect(
-					getItem('Page 2-1').getByLabel('Add Child Page')
-				).toBeFocused({timeout: 500});
-			}).toPass();
-
-			await page.keyboard.press('Enter');
-
-			await expect(
-				page.getByRole('menuitem', {name: 'Add Page'})
-			).toBeVisible();
-
-			await page.keyboard.press('Escape');
-
-			await expect(
-				getItem('Page 2-1').getByLabel('Add Child Page')
-			).toBeFocused();
-
-			await page.keyboard.press('Tab');
-
-			await expect(
-				getItem('Page 2-1').getByLabel('Open Page Options Menu')
-			).toBeFocused();
-
-			await page.keyboard.press('Enter');
-
-			await expect(
-				page.getByRole('menuitem', {name: 'Edit'})
-			).toBeVisible();
-
-			await page.keyboard.press('Escape');
-
-			await expect(
-				getItem('Page 2-1').getByLabel('Open Page Options Menu')
-			).toBeFocused();
-
 			// Check title link works well
 
 			await expect(async () => {
-				await page.keyboard.press('Shift+Tab');
+				await page.keyboard.press('Tab');
 
 				await expect(
 					getItem('Page 2-1').getByRole('link', {name: 'Page 2-1'})
@@ -435,6 +405,45 @@ test.describe('Keyboard movement and navigation', () => {
 			await page.keyboard.press('Enter');
 
 			await expect(getItem('Page 1-1')).not.toBeVisible();
+
+			// Come back to pages admin
+
+			await clickAndExpectToBeVisible({
+				target: getItem('Page 1-1'),
+				trigger: page.getByTitle('Go to Pages'),
+			});
+
+			// Check item actions dropdown works well
+
+			await getItem('Page 1-1').getByLabel('Add Child Page').focus();
+
+			await page.keyboard.press('Tab');
+
+			await expect(
+				getItem('Page 1-1').getByLabel('Open Page Options Menu')
+			).toBeFocused();
+
+			await page.keyboard.press('Enter');
+
+			await expect(
+				page.getByRole('menuitem', {name: 'Edit'})
+			).toBeVisible();
+
+			// Move to Convert to Page Template option and press Enter
+
+			await expect(async () => {
+				await page.keyboard.press('ArrowDown');
+
+				await expect(
+					page.getByRole('menuitem', {
+						name: 'Convert to Page Template',
+					})
+				).toBeFocused({timeout: 500});
+			}).toPass();
+
+			await page.keyboard.press('Enter');
+
+			await expect(page.getByText('Add Page Template Set')).toBeVisible();
 		}
 	);
 });
@@ -849,6 +858,384 @@ test(
 		await expect(page.locator('.breadcrumb-item.active')).toHaveText(
 			layoutTitle
 		);
+	}
+);
+
+test(
+	'Copy page with permissions',
+	{
+		tag: '@LPD-177031',
+	},
+	async ({apiHelpers, page, pagesAdminPage, site}) => {
+
+		// Add content page
+
+		const layoutTitle = getRandomString();
+
+		await apiHelpers.headlessDelivery.createSitePage({
+			siteId: site.id,
+			title: layoutTitle,
+		});
+
+		// Configure permissions
+
+		await pagesAdminPage.goto(site.friendlyUrlPath);
+
+		await pagesAdminPage.changePagesPermissions(
+			[layoutTitle],
+			[
+				'guest_ACTION_VIEW',
+				'site-member_ACTION_CUSTOMIZE',
+				'site-member_ACTION_VIEW',
+			]
+		);
+
+		// Copy page with permissions
+
+		await pagesAdminPage.goto(site.friendlyUrlPath);
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {
+				exact: true,
+				name: 'Make a Copy',
+			}),
+			trigger: page
+				.locator('li', {has: page.getByText(layoutTitle)})
+				.getByRole('button', {name: 'Open Page Options Menu'}),
+		});
+
+		await hoverAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {name: 'Page With Permissions'}),
+			trigger: page.getByRole('menuitem', {name: 'Make a Copy'}),
+		});
+
+		const copyPageWithPermissionsFrame = page.frameLocator(
+			'iframe[title="Copy Page With Permissions"]'
+		);
+
+		const copyPageName = getRandomString();
+
+		await copyPageWithPermissionsFrame
+			.getByPlaceholder('Add Page Name')
+			.fill(copyPageName);
+
+		await copyPageWithPermissionsFrame
+			.getByRole('button', {name: 'Add'})
+			.click();
+
+		await waitForAlert(page);
+
+		// Assert copied permissions
+
+		await pagesAdminPage.clickOnAction('Permissions', copyPageName);
+
+		const permissionsFrame = page.frameLocator(
+			'iframe[title="Permissions"]'
+		);
+
+		await permissionsFrame
+			.getByRole('cell', {exact: true, name: 'Role'})
+			.waitFor();
+
+		await expect(
+			permissionsFrame.locator('#guest_ACTION_VIEW')
+		).not.toBeChecked();
+
+		await expect(
+			permissionsFrame.locator('#owner_ACTION_VIEW')
+		).toBeChecked();
+
+		await expect(
+			permissionsFrame.locator('#site-member_ACTION_CUSTOMIZE')
+		).not.toBeChecked();
+
+		await expect(
+			permissionsFrame.locator('#site-member_ACTION_VIEW')
+		).not.toBeChecked();
+	}
+);
+
+test(
+	'Copy page without permissions',
+	{
+		tag: '@LPD-177031',
+	},
+	async ({apiHelpers, page, pagesAdminPage, site}) => {
+
+		// Add content page
+
+		const layoutTitle = getRandomString();
+
+		await apiHelpers.headlessDelivery.createSitePage({
+			siteId: site.id,
+			title: layoutTitle,
+		});
+
+		// Configure permissions
+
+		await pagesAdminPage.goto(site.friendlyUrlPath);
+
+		await pagesAdminPage.changePagesPermissions(
+			[layoutTitle],
+			[
+				'guest_ACTION_VIEW',
+				'site-member_ACTION_CUSTOMIZE',
+				'site-member_ACTION_VIEW',
+			]
+		);
+
+		// Copy page with permissions
+
+		await pagesAdminPage.goto(site.friendlyUrlPath);
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {
+				exact: true,
+				name: 'Make a Copy',
+			}),
+			trigger: page
+				.locator('li', {has: page.getByText(layoutTitle)})
+				.getByRole('button', {name: 'Open Page Options Menu'}),
+		});
+
+		await hoverAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {exact: true, name: 'Page'}),
+			trigger: page.getByRole('menuitem', {name: 'Make a Copy'}),
+		});
+
+		const copyPageFrame = page.frameLocator('iframe[title="Copy Page"]');
+
+		const copyPageName = getRandomString();
+
+		await copyPageFrame
+			.getByPlaceholder('Add Page Name')
+			.fill(copyPageName);
+
+		await copyPageFrame.getByRole('button', {name: 'Add'}).click();
+
+		await waitForAlert(page);
+
+		// Assert copied permissions
+
+		await pagesAdminPage.clickOnAction('Permissions', copyPageName);
+
+		const permissionsFrame = page.frameLocator(
+			'iframe[title="Permissions"]'
+		);
+
+		await permissionsFrame
+			.getByRole('cell', {exact: true, name: 'Role'})
+			.waitFor();
+
+		await expect(
+			permissionsFrame.locator('#guest_ACTION_VIEW')
+		).toBeChecked();
+
+		await expect(
+			permissionsFrame.locator('#owner_ACTION_VIEW')
+		).toBeChecked();
+
+		await expect(
+			permissionsFrame.locator('#site-member_ACTION_CUSTOMIZE')
+		).toBeChecked();
+
+		await expect(
+			permissionsFrame.locator('#site-member_ACTION_VIEW')
+		).toBeChecked();
+	}
+);
+
+test(
+	'If the page has more than one experience, the page template is created from the default experience',
+	{
+		tag: '@LPD-194263',
+	},
+	async ({apiHelpers, page, pageEditorPage, pagesAdminPage, site}) => {
+
+		// Create page with a paragraph fragment and go to edit mode
+
+		const layoutTitle = getRandomString();
+
+		const paragraphId = getRandomString();
+
+		const paragraphDefinition = getFragmentDefinition({
+			id: paragraphId,
+			key: 'BASIC_COMPONENT-paragraph',
+		});
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([paragraphDefinition]),
+			siteId: site.id,
+			title: layoutTitle,
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		// Update editable text
+
+		await pageEditorPage.editTextEditable(
+			paragraphId,
+			'element-text',
+			'Default Text'
+		);
+
+		// Create experience
+
+		await pageEditorPage.createExperience('E1');
+
+		await pageEditorPage.editTextEditable(
+			paragraphId,
+			'element-text',
+			'E1 Text'
+		);
+
+		await pageEditorPage.publishPage();
+
+		// Convert layout into a page template
+
+		await pagesAdminPage.goto(site.friendlyUrlPath);
+
+		await pagesAdminPage.clickOnAction(
+			'Convert to Page Template',
+			layoutTitle
+		);
+
+		await page.getByRole('button', {name: 'Save'}).click();
+
+		await waitForAlert(
+			page,
+			'Success:The page template was created successfully',
+			{autoClose: false}
+		);
+
+		await page.getByRole('link', {name: 'See in Page Templates'}).click();
+
+		// Assert page template was created successfully
+
+		await page
+			.getByRole('link', {name: `${layoutTitle} - Page Template`})
+			.click();
+
+		await expect(page.getByText('Default Text')).toBeVisible();
+
+		await expect(page.getByText('E1 Text')).not.toBeVisible();
+	}
+);
+
+test(
+	'Switch page templates on preview page template modal during page creation',
+	{
+		tag: '@LPS-172658',
+	},
+	async ({
+		page,
+		pageEditorPage,
+		pageTemplatesPage,
+		pagesAdminPage,
+		site,
+		widgetPagePage,
+	}) => {
+
+		// Go to page template administration in global site
+
+		await pageTemplatesPage.goto(site.friendlyUrlPath);
+
+		// Create page template collection
+
+		const pageTemplateCollectionName = getRandomString();
+
+		await pageTemplatesPage.addPageTemplateCollection(
+			pageTemplateCollectionName
+		);
+
+		// Create widget page template with web content display widget
+
+		const widgetPageTemplateName = 'Widget Page Template';
+
+		await pageTemplatesPage.addWidgetPageTemplate(widgetPageTemplateName);
+
+		await widgetPagePage.addPortlet('Web Content Display');
+
+		// Create content page template with heading fragment
+
+		await pageTemplatesPage.goto(site.friendlyUrlPath);
+
+		const contentPageTemplateName = 'Content Page Template';
+
+		await pageTemplatesPage.addContentPageTemplate(contentPageTemplateName);
+
+		await pageEditorPage.addFragment('Basic Components', 'Heading');
+
+		await pageEditorPage.publishButton.click();
+
+		await waitForAlert(
+			page,
+			'Success:The page template was published successfully.'
+		);
+
+		// Preview page templates
+
+		await pagesAdminPage.goto(site.friendlyUrlPath);
+
+		await pagesAdminPage.gotoSelectTemplates(pageTemplateCollectionName);
+
+		await page.getByTitle('Preview Page Template').first().click();
+
+		// Assert page templates
+
+		const iframe = page.locator('.modal-dialog').frameLocator('iframe');
+
+		await expect(iframe.getByText('Heading Example')).toBeVisible();
+
+		await expect(
+			page.getByRole('banner').getByText(contentPageTemplateName)
+		).toBeVisible();
+
+		await expect(page.getByText('1 of 2')).toBeVisible();
+
+		await page.getByLabel('Go to Next Template').click();
+
+		await expect(iframe.getByText('Web Content Display')).toBeVisible();
+
+		await expect(
+			page.getByRole('banner').getByText(widgetPageTemplateName)
+		).toBeVisible();
+
+		await expect(page.getByText('2 of 2')).toBeVisible();
+
+		// Create page from widget page template
+
+		await page
+			.getByRole('button', {name: 'Create Page from This Template'})
+			.click();
+
+		const addPageIframe = page.frameLocator('iframe[title="Add Page"]');
+
+		const pageName = getRandomString();
+
+		await addPageIframe.getByPlaceholder('Add Page Name').fill(pageName);
+
+		await addPageIframe.getByRole('button', {name: 'Add'}).click();
+
+		await waitForAlert(page, 'Success:The page was created successfully.');
+
+		// Assert widget page is created based on widget page template
+
+		await pagesAdminPage.goto(site.friendlyUrlPath);
+
+		await pagesAdminPage.clickOnAction('View', pageName);
+
+		await expect(
+			page.getByRole('heading', {name: 'Web Content Display'})
+		).toBeVisible();
+
+		await expect(
+			page.getByText('This application is not visible to users yet.')
+		).toBeVisible();
 	}
 );
 

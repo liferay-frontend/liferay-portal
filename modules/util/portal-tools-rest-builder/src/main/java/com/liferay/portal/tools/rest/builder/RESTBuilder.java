@@ -45,8 +45,6 @@ import com.liferay.portal.tools.rest.builder.internal.yaml.openapi.RequestBody;
 import com.liferay.portal.tools.rest.builder.internal.yaml.openapi.Response;
 import com.liferay.portal.tools.rest.builder.internal.yaml.openapi.ResponseCode;
 import com.liferay.portal.tools.rest.builder.internal.yaml.openapi.Schema;
-import com.liferay.portal.vulcan.pagination.Page;
-import com.liferay.portal.vulcan.permission.Permission;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -433,7 +431,7 @@ public class RESTBuilder {
 
 				String returnType = StringUtil.removeSubstrings(
 					javaMethodSignature.getReturnType(),
-					Page.class.getName() + "<", ">");
+					"com.liferay.portal.vulcan.pagination.Page<", ">");
 
 				String returnSchemaName = StringUtil.extractLast(
 					returnType, ".");
@@ -455,7 +453,8 @@ public class RESTBuilder {
 						yamlString);
 
 					if (StringUtil.equals(
-							Permission.class.getName(), returnType)) {
+							"com.liferay.portal.vulcan.permission.Permission",
+							returnType)) {
 
 						yamlString = _addSchema(
 							FreeMarkerUtil.processTemplate(
@@ -1574,7 +1573,10 @@ public class RESTBuilder {
 					StringUtil.quote(javaMethodSignature.getPath(), '"') + ":");
 
 				if (x == -1) {
-					x = yamlString.indexOf(javaMethodSignature.getPath() + ":");
+					x = yamlString.indexOf(
+						" " + javaMethodSignature.getPath() + ":");
+
+					x = x + 1;
 				}
 
 				String pathLine = yamlString.substring(

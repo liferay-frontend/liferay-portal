@@ -6,24 +6,33 @@
 package com.liferay.commerce.product.internal.search.spi.model.index.contributor;
 
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.commerce.product.constants.CPConfigurationEntrySettingConstants;
 import com.liferay.commerce.product.constants.CPField;
 import com.liferay.commerce.product.model.CPConfigurationEntry;
+import com.liferay.commerce.product.model.CPConfigurationEntrySetting;
 import com.liferay.commerce.product.model.CPDefinition;
-import com.liferay.commerce.product.service.CPConfigurationListLocalService;
+import com.liferay.commerce.product.model.CPInstance;
+import com.liferay.commerce.product.service.CPConfigurationEntrySettingLocalService;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
+import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.Localization;
 import com.liferay.portal.search.spi.model.index.contributor.ModelDocumentContributor;
+
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Andrea Sbarra
+ * @author Alessio Antonio Rendina
  */
 @Component(
 	property = "indexer.class.name=com.liferay.commerce.product.model.CPConfigurationEntry",
@@ -46,26 +55,34 @@ public class CPConfigurationEntryModelDocumentContributor
 			document.addKeyword(
 				CPField.CP_CONFIGURATION_LIST_ID,
 				cpConfigurationEntry.getCPConfigurationListId());
-			document.addNumber(
-				CPField.CP_CONFIGURATION_LIST_IDS,
-				TransformUtil.transformToArray(
-					_cpConfigurationListLocalService.getCPConfigurationLists(
-						cpConfigurationEntry.getGroupId(),
-						cpConfigurationEntry.getCompanyId()),
-					cpConfigurationList -> {
-						if (cpConfigurationList.getCPConfigurationListId() ==
-								cpConfigurationEntry.
-									getCPConfigurationListId()) {
 
-							return null;
-						}
+			long[] cpConfigurationListIds = _getCPConfigurationListIds(
+				cpConfigurationEntry);
 
-						return cpConfigurationEntry.getCPConfigurationListId();
-					},
-					Long.class));
+			if (ArrayUtil.isEmpty(cpConfigurationListIds)) {
+				document.addNumber(CPField.CP_CONFIGURATION_LIST_IDS, -1);
+			}
+			else {
+				document.addNumber(
+					CPField.CP_CONFIGURATION_LIST_IDS, cpConfigurationListIds);
+			}
+
 			document.addKeyword(
 				CPField.EXTERNAL_REFERENCE_CODE,
 				cpConfigurationEntry.getExternalReferenceCode());
+			document.addNumber(
+				CPField.MAXIMUM_ORDER_QUANTITY,
+				cpConfigurationEntry.getMaxOrderQuantity());
+			document.addNumber(
+				CPField.MINIMUM_ORDER_QUANTITY,
+				cpConfigurationEntry.getMinOrderQuantity());
+			document.addNumber(
+				CPField.MULTIPLE_ORDER_QUANTITY,
+				cpConfigurationEntry.getMultipleOrderQuantity());
+			document.addKeyword(
+				CPField.PURCHASABLE, cpConfigurationEntry.isPurchasable());
+			document.addKeyword(
+				CPField.SHIPPABLE, cpConfigurationEntry.isShippable());
 			document.addText(
 				Field.CLASS_NAME_ID,
 				String.valueOf(cpConfigurationEntry.getClassNameId()));
@@ -76,19 +93,27 @@ public class CPConfigurationEntryModelDocumentContributor
 				Field.ENTRY_CLASS_PK, cpConfigurationEntry.getClassPK());
 			document.addKeyword(
 				Field.HIDDEN, !cpConfigurationEntry.isVisible());
-			document.addKeyword(
-				CPField.PURCHASABLE, cpConfigurationEntry.isPurchasable());
-			document.addKeyword(
-				CPField.SHIPPABLE, cpConfigurationEntry.isShippable());
+
+			CPDefinition cpDefinition = null;
 
 			if (StringUtil.equalsIgnoreCase(
 					CPDefinition.class.getName(),
 					cpConfigurationEntry.getClassName())) {
 
-				CPDefinition cpDefinition =
-					_cpDefinitionLocalService.getCPDefinition(
-						cpConfigurationEntry.getClassPK());
+				cpDefinition = _cpDefinitionLocalService.getCPDefinition(
+					cpConfigurationEntry.getClassPK());
+			}
+			else if (StringUtil.equalsIgnoreCase(
+						CPInstance.class.getName(),
+						cpConfigurationEntry.getClassName())) {
 
+				CPInstance cpInstance = _cpInstanceLocalService.getCPInstance(
+					cpConfigurationEntry.getClassPK());
+
+				cpDefinition = cpInstance.getCPDefinition();
+			}
+
+			if (cpDefinition != null) {
 				document.addKeyword(
 					CPField.ASSET_CATEGORY_NAMES,
 					TransformUtil.unsafeTransform(
@@ -99,7 +124,27 @@ public class CPConfigurationEntryModelDocumentContributor
 				document.addKeyword(
 					CPField.PRODUCT_TYPE_NAME,
 					cpDefinition.getProductTypeName());
-				document.addKeyword(Field.NAME, cpDefinition.getName());
+				document.addKeyword(
+					Field.ASSET_CATEGORY_IDS,
+					_assetCategoryLocalService.getCategoryIds(
+						CPDefinition.class.getName(),
+						cpDefinition.getCPDefinitionId()));
+				document.addKeyword(
+					Field.NAME,
+					cpDefinition.getName(
+						_localization.getDefaultLanguageId(
+							cpDefinition.getName())));
+
+				List<String> languageIds =
+					_cpDefinitionLocalService.
+						getCPDefinitionLocalizationLanguageIds(
+							cpDefinition.getCPDefinitionId());
+
+				for (String languageId : languageIds) {
+					document.addKeyword(
+						_localization.getLocalizedName(Field.NAME, languageId),
+						cpDefinition.getName(languageId));
+				}
 			}
 
 			if (_log.isDebugEnabled()) {
@@ -118,6 +163,24 @@ public class CPConfigurationEntryModelDocumentContributor
 		}
 	}
 
+	private long[] _getCPConfigurationListIds(
+		CPConfigurationEntry cpConfigurationEntry) {
+
+		CPConfigurationEntrySetting cpConfigurationEntrySetting =
+			_cpConfigurationEntrySettingLocalService.
+				fetchCPConfigurationEntrySetting(
+					cpConfigurationEntry.getCPConfigurationEntryId(),
+					CPConfigurationEntrySettingConstants.TYPE_INDEX_IDS);
+
+		if (cpConfigurationEntrySetting == null) {
+			return null;
+		}
+
+		return TransformUtil.transformToLongArray(
+			StringUtil.split(cpConfigurationEntrySetting.getValue()),
+			Long::valueOf);
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		CPConfigurationEntryModelDocumentContributor.class);
 
@@ -125,9 +188,16 @@ public class CPConfigurationEntryModelDocumentContributor
 	private AssetCategoryLocalService _assetCategoryLocalService;
 
 	@Reference
-	private CPConfigurationListLocalService _cpConfigurationListLocalService;
+	private CPConfigurationEntrySettingLocalService
+		_cpConfigurationEntrySettingLocalService;
 
 	@Reference
 	private CPDefinitionLocalService _cpDefinitionLocalService;
+
+	@Reference
+	private CPInstanceLocalService _cpInstanceLocalService;
+
+	@Reference
+	private Localization _localization;
 
 }

@@ -11,7 +11,6 @@ import com.liferay.asset.kernel.exception.AssetTagException;
 import com.liferay.client.extension.type.manager.CETManager;
 import com.liferay.dynamic.data.mapping.validator.DDMFormValuesValidationException;
 import com.liferay.friendly.url.exception.DuplicateFriendlyURLEntryException;
-import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.admin.web.internal.configuration.LayoutUtilityPageThumbnailConfiguration;
@@ -19,7 +18,6 @@ import com.liferay.layout.admin.web.internal.constants.LayoutAdminWebKeys;
 import com.liferay.layout.admin.web.internal.display.context.LayoutUtilityPageEntryDisplayContext;
 import com.liferay.layout.admin.web.internal.display.context.LayoutsAdminDisplayContext;
 import com.liferay.layout.admin.web.internal.display.context.MillerColumnsDisplayContext;
-import com.liferay.layout.admin.web.internal.display.context.SelectLayoutCollectionDisplayContext;
 import com.liferay.layout.admin.web.internal.helper.LayoutActionsHelper;
 import com.liferay.layout.admin.web.internal.servlet.taglib.util.LayoutActionDropdownItemsProvider;
 import com.liferay.layout.page.template.exception.DuplicateLayoutPageTemplateCollectionException;
@@ -37,8 +35,10 @@ import com.liferay.portal.kernel.exception.GroupInheritContentException;
 import com.liferay.portal.kernel.exception.ImageTypeException;
 import com.liferay.portal.kernel.exception.LayoutFriendlyURLException;
 import com.liferay.portal.kernel.exception.LayoutFriendlyURLsException;
+import com.liferay.portal.kernel.exception.LayoutJavaScriptException;
 import com.liferay.portal.kernel.exception.LayoutNameException;
 import com.liferay.portal.kernel.exception.LayoutParentLayoutIdException;
+import com.liferay.portal.kernel.exception.LayoutSetJavaScriptException;
 import com.liferay.portal.kernel.exception.LayoutSetVirtualHostException;
 import com.liferay.portal.kernel.exception.LayoutTypeException;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
@@ -237,12 +237,6 @@ public class GroupPagesPortlet extends MVCPortlet {
 					_portal.getLiferayPortletRequest(renderRequest),
 					_portal.getLiferayPortletResponse(renderResponse)));
 			renderRequest.setAttribute(
-				LayoutAdminWebKeys.SELECT_LAYOUT_COLLECTION_DISPLAY_CONTEXT,
-				new SelectLayoutCollectionDisplayContext(
-					_infoItemServiceRegistry,
-					_portal.getLiferayPortletRequest(renderRequest),
-					_portal.getLiferayPortletResponse(renderResponse)));
-			renderRequest.setAttribute(
 				LayoutUtilityPageEntryDisplayContext.class.getName(),
 				new LayoutUtilityPageEntryDisplayContext(
 					renderRequest, renderResponse));
@@ -271,9 +265,11 @@ public class GroupPagesPortlet extends MVCPortlet {
 			throwable instanceof ImageTypeException ||
 			throwable instanceof LayoutFriendlyURLException ||
 			throwable instanceof LayoutFriendlyURLsException ||
+			throwable instanceof LayoutJavaScriptException ||
 			throwable instanceof LayoutNameException ||
 			throwable instanceof LayoutPageTemplateCollectionNameException ||
 			throwable instanceof LayoutParentLayoutIdException ||
+			throwable instanceof LayoutSetJavaScriptException ||
 			throwable instanceof LayoutSetVirtualHostException ||
 			throwable instanceof LayoutTypeException ||
 			throwable instanceof NoSuchGroupException ||
@@ -299,9 +295,6 @@ public class GroupPagesPortlet extends MVCPortlet {
 
 	@Reference
 	private GroupProvider _groupProvider;
-
-	@Reference
-	private InfoItemServiceRegistry _infoItemServiceRegistry;
 
 	@Reference
 	private ItemSelector _itemSelector;

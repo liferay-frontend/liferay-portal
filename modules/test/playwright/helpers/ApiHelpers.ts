@@ -65,6 +65,8 @@ import {JSONWebServicesSegmentsEntryApiHelper} from './json-web-services/JSONWeb
 import {JSONWebServicesSiteNavigationMenuApiHelper} from './json-web-services/JSONWebServicesSiteNavigationMenuApiHelper';
 import {JSONWebServicesUserApiHelper} from './json-web-services/JSONWebServicesUserApiHelper';
 
+type ContentType = 'application/json' | 'application/x-www-form-urlencoded';
+
 type TDataApiHelpersData = {
 	id: any;
 	type: string;
@@ -89,9 +91,12 @@ async function getCSRFTokenHeader(page: Page) {
 	};
 }
 
-export async function getHeader(page: Page) {
+export async function getHeader(
+	page: Page,
+	contentType: ContentType = 'application/json'
+) {
 	return {
-		'Content-Type': 'application/json',
+		'Content-Type': contentType,
 		...(await getCSRFTokenHeader(page)),
 	};
 }
@@ -397,13 +402,13 @@ export class DataApiHelpers extends ApiHelpers {
 			if (item.type === 'account') {
 				await this.headlessAdminUser.deleteAccount(item.id);
 			}
+			else if (item.type === 'accountGroup') {
+				await this.headlessAdminUser.deleteAccountGroup(item.id);
+			}
 			else if (item.type === 'announcement') {
 				await this.jsonWebServicesAnnouncementsEntryApiHelper.deleteEntry(
 					item.id
 				);
-			}
-			else if (item.type === 'accountGroup') {
-				await this.headlessAdminUser.deleteAccountGroup(item.id);
 			}
 			else if (item.type === 'apiApplication') {
 				await this.apiBuilder.deleteApiApplication(item.id);
@@ -417,11 +422,19 @@ export class DataApiHelpers extends ApiHelpers {
 			else if (item.type === 'commerceReturn') {
 				await this.headlessCommerceReturn.deleteCommerceReturn(item.id);
 			}
+			else if (item.type === 'ctCollection') {
+				await this.headlessChangeTracking.deleteCTCollection(item.id);
+			}
 			else if (item.type === 'discount') {
 				await this.headlessCommerceAdminPricing.deleteDiscount(item.id);
 			}
 			else if (item.type === 'document') {
 				await this.headlessDelivery.deleteDocument(item.id);
+			}
+			else if (item.type === 'layoutSetPrototype') {
+				await this.jsonWebServicesLayoutSetPrototype.deleteLayoutSetPrototypes(
+					item.id
+				);
 			}
 			else if (item.type === 'listTypeDefinition') {
 				await this.listTypeAdmin.deleteListTypeDefinition(item.id);
@@ -495,10 +508,23 @@ export class DataApiHelpers extends ApiHelpers {
 			else if (item.type === 'product') {
 				await this.headlessCommerceAdminCatalog.deleteProduct(item.id);
 			}
+			else if (item.type === 'productConfiguration') {
+				await this.headlessCommerceAdminCatalog.deleteProductConfiguration(
+					item.id
+				);
+			}
+			else if (item.type === 'productConfigurationList') {
+				await this.headlessCommerceAdminCatalog.deleteProductConfigurationList(
+					item.id
+				);
+			}
 			else if (item.type === 'relatedProduct') {
 				await this.headlessCommerceAdminCatalog.deleteRelatedProduct(
 					item.id
 				);
+			}
+			else if (item.type === 'role') {
+				await this.headlessAdminUser.deleteRole(item.id);
 			}
 			else if (item.type === 'roleUserAccountAssociation') {
 				const [roleId, userId] = item.id.split('_');
@@ -520,11 +546,16 @@ export class DataApiHelpers extends ApiHelpers {
 					item.id
 				);
 			}
+			else if (item.type === 'sxpBlueprint') {
+				await this.searchExperiences.deleteSXPBlueprint(item.id);
+			}
 			else if (item.type === 'sxpElement') {
 				await this.searchExperiences.deleteSXPElement(item.id);
 			}
-			else if (item.type === 'sxpBlueprint') {
-				await this.searchExperiences.deleteSXPBlueprint(item.id);
+			else if (item.type === 'taxonomyVocabulary') {
+				await this.headlessAdminTaxonomy.deleteTaxonomyVocabulary(
+					item.id
+				);
 			}
 			else if (item.type === 'terms') {
 				await this.headlessCommerceAdminOrder.deleteTerms(item.id);
@@ -538,6 +569,13 @@ export class DataApiHelpers extends ApiHelpers {
 			else if (item.type === 'warehouse') {
 				await this.headlessCommerceAdminInventoryApiHelper.deleteWarehouse(
 					item.id
+				);
+			}
+			else if (item.type === 'webContent') {
+				const [siteId, articleId] = item.id.split('_');
+				await this.jsonWebServicesJournal.moveArticleToTrash(
+					siteId,
+					articleId
 				);
 			}
 			else if (item.type === 'wishList') {

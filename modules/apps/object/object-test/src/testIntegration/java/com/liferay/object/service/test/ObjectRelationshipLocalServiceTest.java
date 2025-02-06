@@ -6,6 +6,8 @@
 package com.liferay.object.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationCategory;
+import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationRegistryUtil;
 import com.liferay.info.collection.provider.RelatedInfoItemCollectionProvider;
 import com.liferay.object.constants.ObjectActionExecutorConstants;
 import com.liferay.object.constants.ObjectActionKeys;
@@ -15,7 +17,6 @@ import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.exception.DuplicateObjectRelationshipException;
-import com.liferay.object.exception.ObjectActionActiveException;
 import com.liferay.object.exception.ObjectRelationshipDeletionTypeException;
 import com.liferay.object.exception.ObjectRelationshipEdgeException;
 import com.liferay.object.exception.ObjectRelationshipNameException;
@@ -65,6 +66,7 @@ import com.liferay.portal.kernel.model.Address;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -115,7 +117,7 @@ import org.osgi.framework.FrameworkUtil;
 /**
  * @author Brian Wing Shun Chan
  */
-@FeatureFlags("LPS-187142")
+@FeatureFlags("LPD-34594")
 @RunWith(Arquillian.class)
 public class ObjectRelationshipLocalServiceTest {
 
@@ -201,6 +203,46 @@ public class ObjectRelationshipLocalServiceTest {
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				"able", false, ObjectRelationshipConstants.TYPE_MANY_TO_MANY,
 				null));
+		AssertUtils.assertFailure(
+			ObjectRelationshipEdgeException.class,
+			"Inheritance between modifiable system and custom object " +
+				"definitions is not allowed",
+			() -> _objectRelationshipLocalService.addObjectRelationship(
+				null, TestPropsValues.getUserId(),
+				_modifiableSystemObjectDefinition.getObjectDefinitionId(),
+				_objectDefinition1.getObjectDefinitionId(), 0,
+				ObjectRelationshipConstants.DELETION_TYPE_CASCADE, true,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				StringUtil.randomId(), false,
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null));
+		AssertUtils.assertFailure(
+			ObjectRelationshipEdgeException.class,
+			"Inheritance between modifiable system and custom object " +
+				"definitions is not allowed",
+			() -> _objectRelationshipLocalService.addObjectRelationship(
+				null, TestPropsValues.getUserId(),
+				_objectDefinition1.getObjectDefinitionId(),
+				_modifiableSystemObjectDefinition.getObjectDefinitionId(), 0,
+				ObjectRelationshipConstants.DELETION_TYPE_CASCADE, true,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				StringUtil.randomId(), false,
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null));
+
+		ObjectDefinition userObjectDefinition =
+			_objectDefinitionLocalService.fetchObjectDefinitionByClassName(
+				TestPropsValues.getCompanyId(), User.class.getName());
+
+		AssertUtils.assertFailure(
+			ObjectRelationshipEdgeException.class,
+			"System object definitions cannot inherit configurations",
+			() -> _objectRelationshipLocalService.addObjectRelationship(
+				null, TestPropsValues.getUserId(),
+				_modifiableSystemObjectDefinition.getObjectDefinitionId(),
+				userObjectDefinition.getObjectDefinitionId(), 0,
+				ObjectRelationshipConstants.DELETION_TYPE_CASCADE, true,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				StringUtil.randomId(), false,
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null));
 
 		String objectFieldName1 = "a" + RandomTestUtil.randomString();
 		String objectFieldName2 = "a" + RandomTestUtil.randomString();
@@ -527,6 +569,10 @@ public class ObjectRelationshipLocalServiceTest {
 					_objectDefinitionLocalService);
 			});
 
+		_asserScreenNavigationCategories(2, "C_AA");
+		_asserScreenNavigationCategories(1, "C_AAA");
+		_asserScreenNavigationCategories(0, "C_AAAA");
+
 		// Bind a draft object definition as a parent node in a published
 		// object definition tree
 
@@ -551,6 +597,10 @@ public class ObjectRelationshipLocalServiceTest {
 						objectDefinition2.getObjectDefinitionId()),
 					_objectDefinitionLocalService);
 			});
+
+		_asserScreenNavigationCategories(0, "C_A");
+		_asserScreenNavigationCategories(2, "C_AA");
+		_asserScreenNavigationCategories(1, "C_AAA");
 
 		TreeTestUtil.deleteObjectDefinitionHierarchy(
 			_objectDefinitionLocalService,
@@ -578,6 +628,9 @@ public class ObjectRelationshipLocalServiceTest {
 						objectDefinition2.getObjectDefinitionId()),
 					_objectDefinitionLocalService);
 			});
+
+		_asserScreenNavigationCategories(0, "C_A");
+		_asserScreenNavigationCategories(1, "C_AA");
 
 		TreeTestUtil.deleteObjectDefinitionHierarchy(
 			_objectDefinitionLocalService, new String[] {"C_A", "C_AA"},
@@ -611,6 +664,9 @@ public class ObjectRelationshipLocalServiceTest {
 						objectDefinition2.getObjectDefinitionId()),
 					_objectDefinitionLocalService);
 			});
+
+		_asserScreenNavigationCategories(0, "C_A");
+		_asserScreenNavigationCategories(1, "C_AA");
 
 		long objectDefinitionId = objectDefinitionA.getObjectDefinitionId();
 
@@ -670,6 +726,11 @@ public class ObjectRelationshipLocalServiceTest {
 					_objectDefinitionLocalService);
 			});
 
+		_asserScreenNavigationCategories(0, "C_A");
+		_asserScreenNavigationCategories(0, "C_AA");
+		_asserScreenNavigationCategories(2, "C_AAA");
+		_asserScreenNavigationCategories(1, "C_AAAA");
+
 		TreeTestUtil.deleteObjectDefinitionHierarchy(
 			_objectDefinitionLocalService,
 			new String[] {"C_A", "C_AA", "C_AAA", "C_AAAA"},
@@ -706,6 +767,10 @@ public class ObjectRelationshipLocalServiceTest {
 						objectDefinition2.getObjectDefinitionId()),
 					_objectDefinitionLocalService);
 			});
+
+		_asserScreenNavigationCategories(0, "C_A");
+		_asserScreenNavigationCategories(0, "C_AA");
+		_asserScreenNavigationCategories(1, "C_AAA");
 
 		TreeTestUtil.deleteObjectDefinitionHierarchy(
 			_objectDefinitionLocalService,
@@ -958,6 +1023,10 @@ public class ObjectRelationshipLocalServiceTest {
 						objectDefinition1.getRootObjectDefinitionId()),
 					_objectDefinitionLocalService));
 
+		_asserScreenNavigationCategories(2, "C_AA");
+		_asserScreenNavigationCategories(2, "C_AAA");
+		_asserScreenNavigationCategories(1, "C_AAAA");
+
 		// Bind a published object definition as a parent node in a published
 		// object definition tree
 
@@ -977,6 +1046,11 @@ public class ObjectRelationshipLocalServiceTest {
 					_objectDefinitionTreeFactory.create(
 						objectDefinition1.getObjectDefinitionId()),
 					_objectDefinitionLocalService));
+
+		_asserScreenNavigationCategories(2, "C_A");
+		_asserScreenNavigationCategories(2, "C_AA");
+		_asserScreenNavigationCategories(2, "C_AAA");
+		_asserScreenNavigationCategories(1, "C_AAAA");
 
 		TreeTestUtil.deleteObjectDefinitionHierarchy(
 			_objectDefinitionLocalService,
@@ -1017,6 +1091,11 @@ public class ObjectRelationshipLocalServiceTest {
 						objectDefinition1.getRootObjectDefinitionId()),
 					_objectDefinitionLocalService));
 
+		_asserScreenNavigationCategories(2, "C_A");
+		_asserScreenNavigationCategories(2, "C_AA");
+		_asserScreenNavigationCategories(2, "C_AAA");
+		_asserScreenNavigationCategories(1, "C_AAAA");
+
 		TreeTestUtil.deleteObjectDefinitionHierarchy(
 			_objectDefinitionLocalService,
 			new String[] {"C_A", "C_AA", "C_AAA", "C_AAAA"},
@@ -1041,6 +1120,35 @@ public class ObjectRelationshipLocalServiceTest {
 					_objectDefinitionTreeFactory.create(
 						objectDefinition1.getObjectDefinitionId()),
 					_objectDefinitionLocalService));
+
+		_asserScreenNavigationCategories(2, "C_B");
+		_asserScreenNavigationCategories(1, "C_BB");
+
+		// Object definitions must have the same scope to enable inheritance
+
+		ObjectDefinition siteObjectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.singletonList(
+					new TextObjectFieldBuilder(
+					).labelMap(
+						LocalizedMapUtil.getLocalizedMap(
+							RandomTestUtil.randomString())
+					).name(
+						"a" + RandomTestUtil.randomString()
+					).build()),
+				ObjectDefinitionConstants.SCOPE_SITE);
+
+		AssertUtils.assertFailure(
+			ObjectRelationshipEdgeException.class,
+			String.format(
+				"The scope of \"%s\" is not the same as \"%s\". To enable " +
+					"inheritance, the object definitions must have the same " +
+						"scope",
+				objectDefinitionB.getShortName(),
+				siteObjectDefinition.getShortName()),
+			() -> _bindObjectDefinitions(
+				objectDefinitionB.getObjectDefinitionId(),
+				siteObjectDefinition.getObjectDefinitionId()));
 
 		// Unable to bind the object definitions because the object relationship
 		// must not create a circular reference in a root context
@@ -1087,28 +1195,6 @@ public class ObjectRelationshipLocalServiceTest {
 			() -> _bindObjectDefinitions(
 				objectDefinitionB.getObjectDefinitionId(),
 				objectDefinitionCC.getObjectDefinitionId()));
-
-		// Unable to bind the object definitions when they have different scopes
-
-		ObjectDefinition siteObjectDefinition =
-			ObjectDefinitionTestUtil.publishObjectDefinition(
-				Collections.singletonList(
-					new TextObjectFieldBuilder(
-					).labelMap(
-						LocalizedMapUtil.getLocalizedMap(
-							RandomTestUtil.randomString())
-					).name(
-						"a" + RandomTestUtil.randomString()
-					).build()),
-				ObjectDefinitionConstants.SCOPE_SITE);
-
-		AssertUtils.assertFailure(
-			ObjectRelationshipEdgeException.class,
-			"Unable to bind the object definitions when they have different " +
-				"scopes",
-			() -> _bindObjectDefinitions(
-				objectDefinitionB.getObjectDefinitionId(),
-				siteObjectDefinition.getObjectDefinitionId()));
 
 		TreeTestUtil.deleteObjectDefinitionHierarchy(
 			_objectDefinitionLocalService,
@@ -1334,7 +1420,7 @@ public class ObjectRelationshipLocalServiceTest {
 
 		_objectRelationshipLocalService.
 			registerObjectRelationshipsRelatedInfoCollectionProviders(
-				objectDefinition1, _objectDefinitionLocalService);
+				objectDefinition1, _objectDefinitionLocalService, null);
 
 		Bundle bundle = FrameworkUtil.getBundle(
 			ObjectRelationshipLocalServiceTest.class);
@@ -1641,11 +1727,34 @@ public class ObjectRelationshipLocalServiceTest {
 			siteRole.getRoleId(),
 			new String[] {ObjectActionKeys.ADD_OBJECT_ENTRY});
 
-		_unbindObjectDefinitionNode("AA", tree);
-
 		ObjectDefinition objectDefinitionAA =
 			_objectDefinitionLocalService.getObjectDefinition(
 				TestPropsValues.getCompanyId(), "C_AA");
+
+		ObjectAction objectAction = _objectActionLocalService.addObjectAction(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			objectDefinitionAA.getObjectDefinitionId(), true, null,
+			RandomTestUtil.randomString(),
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+			RandomTestUtil.randomString(),
+			ObjectActionExecutorConstants.KEY_WEBHOOK,
+			ObjectActionTriggerConstants.KEY_STANDALONE,
+			UnicodePropertiesBuilder.put(
+				"secret", "standalone"
+			).put(
+				"url", "https://standalone.com"
+			).build(),
+			false);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			TestPropsValues.getCompanyId(), objectDefinitionAA.getClassName(),
+			ResourceConstants.SCOPE_GROUP_TEMPLATE,
+			String.valueOf(GroupConstants.DEFAULT_PARENT_GROUP_ID),
+			organizationRole.getRoleId(),
+			new String[] {objectAction.getName()});
+
+		_unbindObjectDefinitionNode("AA", tree);
 
 		Assert.assertTrue(
 			_resourcePermissionLocalService.hasResourcePermission(
@@ -1654,6 +1763,13 @@ public class ObjectRelationshipLocalServiceTest {
 				ResourceConstants.SCOPE_GROUP_TEMPLATE,
 				String.valueOf(GroupConstants.DEFAULT_PARENT_GROUP_ID),
 				organizationRole.getRoleId(), ActionKeys.UPDATE));
+		Assert.assertTrue(
+			_resourcePermissionLocalService.hasResourcePermission(
+				TestPropsValues.getCompanyId(),
+				objectDefinitionAA.getClassName(),
+				ResourceConstants.SCOPE_GROUP_TEMPLATE,
+				String.valueOf(GroupConstants.DEFAULT_PARENT_GROUP_ID),
+				organizationRole.getRoleId(), objectAction.getName()));
 		Assert.assertTrue(
 			_resourcePermissionLocalService.hasResourcePermission(
 				TestPropsValues.getCompanyId(),
@@ -1779,6 +1895,23 @@ public class ObjectRelationshipLocalServiceTest {
 			_objectDefinitionLocalService, new String[] {"C_A", "C_AA"},
 			_objectEntryLocalService, _objectRelationshipLocalService);
 
+		AssertUtils.assertFailure(
+			ObjectRelationshipEdgeException.class,
+			"Inheritance between modifiable system and custom object " +
+				"definitions is not allowed",
+			() -> _bindObjectDefinitions(
+				ObjectRelationshipTestUtil.addObjectRelationship(
+					_objectRelationshipLocalService,
+					_modifiableSystemObjectDefinition, _objectDefinition1)));
+		AssertUtils.assertFailure(
+			ObjectRelationshipEdgeException.class,
+			"Inheritance between modifiable system and custom object " +
+				"definitions is not allowed",
+			() -> _bindObjectDefinitions(
+				ObjectRelationshipTestUtil.addObjectRelationship(
+					_objectRelationshipLocalService, _objectDefinition1,
+					_modifiableSystemObjectDefinition)));
+
 		ObjectRelationship objectRelationship3 =
 			_objectRelationshipLocalService.addObjectRelationship(
 				null, TestPropsValues.getUserId(),
@@ -1814,8 +1947,7 @@ public class ObjectRelationshipLocalServiceTest {
 
 		AssertUtils.assertFailure(
 			ObjectRelationshipEdgeException.class,
-			"Object relationship must not be between unmodifiable system " +
-				"object definitions to be an edge of a root context",
+			"System object definitions cannot inherit configurations",
 			() -> _objectRelationshipLocalService.updateObjectRelationship(
 				objectRelationship5.getExternalReferenceCode(),
 				objectRelationship5.getObjectRelationshipId(),
@@ -2021,6 +2153,24 @@ public class ObjectRelationshipLocalServiceTest {
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			StringUtil.randomId(), false,
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null);
+	}
+
+	private void _asserScreenNavigationCategories(
+			int expectedSize, String objectDefinitionName)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.getObjectDefinition(
+				TestPropsValues.getCompanyId(), objectDefinitionName);
+
+		List<ScreenNavigationCategory> screenNavigationCategories =
+			ScreenNavigationRegistryUtil.getScreenNavigationCategories(
+				objectDefinition.getClassName(), TestPropsValues.getUser(),
+				null);
+
+		Assert.assertEquals(
+			screenNavigationCategories.toString(), expectedSize,
+			screenNavigationCategories.size());
 	}
 
 	private void _assertHasResourcePermission(
@@ -2505,24 +2655,10 @@ public class ObjectRelationshipLocalServiceTest {
 		objectAction = _objectActionLocalService.fetchObjectAction(
 			objectAction.getObjectActionId());
 
+		Assert.assertEquals(
+			objectAction.getObjectActionTriggerKey(),
+			ObjectActionTriggerConstants.KEY_ON_AFTER_UPDATE);
 		Assert.assertFalse(objectAction.isActive());
-
-		ObjectAction finalObjectAction = objectAction;
-
-		AssertUtils.assertFailure(
-			ObjectActionActiveException.class,
-			"Object action trigger is onAfterRootUpdate but object " +
-				"definition is not a root node",
-			() -> _objectActionLocalService.updateObjectAction(
-				finalObjectAction.getExternalReferenceCode(),
-				finalObjectAction.getObjectActionId(), true,
-				finalObjectAction.getConditionExpression(),
-				finalObjectAction.getDescription(),
-				finalObjectAction.getErrorMessageMap(),
-				finalObjectAction.getLabelMap(), finalObjectAction.getName(),
-				finalObjectAction.getObjectActionExecutorKey(),
-				finalObjectAction.getObjectActionTriggerKey(),
-				finalObjectAction.getParametersUnicodeProperties()));
 	}
 
 	private void _unbindObjectDefinitionNode(

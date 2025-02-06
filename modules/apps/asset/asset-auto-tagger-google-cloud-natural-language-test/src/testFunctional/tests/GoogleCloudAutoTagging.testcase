@@ -52,6 +52,7 @@ definition {
 			dmDocumentTitle = "DM Document Title",
 			groupName = "Test Depot Name",
 			mimeType = "application/msword",
+			site = "false",
 			sourceFileName = "Document_1.doc");
 
 		DepotNavigator.openToDMEntryInDepot(
@@ -75,6 +76,7 @@ definition {
 			dmDocumentTitle = "Commerce_Black",
 			groupName = "Test Depot Name",
 			mimeType = "image/jpeg",
+			site = "false",
 			sourceFileName = "Commerce_Black.jpg");
 
 		DepotNavigator.openDepotDocumentsAndMediaAdmin(depotName = "Test Depot Name");
@@ -83,7 +85,7 @@ definition {
 			depotName = "Test Depot Name",
 			dmDocumentTitle = "Commerce_Black");
 
-		DMDocument.viewTagInfo(tagName = "t-shirt");
+		DMDocument.viewTagInfo(tagName = "shirt");
 	}
 
 	@description = "This test ensures that a web content article with text in a depot can be auto-tagged after enabling GCNL."
@@ -273,7 +275,7 @@ definition {
 			groupName = "Site Name",
 			siteURLKey = "site-name");
 
-		Panel.expandPanel(panel = "Categorization");
+		Blogs.expandPanel(panel = "Categorization");
 
 		AssetCategorization.removeTag(tagName = "Computers");
 
@@ -403,7 +405,7 @@ definition {
 			AssetCategorization.removeTag(tagName = ${tagName});
 		}
 
-		PortletEntry.publish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name");
 

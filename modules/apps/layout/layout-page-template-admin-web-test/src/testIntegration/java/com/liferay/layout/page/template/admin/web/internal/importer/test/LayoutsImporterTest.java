@@ -6,6 +6,10 @@
 package com.liferay.layout.page.template.admin.web.internal.importer.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.kernel.model.AssetEntry;
+import com.liferay.asset.list.constants.AssetListEntryTypeConstants;
+import com.liferay.asset.list.model.AssetListEntry;
+import com.liferay.asset.list.service.AssetListEntryLocalService;
 import com.liferay.asset.publisher.constants.AssetPublisherPortletKeys;
 import com.liferay.change.tracking.model.CTCollection;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
@@ -24,6 +28,7 @@ import com.liferay.info.field.InfoField;
 import com.liferay.info.form.InfoForm;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemFormProvider;
+import com.liferay.item.selector.criteria.InfoListItemSelectorReturnType;
 import com.liferay.layout.exporter.LayoutsExporter;
 import com.liferay.layout.importer.LayoutsImportStrategy;
 import com.liferay.layout.importer.LayoutsImporter;
@@ -37,6 +42,7 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
+import com.liferay.layout.page.template.test.util.LayoutPageTemplateTestUtil;
 import com.liferay.layout.provider.LayoutStructureProvider;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.util.structure.ColumnLayoutStructureItem;
@@ -147,6 +153,87 @@ public class LayoutsImporterTest {
 			_group1, TestPropsValues.getUserId());
 		_serviceContext2 = ServiceContextTestUtil.getServiceContext(
 			_group2, TestPropsValues.getUserId());
+	}
+
+	@Test
+	public void testExportImportLayoutPageTemplateEntryWithCollectionAppliedFiltersFragmentRenderer()
+		throws Exception {
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry = null;
+
+		ServiceContextThreadLocal.pushServiceContext(_serviceContext1);
+
+		try {
+			AssetListEntry assetListEntry =
+				_assetListEntryLocalService.addAssetListEntry(
+					null, TestPropsValues.getUserId(), _group1.getGroupId(),
+					RandomTestUtil.randomString(),
+					AssetListEntryTypeConstants.TYPE_DYNAMIC, _serviceContext1);
+
+			layoutPageTemplateEntry = _addLayoutPageTemplateEntry();
+
+			Layout layout = _layoutLocalService.fetchLayout(
+				layoutPageTemplateEntry.getPlid());
+
+			Layout draftLayout = layout.fetchDraftLayout();
+
+			long defaultSegmentsExperienceId =
+				_segmentsExperienceLocalService.
+					fetchDefaultSegmentsExperienceId(layout.getPlid());
+
+			String itemId = ContentLayoutTestUtil.addCollectionDisplayToLayout(
+				JSONUtil.put(
+					"classNameId", _portal.getClassNameId(AssetListEntry.class)
+				).put(
+					"classPK", assetListEntry.getAssetListEntryId()
+				).put(
+					"itemType", AssetEntry.class.getName()
+				).put(
+					"type", InfoListItemSelectorReturnType.class.getName()
+				),
+				draftLayout, _layoutStructureProvider, null, null, 0,
+				defaultSegmentsExperienceId);
+
+			FragmentEntryLink fragmentEntryLink =
+				_fragmentEntryLinkLocalService.addFragmentEntryLink(
+					null, TestPropsValues.getUserId(), _group1.getGroupId(), 0,
+					0, defaultSegmentsExperienceId, draftLayout.getPlid(),
+					StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+					"com.liferay.fragment.renderer.collection.filter." +
+						"internal.CollectionAppliedFiltersFragmentRenderer",
+					JSONUtil.put(
+						FragmentEntryProcessorConstants.
+							KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
+						JSONUtil.put("targetCollections", new String[] {itemId})
+					).toString(),
+					StringPool.BLANK, 0, null, FragmentConstants.TYPE_COMPONENT,
+					_serviceContext1);
+
+			ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
+				fragmentEntryLink, draftLayout, null, 0,
+				defaultSegmentsExperienceId);
+
+			ContentLayoutTestUtil.publishLayout(draftLayout, layout);
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
+
+		File file = _layoutsExporter.exportLayoutPageTemplateEntries(
+			new long[] {layoutPageTemplateEntry.getLayoutPageTemplateEntryId()},
+			LayoutPageTemplateEntryTypeConstants.BASIC);
+
+		List<LayoutsImporterResultEntry> layoutsImporterResultEntries =
+			_layoutsImporter.importFile(
+				TestPropsValues.getUserId(), _group2.getGroupId(), 0, file,
+				LayoutsImportStrategy.DO_NOT_OVERWRITE, true);
+
+		LayoutsImporterResultEntry layoutsImporterResultEntry =
+			layoutsImporterResultEntries.get(0);
+
+		Assert.assertEquals(
+			LayoutsImporterResultEntry.Status.IMPORTED,
+			layoutsImporterResultEntry.getStatus());
 	}
 
 	@Test
@@ -668,33 +755,27 @@ public class LayoutsImporterTest {
 	public void testValidateFileWithDuplicatedBasicLayoutPageTemplateEntry()
 		throws Exception {
 
+		LayoutPageTemplateCollection layoutPageTemplateCollection =
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateCollection(
+				_group1.getGroupId());
+
 		_layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
-			null, TestPropsValues.getUserId(), _group1.getGroupId(),
-			LayoutPageTemplateConstants.
-				PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
+			null, _serviceContext1.getUserId(), _group1.getGroupId(),
+			layoutPageTemplateCollection.getLayoutPageTemplateCollectionId(),
 			"Page Template", LayoutPageTemplateEntryTypeConstants.BASIC, 0,
-			WorkflowConstants.STATUS_APPROVED,
-			ServiceContextTestUtil.getServiceContext(_group1.getGroupId()));
+			WorkflowConstants.STATUS_APPROVED, _serviceContext1);
 
 		Assert.assertFalse(
 			_layoutsImporter.validateFile(
 				_group1.getGroupId(),
-				LayoutPageTemplateConstants.
-					PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
+				layoutPageTemplateCollection.
+					getLayoutPageTemplateCollectionId(),
 				_getFile(_RESOURCES_PATH_PAGE_TEMPLATES)));
 	}
 
 	@Test
 	public void testValidateFileWithDuplicatedBasicLayoutPageTemplateEntryInADifferentLayoutPageTemplateCollection()
 		throws Exception {
-
-		_layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
-			null, TestPropsValues.getUserId(), _group1.getGroupId(),
-			LayoutPageTemplateConstants.
-				PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
-			"Page Template", LayoutPageTemplateEntryTypeConstants.BASIC, 0,
-			WorkflowConstants.STATUS_APPROVED,
-			ServiceContextTestUtil.getServiceContext(_group1.getGroupId()));
 
 		LayoutPageTemplateCollection layoutPageTemplateCollection =
 			_layoutPageTemplateCollectionLocalService.
@@ -704,8 +785,23 @@ public class LayoutsImporterTest {
 						PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
 					RandomTestUtil.randomString(), StringPool.BLANK,
 					LayoutPageTemplateEntryTypeConstants.BASIC,
-					ServiceContextTestUtil.getServiceContext(
-						_group1.getGroupId()));
+					_serviceContext1);
+
+		_layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
+			null, TestPropsValues.getUserId(), _group1.getGroupId(),
+			layoutPageTemplateCollection.getLayoutPageTemplateCollectionId(),
+			"Page Template", LayoutPageTemplateEntryTypeConstants.BASIC, 0,
+			WorkflowConstants.STATUS_APPROVED, _serviceContext1);
+
+		layoutPageTemplateCollection =
+			_layoutPageTemplateCollectionLocalService.
+				addLayoutPageTemplateCollection(
+					null, TestPropsValues.getUserId(), _group1.getGroupId(),
+					LayoutPageTemplateConstants.
+						PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
+					RandomTestUtil.randomString(), StringPool.BLANK,
+					LayoutPageTemplateEntryTypeConstants.BASIC,
+					_serviceContext1);
 
 		Assert.assertTrue(
 			_layoutsImporter.validateFile(
@@ -810,8 +906,7 @@ public class LayoutsImporterTest {
 				PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
 			"Basic Web Content Display Page Template",
 			LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, 0,
-			WorkflowConstants.STATUS_APPROVED,
-			ServiceContextTestUtil.getServiceContext(_group1.getGroupId()));
+			WorkflowConstants.STATUS_APPROVED, _serviceContext1);
 
 		Assert.assertFalse(
 			_layoutsImporter.validateFile(
@@ -1781,6 +1876,9 @@ public class LayoutsImporterTest {
 	private static final String _RESOURCES_PATH_PAGE_TEMPLATES =
 		"com/liferay/layout/page/template/admin/web/internal/importer/test" +
 			"/dependencies/page-templates";
+
+	@Inject
+	private AssetListEntryLocalService _assetListEntryLocalService;
 
 	@Inject
 	private CTCollectionLocalService _ctCollectionLocalService;

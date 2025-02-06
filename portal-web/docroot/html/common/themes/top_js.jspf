@@ -167,6 +167,7 @@
 		Liferay.PortletKeys = {
 			DOCUMENT_LIBRARY: '<%= PortletKeys.DOCUMENT_LIBRARY %>',
 			DYNAMIC_DATA_MAPPING: 'com_liferay_dynamic_data_mapping_web_portlet_DDMPortlet',
+			INSTANCE_SETTINGS: 'com_liferay_configuration_admin_web_portlet_InstanceSettingsPortlet',
 			ITEM_SELECTOR: '<%= PortletKeys.ITEM_SELECTOR %>'
 		};
 
@@ -306,7 +307,10 @@
 			getSiteGroupId: function () {
 				return '<%= themeDisplay.getSiteGroupId() %>';
 			},
-			getURLControlPanel: function () {
+			getTimeZone: function() {
+				return '<%= Validator.isNotNull(themeDisplay.getTimeZone()) ? themeDisplay.getTimeZone().getID() : TimeZone.getDefault().getID() %>';
+			},
+			getURLControlPanel: function() {
 				return '<%= themeDisplay.getURLControlPanel() %>';
 			},
 			getURLHome: function () {

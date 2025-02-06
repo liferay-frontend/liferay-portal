@@ -280,7 +280,6 @@ const ALLOWED_NAMED_SCOPE_EXCEPTIONS = [
 	'frontend-js-jquery-web',
 	'frontend-js-loader-modules-extender',
 	'frontend-js-lodash-web',
-	'frontend-js-node-shims',
 	'frontend-js-react-web',
 	'frontend-js-recharts',
 	'frontend-js-spa-web',
@@ -445,9 +444,10 @@ const ALLOWED_NAMED_SCOPE_EXCEPTIONS = [
 ];
 
 const ALLOWED_NON_GLOBAL_DEPENDENCIES = [
+	'@clayui/css',
 	'@liferay/amd-loader',
-	'@liferay/npm-scripts',
 	'@types/request',
+	'@types/node-fetch',
 	'@vscode/ripgrep',
 	'alloy-ui',
 	'alloyeditor',
@@ -467,7 +467,6 @@ const ALLOWED_NON_GLOBAL_DEPENDENCIES = [
 	'gulp',
 	'hash.js',
 	'history',
-	'html-webpack-plugin',
 	'jest-fetch-mock',
 	'leaflet',
 	'liferay-font-awesome',
@@ -485,5 +484,4 @@ const ALLOWED_NON_GLOBAL_DEPENDENCIES = [
 	'resolve',
 	'swagger-ui-react',
 	'timers-browserify',
-	'webpack',
 ];

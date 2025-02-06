@@ -104,17 +104,16 @@ public abstract class BaseProductConfigurationListResourceTestCase {
 		com.liferay.portal.kernel.model.User testCompanyAdminUser =
 			UserTestUtil.getAdminUser(testCompany.getCompanyId());
 
-		ProductConfigurationListResource.Builder builder =
-			ProductConfigurationListResource.builder();
-
-		productConfigurationListResource = builder.authentication(
-			testCompanyAdminUser.getEmailAddress(),
-			PropsValues.DEFAULT_ADMIN_PASSWORD
-		).endpoint(
-			testCompany.getVirtualHostname(), 8080, "http"
-		).locale(
-			LocaleUtil.getDefault()
-		).build();
+		productConfigurationListResource =
+			ProductConfigurationListResource.builder(
+			).authentication(
+				testCompanyAdminUser.getEmailAddress(),
+				PropsValues.DEFAULT_ADMIN_PASSWORD
+			).endpoint(
+				testCompany.getVirtualHostname(), 8080, "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
 	}
 
 	@After
@@ -1408,13 +1407,8 @@ public abstract class BaseProductConfigurationListResourceTestCase {
 				continue;
 			}
 
-			if (Objects.equals(
-					"masterProductConfigurationList",
-					additionalAssertFieldName)) {
-
-				if (productConfigurationList.
-						getMasterProductConfigurationList() == null) {
-
+			if (Objects.equals("master", additionalAssertFieldName)) {
+				if (productConfigurationList.getMaster() == null) {
 					valid = false;
 				}
 
@@ -1686,15 +1680,10 @@ public abstract class BaseProductConfigurationListResourceTestCase {
 				continue;
 			}
 
-			if (Objects.equals(
-					"masterProductConfigurationList",
-					additionalAssertFieldName)) {
-
+			if (Objects.equals("master", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
-						productConfigurationList1.
-							getMasterProductConfigurationList(),
-						productConfigurationList2.
-							getMasterProductConfigurationList())) {
+						productConfigurationList1.getMaster(),
+						productConfigurationList2.getMaster())) {
 
 					return false;
 				}
@@ -2081,7 +2070,7 @@ public abstract class BaseProductConfigurationListResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
-		if (entityFieldName.equals("masterProductConfigurationList")) {
+		if (entityFieldName.equals("master")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}
@@ -2209,7 +2198,7 @@ public abstract class BaseProductConfigurationListResourceTestCase {
 				externalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				id = RandomTestUtil.randomLong();
-				masterProductConfigurationList = RandomTestUtil.randomBoolean();
+				master = RandomTestUtil.randomBoolean();
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				neverExpire = RandomTestUtil.randomBoolean();
 				parentProductConfigurationListId = RandomTestUtil.randomLong();

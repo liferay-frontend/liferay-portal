@@ -30,6 +30,8 @@
 					}
 				},
 				"type": "object",
+				"x-filterable": [
+				],
 				"xml": {
 					"name": "AuditEvent"
 				}
@@ -49,6 +51,8 @@
 					}
 				},
 				"type": "object",
+				"x-filterable": [
+				],
 				"xml": {
 					"name": "AuditFieldChange"
 				}
@@ -115,6 +119,8 @@
 					}
 				},
 				"type": "object",
+				"x-filterable": [
+				],
 				"xml": {
 					"name": "Creator"
 				}
@@ -131,7 +137,9 @@
 						"type": "array"
 					}
 				},
-				"type": "object"
+				"type": "object",
+				"x-filterable": [
+				]
 			},
 			"FacetValue": {
 				"properties": {
@@ -143,9 +151,11 @@
 						"type": "string"
 					}
 				},
-				"type": "object"
+				"type": "object",
+				"x-filterable": [
+				]
 			},
-			"Object4": {
+			"Object9": {
 				"properties": {
 					"actions": {
 						"additionalProperties": {
@@ -193,6 +203,18 @@
 						"type": "string",
 						"x-parent-map": "properties"
 					},
+					"friendlyUrlPath": {
+						"description": "A relative URL to the page's rendered content.",
+						"type": "string"
+					},
+					"friendlyUrlPath_i18n": {
+						"additionalProperties": {
+							"description": "The localized relative URLs to the page's rendered content.",
+							"type": "string"
+						},
+						"description": "The localized relative URLs to the page's rendered content.",
+						"type": "object"
+					},
 					"id": {
 						"format": "int64",
 						"readOnly": true,
@@ -210,8 +232,9 @@
 						"type": "string"
 					},
 					"status": {
+						"format": "int32",
 						"readOnly": true,
-						"type": "string",
+						"type": "integer",
 						"x-batch-unsupported-formats": "CSV",
 						"x-parent-map": "properties"
 					},
@@ -221,17 +244,30 @@
 						"type": "string"
 					},
 					"x-schema-name": {
-						"default": "Object4",
+						"default": "Object9",
 						"readOnly": true,
 						"type": "string"
 					}
 				},
 				"type": "object",
+				"x-filterable": [
+					"creator",
+					"creatorId",
+					"dateCreated",
+					"dateModified",
+					"externalReferenceCode",
+					"field",
+					"id",
+					"keywords",
+					"status",
+					"taxonomyCategoryIds",
+					"userId"
+				],
 				"xml": {
 					"name": "ObjectEntry"
 				}
 			},
-			"PageObject4": {
+			"PageObject9": {
 				"properties": {
 					"actions": {
 						"additionalProperties": {
@@ -250,7 +286,7 @@
 					},
 					"items": {
 						"items": {
-							"$ref": "#/components/schemas/Object4"
+							"$ref": "#/components/schemas/Object9"
 						},
 						"type": "array"
 					},
@@ -271,12 +307,14 @@
 						"type": "integer"
 					},
 					"x-schema-name": {
-						"default": "PageObject4",
+						"default": "PageObject9",
 						"readOnly": true,
 						"type": "string"
 					}
 				},
-				"type": "object"
+				"type": "object",
+				"x-filterable": [
+				]
 			},
 			"PagePermission": {
 				"properties": {
@@ -318,7 +356,9 @@
 						"type": "integer"
 					}
 				},
-				"type": "object"
+				"type": "object",
+				"x-filterable": [
+				]
 			},
 			"Permission": {
 				"properties": {
@@ -333,6 +373,8 @@
 					}
 				},
 				"type": "object",
+				"x-filterable": [
+				],
 				"xml": {
 					"name": "Permission"
 				}
@@ -359,6 +401,8 @@
 					"code"
 				],
 				"type": "object",
+				"x-filterable": [
+				],
 				"xml": {
 					"name": "Status"
 				}
@@ -384,6 +428,8 @@
 					}
 				},
 				"type": "object",
+				"x-filterable": [
+				],
 				"xml": {
 					"name": "UserGroupBrief"
 				}
@@ -398,7 +444,7 @@
 	"paths": {
 		"/": {
 			"get": {
-				"operationId": "getObject4sPage",
+				"operationId": "getObject9sPage",
 				"parameters": [
 					{
 						"in": "query",
@@ -476,12 +522,12 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/PageObject4"
+									"$ref": "#/components/schemas/PageObject9"
 								}
 							},
 							"application/xml": {
 								"schema": {
-									"$ref": "#/components/schemas/PageObject4"
+									"$ref": "#/components/schemas/PageObject9"
 								}
 							}
 						},
@@ -489,23 +535,23 @@
 					}
 				},
 				"tags": [
-					"Object4"
+					"Object9"
 				]
 			},
 			"post": {
-				"operationId": "postObject4",
+				"operationId": "postObject9",
 				"parameters": [
 				],
 				"requestBody": {
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/Object4"
+								"$ref": "#/components/schemas/Object9"
 							}
 						},
 						"application/xml": {
 							"schema": {
-								"$ref": "#/components/schemas/Object4"
+								"$ref": "#/components/schemas/Object9"
 							}
 						}
 					}
@@ -515,12 +561,12 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Object4"
+									"$ref": "#/components/schemas/Object9"
 								}
 							},
 							"application/xml": {
 								"schema": {
-									"$ref": "#/components/schemas/Object4"
+									"$ref": "#/components/schemas/Object9"
 								}
 							}
 						},
@@ -528,13 +574,13 @@
 					}
 				},
 				"tags": [
-					"Object4"
+					"Object9"
 				]
 			}
 		},
 		"/batch": {
 			"delete": {
-				"operationId": "deleteObject4Batch",
+				"operationId": "deleteObject9Batch",
 				"parameters": [
 					{
 						"in": "query",
@@ -563,11 +609,11 @@
 					}
 				},
 				"tags": [
-					"Object4"
+					"Object9"
 				]
 			},
 			"post": {
-				"operationId": "postObject4Batch",
+				"operationId": "postObject9Batch",
 				"parameters": [
 					{
 						"in": "query",
@@ -596,11 +642,11 @@
 					}
 				},
 				"tags": [
-					"Object4"
+					"Object9"
 				]
 			},
 			"put": {
-				"operationId": "putObject4Batch",
+				"operationId": "putObject9Batch",
 				"parameters": [
 					{
 						"in": "query",
@@ -629,7 +675,7 @@
 					}
 				},
 				"tags": [
-					"Object4"
+					"Object9"
 				]
 			}
 		},
@@ -658,7 +704,7 @@
 					}
 				},
 				"tags": [
-					"Object4"
+					"Object9"
 				]
 			},
 			"get": {
@@ -699,12 +745,12 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Object4"
+									"$ref": "#/components/schemas/Object9"
 								}
 							},
 							"application/xml": {
 								"schema": {
-									"$ref": "#/components/schemas/Object4"
+									"$ref": "#/components/schemas/Object9"
 								}
 							}
 						},
@@ -712,7 +758,7 @@
 					}
 				},
 				"tags": [
-					"Object4"
+					"Object9"
 				]
 			},
 			"patch": {
@@ -731,12 +777,12 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/Object4"
+								"$ref": "#/components/schemas/Object9"
 							}
 						},
 						"application/xml": {
 							"schema": {
-								"$ref": "#/components/schemas/Object4"
+								"$ref": "#/components/schemas/Object9"
 							}
 						}
 					}
@@ -746,12 +792,12 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Object4"
+									"$ref": "#/components/schemas/Object9"
 								}
 							},
 							"application/xml": {
 								"schema": {
-									"$ref": "#/components/schemas/Object4"
+									"$ref": "#/components/schemas/Object9"
 								}
 							}
 						},
@@ -759,7 +805,7 @@
 					}
 				},
 				"tags": [
-					"Object4"
+					"Object9"
 				]
 			},
 			"put": {
@@ -778,12 +824,12 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/Object4"
+								"$ref": "#/components/schemas/Object9"
 							}
 						},
 						"application/xml": {
 							"schema": {
-								"$ref": "#/components/schemas/Object4"
+								"$ref": "#/components/schemas/Object9"
 							}
 						}
 					}
@@ -793,12 +839,12 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Object4"
+									"$ref": "#/components/schemas/Object9"
 								}
 							},
 							"application/xml": {
 								"schema": {
-									"$ref": "#/components/schemas/Object4"
+									"$ref": "#/components/schemas/Object9"
 								}
 							}
 						},
@@ -806,13 +852,13 @@
 					}
 				},
 				"tags": [
-					"Object4"
+					"Object9"
 				]
 			}
 		},
 		"/export-batch": {
 			"post": {
-				"operationId": "postObject4sPageExportBatch",
+				"operationId": "postObject9sPageExportBatch",
 				"parameters": [
 					{
 						"in": "query",
@@ -867,7 +913,7 @@
 					}
 				},
 				"tags": [
-					"Object4"
+					"Object9"
 				]
 			}
 		},
@@ -897,13 +943,13 @@
 				}
 			}
 		},
-		"/{object4Id}": {
+		"/{object9Id}": {
 			"delete": {
-				"operationId": "deleteObject4",
+				"operationId": "deleteObject9",
 				"parameters": [
 					{
 						"in": "path",
-						"name": "object4Id",
+						"name": "object9Id",
 						"required": true,
 						"schema": {
 							"type": "string"
@@ -922,15 +968,15 @@
 					}
 				},
 				"tags": [
-					"Object4"
+					"Object9"
 				]
 			},
 			"get": {
-				"operationId": "getObject4",
+				"operationId": "getObject9",
 				"parameters": [
 					{
 						"in": "path",
-						"name": "object4Id",
+						"name": "object9Id",
 						"required": true,
 						"schema": {
 							"type": "string"
@@ -963,12 +1009,12 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Object4"
+									"$ref": "#/components/schemas/Object9"
 								}
 							},
 							"application/xml": {
 								"schema": {
-									"$ref": "#/components/schemas/Object4"
+									"$ref": "#/components/schemas/Object9"
 								}
 							}
 						},
@@ -976,15 +1022,15 @@
 					}
 				},
 				"tags": [
-					"Object4"
+					"Object9"
 				]
 			},
 			"patch": {
-				"operationId": "patchObject4",
+				"operationId": "patchObject9",
 				"parameters": [
 					{
 						"in": "path",
-						"name": "object4Id",
+						"name": "object9Id",
 						"required": true,
 						"schema": {
 							"type": "string"
@@ -995,12 +1041,12 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/Object4"
+								"$ref": "#/components/schemas/Object9"
 							}
 						},
 						"application/xml": {
 							"schema": {
-								"$ref": "#/components/schemas/Object4"
+								"$ref": "#/components/schemas/Object9"
 							}
 						}
 					}
@@ -1010,12 +1056,12 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Object4"
+									"$ref": "#/components/schemas/Object9"
 								}
 							},
 							"application/xml": {
 								"schema": {
-									"$ref": "#/components/schemas/Object4"
+									"$ref": "#/components/schemas/Object9"
 								}
 							}
 						},
@@ -1023,15 +1069,15 @@
 					}
 				},
 				"tags": [
-					"Object4"
+					"Object9"
 				]
 			},
 			"put": {
-				"operationId": "putObject4",
+				"operationId": "putObject9",
 				"parameters": [
 					{
 						"in": "path",
-						"name": "object4Id",
+						"name": "object9Id",
 						"required": true,
 						"schema": {
 							"type": "string"
@@ -1042,12 +1088,12 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/Object4"
+								"$ref": "#/components/schemas/Object9"
 							}
 						},
 						"application/xml": {
 							"schema": {
-								"$ref": "#/components/schemas/Object4"
+								"$ref": "#/components/schemas/Object9"
 							}
 						}
 					}
@@ -1057,12 +1103,12 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Object4"
+									"$ref": "#/components/schemas/Object9"
 								}
 							},
 							"application/xml": {
 								"schema": {
-									"$ref": "#/components/schemas/Object4"
+									"$ref": "#/components/schemas/Object9"
 								}
 							}
 						},
@@ -1070,17 +1116,17 @@
 					}
 				},
 				"tags": [
-					"Object4"
+					"Object9"
 				]
 			}
 		},
-		"/{object4Id}/permissions": {
+		"/{object9Id}/permissions": {
 			"get": {
-				"operationId": "getObject4PermissionsPage",
+				"operationId": "getObject9PermissionsPage",
 				"parameters": [
 					{
 						"in": "path",
-						"name": "object4Id",
+						"name": "object9Id",
 						"required": true,
 						"schema": {
 							"type": "string"
@@ -1133,15 +1179,15 @@
 					}
 				},
 				"tags": [
-					"Object4"
+					"Object9"
 				]
 			},
 			"put": {
-				"operationId": "putObject4PermissionsPage",
+				"operationId": "putObject9PermissionsPage",
 				"parameters": [
 					{
 						"in": "path",
-						"name": "object4Id",
+						"name": "object9Id",
 						"required": true,
 						"schema": {
 							"type": "string"
@@ -1186,14 +1232,14 @@
 					}
 				},
 				"tags": [
-					"Object4"
+					"Object9"
 				]
 			}
 		}
 	},
 	"servers": [
 		{
-			"url": "http://localhost:8080/o/c/object4s/"
+			"url": "http://localhost:8080/o/c/object9s/"
 		}
 	]
 }

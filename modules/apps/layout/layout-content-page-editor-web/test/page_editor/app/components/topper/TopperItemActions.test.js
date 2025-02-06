@@ -10,8 +10,12 @@ import React from 'react';
 
 import TopperItemActions from '../../../../../src/main/resources/META-INF/resources/page_editor/app/components/topper/TopperItemActions';
 import {LAYOUT_DATA_ITEM_TYPES} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/config/constants/layoutDataItemTypes';
-import {ClipboardContextProvider} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/ClipboardContext';
+import {
+	ClipboardContextProvider,
+	useSetClipboard,
+} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/ClipboardContext';
 import {StoreAPIContextProvider} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/StoreContext';
+import deleteItem from '../../../../../src/main/resources/META-INF/resources/page_editor/app/thunks/deleteItem';
 import pasteItems from '../../../../../src/main/resources/META-INF/resources/page_editor/app/thunks/pasteItems';
 
 jest.mock(
@@ -87,34 +91,33 @@ const renderTopperItemActions = ({
 };
 
 describe('TopperItemActions', () => {
-
-	/* it('does not open TopperItemActions if disabled', () => {
+	it('does not open TopperItemActions if disabled', async () => {
 		const {baseElement} = renderTopperItemActions({isDisabled: true});
 
 		expect(baseElement.querySelector('.dropdown')).toBeInTheDocument();
+
 		expect(baseElement.querySelector('.dropdown-toggle')).toHaveAttribute(
 			'disabled'
 		);
 	});
 
-	it('opens TopperItemActions if not disabled', () => {
+	it('opens TopperItemActions if not disabled', async () => {
 		const {baseElement} = renderTopperItemActions();
-
-		userEvent.click(baseElement.querySelector('.dropdown-toggle'));
+		await userEvent.click(baseElement.querySelector('.dropdown-toggle'));
 
 		expect(
 			baseElement.querySelector('.dropdown-menu.show')
 		).toBeInTheDocument();
 	});
 
-	it('calls setClipboard and deleteItem when Cut action is pressed', () => {
+	it('calls setClipboard and deleteItem when Cut action is pressed', async () => {
 		Liferay.FeatureFlags['LPD-18221'] = true;
 
 		const setClipboard = useSetClipboard();
 
 		renderTopperItemActions();
 
-		userEvent.click(screen.getByText('cut'));
+		await userEvent.click(screen.getByText('cut'));
 
 		expect(deleteItem).toBeCalledWith(
 			expect.objectContaining({
@@ -129,28 +132,28 @@ describe('TopperItemActions', () => {
 		Liferay.FeatureFlags['LPD-18221'] = false;
 	});
 
-	it('calls setClipboard when Copy action is pressed', () => {
+	it('calls setClipboard when Copy action is pressed', async () => {
 		Liferay.FeatureFlags['LPD-18221'] = true;
 
 		const setClipboard = useSetClipboard();
 
 		renderTopperItemActions();
 
-		userEvent.click(screen.getByText('copy'));
+		await userEvent.click(screen.getByText('copy'));
 
 		expect(setClipboard).toBeCalledWith(
 			expect.objectContaining(['itemId1'])
 		);
 
 		Liferay.FeatureFlags['LPD-18221'] = false;
-	});*/
+	});
 
-	it('calls pasteItem when Paste action is pressed', () => {
+	it('calls pasteItem when Paste action is pressed', async () => {
 		Liferay.FeatureFlags['LPD-18221'] = true;
 
 		renderTopperItemActions({itemId: 'itemId3'});
 
-		userEvent.click(screen.getByText('paste'));
+		await userEvent.click(screen.getByText('paste'));
 
 		expect(pasteItems).toBeCalledWith(
 			expect.objectContaining({

@@ -5,120 +5,106 @@
 
 import Autocomplete from '@clayui/autocomplete';
 import ClayButton from '@clayui/button';
-import {ClaySelect} from '@clayui/form';
-import ClayModal, {useModal} from '@clayui/modal';
-import {useMemo, useState} from 'react';
-import useSWR from 'swr';
+import ClayForm, {ClayInput, ClayToggle} from '@clayui/form';
+import ClayMultiSelect from '@clayui/multi-select';
+import classNames from 'classnames';
+import {useState} from 'react';
+import {useForm} from 'react-hook-form';
 
+import BaseWrapper from '../../../../../components/Input/base/BaseWrapper';
+import Select from '../../../../../components/Select/Select';
 import {useMarketplaceContext} from '../../../../../context/MarketplaceContext';
-import SearchBuilder from '../../../../../core/SearchBuilder';
-import {ORDER_TYPES} from '../../../../../enums/Order';
-import {PRODUCT_SPECIFICATION_KEY} from '../../../../../enums/Product';
+import {ORDER_CUSTOM_FIELDS} from '../../../../../enums/Order';
 import useDebounce from '../../../../../hooks/useDebounce';
+import i18n from '../../../../../i18n';
 import {Liferay} from '../../../../../liferay/liferay';
-import trialOAuth2 from '../../../../../services/oauth/Trial';
-import HeadlessCommerceAdminCatalogImpl from '../../../../../services/rest/HeadlessCommerceAdminCatalog';
-import headlessCommerceDeliveryCart from '../../../../../services/rest/HeadlessCommerceDeliveryCart';
+import zodSchema, {z, zodResolver} from '../../../../../schema/zod';
+import {getProductType} from '../../../../../utils/productUtils';
+import ProductPurchaseSolutionTrial from '../../../../ProductPurchase/services/ProductPurchasePreBuiltTrial';
+import {useTrialProducts} from './useTrialProducts';
 
-type NewTrialModalProps = ReturnType<typeof useModal> & {
+type NewTrialModalProps = {
+	onClose: () => void;
 	revalidate: () => void;
 };
 
-type ProductWithPurchasable = {
-	skus: (SKU & {purchasable: boolean})[];
-} & Product;
+type MultiSelectValue = {
+	key: string;
+	label: string;
+	value: string;
+};
 
-const NewTrialModal: React.FC<NewTrialModalProps> = ({
-	observer,
-	onOpenChange,
-	revalidate,
-}) => {
-	const [search, setSearch] = useState('');
+const defaultEmailAddress = Liferay.ThemeDisplay.getUserEmailAddress();
+
+const NewTrialModal: React.FC<NewTrialModalProps> = ({onClose, revalidate}) => {
 	const {channel, myUserAccount} = useMarketplaceContext();
-	const debouncedSearch = useDebounce(search, 1000);
-	const [selectedTrial, setSelectedTrial] = useState<{
-		accountId: string;
-		product: Product;
-	}>({
-		accountId: '',
-		product: {} as Product,
-	});
-	const {data: apps, isValidating} = useSWR<
-		APIResponse<ProductWithPurchasable>
-	>(`administrator-dashboard/trial/products/${debouncedSearch}`, () =>
-		HeadlessCommerceAdminCatalogImpl.getProducts(
-			new URLSearchParams({
-				'filter': SearchBuilder.contains('name', debouncedSearch),
-				'nestedFields': 'productSpecifications,skus',
-				'pageSize': '10',
-				'skus.accountId': '-1',
-			})
-		)
-	);
 
-	const publishedApps = useMemo(
-		() =>
-			(apps?.items ?? []).map((product) => ({
-				...product,
-				productName: product.name.en_US,
-			})),
-		[apps]
-	);
+	const {formState, handleSubmit, register, setValue, trigger, watch} =
+		useForm({
+			defaultValues: {
+				_refInviteEmailAddresses: [
+					{
+						key: defaultEmailAddress,
+						label: defaultEmailAddress,
+						value: defaultEmailAddress,
+					},
+				],
+				accountId: String(myUserAccount.accountBriefs[0].id),
+				consoleInviteEmailAddresses: [defaultEmailAddress],
+				product: undefined,
+				sendNotificationEmail: false,
+			},
+			mode: 'all',
+			reValidateMode: 'onChange',
+			resolver: zodResolver(zodSchema.trialForm),
+		});
 
+	const {isValid} = formState;
+
+	const _refInviteEmailAddresses = watch('_refInviteEmailAddresses');
 	const {accountBriefs = []} = myUserAccount;
 
-	const onSubmit = async () => {
-		const accountId = Number(selectedTrial.accountId);
+	const [search, setSearch] = useState('');
+	const [emailAddressText, setEmailAddressText] = useState('');
+	const debouncedSearch = useDebounce(search, 1500);
 
-		const isDXP = selectedTrial.product?.productSpecifications?.some(
-			(spec) =>
-				spec.specificationKey ===
-					PRODUCT_SPECIFICATION_KEY.APP_BUILD_CLOUD_COMPATIBLE &&
-				spec.value.en_US === 'dxp'
-		);
+	const {data: apps, isValidating} = useTrialProducts(
+		channel.id,
+		debouncedSearch
+	);
+
+	const onSubmit = async (form: z.infer<typeof zodSchema.trialForm>) => {
+		const product = form.product as DeliveryProduct;
+
+		const {isDXP} = getProductType(product);
 
 		if (isDXP) {
 			return Liferay.Util.openToast({
-				message: 'Not possible to create Trial, for DXP Apps',
+				message: 'Not possible to create Trial for DXP Apps',
 				type: 'danger',
 			});
 		}
 
-		const skus = apps?.items?.find(
-			(app) => app.productId === Number(selectedTrial.product.productId)
+		const account = accountBriefs.find(
+			({id}) => id === Number(form.accountId)
+		) as unknown as Account;
+
+		const productPurchase = new ProductPurchaseSolutionTrial(
+			account,
+			channel,
+			product
 		);
 
-		const sku = skus?.skus?.find((sku) => sku.purchasable);
-
 		try {
-			const cart = await headlessCommerceDeliveryCart.createCart(
-				channel.id,
-				{
-					accountId,
-					cartItems: [
-						{
-							price: {
-								currency: channel.currencyCode,
-								discount: 0,
-							},
-							productId: Number(selectedTrial.product.productId),
-							quantity: 1,
-							settings: {
-								maxQuantity: 1,
-							},
-							skuId: sku?.id as number,
-						},
-					],
-					currencyCode: channel.currencyCode,
-					orderTypeExternalReferenceCode: ORDER_TYPES.SOLUTIONS7,
-				}
-			);
-
-			await headlessCommerceDeliveryCart.checkoutCart(cart.id);
-
-			await trialOAuth2.provisioningTrial(cart.id);
-
-			onOpenChange(false);
+			await productPurchase.createOrder({
+				customFields: {
+					[ORDER_CUSTOM_FIELDS.TRIAL_SETTINGS]: JSON.stringify({
+						consoleInviteEmailAddresses:
+							form.consoleInviteEmailAddresses,
+						sendNotificationEmail: form.sendNotificationEmail,
+					}),
+				},
+			});
 
 			await revalidate();
 
@@ -128,100 +114,126 @@ const NewTrialModal: React.FC<NewTrialModalProps> = ({
 				message: 'Trial created successfully',
 				type: 'success',
 			});
+
+			onClose();
 		}
-		catch {
+		catch (error) {
+			console.error(error);
+
 			Liferay.Util.openToast({
-				message: 'Not possible to create Trial',
+				message: i18n.translate('an-unexpected-error-occurred'),
 				type: 'danger',
 			});
 		}
 	};
 
 	return (
-		<ClayModal center observer={observer}>
-			<ClayModal.Header>New Trial</ClayModal.Header>
-			<ClayModal.Body className="pb-8">
-				<div className="mb-5">
-					<h5>Cloud Products</h5>
+		<div className="pb-8">
+			<BaseWrapper boldLabel label="Cloud App" required>
+				<Autocomplete
+					filterKey="productName"
+					items={apps?.items || []}
+					loadingState={isValidating ? 1 : 4}
+					messages={{
+						loading: 'Loading...',
+						notFound: 'No results found',
+					}}
+					onChange={setSearch}
+					placeholder="Search for the app name"
+					value={search}
+				>
+					{(product) => (
+						<Autocomplete.Item
+							{...({} as any)}
+							disabled
+							key={product.productId}
+							onClick={() => {
+								setValue('product', product as any);
 
-					<Autocomplete
-						filterKey="productName"
-						items={publishedApps}
-						loadingState={isValidating ? 1 : 4}
-						messages={{
-							loading: 'Loading...',
-							notFound: 'No results found',
-						}}
-						onChange={setSearch}
-						onItemsChange={() => {}}
-						placeholder="Enter the name of the Product"
-						value={search}
-					>
-						{(product) => (
-							<Autocomplete.Item
-								disabled={true}
-								key={product.productId}
-								onClick={() =>
-									setSelectedTrial({
-										...selectedTrial,
-										product,
-									})
-								}
-								{...({} as any)}
-							>
-								{product.productName}
-							</Autocomplete.Item>
-						)}
-					</Autocomplete>
+								trigger();
+							}}
+						>
+							{product.name}
+						</Autocomplete.Item>
+					)}
+				</Autocomplete>
+			</BaseWrapper>
+
+			<Select
+				{...register('accountId')}
+				boldLabel
+				defaultOptionLabel={i18n.translate('account-selection')}
+				helpText="Account where this Order will be registered."
+				label={i18n.translate('account-selection')}
+				options={accountBriefs
+					.sort((accountA, accountB) =>
+						accountA.name.localeCompare(accountB.name)
+					)
+					.map((account) => ({
+						key: account.id.toString(),
+						name: account.name,
+					}))}
+				required
+			/>
+
+			<ClayInput.Group
+				className={classNames('my-4', {
+					'has-error':
+						formState.errors.consoleInviteEmailAddresses?.length,
+				})}
+			>
+				<div className="d-flex flex-column">
+					<label htmlFor="allowed-email-domains">
+						Invite Members
+					</label>
+
+					<small>
+						Everyone with an email address at these list will be
+						invited to the Cloud Environment.
+					</small>
 				</div>
 
-				<h5>Select Account</h5>
-				<ClaySelect
-					aria-label="Select Account"
-					id="selectAccount"
-					onChange={({target}) => {
-						setSelectedTrial({
-							...selectedTrial,
-							accountId: target.value,
-						});
-					}}
-					value={selectedTrial.accountId || ''}
-				>
-					<ClaySelect.Option
-						aria-hidden
-						disabled
-						key="placeholderAccount"
-						label="Select an Account"
-						value=""
-					/>
-					{accountBriefs
-						.sort((accountA, accountB) =>
-							accountA.name.localeCompare(accountB.name)
-						)
-						.map((account, index) => (
-							<ClaySelect.Option
-								key={index}
-								label={account.name}
-								value={account.id}
-							/>
-						))}
-				</ClaySelect>
-			</ClayModal.Body>
+				<ClayInput.Group>
+					<ClayInput.GroupItem prepend>
+						<ClayMultiSelect
+							items={_refInviteEmailAddresses}
+							onChange={setEmailAddressText}
+							onItemsChange={(values: MultiSelectValue[]) => {
+								setValue(
+									'_refInviteEmailAddresses',
+									values as any
+								);
 
-			<ClayModal.Footer
-				last={
-					<ClayButton
-						disabled={
-							!selectedTrial.accountId.length ||
-							!Object.keys(selectedTrial.product).length
-						}
-						onClick={onSubmit}
-					>
-						Create Trial
-					</ClayButton>
-				}
+								setValue(
+									'consoleInviteEmailAddresses',
+									values.map(({value}) => value) as any
+								);
+							}}
+							value={emailAddressText}
+						/>
+					</ClayInput.GroupItem>
+				</ClayInput.Group>
+
+				<ClayForm.FeedbackItem>
+					{formState.errors.consoleInviteEmailAddresses?.[0]?.message}
+				</ClayForm.FeedbackItem>
+			</ClayInput.Group>
+
+			<ClayToggle
+				label="Send Notification Email"
+				onToggle={(value) => setValue('sendNotificationEmail', value)}
+				toggled={watch('sendNotificationEmail')}
 			/>
-		</ClayModal>
+
+			<div className="d-flex justify-content-end">
+				<ClayButton
+					disabled={!isValid}
+					onClick={handleSubmit(onSubmit)}
+				>
+					Create Trial
+				</ClayButton>
+			</div>
+		</div>
 	);
 };
 

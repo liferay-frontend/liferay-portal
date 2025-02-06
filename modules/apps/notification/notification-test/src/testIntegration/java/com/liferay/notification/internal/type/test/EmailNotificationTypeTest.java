@@ -102,6 +102,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -130,6 +131,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -312,19 +314,71 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 	public void testFreeMarkerNotificationTemplateContextContributor()
 		throws Exception {
 
-		executeNotificationObjectAction(
-			0,
-			_addNotificationTemplate(
-				"${testTemplateContextContributorKey}",
-				NotificationTemplateConstants.EDITOR_TYPE_FREEMARKER,
-				Collections.singletonMap(
-					LocaleUtil.US, "[%CURRENT_USER_FIRST_NAME%]"),
-				false,
-				Collections.singletonMap(
-					LocaleUtil.US, user1.getEmailAddress())));
+		NotificationTemplate notificationTemplate = _addNotificationTemplate(
+			StringBundler.concat(
+				"${testTemplateContextContributorKey};\n${.data_model[\"",
+				"ObjectRelationship#C_ParentObjectDefinition#oneToMany",
+				"ObjectRelationship_textObjectField\"].getData()}\n",
+				"${ObjectField_r_oneToManyObjectRelationship_c_",
+				"parentObjectDefinitionId.getData()}"),
+			NotificationTemplateConstants.EDITOR_TYPE_FREEMARKER,
+			Collections.singletonMap(
+				LocaleUtil.US, "[%CURRENT_USER_FIRST_NAME%]"),
+			false,
+			Collections.singletonMap(LocaleUtil.US, user1.getEmailAddress()));
+
+		ObjectAction objectAction = objectActionLocalService.addObjectAction(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			childObjectDefinition.getObjectDefinitionId(), true,
+			StringPool.BLANK, RandomTestUtil.randomString(),
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+			RandomTestUtil.randomString(),
+			ObjectActionExecutorConstants.KEY_NOTIFICATION,
+			ObjectActionTriggerConstants.KEY_ON_AFTER_ADD,
+			UnicodePropertiesBuilder.put(
+				"notificationTemplateId",
+				notificationTemplate.getNotificationTemplateId()
+			).build(),
+			false);
+
+		ObjectEntry parentObjectEntry = objectEntryManager.addObjectEntry(
+			dtoConverterContext, parentObjectDefinition,
+			new ObjectEntry() {
+				{
+					properties = new LinkedHashMap<>(parentObjectEntryValues);
+				}
+			},
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		long parentObjectEntryId = parentObjectEntry.getId();
+
+		ObjectEntry childObjectEntry = objectEntryManager.addObjectEntry(
+			dtoConverterContext, childObjectDefinition,
+			new ObjectEntry() {
+				{
+					properties = HashMapBuilder.putAll(
+						childObjectEntryValues
+					).put(
+						getObjectRelationshipObjectField2Name(),
+						parentObjectEntryId
+					).build();
+				}
+			},
+			group.getGroupKey());
 
 		_assertNotificationQueueEntryBody(
-			"testTemplateContextContributorValue");
+			StringBundler.concat(
+				"testTemplateContextContributorValue;\n",
+				parentObjectEntryValues.get("textObjectField"), "\n",
+				parentObjectEntryId));
+
+		objectActionLocalService.deleteObjectAction(
+			objectAction.getObjectActionId());
+
+		_objectEntryLocalService.deleteObjectEntry(childObjectEntry.getId());
+
+		_objectEntryLocalService.deleteObjectEntry(parentObjectEntryId);
 	}
 
 	@Test
@@ -510,7 +564,7 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 			ServiceContextThreadLocal.getServiceContext());
 
 		_testSendNotification(
-			0, Collections.emptyList(), false, user.getEmailAddress());
+			0, Collections.emptyList(), true, user.getEmailAddress());
 
 		_userLocalService.deleteUser(user.getUserId());
 
@@ -1024,7 +1078,8 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 
 		ObjectDefinition objectDefinition =
 			objectDefinitionLocalService.addCustomObjectDefinition(
-				TestPropsValues.getUserId(), 0, null, false, true, false, false,
+				TestPropsValues.getUserId(), 0, null, false, false, true, false,
+				false,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				ObjectDefinitionTestUtil.getRandomName(), null, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
@@ -1176,7 +1231,8 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 
 		ObjectDefinition objectDefinition =
 			objectDefinitionLocalService.addCustomObjectDefinition(
-				TestPropsValues.getUserId(), 0, null, false, true, false, false,
+				TestPropsValues.getUserId(), 0, null, false, false, true, false,
+				false,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				ObjectDefinitionTestUtil.getRandomName(), null, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
@@ -1517,12 +1573,16 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 				_formatDate(serviceBuilderObjectEntry.getLastPublishDate()),
 				WorkflowConstants.getStatusLabel(
 					serviceBuilderObjectEntry.getStatus()),
-				"true", "9/25/24 12:00 AM", "2024-09-25T00:00",
-				"test@liferay.com", "12345", "123456789",
+				"true",
+				_formatDate(
+					DateUtil.parseDate(
+						"MM/dd/yy hh:mm a", "9/25/24 12:00 AM", LocaleUtil.US)),
+				"2024-09-25T00:00", "test@liferay.com", "12345", "123456789",
 				"listTypeEntry1Value,listTypeEntry2Value",
 				"listTypeEntry1Value", "", "textObjectFieldValue",
 				LanguageUtil.getLanguageId(LocaleUtil.US),
 				_portal.getPortalURL(serviceContext.getRequest()),
+				StringPool.NEW_LINE, StringPool.NEW_LINE,
 				serviceContext.getCompanyId()),
 			StringPool.NEW_LINE);
 	}

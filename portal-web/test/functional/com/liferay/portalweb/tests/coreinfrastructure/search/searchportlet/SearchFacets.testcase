@@ -197,7 +197,7 @@ definition {
 					locator1 = "WCEditWebContent#TEXT_INPUT",
 					value1 = "Liferay ${order}");
 
-				PortletEntry.publish();
+				WebContent.publishWithPermissions();
 			}
 		}
 
@@ -1805,7 +1805,7 @@ definition {
 				structureName = "Test Structure",
 				webContentTitle = "Test Structure WebContent");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Create a basic web content article") {
@@ -1875,7 +1875,7 @@ definition {
 				structureName = "Test Structure",
 				webContentTitle = "WC Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Add the Custom Facet to the search page") {
@@ -2096,9 +2096,7 @@ definition {
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "WebContent Title 1");
 
-		WebContent.addCP(webContentTitle = "WebContent Title 1.1");
-
-		WebContent.publishWithPermissions();
+		WebContent.editCP(webContentTitleEdit = "WebContent Title 1.1");
 
 		WebContent.viewVersion(
 			version = "1.1",
@@ -2160,7 +2158,7 @@ definition {
 			webContentText = "Unlocalized text field",
 			webContentTitle = "WC Title");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContent.viewWithStructureCP(
 			webContentText = "Unlocalized text field",

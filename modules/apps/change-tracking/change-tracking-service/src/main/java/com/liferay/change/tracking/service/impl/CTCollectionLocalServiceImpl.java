@@ -67,6 +67,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupedModel;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.search.IndexWriterHelper;
@@ -77,6 +78,7 @@ import com.liferay.portal.kernel.search.IndexerRegistry;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
+import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.service.change.tracking.CTService;
 import com.liferay.portal.kernel.service.persistence.change.tracking.CTPersistence;
 import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
@@ -469,7 +471,7 @@ public class CTCollectionLocalServiceImpl
 					sb.append(ctPersistence.getTableName());
 					sb.append(" where ctCollectionId = ");
 					sb.append(ctCollection.getCtCollectionId());
-					sb.append(" and ");
+					sb.append(" and (");
 					sb.append(primaryKeyName);
 					sb.append(" in (");
 
@@ -478,6 +480,7 @@ public class CTCollectionLocalServiceImpl
 					for (long modelClassPK : entry.getValue()) {
 						if (i == _BATCH_SIZE) {
 							sb.setStringAt(")", sb.index() - 1);
+
 							sb.append(" or ");
 							sb.append(primaryKeyName);
 							sb.append(" in (");
@@ -492,6 +495,8 @@ public class CTCollectionLocalServiceImpl
 					}
 
 					sb.setStringAt(")", sb.index() - 1);
+
+					sb.append(")");
 
 					Connection connection = _currentConnection.getConnection(
 						ctPersistence.getDataSource());
@@ -811,7 +816,10 @@ public class CTCollectionLocalServiceImpl
 							ctPersistence.getTableName(),
 							" where ctCollectionId = ", ctCollectionId,
 							" and status not in (",
-							StringUtil.merge(_STATUSES, StringPool.COMMA),
+							StringUtil.merge(
+								_getStatuses(
+									ctCollectionId, ctPersistence, entry),
+								StringPool.COMMA),
 							")"));
 				ResultSet resultSet = preparedStatement.executeQuery()) {
 
@@ -1299,6 +1307,42 @@ public class CTCollectionLocalServiceImpl
 		return relatedEntriesMap;
 	}
 
+	private int[] _getStatuses(
+		long ctCollectionId, CTPersistence ctPersistence,
+		Map.Entry<Long, CTPersistence<?>> entry) {
+
+		CTCollection ctCollection = ctCollectionPersistence.fetchByPrimaryKey(
+			ctCollectionId);
+
+		long groupId = 0;
+
+		if (entry instanceof GroupedModel) {
+			GroupedModel groupedModel = (GroupedModel)entry;
+
+			groupId = groupedModel.getGroupId();
+		}
+
+		Class<?> clazz = ctPersistence.getModelClass();
+
+		if (!_workflowDefinitionLinkLocalService.hasWorkflowDefinitionLink(
+				ctCollection.getCompanyId(), groupId, clazz.getName())) {
+
+			return new int[] {
+				WorkflowConstants.STATUS_APPROVED,
+				WorkflowConstants.STATUS_DRAFT,
+				WorkflowConstants.STATUS_EXPIRED,
+				WorkflowConstants.STATUS_IN_TRASH,
+				WorkflowConstants.STATUS_SCHEDULED
+			};
+		}
+
+		return new int[] {
+			WorkflowConstants.STATUS_APPROVED, WorkflowConstants.STATUS_EXPIRED,
+			WorkflowConstants.STATUS_IN_TRASH,
+			WorkflowConstants.STATUS_SCHEDULED
+		};
+	}
+
 	private void _moveCTEntries(
 		long companyId, long fromCTCollectionId, long toCTCollectionId,
 		long classNameId, List<CTEntry> ctEntries) {
@@ -1418,13 +1462,13 @@ public class CTCollectionLocalServiceImpl
 		long ctCollectionId, List<CTEntry> ctEntries,
 		CTPersistence<?> ctPersistence, String primaryKeyName) {
 
-		StringBundler sb = new StringBundler((2 * ctEntries.size()) + 7);
+		StringBundler sb = new StringBundler();
 
 		sb.append("delete from ");
 		sb.append(ctPersistence.getTableName());
 		sb.append(" where ctCollectionId = ");
 		sb.append(ctCollectionId);
-		sb.append(" and ");
+		sb.append(" and (");
 		sb.append(primaryKeyName);
 		sb.append(" in (");
 
@@ -1433,6 +1477,7 @@ public class CTCollectionLocalServiceImpl
 		for (CTEntry ctEntry : ctEntries) {
 			if (i == _BATCH_SIZE) {
 				sb.setStringAt(")", sb.index() - 1);
+
 				sb.append(" or ");
 				sb.append(primaryKeyName);
 				sb.append(" in (");
@@ -1447,6 +1492,8 @@ public class CTCollectionLocalServiceImpl
 		}
 
 		sb.setStringAt(")", sb.index() - 1);
+
+		sb.append(")");
 
 		Connection connection = _currentConnection.getConnection(
 			ctPersistence.getDataSource());
@@ -1478,7 +1525,7 @@ public class CTCollectionLocalServiceImpl
 		long fromCTCollectionId, long toCTCollectionId, List<CTEntry> ctEntries,
 		CTPersistence<?> ctPersistence, String primaryKeyName) {
 
-		StringBundler sb = new StringBundler((2 * ctEntries.size()) + 7);
+		StringBundler sb = new StringBundler();
 
 		sb.append("update ");
 		sb.append(ctPersistence.getTableName());
@@ -1486,7 +1533,7 @@ public class CTCollectionLocalServiceImpl
 		sb.append(toCTCollectionId);
 		sb.append(" where ctCollectionId = ");
 		sb.append(fromCTCollectionId);
-		sb.append(" and ");
+		sb.append(" and (");
 		sb.append(primaryKeyName);
 		sb.append(" in (");
 
@@ -1495,6 +1542,7 @@ public class CTCollectionLocalServiceImpl
 		for (CTEntry ctEntry : ctEntries) {
 			if (i == _BATCH_SIZE) {
 				sb.setStringAt(")", sb.index() - 1);
+
 				sb.append(" or ");
 				sb.append(primaryKeyName);
 				sb.append(" in (");
@@ -1509,6 +1557,8 @@ public class CTCollectionLocalServiceImpl
 		}
 
 		sb.setStringAt(")", sb.index() - 1);
+
+		sb.append(")");
 
 		Connection connection = _currentConnection.getConnection(
 			ctPersistence.getDataSource());
@@ -1562,11 +1612,6 @@ public class CTCollectionLocalServiceImpl
 	}
 
 	private static final int _BATCH_SIZE = 1000;
-
-	private static final int[] _STATUSES = {
-		WorkflowConstants.STATUS_APPROVED, WorkflowConstants.STATUS_EXPIRED,
-		WorkflowConstants.STATUS_IN_TRASH, WorkflowConstants.STATUS_SCHEDULED
-	};
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		CTCollectionLocalServiceImpl.class);
@@ -1638,5 +1683,9 @@ public class CTCollectionLocalServiceImpl
 
 	@Reference
 	private UIDFactory _uidFactory;
+
+	@Reference
+	private WorkflowDefinitionLinkLocalService
+		_workflowDefinitionLinkLocalService;
 
 }

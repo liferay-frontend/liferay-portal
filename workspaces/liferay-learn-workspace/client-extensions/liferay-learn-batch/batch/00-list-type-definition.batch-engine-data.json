@@ -66,6 +66,11 @@
 					"name": "Architect"
 				},
 				{
+					"externalReferenceCode": "BUSINESS_ANALYST",
+					"key": "businessAnalyst",
+					"name": "Business Analyst"
+				},
+				{
 					"externalReferenceCode": "CLOUD_ARCHITECT",
 					"key": "cloudArchitect",
 					"name": "Cloud Architect"
@@ -120,6 +125,27 @@
 			"name": "P2S3 Quiz Question Type"
 		},
 		{
+			"externalReferenceCode": "P2S3_RESULT",
+			"listTypeEntries": [
+				{
+					"externalReferenceCode": "FAIL",
+					"key": "fail",
+					"name": "Fail"
+				},
+				{
+					"externalReferenceCode": "NA",
+					"key": "na",
+					"name": "NA"
+				},
+				{
+					"externalReferenceCode": "PASS",
+					"key": "pass",
+					"name": "Pass"
+				}
+			],
+			"name": "P2S3 Result"
+		},
+		{
 			"externalReferenceCode": "P2S3_STEP_TYPE",
 			"listTypeEntries": [
 				{
@@ -139,6 +165,27 @@
 				}
 			],
 			"name": "P2S3 Step Type"
+		},
+		{
+			"externalReferenceCode": "P2S3_SYNCHRONIZATION_STATUS",
+			"listTypeEntries": [
+				{
+					"externalReferenceCode": "FAILED",
+					"key": "failed",
+					"name": "Failed"
+				},
+				{
+					"externalReferenceCode": "IN_PROGRESS",
+					"key": "inProgress",
+					"name": "In Progress"
+				},
+				{
+					"externalReferenceCode": "SUCCESSFUL",
+					"key": "successful",
+					"name": "Successful"
+				}
+			],
+			"name": "P2S3 Synchronization Status"
 		}
 	]
 }

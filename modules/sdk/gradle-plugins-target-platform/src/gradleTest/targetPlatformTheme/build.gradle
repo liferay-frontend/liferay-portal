@@ -1,9 +1,9 @@
 buildscript {
 	dependencies {
-		classpath(group: "com.liferay", name: "com.liferay.gradle.plugins", version: "16.0.8") {
+		classpath(group: "com.liferay", name: "com.liferay.gradle.plugins", version: "16.0.28") {
 			exclude group: "biz.aQute.bnd", module: "biz.aQute.bnd"
 		}
-		classpath group: "com.liferay", name: "com.liferay.gradle.plugins.theme.builder", version: "2.0.27"
+		classpath group: "com.liferay", name: "com.liferay.gradle.plugins.theme.builder", version: "2.0.28"
 	}
 
 	repositories {
@@ -34,9 +34,7 @@ task runGradleTest
 
 dependencies {
 	parentThemes group: "com.liferay", name: "com.liferay.frontend.theme.styled"
-
 	portalCommonCSS group: "com.liferay", name: "com.liferay.frontend.css.common"
-
 	targetPlatformBoms group: "com.liferay.portal", name: "release.portal.bom", version: "7.2.1"
 }
 

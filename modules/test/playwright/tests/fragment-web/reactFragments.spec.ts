@@ -19,7 +19,7 @@ const test = mergeTests(
 	apiHelpersTest,
 	isolatedSiteTest,
 	featureFlagsTest({
-		'LPS-178052': true,
+		'LPS-178052': {enabled: true},
 	}),
 	loginTest(),
 	fragmentsPagesTest,
@@ -43,23 +43,12 @@ test(
 
 		// Import react fragment
 
-		const fileChooserPromise = page.waitForEvent('filechooser');
-
-		await page
-			.getByRole('button', {exact: true, name: 'Select File'})
-			.click();
-
-		const fileChooser = await fileChooserPromise;
-
-		await fileChooser.setFiles(
+		await fragmentsPage.importFile(
+			'react-fragment-example.zip',
 			await zipFolder(
 				path.join(__dirname, '/dependencies/react-fragment-example.zip')
 			)
 		);
-
-		await page.getByText('react-fragment-example.zip').waitFor();
-
-		await page.getByRole('button', {name: 'Import'}).click();
 
 		await expect(page.getByText('React Fragment Example')).toBeVisible();
 

@@ -3,9 +3,12 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {FrameLocator, Locator, Page} from '@playwright/test';
+import {Locator, Page, expect} from '@playwright/test';
 
+import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
+import {PORTLET_URLS} from '../../utils/portletUrls';
 import {ApplicationsMenuPage} from '../product-navigation-applications-menu/ApplicationsMenuPage';
+import {DataTablePage} from './DataTablePage';
 
 export const searchTableRowByValue = async function (
 	tableLocator: Locator,
@@ -36,70 +39,95 @@ export const searchTableRowByValue = async function (
 
 export class AccountsPage {
 	readonly accountGroupsTab: Locator;
-	readonly accountsTable: Locator;
-	readonly accountsTableRow: (
-		colPosition: number,
-		value: string,
-		strictEqual?: boolean
-	) => Promise<{column: Locator; row: Locator}>;
-	readonly accountsTableRowLink: (name: string) => Promise<Locator>;
+	readonly accountNameLink: (name: string) => Locator;
+	readonly accountRolesTab: Locator;
+	readonly accountsTable: DataTablePage;
+	readonly activateButton: Locator;
 	readonly applicationsMenuPage: ApplicationsMenuPage;
 	readonly channelDefaultsTab: Locator;
-	readonly newButton: Locator;
-	readonly organizationAssignmentFrame: FrameLocator;
+	readonly deactivateButton: Locator;
+	readonly deleteButton: Locator;
+	readonly detailsTab: Locator;
+	readonly filterStatus: (status: string) => Locator;
+	readonly manageUsersButton: Locator;
+	readonly noAccountsMessage: Locator;
 	readonly organizationsTab: Locator;
 	readonly page: Page;
 	readonly pageTitle: Locator;
+	readonly usersTab: Locator;
 
 	constructor(page: Page) {
-		this.applicationsMenuPage = new ApplicationsMenuPage(page);
 		this.accountGroupsTab = page.getByRole('link', {
 			name: 'Account Groups',
 		});
+		this.accountNameLink = (name) =>
+			page.getByRole('link', {
+				exact: true,
+				name,
+			});
+		this.accountRolesTab = page.getByRole('link', {
+			name: 'Roles',
+		});
+		this.accountsTable = new DataTablePage(
+			page,
+			page.locator(
+				'#_com_liferay_account_admin_web_internal_portlet_AccountEntriesAdminPortlet_accountEntriesSearchContainer'
+			)
+		);
+		this.activateButton = page
+			.getByRole('button', {name: 'Activate'})
+			.or(page.getByRole('link', {name: 'Activate'}));
+		this.applicationsMenuPage = new ApplicationsMenuPage(page);
 		this.channelDefaultsTab = page.getByRole('link', {
 			name: 'Channel Defaults',
 		});
-		this.newButton = page
-			.getByTestId('creationMenuNewButton')
-			.getByText('New');
-		this.organizationAssignmentFrame = page.frameLocator(
-			'iframe[id="modalIframe"]'
-		);
+		this.deactivateButton = page
+			.getByRole('button', {name: 'Deactivate'})
+			.or(page.getByRole('link', {name: 'Deactivate'}));
+		this.deleteButton = page
+			.getByRole('button', {name: 'Delete'})
+			.or(page.getByRole('link', {name: 'Delete'}));
+		this.detailsTab = page.getByRole('link', {
+			name: 'Details',
+		});
+		this.filterStatus = (status: string) => {
+			return page.getByText('Status: ' + status);
+		};
+		this.manageUsersButton = page.getByRole('menuitem', {
+			name: 'Manage Users',
+		});
+		this.noAccountsMessage = page.getByText('No accounts were found.');
 		this.organizationsTab = page.getByRole('link', {
 			name: 'Organizations',
 		});
 		this.page = page;
 		this.pageTitle = page.getByTestId('headerTitle');
-		this.accountsTableRow = async (
-			colPosition: number,
-			value: string,
-			strictEqual: boolean = false
-		) => {
-			return await searchTableRowByValue(
-				this.accountsTable,
-				colPosition,
-				value,
-				strictEqual
-			);
-		};
-		this.accountsTableRowLink = async (name: string) => {
-			const accountsTableRow = await this.accountsTableRow(1, name, true);
+		this.usersTab = page.getByRole('link', {
+			name: 'Users',
+		});
+	}
 
-			if (accountsTableRow && accountsTableRow.column) {
-				return accountsTableRow.column.getByRole('link', {
-					name,
-				});
-			}
+	async changeFilter(option: string) {
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.accountsTable.filterMenuItem(option),
+			trigger: this.accountsTable.filterButton,
+		});
 
-			throw new Error(`Cannot locate account row with name ${name}`);
-		};
-		this.accountsTable = page.locator(
-			'#_com_liferay_account_admin_web_internal_portlet_AccountEntriesAdminPortlet_accountEntriesSearchContainer'
-		);
+		if (option === 'Active') {
+			await expect(this.accountsTable.clearButton).not.toBeVisible();
+		}
+		else {
+			await this.filterStatus(option).waitFor({state: 'visible'});
+		}
 	}
 
 	async goto() {
 		await this.applicationsMenuPage.goToAccounts();
+	}
+
+	async gotoAccountAdmin() {
+		await this.page.goto(`${PORTLET_URLS.accountAdmin}`);
 	}
 
 	async organizationName(name: string): Promise<Locator> {

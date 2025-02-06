@@ -12,6 +12,12 @@ class HeadlessAdminUser {
 		);
 	}
 
+	async getAccountPostalAddresses(accountId: string | number) {
+		return fetcher<APIResponse<AccountPostalAddresses>>(
+			`/o/headless-admin-user/v1.0/accounts/${accountId}/postal-addresses`
+		);
+	}
+
 	async getAccounts(searchParams = new URLSearchParams()) {
 		return fetcher<APIResponse<UserAccount>>(
 			`/o/headless-admin-user/v1.0/accounts?${searchParams.toString()}`
@@ -24,20 +30,14 @@ class HeadlessAdminUser {
 		);
 	}
 
-	async getUserAccounts() {
-		return fetcher(`/o/headless-admin-user/v1.0/user-accounts`);
-	}
-
-	async getAccountPostalAddresses(accountId: string | number) {
-		return fetcher<APIResponse<AccountPostalAddresses>>(
-			`/o/headless-admin-user/v1.0/accounts/${accountId}/postal-addresses`
-		);
-	}
-
 	async getUserAccountById(accountId: string | number) {
 		return fetcher(
 			`/o/headless-admin-user/v1.0/user-accounts/${accountId}`
 		);
+	}
+
+	async getUserAccounts() {
+		return fetcher(`/o/headless-admin-user/v1.0/user-accounts`);
 	}
 
 	async getUserAccountsByAccountId(accountId: string | number) {
@@ -46,10 +46,10 @@ class HeadlessAdminUser {
 		);
 	}
 
-	async updateUserAccount(data: unknown, accountId: number) {
-		return fetcher.patch(
-			`/o/headless-admin-user/v1.0/user-accounts/${accountId}`,
-			data
+	async postAddress(accountId: number, body: any) {
+		return fetcher.post(
+			`/o/headless-admin-user/v1.0/accounts/${accountId}/postal-addresses`,
+			body
 		);
 	}
 
@@ -60,6 +60,13 @@ class HeadlessAdminUser {
 	) {
 		return fetcher.post(
 			`/o/headless-admin-user/v1.0/accounts/${accountId}/account-roles/${roleId}/user-accounts/${userId}`
+		);
+	}
+
+	async updateUserAccount(data: unknown, accountId: number) {
+		return fetcher.patch(
+			`/o/headless-admin-user/v1.0/user-accounts/${accountId}`,
+			data
 		);
 	}
 

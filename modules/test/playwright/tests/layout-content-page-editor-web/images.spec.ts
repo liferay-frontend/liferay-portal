@@ -10,7 +10,6 @@ import {featureFlagsTest} from '../../fixtures/featureFlagsTest';
 import {loginTest} from '../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../fixtures/pageEditorPagesTest';
 import {pageManagementSiteTest} from '../../fixtures/pageManagementSiteTest';
-import {clickAndExpectToBeHidden} from '../../utils/clickAndExpectToBeHidden';
 import getRandomString from '../../utils/getRandomString';
 import getFragmentDefinition from './utils/getFragmentDefinition';
 import getPageDefinition from './utils/getPageDefinition';
@@ -18,7 +17,7 @@ import getPageDefinition from './utils/getPageDefinition';
 const test = mergeTests(
 	apiHelpersTest,
 	featureFlagsTest({
-		'LPS-178052': true,
+		'LPS-178052': {enabled: true},
 	}),
 	loginTest(),
 	pageEditorPagesTest,
@@ -57,20 +56,10 @@ test('Allow changing image resolution with direct selection', async ({
 
 	// Select the image directly
 
-	await pageEditorPage.selectEditable(imageId, 'image-square');
-
-	await page.getByTitle('Select Image').click();
-
-	const articleCard = page
-		.frameLocator('iframe[title="Select"]')
-		.getByText('high_resolution_photo.jpg');
-
-	await clickAndExpectToBeHidden({
-		target: page.locator('.modal-dialog'),
-		trigger: articleCard,
-	});
-
-	await pageEditorPage.waitForChangesSaved();
+	await pageEditorPage.selectDirectImage(
+		'high_resolution_photo.jpg',
+		imageId
+	);
 
 	// Check that all the options are available
 
@@ -168,20 +157,10 @@ test('Allow changing image resolution in other viewports', async ({
 
 	// Select the image directly
 
-	await pageEditorPage.selectEditable(imageId, 'image-square');
-
-	await page.getByTitle('Select Image').click();
-
-	const articleCard = page
-		.frameLocator('iframe[title="Select"]')
-		.getByText('high_resolution_photo.jpg', {exact: false});
-
-	await clickAndExpectToBeHidden({
-		target: page.locator('.modal-dialog'),
-		trigger: articleCard,
-	});
-
-	await pageEditorPage.waitForChangesSaved();
+	await pageEditorPage.selectDirectImage(
+		'high_resolution_photo.jpg',
+		imageId
+	);
 
 	// Check that the resolution can be changed independenly in each viewport
 
@@ -199,7 +178,7 @@ test('Allow changing image resolution in other viewports', async ({
 });
 
 test(
-	'Allow rotating an image via Page Content panel',
+	'Allow rotating and resizing an image via Page Content panel',
 	{tag: ['@LPS-133933']},
 	async ({apiHelpers, page, pageEditorPage, pageManagementSite}) => {
 
@@ -222,20 +201,14 @@ test(
 
 		// Select the image directly
 
-		await pageEditorPage.selectEditable(imageId, 'image-square');
+		await pageEditorPage.selectDirectImage('orange.jpg', imageId);
 
-		await page.getByTitle('Select Image').click();
+		// Check current width
 
-		const articleCard = page
-			.frameLocator('iframe[title="Select"]')
-			.getByText('orange.jpg');
-
-		await clickAndExpectToBeHidden({
-			target: page.locator('.modal-dialog'),
-			trigger: articleCard,
-		});
-
-		await pageEditorPage.waitForChangesSaved();
+		await page
+			.getByLabel('Configuration Panel')
+			.getByText('355px')
+			.waitFor();
 
 		// Go to page contents panel and edit image
 
@@ -263,6 +236,21 @@ test(
 			).toBeVisible({timeout: 1000});
 		}).toPass();
 
+		// Resize image
+
+		const resizer = page.locator('.cropper-point.point-w');
+
+		const x = await resizer.evaluate(
+			(element) => element.getBoundingClientRect().x
+		);
+
+		await resizer.hover();
+		await page.mouse.down();
+		await page.mouse.move(x + 20, 0);
+		await page.mouse.up();
+
+		// Save
+
 		await page.getByRole('button', {name: 'Save'}).click();
 
 		// Check version of image
@@ -270,5 +258,22 @@ test(
 		await expect(
 			page.locator('.page-editor__editable[src*="version=2.0"]')
 		).toBeVisible();
+
+		// Check width is not 355 anymore
+
+		await page.locator('header.page-editor__disabled-area').click();
+
+		await page.getByText('Select a Page Element', {exact: true}).waitFor();
+
+		await pageEditorPage.selectEditable(imageId, 'image-square');
+
+		await page
+			.getByLabel('Configuration Panel')
+			.getByText('Width:')
+			.waitFor();
+
+		await expect(
+			page.getByLabel('Configuration Panel').getByText('355px')
+		).not.toBeVisible();
 	}
 );

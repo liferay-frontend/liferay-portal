@@ -13,11 +13,13 @@ import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {displayPageTemplatesPagesTest} from '../../../fixtures/displayPageTemplatesPagesTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {liferayConfig} from '../../../liferay.config';
 import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import performLogin, {performLogout} from '../../../utils/performLogin';
 import {waitForAlert} from '../../../utils/waitForAlert';
+import getFragmentDefinition from '../../layout-content-page-editor-web/utils/getFragmentDefinition';
 import getPageDefinition from '../../layout-content-page-editor-web/utils/getPageDefinition';
 import getWidgetDefinition from '../../layout-content-page-editor-web/utils/getWidgetDefinition';
 import {commerceReturnSetUp} from '../utils/commerce';
@@ -30,17 +32,19 @@ export const test = mergeTests(
 	dataApiHelpersTest,
 	displayPageTemplatesPagesTest,
 	featureFlagsTest({
-		'LPD-11147': true,
-		'LPD-20379': true,
+		'LPD-20379': {enabled: true},
+		'LPS-178052': {enabled: true},
 	}),
+	pageEditorPagesTest,
 	loginTest()
 );
 
 test('LPD-25926 Display page template edit mode works with Speedwell theme', async ({
 	apiHelpers,
-	applicationsMenuPage,
 	commerceLayoutsPage,
+	displayPageTemplatesPage,
 	page,
+	pageEditorPage,
 }) => {
 	const site = await apiHelpers.headlessSite.createSite({
 		name: getRandomString(),
@@ -48,21 +52,24 @@ test('LPD-25926 Display page template edit mode works with Speedwell theme', asy
 
 	apiHelpers.data.push({id: site.id, type: 'site'});
 
+	await displayPageTemplatesPage.goto(site.friendlyUrlPath);
+
 	const displayPageTemplateName = getRandomString();
 
-	await applicationsMenuPage.goToSite(site.name);
+	await displayPageTemplatesPage.createTemplate({
+		contentType: 'Blogs Entry',
+		name: displayPageTemplateName,
+	});
+	await displayPageTemplatesPage.editTemplate(displayPageTemplateName);
 
-	await commerceLayoutsPage.goToDisplayPageTemplates();
-	await commerceLayoutsPage.createDisplayPageTemplate(
-		displayPageTemplateName,
-		'Blogs Entry',
-		site.name
-	);
-	await commerceLayoutsPage.addFragment('Heading');
+	await pageEditorPage.addFragment('Order', 'Heading');
 
 	await expect(page.getByText('Heading Example')).toBeVisible();
 
-	await commerceLayoutsPage.publishButton.click();
+	await pageEditorPage.waitForChangesSaved();
+
+	await displayPageTemplatesPage.publishTemplate();
+
 	await commerceLayoutsPage.configureDisplayPageTemplateTheme(
 		'Select Speedwell By Liferay, Inc.'
 	);
@@ -82,8 +89,8 @@ test('LPD-25926 Display page template edit mode works with Speedwell theme', asy
 
 test('LPD-33439 Default order display page template is accessible via friendly URL', async ({
 	apiHelpers,
-	applicationsMenuPage,
 	commerceLayoutsPage,
+	displayPageTemplatesPage,
 	page,
 }) => {
 	const account = await apiHelpers.headlessAdminUser.postAccount({
@@ -99,14 +106,16 @@ test('LPD-33439 Default order display page template is accessible via friendly U
 
 	apiHelpers.data.push({id: site.id, type: 'site'});
 
-	await applicationsMenuPage.goToSite(site.name);
+	await displayPageTemplatesPage.goto(site.friendlyUrlPath);
 
-	await commerceLayoutsPage.goToDisplayPageTemplates();
-	await commerceLayoutsPage.createDisplayPageTemplate(
-		getRandomString(),
-		'Order',
-		site.name
-	);
+	const displayPageTemplateName = getRandomString();
+
+	await displayPageTemplatesPage.createTemplate({
+		contentType: 'Order',
+		name: displayPageTemplateName,
+	});
+	await displayPageTemplatesPage.editTemplate(displayPageTemplateName);
+
 	await commerceLayoutsPage.addFragment('Heading');
 
 	await expect(page.getByText('Heading Example')).toBeVisible();
@@ -155,9 +164,10 @@ test('LPD-33439 Default order display page template is accessible via friendly U
 
 test('LPD-32227 Order info box fragment configuration', async ({
 	apiHelpers,
-	applicationsMenuPage,
 	commerceLayoutsPage,
+	displayPageTemplatesPage,
 	page,
+	pageEditorPage,
 }) => {
 	const account = await apiHelpers.headlessAdminUser.postAccount({
 		name: getRandomString(),
@@ -172,36 +182,42 @@ test('LPD-32227 Order info box fragment configuration', async ({
 
 	apiHelpers.data.push({id: site.id, type: 'site'});
 
-	await applicationsMenuPage.goToSite(site.name);
+	await displayPageTemplatesPage.goto(site.friendlyUrlPath);
 
-	await commerceLayoutsPage.goToDisplayPageTemplates();
-	await commerceLayoutsPage.createDisplayPageTemplate(
-		getRandomString(),
-		'Order',
-		site.name
-	);
-	await commerceLayoutsPage.addFragment('Info Box', 'Order');
-	await commerceLayoutsPage.infoBoxReadOnlyToggle.uncheck();
+	const displayPageTemplateName = getRandomString();
 
-	await expect(
-		page.getByText('The info box component is not correctly configured.')
-	).toBeVisible();
+	await displayPageTemplatesPage.createTemplate({
+		contentType: 'Order',
+		name: displayPageTemplateName,
+	});
+	await displayPageTemplatesPage.editTemplate(displayPageTemplateName);
 
-	await commerceLayoutsPage.infoBoxFieldSelect.selectOption(
-		'purchaseOrderNumber'
-	);
+	await pageEditorPage.addFragment('Order', 'Info Box');
 
-	await expect(
-		page.getByText('The info box component is not correctly configured.')
-	).toBeHidden();
+	const infoBoxFragmentId = await pageEditorPage.getFragmentId('Info Box');
 
-	await commerceLayoutsPage.infoBoxLabelInput.fill('PON');
-	await commerceLayoutsPage.publishButton.click();
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Field',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: 'purchaseOrderNumber',
+	});
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Label',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: 'PON',
+	});
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Read Only',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: false,
+	});
 
-	await waitForAlert(
-		page,
-		'The display page template was published successfully.'
-	);
+	await pageEditorPage.waitForChangesSaved();
+
+	await displayPageTemplatesPage.publishTemplate();
 
 	await commerceLayoutsPage.moreActionsButton.click();
 	await commerceLayoutsPage.markAsDefaultMenuItem.click();
@@ -255,29 +271,42 @@ test('LPD-32227 Order info box fragment configuration', async ({
 
 	await expect(page.getByText('testPONEdited')).toBeVisible();
 
-	await commerceLayoutsPage.goToDisplayPageTemplates();
+	await displayPageTemplatesPage.goto(site.friendlyUrlPath);
+
 	await commerceLayoutsPage.moreActionsButton.click();
 	await commerceLayoutsPage.editMenuItem.click();
-	await commerceLayoutsPage.firstFragment.click();
-	await commerceLayoutsPage.infoBoxFieldSelect.selectOption('accountInfo');
+
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Field',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: 'accountInfo',
+	});
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Label',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: 'Account Info',
+	});
 
 	await expect(
 		page.getByText('The info box component is not correctly configured.')
 	).toBeVisible();
 
-	await commerceLayoutsPage.infoBoxReadOnlyToggle.check();
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Read Only',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: true,
+	});
 
 	await expect(
 		page.getByText('The info box component is not correctly configured.')
 	).toBeHidden();
 
-	await commerceLayoutsPage.infoBoxLabelInput.fill('Account Info');
-	await commerceLayoutsPage.publishButton.click();
+	await pageEditorPage.waitForChangesSaved();
 
-	await waitForAlert(
-		page,
-		'The display page template was published successfully.'
-	);
+	await displayPageTemplatesPage.publishTemplate();
 
 	await page.goto(
 		liferayConfig.environment.baseUrl + `/web/${site.name}/order/${cart.id}`
@@ -291,9 +320,10 @@ test('LPD-32227 Order info box fragment configuration', async ({
 
 test('LPD-32236 Order Step Tracker fragment configuration', async ({
 	apiHelpers,
-	applicationsMenuPage,
 	commerceLayoutsPage,
+	displayPageTemplatesPage,
 	page,
+	pageEditorPage,
 }) => {
 	const account = await apiHelpers.headlessAdminUser.postAccount({
 		name: getRandomString(),
@@ -308,21 +338,21 @@ test('LPD-32236 Order Step Tracker fragment configuration', async ({
 
 	apiHelpers.data.push({id: site.id, type: 'site'});
 
-	await applicationsMenuPage.goToSite(site.name);
+	await displayPageTemplatesPage.goto(site.friendlyUrlPath);
 
-	await commerceLayoutsPage.goToDisplayPageTemplates();
-	await commerceLayoutsPage.createDisplayPageTemplate(
-		getRandomString(),
-		'Order',
-		site.name
-	);
-	await commerceLayoutsPage.addFragment('Step Tracker', 'Order');
-	await commerceLayoutsPage.publishButton.click();
+	const displayPageTemplateName = getRandomString();
 
-	await waitForAlert(
-		page,
-		'The display page template was published successfully.'
-	);
+	await displayPageTemplatesPage.createTemplate({
+		contentType: 'Order',
+		name: displayPageTemplateName,
+	});
+	await displayPageTemplatesPage.editTemplate(displayPageTemplateName);
+
+	await pageEditorPage.addFragment('Order', 'Step Tracker');
+
+	await pageEditorPage.waitForChangesSaved();
+
+	await displayPageTemplatesPage.publishTemplate();
 
 	await commerceLayoutsPage.moreActionsButton.click();
 	await commerceLayoutsPage.markAsDefaultMenuItem.click();
@@ -380,9 +410,10 @@ test('LPD-32236 Order Step Tracker fragment configuration', async ({
 
 test('LPD-32232 Edit Requested Delivery Date in Open Order Details', async ({
 	apiHelpers,
-	applicationsMenuPage,
 	commerceLayoutsPage,
+	displayPageTemplatesPage,
 	page,
+	pageEditorPage,
 }) => {
 	const account = await apiHelpers.headlessAdminUser.postAccount({
 		name: getRandomString(),
@@ -397,36 +428,42 @@ test('LPD-32232 Edit Requested Delivery Date in Open Order Details', async ({
 
 	apiHelpers.data.push({id: site.id, type: 'site'});
 
-	await applicationsMenuPage.goToSite(site.name);
+	await displayPageTemplatesPage.goto(site.friendlyUrlPath);
 
-	await commerceLayoutsPage.goToDisplayPageTemplates();
-	await commerceLayoutsPage.createDisplayPageTemplate(
-		getRandomString(),
-		'Order',
-		site.name
-	);
-	await commerceLayoutsPage.addFragment('Info Box', 'Order');
-	await commerceLayoutsPage.infoBoxReadOnlyToggle.uncheck();
+	const displayPageTemplateName = getRandomString();
 
-	await expect(
-		page.getByText('The info box component is not correctly configured.')
-	).toBeVisible();
+	await displayPageTemplatesPage.createTemplate({
+		contentType: 'Order',
+		name: displayPageTemplateName,
+	});
+	await displayPageTemplatesPage.editTemplate(displayPageTemplateName);
 
-	await commerceLayoutsPage.infoBoxFieldSelect.selectOption(
-		'requestedDeliveryDate'
-	);
+	await pageEditorPage.addFragment('Order', 'Info Box');
 
-	await expect(
-		page.getByText('The info box component is not correctly configured.')
-	).toBeHidden();
+	const infoBoxFragmentId = await pageEditorPage.getFragmentId('Info Box');
 
-	await commerceLayoutsPage.infoBoxLabelInput.fill('Requested Delivery Date');
-	await commerceLayoutsPage.publishButton.click();
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Field',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: 'requestedDeliveryDate',
+	});
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Label',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: 'Requested Delivery Date',
+	});
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Read Only',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: false,
+	});
 
-	await waitForAlert(
-		page,
-		'The display page template was published successfully.'
-	);
+	await pageEditorPage.waitForChangesSaved();
+
+	await displayPageTemplatesPage.publishTemplate();
 
 	await commerceLayoutsPage.moreActionsButton.click();
 	await commerceLayoutsPage.markAsDefaultMenuItem.click();
@@ -495,10 +532,11 @@ test('LPD-32232 Edit Requested Delivery Date in Open Order Details', async ({
 
 test('LPD-33808 Edit Shipping Method in Open Order Details', async ({
 	apiHelpers,
-	applicationsMenuPage,
 	commerceAdminChannelsPage,
 	commerceLayoutsPage,
+	displayPageTemplatesPage,
 	page,
+	pageEditorPage,
 }) => {
 	test.setTimeout(180000);
 
@@ -508,34 +546,42 @@ test('LPD-33808 Edit Shipping Method in Open Order Details', async ({
 
 	apiHelpers.data.push({id: site.id, type: 'site'});
 
-	await applicationsMenuPage.goToSite(site.name);
+	await displayPageTemplatesPage.goto(site.friendlyUrlPath);
 
-	await commerceLayoutsPage.goToDisplayPageTemplates();
-	await commerceLayoutsPage.createDisplayPageTemplate(
-		getRandomString(),
-		'Order',
-		site.name
-	);
-	await commerceLayoutsPage.addFragment('Info Box', 'Order');
-	await commerceLayoutsPage.infoBoxReadOnlyToggle.uncheck();
+	const displayPageTemplateName = getRandomString();
 
-	await expect(
-		page.getByText('The info box component is not correctly configured.')
-	).toBeVisible();
+	await displayPageTemplatesPage.createTemplate({
+		contentType: 'Order',
+		name: displayPageTemplateName,
+	});
+	await displayPageTemplatesPage.editTemplate(displayPageTemplateName);
 
-	await commerceLayoutsPage.infoBoxFieldSelect.selectOption('shippingMethod');
-	await commerceLayoutsPage.infoBoxLabelInput.fill('Shipping Method');
+	await pageEditorPage.addFragment('Order', 'Info Box');
 
-	await expect(
-		page.getByText('The info box component is not correctly configured.')
-	).toBeHidden();
+	const infoBoxFragmentId = await pageEditorPage.getFragmentId('Info Box');
 
-	await commerceLayoutsPage.publishButton.click();
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Field',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: 'shippingMethod',
+	});
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Label',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: 'Shipping Method',
+	});
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Read Only',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: false,
+	});
 
-	await waitForAlert(
-		page,
-		'The display page template was published successfully.'
-	);
+	await pageEditorPage.waitForChangesSaved();
+
+	await displayPageTemplatesPage.publishTemplate();
 
 	await commerceLayoutsPage.moreActionsButton.click();
 	await commerceLayoutsPage.markAsDefaultMenuItem.click();
@@ -660,11 +706,12 @@ test('LPD-33808 Edit Shipping Method in Open Order Details', async ({
 
 test('LPD-33809 Edit Payment Method in Open Order Details', async ({
 	apiHelpers,
-	applicationsMenuPage,
 	commerceAdminChannelDetailsPage,
 	commerceAdminChannelsPage,
 	commerceLayoutsPage,
+	displayPageTemplatesPage,
 	page,
+	pageEditorPage,
 }) => {
 	test.setTimeout(180000);
 
@@ -674,34 +721,42 @@ test('LPD-33809 Edit Payment Method in Open Order Details', async ({
 
 	apiHelpers.data.push({id: site.id, type: 'site'});
 
-	await applicationsMenuPage.goToSite(site.name);
+	await displayPageTemplatesPage.goto(site.friendlyUrlPath);
 
-	await commerceLayoutsPage.goToDisplayPageTemplates();
-	await commerceLayoutsPage.createDisplayPageTemplate(
-		getRandomString(),
-		'Order',
-		site.name
-	);
-	await commerceLayoutsPage.addFragment('Info Box', 'Order');
-	await commerceLayoutsPage.infoBoxReadOnlyToggle.uncheck();
+	const displayPageTemplateName = getRandomString();
 
-	await expect(
-		page.getByText('The info box component is not correctly configured.')
-	).toBeVisible();
+	await displayPageTemplatesPage.createTemplate({
+		contentType: 'Order',
+		name: displayPageTemplateName,
+	});
+	await displayPageTemplatesPage.editTemplate(displayPageTemplateName);
 
-	await commerceLayoutsPage.infoBoxFieldSelect.selectOption('paymentMethod');
-	await commerceLayoutsPage.infoBoxLabelInput.fill('Payment Method');
+	await pageEditorPage.addFragment('Order', 'Info Box');
 
-	await expect(
-		page.getByText('The info box component is not correctly configured.')
-	).toBeHidden();
+	const infoBoxFragmentId = await pageEditorPage.getFragmentId('Info Box');
 
-	await commerceLayoutsPage.publishButton.click();
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Field',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: 'paymentMethod',
+	});
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Label',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: 'Payment Method',
+	});
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Read Only',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: false,
+	});
 
-	await waitForAlert(
-		page,
-		'The display page template was published successfully.'
-	);
+	await pageEditorPage.waitForChangesSaved();
+
+	await displayPageTemplatesPage.publishTemplate();
 
 	await commerceLayoutsPage.moreActionsButton.click();
 	await commerceLayoutsPage.markAsDefaultMenuItem.click();
@@ -775,20 +830,10 @@ test('LPD-33809 Edit Payment Method in Open Order Details', async ({
 		paymentMethod1,
 		'Payment Methods'
 	);
-	await (
-		await commerceAdminChannelDetailsPage.generalCommerceAdminChannelTableLink(
-			paymentMethod1
-		)
-	).click();
 	await commerceAdminChannelDetailsPage.activateChannelConfiguration(
 		paymentMethod2,
 		'Payment Methods'
 	);
-	await (
-		await commerceAdminChannelDetailsPage.generalCommerceAdminChannelTableLink(
-			paymentMethod2
-		)
-	).click();
 
 	await page.goto(
 		liferayConfig.environment.baseUrl + `/web/${site.name}/order/${cart.id}`
@@ -799,7 +844,10 @@ test('LPD-33809 Edit Payment Method in Open Order Details', async ({
 	).toBeVisible();
 
 	await commerceLayoutsPage.infoBoxButton('Payment Method').click();
-	await commerceLayoutsPage.infoBoxValue(paymentMethod1).click();
+	await commerceLayoutsPage.infoBoxValue(paymentMethod1).check();
+
+	await expect(page.getByLabel(paymentMethod1, {exact: true})).toBeChecked();
+
 	await commerceLayoutsPage.saveButton.click();
 
 	await expect(
@@ -807,7 +855,10 @@ test('LPD-33809 Edit Payment Method in Open Order Details', async ({
 	).toBeVisible();
 
 	await commerceLayoutsPage.infoBoxButton('Payment Method').click();
-	await commerceLayoutsPage.infoBoxValue(paymentMethod2).click();
+	await commerceLayoutsPage.infoBoxValue(paymentMethod2).check();
+
+	await expect(page.getByLabel(paymentMethod2, {exact: true})).toBeChecked();
+
 	await commerceLayoutsPage.saveButton.click();
 
 	await expect(
@@ -831,10 +882,11 @@ test('LPD-33809 Edit Payment Method in Open Order Details', async ({
 
 test('LPD-35558 Order Details - Order Summary', async ({
 	apiHelpers,
-	applicationsMenuPage,
 	commerceAdminDiscountsPage,
 	commerceLayoutsPage,
+	displayPageTemplatesPage,
 	page,
+	pageEditorPage,
 }) => {
 	const account = await apiHelpers.headlessAdminUser.postAccount({
 		name: getRandomString(),
@@ -855,21 +907,38 @@ test('LPD-35558 Order Details - Order Summary', async ({
 
 	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
 
-	await applicationsMenuPage.goToSite(site.name);
+	await displayPageTemplatesPage.goto(site.friendlyUrlPath);
 
-	await commerceLayoutsPage.goToDisplayPageTemplates();
-	await commerceLayoutsPage.createDisplayPageTemplate(
-		getRandomString(),
-		'Order',
-		site.name
-	);
-	await commerceLayoutsPage.addFragment('Info Box', 'Order');
+	const displayPageTemplateName = getRandomString();
 
-	await commerceLayoutsPage.infoBoxReadOnlyToggle.check();
+	await displayPageTemplatesPage.createTemplate({
+		contentType: 'Order',
+		name: displayPageTemplateName,
+	});
+	await displayPageTemplatesPage.editTemplate(displayPageTemplateName);
 
-	await commerceLayoutsPage.infoBoxFieldSelect.selectOption('orderSummary');
+	await pageEditorPage.addFragment('Order', 'Info Box');
 
-	await commerceLayoutsPage.infoBoxLabelInput.fill('Order Summary');
+	const infoBoxFragmentId = await pageEditorPage.getFragmentId('Info Box');
+
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Field',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: 'orderSummary',
+	});
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Label',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: 'Order Summary',
+	});
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Read Only',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: true,
+	});
 
 	const product = await apiHelpers.headlessCommerceAdminCatalog.postProduct({
 		catalogId: catalog.id,
@@ -917,12 +986,9 @@ test('LPD-35558 Order Details - Order Summary', async ({
 
 	await commerceLayoutsPage.addWidget('Coupon Code Entry', 'Commerce');
 
-	await commerceLayoutsPage.publishButton.click();
+	await pageEditorPage.waitForChangesSaved();
 
-	await waitForAlert(
-		page,
-		'The display page template was published successfully.'
-	);
+	await displayPageTemplatesPage.publishTemplate();
 
 	await commerceLayoutsPage.moreActionsButton.click();
 	await commerceLayoutsPage.markAsDefaultMenuItem.click();
@@ -959,11 +1025,12 @@ test('LPD-35558 Order Details - Order Summary', async ({
 
 test('LPD-32237 Order actions fragment', async ({
 	apiHelpers,
-	applicationsMenuPage,
 	checkoutPage,
 	commerceAdminChannelsPage,
 	commerceLayoutsPage,
+	displayPageTemplatesPage,
 	page,
+	pageEditorPage,
 }) => {
 	test.setTimeout(180000);
 
@@ -1011,31 +1078,30 @@ test('LPD-32237 Order actions fragment', async ({
 		user.id
 	);
 
-	await applicationsMenuPage.goToSite(site.name);
+	await displayPageTemplatesPage.goto(site.friendlyUrlPath);
 
-	await commerceLayoutsPage.goToDisplayPageTemplates();
-	await commerceLayoutsPage.createDisplayPageTemplate(
-		getRandomString(),
-		'Order',
-		site.name
-	);
+	const displayPageTemplateName = getRandomString();
+
+	await displayPageTemplatesPage.createTemplate({
+		contentType: 'Order',
+		name: displayPageTemplateName,
+	});
+	await displayPageTemplatesPage.editTemplate(displayPageTemplateName);
+
 	await commerceLayoutsPage.addFragment('Heading');
 
 	await page.getByText('Heading Example', {exact: true}).dblclick();
 	await page.getByLabel('Field').selectOption('CommerceOrder_orderId');
 
-	await commerceLayoutsPage.addFragment('Order Actions', 'Order');
+	await pageEditorPage.addFragment('Order', 'Order Actions');
 
 	await expect(
 		page.getByText('The order actions component will be shown here.')
 	).toBeVisible();
 
-	await commerceLayoutsPage.publishButton.click();
+	await pageEditorPage.waitForChangesSaved();
 
-	await waitForAlert(
-		page,
-		'The display page template was published successfully.'
-	);
+	await displayPageTemplatesPage.publishTemplate();
 
 	await commerceLayoutsPage.moreActionsButton.click();
 	await commerceLayoutsPage.markAsDefaultMenuItem.click();
@@ -1278,9 +1344,10 @@ test('LPD-32237 Order actions fragment', async ({
 
 test('LPD-32230 Billing and shipping address order info box fragment configuration', async ({
 	apiHelpers,
-	applicationsMenuPage,
 	commerceLayoutsPage,
+	displayPageTemplatesPage,
 	page,
+	pageEditorPage,
 }) => {
 	const account = await apiHelpers.headlessAdminUser.postAccount({
 		name: getRandomString(),
@@ -1295,34 +1362,46 @@ test('LPD-32230 Billing and shipping address order info box fragment configurati
 
 	apiHelpers.data.push({id: site.id, type: 'site'});
 
-	await applicationsMenuPage.goToSite(site.name);
+	await displayPageTemplatesPage.goto(site.friendlyUrlPath);
 
-	await commerceLayoutsPage.goToDisplayPageTemplates();
-	await commerceLayoutsPage.createDisplayPageTemplate(
-		getRandomString(),
-		'Order',
-		site.name
-	);
-	await commerceLayoutsPage.addFragment('Info Box', 'Order');
-	await commerceLayoutsPage.infoBoxReadOnlyToggle.uncheck();
+	const displayPageTemplateName = getRandomString();
+
+	await displayPageTemplatesPage.createTemplate({
+		contentType: 'Order',
+		name: displayPageTemplateName,
+	});
+	await displayPageTemplatesPage.editTemplate(displayPageTemplateName);
+
+	await pageEditorPage.addFragment('Order', 'Info Box');
+
+	const infoBoxFragmentId = await pageEditorPage.getFragmentId('Info Box');
+
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Field',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: 'billingAddress',
+	});
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Label',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: 'Billing Address',
+	});
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Read Only',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: false,
+	});
 
 	await expect(
-		page.getByText('The info box component is not correctly configured.')
+		page.getByText('The info box component will be shown here.')
 	).toBeVisible();
 
-	await commerceLayoutsPage.infoBoxFieldSelect.selectOption('billingAddress');
+	await pageEditorPage.waitForChangesSaved();
 
-	await expect(
-		page.getByText('The info box component is not correctly configured.')
-	).toBeHidden();
-
-	await commerceLayoutsPage.infoBoxLabelInput.fill('Billing Address');
-	await commerceLayoutsPage.publishButton.click();
-
-	await waitForAlert(
-		page,
-		'The display page template was published successfully.'
-	);
+	await displayPageTemplatesPage.publishTemplate();
 
 	await commerceLayoutsPage.moreActionsButton.click();
 	await commerceLayoutsPage.markAsDefaultMenuItem.click();
@@ -1368,26 +1447,33 @@ test('LPD-32230 Billing and shipping address order info box fragment configurati
 
 	await commerceLayoutsPage.cancelButton.click();
 
-	await commerceLayoutsPage.goToDisplayPageTemplates();
+	await displayPageTemplatesPage.goto(site.friendlyUrlPath);
+
 	await commerceLayoutsPage.moreActionsButton.click();
 	await commerceLayoutsPage.editMenuItem.click();
-	await commerceLayoutsPage.firstFragment.click();
-	await commerceLayoutsPage.infoBoxFieldSelect.selectOption(
-		'shippingAddress'
-	);
-	await commerceLayoutsPage.infoBoxReadOnlyToggle.check();
 
-	await expect(
-		page.getByText('The info box component is not correctly configured.')
-	).toBeHidden();
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Field',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: 'shippingAddress',
+	});
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Label',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: 'Shipping Address',
+	});
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Read Only',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: true,
+	});
 
-	await commerceLayoutsPage.infoBoxLabelInput.fill('Shipping Address');
-	await commerceLayoutsPage.publishButton.click();
+	await pageEditorPage.waitForChangesSaved();
 
-	await waitForAlert(
-		page,
-		'The display page template was published successfully.'
-	);
+	await displayPageTemplatesPage.publishTemplate();
 
 	await page.goto(
 		liferayConfig.environment.baseUrl + `/web/${site.name}/order/${cart.id}`
@@ -1401,9 +1487,10 @@ test('LPD-32230 Billing and shipping address order info box fragment configurati
 
 test('LPD-33503 Order Details - Questions & Answers', async ({
 	apiHelpers,
-	applicationsMenuPage,
 	commerceLayoutsPage,
+	displayPageTemplatesPage,
 	page,
+	pageEditorPage,
 }) => {
 	const account = await apiHelpers.headlessAdminUser.postAccount({
 		name: getRandomString(),
@@ -1449,30 +1536,46 @@ test('LPD-33503 Order Details - Questions & Answers', async ({
 		user.id
 	);
 
-	await applicationsMenuPage.goToSite(site.name);
+	await displayPageTemplatesPage.goto(site.friendlyUrlPath);
 
-	await commerceLayoutsPage.goToDisplayPageTemplates();
-	await commerceLayoutsPage.createDisplayPageTemplate(
-		getRandomString(),
-		'Order',
-		site.name
-	);
-	await commerceLayoutsPage.addFragment('Info Box', 'Order');
-	await commerceLayoutsPage.infoBoxReadOnlyToggle.uncheck();
+	const displayPageTemplateName = getRandomString();
+
+	await displayPageTemplatesPage.createTemplate({
+		contentType: 'Order',
+		name: displayPageTemplateName,
+	});
+	await displayPageTemplatesPage.editTemplate(displayPageTemplateName);
+
+	await pageEditorPage.addFragment('Order', 'Info Box');
+
+	const infoBoxFragmentId = await pageEditorPage.getFragmentId('Info Box');
+
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Field',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: 'notes',
+	});
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Label',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: 'Order notes',
+	});
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Read Only',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: false,
+	});
 
 	await expect(
-		page.getByText('The info box component is not correctly configured.')
+		page.getByText('The info box component will be shown here.')
 	).toBeVisible();
 
-	await commerceLayoutsPage.infoBoxFieldSelect.selectOption('notes');
+	await pageEditorPage.waitForChangesSaved();
 
-	await commerceLayoutsPage.infoBoxLabelInput.fill('Order notes');
-	await commerceLayoutsPage.publishButton.click();
-
-	await waitForAlert(
-		page,
-		'The display page template was published successfully.'
-	);
+	await displayPageTemplatesPage.publishTemplate();
 
 	await commerceLayoutsPage.moreActionsButton.click();
 	await commerceLayoutsPage.markAsDefaultMenuItem.click();
@@ -1526,6 +1629,8 @@ test('LPD-33503 Order Details - Questions & Answers', async ({
 		cart.id
 	);
 
+	const commentDate = comment.items[0].modifiedDate;
+
 	const locale = await page.evaluate(() => {
 		return Liferay.ThemeDisplay.getBCP47LanguageId();
 	});
@@ -1533,7 +1638,7 @@ test('LPD-33503 Order Details - Questions & Answers', async ({
 	await expect(
 		page.getByText(
 			getDateCustomFormat(
-				comment.items[0].modifiedDate,
+				commentDate,
 				locale,
 				customFormatDate.DATE_AND_TIME
 			).replace(',', '')
@@ -1610,9 +1715,10 @@ test('LPD-33503 Order Details - Questions & Answers', async ({
 
 test('LPD-35558 Order Data Sets and header fragments', async ({
 	apiHelpers,
-	applicationsMenuPage,
 	commerceLayoutsPage,
+	displayPageTemplatesPage,
 	page,
+	pageEditorPage,
 }) => {
 	const account = await apiHelpers.headlessAdminUser.postAccount({
 		name: getRandomString(),
@@ -1633,21 +1739,20 @@ test('LPD-35558 Order Data Sets and header fragments', async ({
 
 	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
 
-	await applicationsMenuPage.goToSite(site.name);
+	await displayPageTemplatesPage.goto(site.friendlyUrlPath);
 
-	await commerceLayoutsPage.goToDisplayPageTemplates();
-	await commerceLayoutsPage.createDisplayPageTemplate(
-		getRandomString(),
-		'Order',
-		site.name
-	);
-	await commerceLayoutsPage.addFragment('Orders Data Set', 'Order');
-	await commerceLayoutsPage.addFragment('Order Items Data Set', 'Order');
-	await commerceLayoutsPage.addFragment('Order Status Label', 'Order');
-	await commerceLayoutsPage.addFragment(
-		'Order Inline Editable Order Field',
-		'Order'
-	);
+	const displayPageTemplateName = getRandomString();
+
+	await displayPageTemplatesPage.createTemplate({
+		contentType: 'Order',
+		name: displayPageTemplateName,
+	});
+	await displayPageTemplatesPage.editTemplate(displayPageTemplateName);
+
+	await pageEditorPage.addFragment('Order', 'Orders Data Set');
+	await pageEditorPage.addFragment('Order', 'Order Items Data Set');
+	await pageEditorPage.addFragment('Order', 'Order Status Label');
+	await pageEditorPage.addFragment('Order', 'Inline Editable Order Field');
 
 	const product = await apiHelpers.headlessCommerceAdminCatalog.postProduct({
 		catalogId: catalog.id,
@@ -1677,12 +1782,9 @@ test('LPD-35558 Order Data Sets and header fragments', async ({
 		channel.id
 	);
 
-	await commerceLayoutsPage.publishButton.click();
+	await pageEditorPage.waitForChangesSaved();
 
-	await waitForAlert(
-		page,
-		'The display page template was published successfully.'
-	);
+	await displayPageTemplatesPage.publishTemplate();
 
 	await commerceLayoutsPage.moreActionsButton.click();
 	await commerceLayoutsPage.markAsDefaultMenuItem.click();
@@ -1697,17 +1799,20 @@ test('LPD-35558 Order Data Sets and header fragments', async ({
 		liferayConfig.environment.baseUrl + `/web/${site.name}/order/${cart.id}`
 	);
 
-	await expect(page.getByText(cart.id.toString())).toBeVisible();
-	await expect(page.getByText(sku.toString())).toBeVisible();
+	await expect(
+		page.getByRole('link', {name: cart.id.toString()})
+	).toBeVisible();
+	await expect(page.getByText(sku.sku.toString())).toBeVisible();
 });
 
 test('LPD-37698 Payment and Delivery Terms order info box fragment configuration', async ({
 	apiHelpers,
-	applicationsMenuPage,
 	commerceAdminChannelDetailsPage,
 	commerceAdminChannelsPage,
 	commerceLayoutsPage,
+	displayPageTemplatesPage,
 	page,
+	pageEditorPage,
 }) => {
 	test.setTimeout(180000);
 
@@ -1724,34 +1829,42 @@ test('LPD-37698 Payment and Delivery Terms order info box fragment configuration
 
 	apiHelpers.data.push({id: site.id, type: 'site'});
 
-	await applicationsMenuPage.goToSite(site.name);
+	await displayPageTemplatesPage.goto(site.friendlyUrlPath);
 
-	await commerceLayoutsPage.goToDisplayPageTemplates();
-	await commerceLayoutsPage.createDisplayPageTemplate(
-		getRandomString(),
-		'Order',
-		site.name
-	);
-	await commerceLayoutsPage.addFragment('Info Box', 'Order');
-	await commerceLayoutsPage.infoBoxReadOnlyToggle.uncheck();
+	const displayPageTemplateName = getRandomString();
 
-	await expect(
-		page.getByText('The info box component is not correctly configured.')
-	).toBeVisible();
+	await displayPageTemplatesPage.createTemplate({
+		contentType: 'Order',
+		name: displayPageTemplateName,
+	});
+	await displayPageTemplatesPage.editTemplate(displayPageTemplateName);
 
-	await commerceLayoutsPage.infoBoxFieldSelect.selectOption('paymentTermId');
-	await commerceLayoutsPage.infoBoxLabelInput.fill('Payment Term');
+	await pageEditorPage.addFragment('Order', 'Info Box');
 
-	await expect(
-		page.getByText('The info box component is not correctly configured.')
-	).toBeHidden();
+	const infoBoxFragmentId = await pageEditorPage.getFragmentId('Info Box');
 
-	await commerceLayoutsPage.publishButton.click();
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Field',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: 'paymentTermId',
+	});
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Label',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: 'Payment Term',
+	});
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Read Only',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: false,
+	});
 
-	await waitForAlert(
-		page,
-		'The display page template was published successfully.'
-	);
+	await pageEditorPage.waitForChangesSaved();
+
+	await displayPageTemplatesPage.publishTemplate();
 
 	await commerceLayoutsPage.moreActionsButton.click();
 	await commerceLayoutsPage.markAsDefaultMenuItem.click();
@@ -1895,6 +2008,7 @@ test('LPD-33490 Purchase Document in Open Order Details', async ({
 	commerceLayoutsPage,
 	displayPageTemplatesPage,
 	page,
+	pageEditorPage,
 }) => {
 	test.setTimeout(180000);
 
@@ -1905,33 +2019,41 @@ test('LPD-33490 Purchase Document in Open Order Details', async ({
 	apiHelpers.data.push({id: site.id, type: 'site'});
 
 	await displayPageTemplatesPage.goto(site.friendlyUrlPath);
-	await commerceLayoutsPage.createDisplayPageTemplate(
-		getRandomString(),
-		'Order',
-		site.name
-	);
-	await commerceLayoutsPage.addFragment('Info Box', 'Order');
-	await commerceLayoutsPage.infoBoxReadOnlyToggle.uncheck();
 
-	await expect(
-		page.getByText('The info box component is not correctly configured.')
-	).toBeVisible();
+	const displayPageTemplateName = getRandomString();
 
-	await commerceLayoutsPage.infoBoxFieldSelect.selectOption(
-		'purchaseOrderDocument'
-	);
-	await commerceLayoutsPage.infoBoxLabelInput.fill('Purchase Order Document');
+	await displayPageTemplatesPage.createTemplate({
+		contentType: 'Order',
+		name: displayPageTemplateName,
+	});
+	await displayPageTemplatesPage.editTemplate(displayPageTemplateName);
 
-	await expect(
-		page.getByText('The info box component is not correctly configured.')
-	).toBeHidden();
+	await pageEditorPage.addFragment('Order', 'Info Box');
 
-	await commerceLayoutsPage.publishButton.click();
+	const infoBoxFragmentId = await pageEditorPage.getFragmentId('Info Box');
 
-	await waitForAlert(
-		page,
-		'The display page template was published successfully.'
-	);
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Field',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: 'purchaseOrderDocument',
+	});
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Label',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: 'Purchase Order Document',
+	});
+	await pageEditorPage.changeFragmentConfiguration({
+		fieldLabel: 'Read Only',
+		fragmentId: infoBoxFragmentId,
+		tab: 'General',
+		value: false,
+	});
+
+	await pageEditorPage.waitForChangesSaved();
+
+	await displayPageTemplatesPage.publishTemplate();
 
 	await commerceLayoutsPage.moreActionsButton.click();
 	await commerceLayoutsPage.markAsDefaultMenuItem.click();
@@ -2034,11 +2156,12 @@ test('LPD-33490 Purchase Document in Open Order Details', async ({
 
 test('LPD-34399 Quick checkout from order actions fragment', async ({
 	apiHelpers,
-	applicationsMenuPage,
 	commerceAdminChannelDetailsPage,
 	commerceAdminChannelsPage,
 	commerceLayoutsPage,
+	displayPageTemplatesPage,
 	page,
+	pageEditorPage,
 }) => {
 	const account = await apiHelpers.headlessAdminUser.postAccount({
 		name: getRandomString(),
@@ -2053,14 +2176,16 @@ test('LPD-34399 Quick checkout from order actions fragment', async ({
 
 	apiHelpers.data.push({id: site.id, type: 'site'});
 
-	await applicationsMenuPage.goToSite(site.name);
+	await displayPageTemplatesPage.goto(site.friendlyUrlPath);
 
-	await commerceLayoutsPage.goToDisplayPageTemplates();
-	await commerceLayoutsPage.createDisplayPageTemplate(
-		getRandomString(),
-		'Order',
-		site.name
-	);
+	const displayPageTemplateName = getRandomString();
+
+	await displayPageTemplatesPage.createTemplate({
+		contentType: 'Order',
+		name: displayPageTemplateName,
+	});
+	await displayPageTemplatesPage.editTemplate(displayPageTemplateName);
+
 	await commerceLayoutsPage.addFragment('Heading');
 
 	await page.getByText('Heading Example', {exact: true}).dblclick();
@@ -2072,12 +2197,9 @@ test('LPD-34399 Quick checkout from order actions fragment', async ({
 		page.getByText('The order actions component will be shown here.')
 	).toBeVisible();
 
-	await commerceLayoutsPage.publishButton.click();
+	await pageEditorPage.waitForChangesSaved();
 
-	await waitForAlert(
-		page,
-		'The display page template was published successfully.'
-	);
+	await displayPageTemplatesPage.publishTemplate();
 
 	await commerceLayoutsPage.moreActionsButton.click();
 	await commerceLayoutsPage.markAsDefaultMenuItem.click();
@@ -2113,6 +2235,15 @@ test('LPD-34399 Quick checkout from order actions fragment', async ({
 		channel.id
 	);
 
+	await commerceAdminChannelsPage.goto();
+	await (
+		await commerceAdminChannelsPage.channelsTableRowLink(channel.name)
+	).click();
+	await commerceAdminChannelsPage.ordersTabToggle('Quick Checkout').click();
+	await commerceAdminChannelsPage.headerActionsSaveButton.click();
+
+	await waitForAlert(page);
+
 	await page.goto(
 		liferayConfig.environment.baseUrl + `/web/${site.name}/order/${cart.id}`
 	);
@@ -2130,6 +2261,7 @@ test('LPD-34399 Quick checkout from order actions fragment', async ({
 	await (
 		await commerceAdminChannelsPage.channelsTableRowLink(channel.name)
 	).click();
+
 	await commerceAdminChannelDetailsPage.activateChannelConfiguration(
 		'Money Order',
 		'Payment Methods'
@@ -2171,20 +2303,22 @@ test('LPD-34399 Quick checkout from order actions fragment', async ({
 
 test('LPD-32243 Order Returns Data Set fragment', async ({
 	apiHelpers,
-	applicationsMenuPage,
 	commerceLayoutsPage,
+	displayPageTemplatesPage,
 	page,
 }) => {
 	const {commerceReturn, order, site} = await commerceReturnSetUp(apiHelpers);
 
-	await applicationsMenuPage.goToSite(site.name);
+	await displayPageTemplatesPage.goto(site.friendlyUrlPath);
 
-	await commerceLayoutsPage.goToDisplayPageTemplates();
-	await commerceLayoutsPage.createDisplayPageTemplate(
-		getRandomString(),
-		'Order',
-		site.name
-	);
+	const displayPageTemplateName = getRandomString();
+
+	await displayPageTemplatesPage.createTemplate({
+		contentType: 'Order',
+		name: displayPageTemplateName,
+	});
+	await displayPageTemplatesPage.editTemplate(displayPageTemplateName);
+
 	await commerceLayoutsPage.addFragment('Order Returns Data Set', 'Order');
 
 	await expect(
@@ -2379,12 +2513,12 @@ test('LPD-38261 All commerce widgets work in a content page', async ({
 
 test('LPD-36953 Order Multishipping fragment', async ({
 	apiHelpers,
-	applicationsMenuPage,
 	commerceAdminChannelDetailsPage,
 	commerceAdminChannelsPage,
 	commerceLayoutsPage,
 	displayPageTemplatesPage,
 	page,
+	pageEditorPage,
 }) => {
 	const account = await apiHelpers.headlessAdminUser.postAccount({
 		name: getRandomString(),
@@ -2399,24 +2533,21 @@ test('LPD-36953 Order Multishipping fragment', async ({
 
 	apiHelpers.data.push({id: site.id, type: 'site'});
 
-	await applicationsMenuPage.goToSite(site.name);
-
 	await displayPageTemplatesPage.goto(site.friendlyUrlPath);
 
-	await commerceLayoutsPage.createDisplayPageTemplate(
-		getRandomString(),
-		'Order',
-		site.name
-	);
+	const displayPageTemplateName = getRandomString();
+
+	await displayPageTemplatesPage.createTemplate({
+		contentType: 'Order',
+		name: displayPageTemplateName,
+	});
+	await displayPageTemplatesPage.editTemplate(displayPageTemplateName);
 
 	await commerceLayoutsPage.addFragment('Multishipping', 'Order');
 
-	await commerceLayoutsPage.publishButton.click();
+	await pageEditorPage.waitForChangesSaved();
 
-	await waitForAlert(
-		page,
-		'The display page template was published successfully.'
-	);
+	await displayPageTemplatesPage.publishTemplate();
 
 	await commerceLayoutsPage.moreActionsButton.click();
 
@@ -2497,4 +2628,76 @@ test('LPD-36953 Order Multishipping fragment', async ({
 	await expect(page.getByText(sku1.sku)).toBeVisible();
 
 	await expect(page.getByText(sku2.sku)).toBeVisible();
+});
+
+test('LPD-43496 Account selector redirects to order details DPT if open order content portlet is not present', async ({
+	apiHelpers,
+	applicationsMenuPage,
+	commerceLayoutsPage,
+	displayPageTemplatesPage,
+	page,
+}) => {
+	const account = await apiHelpers.headlessAdminUser.postAccount({
+		name: getRandomString(),
+		type: 'person',
+	});
+
+	apiHelpers.data.push({id: account.id, type: 'account'});
+
+	const site = await apiHelpers.headlessSite.createSite({
+		name: getRandomString(),
+	});
+
+	apiHelpers.data.push({id: site.id, type: 'site'});
+
+	await apiHelpers.headlessDelivery.createSitePage({
+		pageDefinition: getPageDefinition([
+			getFragmentDefinition({
+				id: getRandomString(),
+				key: 'COMMERCE_ACCOUNT_FRAGMENTS-account-selector',
+			}),
+		]),
+		siteId: site.id,
+		title: getRandomString(),
+	});
+
+	await apiHelpers.headlessCommerceAdminChannel.postChannel({
+		siteGroupId: site.id,
+	});
+
+	await applicationsMenuPage.goToSite(site.name);
+
+	await displayPageTemplatesPage.goto(site.friendlyUrlPath);
+
+	await commerceLayoutsPage.createDisplayPageTemplate(
+		getRandomString(),
+		'Order',
+		site.name
+	);
+	await commerceLayoutsPage.addFragment('Heading');
+
+	await expect(page.getByText('Heading Example')).toBeVisible();
+
+	await commerceLayoutsPage.publishButton.click();
+
+	await waitForAlert(
+		page,
+		'The display page template was published successfully.'
+	);
+
+	await commerceLayoutsPage.moreActionsButton.click();
+	await commerceLayoutsPage.markAsDefaultMenuItem.click();
+
+	await waitForAlert(page);
+
+	await expect(
+		commerceLayoutsPage.defaultDisplayPageTemplateIcon
+	).toBeVisible();
+
+	await applicationsMenuPage.goToSite(site.name);
+
+	await commerceLayoutsPage.accountSelectorButton(account.name).click();
+	await commerceLayoutsPage.createNewOrderButton.click();
+
+	await expect(page.getByText('Heading Example')).toBeVisible();
 });

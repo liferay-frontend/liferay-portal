@@ -128,6 +128,15 @@ public class ObjectDefinitionUtil {
 					serviceBuilderObjectDefinition::isEnableCategorization);
 				setEnableComments(
 					serviceBuilderObjectDefinition::isEnableComments);
+				setEnableFriendlyURLCustomization(
+					() -> {
+						if (!FeatureFlagManagerUtil.isEnabled("LPD-21926")) {
+							return null;
+						}
+
+						return serviceBuilderObjectDefinition.
+							isEnableFriendlyURLCustomization();
+					});
 				setEnableIndexSearch(
 					serviceBuilderObjectDefinition::isEnableIndexSearch);
 				setEnableLocalization(
@@ -227,7 +236,7 @@ public class ObjectDefinitionUtil {
 					() -> {
 						if (!FeatureFlagManagerUtil.isEnabled(
 								serviceBuilderObjectDefinition.getCompanyId(),
-								"LPS-187142")) {
+								"LPD-34594")) {
 
 							return null;
 						}

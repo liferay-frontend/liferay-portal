@@ -7,10 +7,6 @@
 
 <%@ include file="/init.jsp" %>
 
-<%
-portletDisplay.setBeta(true);
-%>
-
 <div>
 	<react:component
 		module="{CustomDataSets} from frontend-data-set-admin-web"
@@ -27,6 +23,8 @@ portletDisplay.setBeta(true);
 				"resolvedRESTSchemas", fdsAdminDisplayContext.getRESTApplicationResolvedSchemasJSONArray()
 			).put(
 				"restApplications", fdsAdminDisplayContext.getRESTApplicationsJSONArray()
+			).put(
+				"systemDataSets", fdsAdminDisplayContext.getSystemFDSEntryJSONArray()
 			).build()
 		%>'
 	/>

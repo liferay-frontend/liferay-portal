@@ -227,7 +227,8 @@ public class RestrictedLiferayObjectWrapperTest
 			new RestrictedLiferayObjectWrapper(
 				null, null,
 				new String[] {
-					TestLiferayMethodObject.class.getName() + "#getName"
+					TestLiferayMethodObject.class.getName() + "#getName",
+					TestLiferayMethodObject.class.getName() + "#toString"
 				});
 
 		TemplateModel templateModel = restrictedLiferayObjectWrapper.wrap(
@@ -244,6 +245,11 @@ public class RestrictedLiferayObjectWrapperTest
 		_testRestrictedMethodNames(liferayFreeMarkerStringModel, "Name");
 		_testRestrictedMethodNames(liferayFreeMarkerStringModel, "getName");
 		_testRestrictedMethodNames(liferayFreeMarkerStringModel, "getname");
+
+		Assert.assertEquals(
+			"Denied access to the toString method in class " +
+				TestLiferayMethodObject.class,
+			liferayFreeMarkerStringModel.getAsString());
 
 		SimpleMethodModel simpleMethodModel =
 			(SimpleMethodModel)liferayFreeMarkerStringModel.get("generate");

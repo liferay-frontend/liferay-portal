@@ -27,7 +27,7 @@ const test = mergeTests(
 	apiHelpersTest,
 	collectionsPagesTest,
 	featureFlagsTest({
-		'LPS-178052': true,
+		'LPS-178052': {enabled: true},
 	}),
 	fragmentsPagesTest,
 	isolatedSiteTest,
@@ -1482,6 +1482,22 @@ test.describe('Styles Configuration', () => {
 				style: 'marginTop',
 			})
 		).toBe('5px');
+
+		// Change Margin Top value to a custom value
+
+		await pageEditorPage.changeFragmentSpacing(
+			headingId,
+			'Margin Top',
+			'auto',
+			'custom'
+		);
+		expect(
+			await pageEditorPage.getFragmentStyle({
+				fragmentId: headingId,
+				isTopperStyle: true,
+				style: 'marginTop',
+			})
+		).toBe('0px');
 
 		// Change Margin Top with token value and check change is applied
 

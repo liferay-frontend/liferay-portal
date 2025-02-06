@@ -156,7 +156,7 @@ public class FaroAdminDisplayContext {
 		}
 		else if (_isNavigationUsageLimitApproaching()) {
 			searchContext.setAttribute("maxUsage", 100);
-			searchContext.setAttribute("minUsage", 80);
+			searchContext.setAttribute("minUsage", 70);
 		}
 		else if (_isNavigationUsageLimitExceeded()) {
 			searchContext.setAttribute("maxUsage", Integer.MAX_VALUE);
@@ -180,10 +180,10 @@ public class FaroAdminDisplayContext {
 			orderByCol += "_sortable";
 		}
 
-		boolean reverse = false;
+		boolean reverse = true;
 
 		if (_orderByType.equals("asc")) {
-			reverse = true;
+			reverse = false;
 		}
 
 		searchContext.setSorts(new Sort(orderByCol, reverse));

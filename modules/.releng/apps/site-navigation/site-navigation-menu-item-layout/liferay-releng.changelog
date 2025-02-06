@@ -272,3 +272,8 @@ ca61f78c17f41ade13cf77f26203c8418bebe841^..8567d9864fd25aaafd50a65b4216ef669fa18
 # Bundle Version 4.0.44
 #
 d376c661061b6cdabb80ea02680d6aa35abbcc0f^..c68d3c059bd84a5f3a5ebff39fedaf83efb0e135=LPD-42616
+
+#
+# Bundle Version 4.0.45
+#
+c68d3c059bd84a5f3a5ebff39fedaf83efb0e135^..ae146dffe32e0cad1ee8102de71156a1dfb03497=LPD-43562 LPD-44303

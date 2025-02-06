@@ -15,33 +15,38 @@ export const test = mergeTests(
 	apiHelpersTest,
 	claySamplePageTest,
 	featureFlagsTest({
-		'LPS-178052': true,
+		'LPS-178052': {enabled: true},
 	}),
 	isolatedSiteTest,
 	loginTest()
 );
 
-test(
-	'Label is being escaped',
-	{tag: '@LPD-30368'},
-	async ({apiHelpers, claySamplePage, page, site}) => {
-		await test.step('Create a content site and the clay sample widget', async () => {
-			await claySamplePage.setupClaySampleWidget({apiHelpers, site});
-		});
-
-		await test.step('Select Vertical Nav tab', async () => {
-			await claySamplePage.selectTab('Vertical Nav');
-		});
-
-		await test.step('Check that alert did not pop up', async () => {
-			let alertText = '';
-
-			page.on('dialog', (dialog) => {
-				alertText = dialog.message();
-				dialog.dismiss();
+test.describe('Vertical Nav apostrophes are not displayed correctly on vocabularies names', () => {
+	test.skip(
+		'Label is being escaped',
+		{tag: '@LPD-30368'},
+		async ({apiHelpers, claySamplePage, page, site}) => {
+			await test.step('Create a content site and the clay sample widget', async () => {
+				await claySamplePage.setupClaySampleWidget({apiHelpers, site});
 			});
 
-			expect(alertText).toEqual('');
-		});
-	}
-);
+			await test.step('Select Vertical Nav tab', async () => {
+				await claySamplePage.selectTab(
+					'Vertical Nav',
+					page.getByText('Panel Content 5')
+				);
+			});
+
+			await test.step('Check that alert did not pop up', async () => {
+				let alertText = '';
+
+				page.on('dialog', (dialog) => {
+					alertText = dialog.message();
+					dialog.dismiss();
+				});
+
+				expect(alertText).toEqual('');
+			});
+		}
+	);
+});

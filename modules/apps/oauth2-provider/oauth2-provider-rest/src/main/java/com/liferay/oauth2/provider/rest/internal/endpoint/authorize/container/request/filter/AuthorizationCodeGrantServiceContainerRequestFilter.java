@@ -228,14 +228,9 @@ public class AuthorizationCodeGrantServiceContainerRequestFilter
 			return false;
 		}
 
-		if (_oAuth2ApplicationModelResourcePermission.contains(
-				_permissionCheckerFactory.create(user), oAuth2Application,
-				ActionKeys.VIEW)) {
-
-			return true;
-		}
-
-		return false;
+		return _oAuth2ApplicationModelResourcePermission.contains(
+			_permissionCheckerFactory.create(user), oAuth2Application,
+			ActionKeys.VIEW);
 	}
 
 	private String _getLoginURL() throws ConfigurationException {

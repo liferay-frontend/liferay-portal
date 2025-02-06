@@ -75,7 +75,41 @@ public class OracleDBCTTest {
 	}
 
 	@Test
-	public void testMoveAndDiscardCTEntryWithOver1000Entries()
+	public void testDeleteCTCollectionWithOver1000CTEntries() throws Exception {
+		JournalFolder journalFolder = null;
+
+		try (LoggingTimer loggingTimer = new LoggingTimer();
+			SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setProductionModeWithSafeCloseable()) {
+
+			journalFolder = _journalFolderFixture.addFolder(
+				_group.getGroupId(), RandomTestUtil.randomString());
+
+			for (int i = 0; i < _BATCH_SIZE; i++) {
+				_journalFolderFixture.addFolder(
+					_group.getGroupId(), journalFolder.getFolderId(),
+					RandomTestUtil.randomString());
+			}
+		}
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					_ctCollection1.getCtCollectionId())) {
+
+			_journalFolderLocalService.deleteFolder(
+				journalFolder.getFolderId());
+		}
+
+		_ctCollectionLocalService.deleteCTCollection(_ctCollection1);
+
+		Assert.assertEquals(
+			_BATCH_SIZE,
+			_journalFolderLocalService.getFoldersCount(
+				_group.getGroupId(), journalFolder.getFolderId()));
+	}
+
+	@Test
+	public void testMoveAndDiscardCTEntryWithOver1000CTEntries()
 		throws Exception {
 
 		JournalFolder journalFolder = null;
@@ -135,7 +169,45 @@ public class OracleDBCTTest {
 	}
 
 	@Test
-	public void testPublishCTCollectionWithOver1000Entries() throws Exception {
+	public void testPublishAndRevertCTCollectionWithOver1000CTEntries()
+		throws Exception {
+
+		try (LoggingTimer loggingTimer = new LoggingTimer();
+			SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					_ctCollection1.getCtCollectionId())) {
+
+			for (int i = 0; i < _BATCH_SIZE; i++) {
+				_journalFolderFixture.addFolder(
+					_group.getGroupId(), RandomTestUtil.randomString());
+			}
+
+			_ctCollectionService.publishCTCollection(
+				TestPropsValues.getUserId(),
+				_ctCollection1.getCtCollectionId());
+		}
+
+		_ctCollection1 = _ctCollectionLocalService.getCTCollection(
+			_ctCollection1.getCtCollectionId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, _ctCollection1.getStatus());
+
+		CTCollection revertedCTCollection =
+			_ctCollectionLocalService.undoCTCollection(
+				_ctCollection1.getCtCollectionId(), TestPropsValues.getUserId(),
+				RandomTestUtil.randomString(), null);
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_DRAFT, revertedCTCollection.getStatus());
+
+		_ctCollectionLocalService.deleteCTCollection(revertedCTCollection);
+	}
+
+	@Test
+	public void testPublishCTCollectionWithOver1000CTEntries()
+		throws Exception {
+
 		try (LoggingTimer loggingTimer = new LoggingTimer();
 			SafeCloseable safeCloseable =
 				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
@@ -206,7 +278,7 @@ public class OracleDBCTTest {
 			WorkflowConstants.STATUS_APPROVED, _ctCollection3.getStatus());
 	}
 
-	private static final int _BATCH_SIZE = 1;
+	private static final int _BATCH_SIZE = 1001;
 
 	@Inject
 	private static ClassNameLocalService _classNameLocalService;

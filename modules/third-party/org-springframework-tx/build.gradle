@@ -29,9 +29,8 @@ deployJar {
 }
 
 jar {
-	setActions([])
-
 	dependsOn jarPatched
+	setActions([])
 }
 
 jarManifest {
@@ -44,9 +43,7 @@ jarPatched {
 	archiveFileName = jar.archiveFileName
 	destinationDirectory = jar.destinationDirectory
 	duplicatesStrategy = "exclude"
-
 	from copyPatchOriginalLibClasses
-
 	mustRunAfter compileJava
 	mustRunAfter generatePomFileForMavenPublication
 	mustRunAfter processResources
@@ -66,6 +63,5 @@ patch {
 	}
 
 	fileNames "org/springframework/transaction/support/TransactionSynchronizationManager.java"
-
 	originalLibModuleName = "spring-tx"
 }

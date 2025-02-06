@@ -5,6 +5,7 @@
 
 package com.liferay.headless.delivery.internal.dto.v1_0.util;
 
+import com.liferay.headless.delivery.dto.v1_0.Options;
 import com.liferay.headless.delivery.dto.v1_0.PageRule;
 import com.liferay.headless.delivery.dto.v1_0.PageRuleAction;
 import com.liferay.headless.delivery.dto.v1_0.PageRuleCondition;
@@ -18,6 +19,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Lourdes Fernández Besada
@@ -27,7 +29,6 @@ public class PageRulesUtil {
 	public static PageRuleAction toPageRuleAction(JSONObject jsonObject) {
 		return new PageRuleAction() {
 			{
-				setAction(() -> jsonObject.getString("action"));
 				setId(() -> jsonObject.getString("id"));
 				setItemId(() -> jsonObject.getString("itemId"));
 				setType(() -> jsonObject.getString("type"));
@@ -38,10 +39,33 @@ public class PageRulesUtil {
 	public static PageRuleCondition toPageRuleCondition(JSONObject jsonObject) {
 		return new PageRuleCondition() {
 			{
-				setCondition(() -> jsonObject.getString("condition"));
+				setField(() -> jsonObject.getString("field"));
 				setId(() -> jsonObject.getString("id"));
+				setOptions(
+					() -> {
+						JSONObject optionsJSONObject = jsonObject.getJSONObject(
+							"options");
+
+						return new Options() {
+							{
+								setType(
+									() -> {
+										if (Objects.equals(
+												optionsJSONObject.getString(
+													"type"),
+												"equal")) {
+
+											return Options.Type.EQUAL;
+										}
+
+										return Type.NOT_EQUAL;
+									});
+								setValue(
+									() -> optionsJSONObject.getString("value"));
+							}
+						};
+					});
 				setType(() -> jsonObject.getString("type"));
-				setValue(() -> jsonObject.getString("value"));
 			}
 		};
 	}

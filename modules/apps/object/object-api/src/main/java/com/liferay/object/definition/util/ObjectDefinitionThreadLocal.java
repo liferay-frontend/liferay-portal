@@ -15,8 +15,7 @@ import com.liferay.petra.lang.SafeCloseable;
 public class ObjectDefinitionThreadLocal {
 
 	public static boolean isDeleteObjectDefinitionId(long objectDefinitionId) {
-		Long deleteObjectDefinitionId =
-			_deleteObjectDefinitionIdThreadLocal.get();
+		Long deleteObjectDefinitionId = _deleteObjectDefinitionId.get();
 
 		if ((deleteObjectDefinitionId != null) &&
 			(deleteObjectDefinitionId == objectDefinitionId)) {
@@ -30,12 +29,11 @@ public class ObjectDefinitionThreadLocal {
 	public static SafeCloseable setDeleteObjectDefinitionIdWithSafeCloseable(
 		long id) {
 
-		return _deleteObjectDefinitionIdThreadLocal.setWithSafeCloseable(id);
+		return _deleteObjectDefinitionId.setWithSafeCloseable(id);
 	}
 
 	private static final CentralizedThreadLocal<Long>
-		_deleteObjectDefinitionIdThreadLocal = new CentralizedThreadLocal<>(
-			ObjectEntryThreadLocal.class +
-				"._deleteObjectDefinitionIdThreadLocal");
+		_deleteObjectDefinitionId = new CentralizedThreadLocal<>(
+			ObjectEntryThreadLocal.class + "._deleteObjectDefinitionId");
 
 }

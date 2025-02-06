@@ -205,14 +205,8 @@ public class ObjectDefinitionImpl extends ObjectDefinitionBaseImpl {
 
 	@Override
 	public boolean isDefaultStorageType() {
-		if (Objects.equals(
-				getStorageType(),
-				ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT)) {
-
-			return true;
-		}
-
-		return false;
+		return Objects.equals(
+			getStorageType(), ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT);
 	}
 
 	@Override
@@ -244,7 +238,7 @@ public class ObjectDefinitionImpl extends ObjectDefinitionBaseImpl {
 
 	@Override
 	public boolean isRootDescendantNode() {
-		if (!FeatureFlagManagerUtil.isEnabled(getCompanyId(), "LPS-187142")) {
+		if (!FeatureFlagManagerUtil.isEnabled(getCompanyId(), "LPD-34594")) {
 			return false;
 		}
 
@@ -257,7 +251,7 @@ public class ObjectDefinitionImpl extends ObjectDefinitionBaseImpl {
 
 	@Override
 	public boolean isRootNode() {
-		if (!FeatureFlagManagerUtil.isEnabled(getCompanyId(), "LPS-187142")) {
+		if (!FeatureFlagManagerUtil.isEnabled(getCompanyId(), "LPD-34594")) {
 			return false;
 		}
 

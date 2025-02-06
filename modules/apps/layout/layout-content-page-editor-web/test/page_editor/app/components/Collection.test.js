@@ -118,6 +118,8 @@ describe('Collection', () => {
 			})
 		);
 
+		Liferay.FeatureFlags['LPD-18221'] = true;
+
 		await act(async () => {
 			renderCollection({
 				collection: {
@@ -134,6 +136,8 @@ describe('Collection', () => {
 		expect(
 			document.body.querySelector('.page-editor__collection-item')
 		).toBeInTheDocument();
+
+		Liferay.FeatureFlags['LPD-18221'] = false;
 	});
 
 	it('renders empty collection items', async () => {
@@ -239,6 +243,44 @@ describe('Collection', () => {
 		expect(
 			screen.getByText(
 				'in-edit-mode,-the-number-of-elements-displayed-is-limited-to-x-due-to-performance'
+			)
+		).toBeInTheDocument();
+	});
+
+	it('shows a permission restriction message when user does not have update permissions', async () => {
+		const items = [
+			{content: 'Item 1 Content', title: 'Item 1 Title'},
+			{content: 'Item 2 Content', title: 'Item 2 Title'},
+			{content: 'Item 3 Content', title: 'Item 3 Title'},
+		];
+
+		CollectionService.getCollectionField.mockImplementation(() =>
+			Promise.resolve({
+				isRestricted: true,
+				items,
+				length: 3,
+				totalNumberOfItems: 3,
+			})
+		);
+
+		await act(async () => {
+			renderCollection({
+				collection: {
+					classNameId: '1',
+					classPK: '1',
+					title: 'collection1',
+				},
+				numberOfItems: 3,
+				numberOfPages: 1,
+				paginationType: 'none',
+			});
+
+			jest.runAllTimers();
+		});
+
+		expect(
+			screen.getByText(
+				'this-content-cannot-be-displayed-due-to-permission-restrictions'
 			)
 		).toBeInTheDocument();
 	});

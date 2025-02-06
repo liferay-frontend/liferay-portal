@@ -80,6 +80,8 @@ public class UpgradeManagerTest {
 			_upgradeRecorder, "_type");
 
 		try {
+			Assert.assertTrue(_isUpgradeManagerMBeanRegistered());
+
 			Assert.assertEquals(
 				originalResult, _upgradeManagerInvoke("getResult"));
 			Assert.assertEquals(originalType, _upgradeManagerInvoke("getType"));

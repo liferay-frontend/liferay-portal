@@ -51,6 +51,8 @@ import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.security.permission.SimplePermissionChecker;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -361,13 +363,16 @@ public class DDLExporterTest {
 
 		DDLExporter ddlExporter = _ddlExporterFactory.getDDLExporter("xls");
 
-		byte[] bytes = ddlExporter.export(recordSet.getRecordSetId());
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"org.apache.poi.POIDocument", LoggerTestUtil.WARN)) {
 
-		try (ByteArrayInputStream byteArrayInputStream =
-				new ByteArrayInputStream(bytes);
-			HSSFWorkbook workbook = new HSSFWorkbook(byteArrayInputStream)) {
+			ByteArrayInputStream byteArrayInputStream =
+				new ByteArrayInputStream(
+					ddlExporter.export(recordSet.getRecordSetId()));
 
-			Sheet sheet = workbook.getSheetAt(0);
+			HSSFWorkbook hssfWorkbook = new HSSFWorkbook(byteArrayInputStream);
+
+			Sheet sheet = hssfWorkbook.getSheetAt(0);
 
 			Row row = sheet.getRow(0);
 

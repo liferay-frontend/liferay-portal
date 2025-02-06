@@ -153,13 +153,8 @@ public class LiferayJWTBearerAuthenticationHandler
 			return false;
 		}
 
-		if (Constants.CLIENT_AUTH_JWT_BEARER.equals(
-				HttpUtils.urlDecode(assertionType))) {
-
-			return true;
-		}
-
-		return false;
+		return Constants.CLIENT_AUTH_JWT_BEARER.equals(
+			HttpUtils.urlDecode(assertionType));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

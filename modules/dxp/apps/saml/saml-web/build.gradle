@@ -11,6 +11,7 @@ dependencies {
 	compileOnly project(":apps:frontend-taglib:frontend-taglib")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib-clay")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib-form-navigator")
+	compileOnly project(":apps:layout:layout-seo-api")
 	compileOnly project(":apps:static:osgi:osgi-util")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	compileOnly project(":apps:static:portal:portal-upgrade-api")
@@ -22,4 +23,5 @@ dependencies {
 	compileOnly project(":dxp:apps:saml:saml-api")
 	compileOnly project(":dxp:apps:saml:saml-opensaml-integration")
 	compileOnly project(":dxp:apps:saml:saml-persistence-api")
+	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 }

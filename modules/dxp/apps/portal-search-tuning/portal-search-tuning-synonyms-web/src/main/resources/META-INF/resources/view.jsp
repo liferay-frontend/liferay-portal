@@ -13,8 +13,8 @@ taglib uri="http://liferay.com/tld/frontend" prefix="liferay-frontend" %><%@
 taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %><%@
 taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 
-<%@ page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
-page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
+<%@ page import="com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil" %><%@
+page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
 page import="com.liferay.portal.search.tuning.synonyms.web.internal.constants.SynonymsPortletKeys" %><%@
 page import="com.liferay.portal.search.tuning.synonyms.web.internal.display.context.SynonymsDisplayContext" %>
 
@@ -42,38 +42,44 @@ SynonymsDisplayContext synonymsDisplayContext = (SynonymsDisplayContext)request.
 	<portlet:param name="redirect" value="<%= currentURL %>" />
 </portlet:actionURL>
 
-<aui:form action="<%= deleteSynonymSetActionURL %>" cssClass="container-fluid container-fluid-max-xl" method="post" name="fm">
-	<aui:input name="deletedSynonymSetsString" type="hidden" value="" />
+<clay:container-fluid
+	fullWidth='<%= FeatureFlagManagerUtil.isEnabled("LPS-184404") %>'
+>
+	<aui:form action="<%= deleteSynonymSetActionURL %>" method="post" name="fm">
+		<aui:input name="deletedSynonymSetsString" type="hidden" value="" />
 
-	<liferay-ui:search-container
-		id="synonymSetsEntries"
-		searchContainer="<%= synonymsDisplayContext.getSearchContainer() %>"
-	>
-		<liferay-ui:search-container-row
-			className="com.liferay.portal.search.tuning.synonyms.web.internal.display.context.SynonymSetDisplayContext"
-			keyProperty="synonymSetId"
-			modelVar="synonymSetDisplayContext"
+		<liferay-ui:search-container
+			id="synonymSetsEntries"
+			searchContainer="<%= synonymsDisplayContext.getSearchContainer() %>"
 		>
-			<liferay-ui:search-container-column-text
-				colspan="<%= 2 %>"
-				cssClass="table-cell-expand table-title"
+			<liferay-ui:search-container-row
+				className="com.liferay.portal.search.tuning.synonyms.web.internal.display.context.SynonymSetDisplayContext"
+				keyProperty="synonymSetId"
+				modelVar="synonymSetDisplayContext"
 			>
-				<aui:a href="<%= synonymSetDisplayContext.getEditRenderURL() %>">
-					<%= HtmlUtil.escape(synonymSetDisplayContext.getDisplayedSynonymSet()) %>
-				</aui:a>
-			</liferay-ui:search-container-column-text>
+				<liferay-ui:search-container-column-text
+					colspan="<%= 2 %>"
+					cssClass="table-cell-expand table-title"
+				>
+					<clay:link
+						href="<%= synonymSetDisplayContext.getEditRenderURL() %>"
+						label="<%= synonymSetDisplayContext.getDisplayedSynonymSet() %>"
+						translated="<%= false %>"
+					/>
+				</liferay-ui:search-container-column-text>
 
-			<liferay-ui:search-container-column-text>
-				<clay:dropdown-actions
-					aria-label='<%= LanguageUtil.get(request, "show-actions") %>'
-					dropdownItems="<%= synonymSetDisplayContext.getDropdownItems() %>"
-					propsTransformer="{SynonymSetsDropdownDefaultPropsTransformer} from portal-search-tuning-synonyms-web"
-				/>
-			</liferay-ui:search-container-column-text>
-		</liferay-ui:search-container-row>
+				<liferay-ui:search-container-column-text>
+					<clay:dropdown-actions
+						aria-label='<%= LanguageUtil.get(request, "show-actions") %>'
+						dropdownItems="<%= synonymSetDisplayContext.getDropdownItems() %>"
+						propsTransformer="{SynonymSetsDropdownDefaultPropsTransformer} from portal-search-tuning-synonyms-web"
+					/>
+				</liferay-ui:search-container-column-text>
+			</liferay-ui:search-container-row>
 
-		<liferay-ui:search-iterator
-			markupView="lexicon"
-		/>
-	</liferay-ui:search-container>
-</aui:form>
+			<liferay-ui:search-iterator
+				markupView="lexicon"
+			/>
+		</liferay-ui:search-container>
+	</aui:form>
+</clay:container-fluid>

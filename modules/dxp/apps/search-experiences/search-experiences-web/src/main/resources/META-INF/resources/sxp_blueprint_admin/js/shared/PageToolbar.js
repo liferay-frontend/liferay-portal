@@ -109,7 +109,7 @@ export default function PageToolbar({
 				aria-label={Liferay.Language.get('page-toolbar')}
 				light
 			>
-				<ClayLayout.ContainerFluid>
+				<ClayLayout.ContainerFluid size="xl">
 					<ClayToolbar.Nav>
 						<ClayToolbar.Item className="border-right c-mr-3 c-pr-3 text-left title-description-toolbar-item">
 							{modalVisible && (
@@ -371,6 +371,7 @@ export default function PageToolbar({
 			{onChangeTab && (
 				<ClayNavigationBar
 					aria-label={Liferay.Language.get('navigation')}
+					fluidSize="xl"
 					triggerLabel={tabs[tab]}
 				>
 					{Object.keys(tabs).map((tabKey) => (

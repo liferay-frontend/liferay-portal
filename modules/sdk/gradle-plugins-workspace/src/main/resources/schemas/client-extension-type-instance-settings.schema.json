@@ -197,6 +197,12 @@
 					},
 					"type": "array"
 				},
+				"previousContentRecommenderMostPopularItemsEnabled": {
+					"type": "boolean"
+				},
+				"previousContentRecommenderUserPersonalizationEnabled": {
+					"type": "boolean"
+				},
 				"previousSyncAllAccounts": {
 					"type": "boolean"
 				},
@@ -809,6 +815,22 @@
 		},
 		{
 			"properties": {
+				"cpConfigurationListDiscovery": {
+					"title": "Product Configuration Discovery Method",
+					"type": "string"
+				},
+				"pid": {
+					"const": "com.liferay.commerce.product.configuration.CPConfigurationListRelConfiguration",
+					"title": "Product Configurations"
+				}
+			},
+			"required": [
+				"pid"
+			],
+			"title": "Product Configurations"
+		},
+		{
+			"properties": {
 				"pid": {
 					"const": "com.liferay.commerce.product.configuration.CPDefinitionOptionRelConfiguration",
 					"title": "Product Options"
@@ -1343,6 +1365,27 @@
 				"pid"
 			],
 			"title": "File Entry Friendly URL"
+		},
+		{
+			"properties": {
+				"fileMimeTypes": {
+					"default": "*",
+					"description": "A file mime type of * will permit all file mime types.",
+					"items": {
+						"type": "string"
+					},
+					"title": "File Mime Types",
+					"type": "array"
+				},
+				"pid": {
+					"const": "com.liferay.document.library.configuration.DLFileEntryMimeTypeConfiguration",
+					"title": "Mime Type"
+				}
+			},
+			"required": [
+				"pid"
+			],
+			"title": "Mime Type"
 		},
 		{
 			"properties": {
@@ -3169,7 +3212,7 @@
 				},
 				"discoveryEndPointCacheInMillis": {
 					"default": 360000,
-					"description": "Discovery endpoint metadata will be cached on this interval in milliseconds. If 0 is set, the metadata is never refreshed.",
+					"description": "Discovery endpoint metadata will be cached on this interval in milliseconds. If set to 0, Ehcache's default time to live value of 600 seconds will be used.",
 					"title": "Discovery Endpoint Cache in Milliseconds",
 					"type": "number"
 				},
@@ -3392,6 +3435,15 @@
 						"type": "string"
 					},
 					"title": "Allowed IPs",
+					"type": "array"
+				},
+				"allowedProtocols": {
+					"default": "http|https",
+					"description": "Set which protocols are allowed in redirect URLs. Remove all entries to allow any protocol.",
+					"items": {
+						"type": "string"
+					},
+					"title": "Allowed Protocols",
 					"type": "array"
 				},
 				"pid": {
@@ -4036,6 +4088,7 @@
 				"com.liferay.client.extension.type.configuration.CETConfiguration",
 				"com.liferay.commerce.payment.configuration.CommercePaymentEntryAuditConfiguration",
 				"com.liferay.commerce.payment.configuration.CommercePaymentEntryRefundTypeConfiguration",
+				"com.liferay.commerce.product.configuration.CPConfigurationListRelConfiguration",
 				"com.liferay.commerce.product.configuration.CPDefinitionOptionRelConfiguration",
 				"com.liferay.commerce.product.configuration.CPFriendlyURLConfiguration",
 				"com.liferay.commerce.qualifier.configuration.AccountEntryCommerceQualifierConfiguration",
@@ -4056,6 +4109,7 @@
 				"com.liferay.document.library.asset.auto.tagger.microsoft.cognitive.services.internal.configuration.MSCognitiveServicesAssetAutoTagProviderCompanyConfiguration",
 				"com.liferay.document.library.asset.auto.tagger.tensorflow.internal.configuration.TensorFlowImageAssetAutoTagProviderCompanyConfiguration",
 				"com.liferay.document.library.configuration.DLFileEntryFriendlyURLConfiguration",
+				"com.liferay.document.library.configuration.DLFileEntryMimeTypeConfiguration",
 				"com.liferay.document.library.google.drive.configuration.DLGoogleDriveCompanyConfiguration",
 				"com.liferay.document.library.internal.configuration.DLIndexerConfiguration",
 				"com.liferay.document.library.opener.onedrive.web.internal.configuration.DLOneDriveCompanyConfiguration",

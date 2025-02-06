@@ -49,7 +49,6 @@ test('LPD-42499 Assert correct message appears in Checking changes page', async 
 	await productMenuPage.goToPages();
 
 	await pagesAdminPage.createNewPage({
-		addButtonLabel: 'Page',
 		draft: true,
 		name: layoutTitle,
 		template: 'Blank',
@@ -57,7 +56,7 @@ test('LPD-42499 Assert correct message appears in Checking changes page', async 
 
 	await pageEditorPage.publishPage();
 
-	await changeTrackingPage.goToReviewChanges(ctCollection.name);
+	await changeTrackingPage.goToReviewChanges(ctCollection.body.name);
 
 	await page.reload();
 
@@ -101,13 +100,15 @@ test('Cannot publish empty ctCollection', async ({
 
 	await changeTrackingPage.workOnPublication(ctCollection);
 
-	await changeTrackingPage.goToReviewChanges(ctCollection.name);
+	await changeTrackingPage.goToReviewChanges(ctCollection.body.name);
 
 	await page.reload();
 
 	await page.getByRole('link', {name: 'Publish'}).click();
 
-	await expect(page.getByText('Publish: ' + ctCollection.name)).toBeVisible();
+	await expect(
+		page.getByText('Publish: ' + ctCollection.body.name)
+	).toBeVisible();
 
 	await page
 		.locator('li')
@@ -177,9 +178,7 @@ test('Publish Parallel Publications', async ({
 
 	await journalEditArticlePage.fillTitle(title1);
 
-	const publishButton = page.getByRole('button', {name: 'Publish'});
-
-	await publishButton.click();
+	await journalEditArticlePage.publishArticle();
 
 	await waitForAlert(page, `Success:${title1} was created successfully.`);
 
@@ -206,16 +205,16 @@ test('Publish Parallel Publications', async ({
 
 	await journalEditArticlePage.fillTitle(title2);
 
-	await publishButton.click();
+	await journalEditArticlePage.publishArticle();
 
 	await waitForAlert(page, `Success:${title2} was created successfully.`);
 
 	await apiHelpers.headlessChangeTracking.publishCTCollection(
-		ctCollection.id
+		ctCollection.body.id
 	);
 
 	await apiHelpers.headlessChangeTracking.publishCTCollection(
-		ctCollection2.id
+		ctCollection2.body.id
 	);
 
 	await journalPage.goto(site.friendlyUrlPath);
@@ -245,7 +244,7 @@ test('LPD-33274 Disable Publish button after first click', async ({
 		titleMap: {en_US: title},
 	});
 
-	await changeTrackingPage.goToReviewChanges(ctCollection.name);
+	await changeTrackingPage.goToReviewChanges(ctCollection.body.name);
 
 	await page.getByRole('link', {name: 'Publish'}).click();
 

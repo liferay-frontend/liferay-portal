@@ -31,8 +31,6 @@ definition {
 	@description = "This test adds five suborganizations to an organization"
 	@priority = 4
 	test AddMultipleSuborganizations {
-		property testray.component.names = "Training";
-
 		JSONOrganization.addOrganization(organizationName = "Organization Name 1");
 
 		var count = 1;
@@ -69,8 +67,6 @@ definition {
 
 	@priority = 4
 	test AddOrganization {
-		property testray.component.names = "Training";
-
 		JSONOrganization.addOrganization(organizationName = "Organization Name");
 
 		Organization.openOrganizationsAdmin();
@@ -215,8 +211,6 @@ definition {
 
 	@priority = 4
 	test AddOrganizationSitePrivatePage {
-		property testray.component.names = "Training";
-
 		task ("Enable private pages") {
 			PagesAdmin.enablePrivatePages();
 		}
@@ -281,7 +275,6 @@ definition {
 	@priority = 4
 	test AddSuborganization {
 		property portal.acceptance = "true";
-		property testray.component.names = "Training";
 
 		JSONOrganization.addOrganization(organizationName = "Organization Name");
 
@@ -319,7 +312,6 @@ definition {
 		property liferay.training.dependency.jars = "01-liferay-fundamentals/modules/02-manage-user-accounts/exercise-src/com.liferay.training.contentloader.jar";
 		property portal.release = "false";
 		property portal.upstream = "false";
-		property testray.component.names = "Training";
 
 		ProductMenu.gotoPortlet(
 			category = "Site Builder",
@@ -399,8 +391,6 @@ definition {
 	@description = "Assign multiple members to an organization and searches for them under assignees"
 	@priority = 4
 	test AssignMultipleUsersToOrganization {
-		property testray.component.names = "Training";
-
 		var count = 1;
 
 		while (${count} != 6) {
@@ -844,7 +834,6 @@ definition {
 	@priority = 4
 	test EditOrganizationSite {
 		property portal.acceptance = "true";
-		property testray.component.names = "Training";
 
 		JSONOrganization.addOrganization(organizationName = "Organization Name");
 
@@ -976,109 +965,6 @@ definition {
 		AssertTextEquals.assertPartialText(
 			locator1 = "Message#INFO",
 			value1 = "You do not belong to an organization and are not allowed to view other organizations.");
-	}
-
-	@priority = 4
-	test OrganizationAdministratorActivate {
-		property testray.component.names = "Training";
-
-		Permissions.definePermissionViaJSONAPI(
-			resourceAction = "VIEW_CONTROL_PANEL",
-			resourceName = 90,
-			roleTitle = "User");
-
-		JSONOrganization.addOrganization(organizationName = "Organization Name");
-
-		JSONUser.addUser(
-			userEmailAddress = "userea1@liferay.com",
-			userFirstName = "userfn1",
-			userLastName = "userln1",
-			userScreenName = "usersn1");
-
-		User.openUsersAdmin();
-
-		User.editPasswordCP(
-			userEmailAddress = "userea1@liferay.com",
-			userScreenName = "usersn1");
-
-		Organization.openOrganizationsAdmin();
-
-		Organization.assignUser(
-			orgName = "Organization Name",
-			userFirstName = "userfn1",
-			userLastName = "userln1",
-			userName = "userfn1 userln1",
-			userScreenName = "usersn1");
-
-		Organization.openOrganizationsAdmin();
-
-		Organization.assignOrgRole(
-			orgName = "Organization Name",
-			roleTitle = "Organization Administrator",
-			userFirstName = "userfn1",
-			userLastName = "userln1",
-			userScreenName = "usersn1");
-
-		Navigator.openURL();
-
-		JSONUser.addUser(
-			userEmailAddress = "userea2@liferay.com",
-			userFirstName = "userfn2",
-			userLastName = "userln2",
-			userScreenName = "usersn2");
-
-		Organization.openOrganizationsAdmin();
-
-		Organization.assignUser(
-			orgName = "Organization Name",
-			userFirstName = "userfn2",
-			userLastName = "userln2",
-			userName = "userfn2 userln2",
-			userScreenName = "usersn2");
-
-		User.logoutPG();
-
-		User.loginUserPG(userEmailAddress = "userea1@liferay.com");
-
-		Organization.openOrganizationsAdmin();
-
-		Organization.gotoCP(orgName = "Organization Name");
-
-		LexiconEntry.gotoEntryMenuItemNoError(
-			menuItem = "Deactivate",
-			rowEntry = "userfn2");
-
-		AssertConfirm(value1 = "Are you sure you want to deactivate this?");
-
-		Alert.viewSuccessMessage();
-
-		AssertTextEquals(
-			key_columnName = "status",
-			key_tableEntry = "userfn2",
-			locator1 = "LexiconTable#TABLE_ENTRY_INFO",
-			value1 = "Inactive");
-
-		Organization.openOrganizationsAdmin();
-
-		Organization.gotoCP(orgName = "Organization Name");
-
-		LexiconEntry.gotoEntryMenuItem(
-			menuItem = "Activate",
-			rowEntry = "userfn2");
-
-		Alert.viewSuccessMessage();
-
-		AssertTextEquals(
-			key_columnName = "status",
-			key_tableEntry = "userfn2",
-			locator1 = "LexiconTable#TABLE_ENTRY_INFO",
-			value1 = "Active");
-
-		User.logoutPG();
-
-		User.loginPG(
-			password = PropsUtil.get("default.admin.password"),
-			userEmailAddress = "test@liferay.com");
 	}
 
 	@priority = 4

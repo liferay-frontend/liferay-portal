@@ -11,10 +11,10 @@ import com.liferay.dynamic.data.lists.constants.DDLRecordSetConstants;
 import com.liferay.dynamic.data.lists.model.DDLRecordSet;
 import com.liferay.dynamic.data.lists.service.DDLRecordSetServiceUtil;
 import com.liferay.dynamic.data.lists.web.internal.asset.DDLRecordSetClassType;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.LocaleUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -27,23 +27,19 @@ public class DDLRecordSetClassTypeReader implements ClassTypeReader {
 	public List<ClassType> getAvailableClassTypes(
 		long[] groupIds, Locale locale) {
 
-		List<ClassType> classTypes = new ArrayList<>();
+		return TransformUtil.transform(
+			DDLRecordSetServiceUtil.getRecordSets(groupIds),
+			recordSet -> {
+				if (recordSet.getScope() !=
+						DDLRecordSetConstants.SCOPE_DYNAMIC_DATA_LISTS) {
 
-		List<DDLRecordSet> recordSets = DDLRecordSetServiceUtil.getRecordSets(
-			groupIds);
+					return null;
+				}
 
-		for (DDLRecordSet recordSet : recordSets) {
-			if (recordSet.getScope() ==
-					DDLRecordSetConstants.SCOPE_DYNAMIC_DATA_LISTS) {
-
-				classTypes.add(
-					new DDLRecordSetClassType(
-						recordSet.getRecordSetId(), recordSet.getName(locale),
-						LocaleUtil.toLanguageId(locale)));
-			}
-		}
-
-		return classTypes;
+				return new DDLRecordSetClassType(
+					recordSet.getRecordSetId(), recordSet.getName(locale),
+					LocaleUtil.toLanguageId(locale));
+			});
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 buildscript {
 	dependencies {
-		classpath(group: "com.liferay", name: "com.liferay.gradle.plugins.workspace", version: "12.1.7") {
+		classpath(group: "com.liferay", name: "com.liferay.gradle.plugins.workspace", version: "12.1.10") {
 			exclude group: "com.liferay", module: "com.liferay.gradle.util"
 		}
 	}
@@ -33,7 +33,6 @@ task runGradleTest
 
 dependencies {
 	originalModule group: "com.liferay", name: "com.liferay.login.web"
-
 	targetPlatformBoms group: "com.liferay.portal", name: "release.dxp.bom", version: "2023.q4.6"
 }
 

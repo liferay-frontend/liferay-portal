@@ -20,6 +20,8 @@
 				/>
 				<path refid="project.classpath" />
 			</classpath>
+			<jvmarg value="--add-opens=java.base/java.lang.invoke=ALL-UNNAMED" />
+			<jvmarg value="--add-opens=java.base/java.lang.reflect=ALL-UNNAMED" />
 			<sysproperty key="external-properties" value="com/liferay/portal/tools/dependencies/portal-tools.properties" />
 			<sysproperty key="sample-sql-properties" value="${basedir}/benchmarks-actual.properties" />
 		</java>

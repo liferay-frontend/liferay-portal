@@ -224,19 +224,19 @@ describe('Table', () => {
 		);
 
 		expect(within(row1).getByRole('cell')).not.toHaveClass('text-muted');
-		expect(within(row1).getByRole(/checkbox/i)).toBeEnabled();
+		expect(within(row1).getByRole('checkbox')).toBeEnabled();
 
 		expect(within(row2).getByRole('cell')).not.toHaveClass('text-muted');
-		expect(within(row2).getByRole(/checkbox/i)).toBeEnabled();
+		expect(within(row2).getByRole('checkbox')).toBeEnabled();
 
 		expect(within(row3).getByRole('cell')).not.toHaveClass('text-muted');
-		expect(within(row3).getByRole(/checkbox/i)).toBeEnabled();
+		expect(within(row3).getByRole('checkbox')).toBeEnabled();
 
 		expect(within(row4).getByRole('cell')).not.toHaveClass('text-muted');
-		expect(within(row4).getByRole(/checkbox/i)).toBeEnabled();
+		expect(within(row4).getByRole('checkbox')).toBeEnabled();
 
 		expect(within(row5).getByRole('cell')).not.toHaveClass('text-muted');
-		expect(within(row5).getByRole(/checkbox/i)).toBeEnabled();
+		expect(within(row5).getByRole('checkbox')).toBeEnabled();
 
 		rerender(<WrappedTable disabled />);
 
@@ -252,19 +252,19 @@ describe('Table', () => {
 		);
 
 		expect(within(row1).getByRole('cell')).toHaveClass('text-muted');
-		expect(within(row1).getByRole(/checkbox/i)).toBeDisabled();
+		expect(within(row1).getByRole('checkbox')).toBeDisabled();
 
 		expect(within(row2).getByRole('cell')).toHaveClass('text-muted');
-		expect(within(row2).getByRole(/checkbox/i)).toBeDisabled();
+		expect(within(row2).getByRole('checkbox')).toBeDisabled();
 
 		expect(within(row3).getByRole('cell')).toHaveClass('text-muted');
-		expect(within(row3).getByRole(/checkbox/i)).toBeDisabled();
+		expect(within(row3).getByRole('checkbox')).toBeDisabled();
 
 		expect(within(row4).getByRole('cell')).toHaveClass('text-muted');
-		expect(within(row4).getByRole(/checkbox/i)).toBeDisabled();
+		expect(within(row4).getByRole('checkbox')).toBeDisabled();
 
 		expect(within(row5).getByRole('cell')).toHaveClass('text-muted');
-		expect(within(row5).getByRole(/checkbox/i)).toBeDisabled();
+		expect(within(row5).getByRole('checkbox')).toBeDisabled();
 	});
 
 	it('renders table with filtered items', async () => {

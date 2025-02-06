@@ -1125,7 +1125,7 @@ definition {
 
 		task ("Then the Custom Object entry is updated") {
 			AssertElementPresent(
-				key_tableCell = 2,
+				key_tableCell = 3,
 				key_tableRow = 3,
 				key_tableValue = "Entry C",
 				locator1 = "CreateObject#VIEW_ENTRY_FIELD_BY_INDEX");
@@ -1591,8 +1591,8 @@ definition {
 			AssertElementPresent(locator1 = "CreateObject#DISABLED_OBJECT_NAME");
 
 			AssertElementPresent(
-				key_relation = "Relationship",
-				locator1 = "ObjectRelationships#OPTIONS_TAB_RELATIONSHIPS_DISABLED_NAME_OR_TYPE");
+				key_valueName = "relationship",
+				locator1 = "ObjectRelationships#VIEW_VALUE_DISABLED");
 
 			AssertElementPresent(
 				key_valueName = "Custom Object 163655",

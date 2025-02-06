@@ -2192,6 +2192,13 @@ public class DLAppServiceWrapper
 		return _dlAppService.search(repositoryId, searchContext, query);
 	}
 
+	@Override
+	public void subscribeFileEntry(long groupId, long fileEntryId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_dlAppService.subscribeFileEntry(groupId, fileEntryId);
+	}
+
 	/**
 	 * Subscribe the user to changes in documents of the file entry type. This
 	 * method is only supported by the Liferay repository.
@@ -2254,6 +2261,13 @@ public class DLAppServiceWrapper
 
 		_dlAppService.unlockFolder(
 			repositoryId, parentFolderId, name, lockUuid);
+	}
+
+	@Override
+	public void unsubscribeFileEntry(long groupId, long fileEntryId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_dlAppService.unsubscribeFileEntry(groupId, fileEntryId);
 	}
 
 	/**

@@ -2,9 +2,9 @@
 	"dependencies": {
 		"@clayui/alert": "3.111.0",
 		"@clayui/button": "3.116.0",
-		"@clayui/card": "3.123.1",
-		"@clayui/drop-down": "3.123.1",
-		"@clayui/form": "3.122.0",
+		"@clayui/card": "3.127.0",
+		"@clayui/drop-down": "3.127.0",
+		"@clayui/form": "3.125.0",
 		"@clayui/icon": "3.111.0",
 		"@clayui/label": "3.111.0",
 		"@clayui/layout": "3.111.0",
@@ -29,7 +29,7 @@
 		"build": "node-scripts build",
 		"checkFormat": "node-scripts format --check",
 		"format": "node-scripts format",
-		"test": "USE_REACT_16=true node-scripts test"
+		"test": "node-scripts test"
 	},
-	"version": "5.0.185"
+	"version": "5.0.187"
 }

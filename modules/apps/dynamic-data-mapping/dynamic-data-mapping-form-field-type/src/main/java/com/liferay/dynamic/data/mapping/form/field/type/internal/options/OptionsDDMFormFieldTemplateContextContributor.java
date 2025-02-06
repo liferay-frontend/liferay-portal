@@ -44,17 +44,10 @@ public class OptionsDDMFormFieldTemplateContextContributor
 			GetterUtil.getBoolean(ddmFormField.getProperty("allowEmptyOptions"))
 		).put(
 			"allowSpecialCharacters",
-			() -> {
-				if (Objects.equals(
-						ddmFormFieldRenderingContext.getPortletNamespace(),
-						_portal.getPortletNamespace(
-							DDMPortletKeys.DYNAMIC_DATA_MAPPING_FORM_ADMIN))) {
-
-					return false;
-				}
-
-				return true;
-			}
+			() -> !Objects.equals(
+				ddmFormFieldRenderingContext.getPortletNamespace(),
+				_portal.getPortletNamespace(
+					DDMPortletKeys.DYNAMIC_DATA_MAPPING_FORM_ADMIN))
 		).put(
 			"defaultLanguageId",
 			() -> {

@@ -7,6 +7,7 @@ package com.liferay.portal.settings.authentication.opensso.web.internal.configur
 
 import com.liferay.configuration.admin.display.ConfigurationScreen;
 import com.liferay.configuration.admin.display.ConfigurationScreenWrapper;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.settings.configuration.admin.display.PortalSettingsConfigurationScreenContributor;
 import com.liferay.portal.settings.configuration.admin.display.PortalSettingsConfigurationScreenFactory;
@@ -27,6 +28,11 @@ import org.osgi.service.component.annotations.Reference;
 @Component(service = ConfigurationScreen.class)
 public class OpenSSOPortalSettingsConfigurationScreenWrapper
 	extends ConfigurationScreenWrapper {
+
+	@Override
+	public boolean isDeprecated() {
+		return true;
+	}
 
 	@Override
 	protected ConfigurationScreen getConfigurationScreen() {
@@ -95,6 +101,20 @@ public class OpenSSOPortalSettingsConfigurationScreenWrapper
 			RenderRequest renderRequest, RenderResponse renderResponse) {
 
 			return renderResponse.getNamespace() + "testOpenSSOSettings();";
+		}
+
+		@Override
+		public boolean isDeprecated() {
+			return true;
+		}
+
+		@Override
+		public boolean isVisible() {
+			if (FeatureFlagManagerUtil.isEnabled("LPD-36719")) {
+				return true;
+			}
+
+			return false;
 		}
 
 	}

@@ -8,9 +8,9 @@ package com.liferay.commerce.product.internal.change.tracking.spi.reference;
 import com.liferay.change.tracking.spi.reference.TableReferenceDefinition;
 import com.liferay.change.tracking.spi.reference.builder.ChildTableReferenceInfoBuilder;
 import com.liferay.change.tracking.spi.reference.builder.ParentTableReferenceInfoBuilder;
+import com.liferay.commerce.product.model.CPConfigurationEntrySettingTable;
 import com.liferay.commerce.product.model.CPConfigurationEntryTable;
 import com.liferay.commerce.product.model.CPConfigurationListTable;
-import com.liferay.commerce.product.model.CPDefinitionTable;
 import com.liferay.commerce.product.service.persistence.CPConfigurationEntryPersistence;
 import com.liferay.portal.kernel.service.persistence.BasePersistence;
 
@@ -30,8 +30,8 @@ public class CPConfigurationEntryTableReferenceDefinition
 			childTableReferenceInfoBuilder) {
 
 		childTableReferenceInfoBuilder.singleColumnReference(
-			CPConfigurationEntryTable.INSTANCE.classPK,
-			CPDefinitionTable.INSTANCE.CPDefinitionId);
+			CPConfigurationEntryTable.INSTANCE.CPConfigurationEntryId,
+			CPConfigurationEntrySettingTable.INSTANCE.CPConfigurationEntryId);
 	}
 
 	@Override

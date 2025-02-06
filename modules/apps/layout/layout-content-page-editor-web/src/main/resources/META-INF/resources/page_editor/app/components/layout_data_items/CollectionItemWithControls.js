@@ -7,12 +7,13 @@ import classNames from 'classnames';
 import React, {useContext} from 'react';
 
 import useSetRef from '../../../common/hooks/useSetRef';
+import {config} from '../../config';
 import {CollectionItemContext} from '../../contexts/CollectionItemContext';
 import getLayoutDataItemTopperUniqueClassName from '../../utils/getLayoutDataItemTopperUniqueClassName';
 import TopperEmpty from '../topper/TopperEmpty';
 
 const CollectionItemWithControls = React.forwardRef(({children, item}, ref) => {
-	const {collectionConfig, collectionItem} = useContext(
+	const {collectionConfig, collectionItem, collectionItemIndex} = useContext(
 		CollectionItemContext
 	);
 	const title =
@@ -26,6 +27,9 @@ const CollectionItemWithControls = React.forwardRef(({children, item}, ref) => {
 	return (
 		<div
 			className={classNames('page-editor__collection__block', {
+				'disabled':
+					collectionItemIndex > 0 &&
+					Liferay.FeatureFlags['LPD-18221'],
 				'empty': !title,
 				'flex-grow-1': !children.length,
 			})}
@@ -38,18 +42,63 @@ const CollectionItemWithControls = React.forwardRef(({children, item}, ref) => {
 			>
 				{React.Children.count(children) === 0 ? (
 					<div
-						className={classNames('page-editor__collection-item', {
-							empty: !children.length,
-						})}
+						className={classNames(
+							Liferay.FeatureFlags['LPD-18221']
+								? 'page-editor__collection-item'
+								: 'page-editor__collection-item-old',
+							{
+								empty: !children.length,
+							}
+						)}
 						ref={setRef}
 					>
-						<div className="page-editor__collection-item__border">
-							<p className="page-editor__collection-item__title">
+						<div
+							className={classNames(
+								'page-editor__collection-item__border',
+								{
+									'position-static':
+										Liferay.FeatureFlags['LPD-18221'],
+								}
+							)}
+						>
+							<p
+								className={classNames(
+									'page-editor__collection-item__title',
+									{
+										'c-m-0 c-p-4':
+											Liferay.FeatureFlags['LPD-18221'],
+									}
+								)}
+							>
 								{title ||
 									Liferay.Language.get(
 										'sample-collection-item'
 									)}
 							</p>
+
+							{Liferay.FeatureFlags['LPD-18221'] &&
+							collectionItemIndex === 0 ? (
+								<div className="c-mb-4 c-mx-4 d-flex flex-column page-editor__no-fragments-state">
+									<img
+										className="c-mb-3 page-editor__no-fragments-state__image"
+										src={`${config.imagesPath}/collection_item_empty_state.svg`}
+									/>
+
+									<p className="d-flex flex-column page-editor__no-fragments-state__message">
+										<span>
+											{Liferay.Language.get(
+												'drag-and-drop-fragments-or-widgets-here'
+											)}
+										</span>
+
+										<span>
+											{Liferay.Language.get(
+												'all-components-placed-here-will-be-dynamically-replicated-across-the-collection'
+											)}
+										</span>
+									</p>
+								</div>
+							) : null}
 						</div>
 					</div>
 				) : (

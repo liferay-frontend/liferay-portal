@@ -13,10 +13,9 @@ dependencies {
 }
 
 jar {
-	setActions([])
-
 	dependsOn jarPatched
 	finalizedBy jarManifest
+	setActions([])
 }
 
 jarManifest {
@@ -29,9 +28,7 @@ jarPatched {
 	archiveFileName = jar.archiveFileName
 	destinationDirectory = jar.destinationDirectory
 	duplicatesStrategy = "exclude"
-
 	from copyPatchOriginalLibClasses
-
 	mustRunAfter compileJava
 	mustRunAfter generatePomFileForMavenPublication
 	mustRunAfter processResources
@@ -47,6 +44,5 @@ patch {
 	}
 
 	fileNames "org/apache/aries/jax/rs/whiteboard/activator/CxfJaxrsBundleActivator.java"
-
 	originalLibModuleName = "org.apache.aries.jax.rs.whiteboard"
 }

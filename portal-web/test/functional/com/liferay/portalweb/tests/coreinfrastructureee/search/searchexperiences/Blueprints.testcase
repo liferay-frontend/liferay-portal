@@ -7,7 +7,6 @@ definition {
 	property portal.suite.search.engine = "elasticsearch7,opensearch2";
 	property portal.upstream = "true";
 	property test.run.environment = "EE";
-	property testray.component.names = "Frontend Data Set";
 	property testray.main.component.name = "Search Experiences";
 
 	setUp {
@@ -2846,19 +2845,27 @@ definition {
 
 		Blueprints.viewEntriesSpecificOrder(entryList = "Test Blueprint 3,Test Blueprint 2,Test Blueprint 1");
 
-		Button.click(button = "Title");
+		Click(
+			columnName = "Title",
+			locator1 = "ClayTable#TABLE_COLUMN_NAME");
 
 		Blueprints.viewEntriesSpecificOrder(entryList = "Test Blueprint 1,Test Blueprint 2,Test Blueprint 3");
 
-		Button.click(button = "Title");
+		Click(
+			columnName = "Title",
+			locator1 = "ClayTable#TABLE_COLUMN_NAME");
 
 		Blueprints.viewEntriesSpecificOrder(entryList = "Test Blueprint 3,Test Blueprint 2,Test Blueprint 1");
 
-		Button.click(button = "Created");
+		Click(
+			columnName = "Created",
+			locator1 = "ClayTable#TABLE_COLUMN_NAME");
 
 		Blueprints.viewEntriesSpecificOrder(entryList = "Test Blueprint 1,Test Blueprint 2,Test Blueprint 3");
 
-		Button.click(button = "Created");
+		Click(
+			columnName = "Created",
+			locator1 = "ClayTable#TABLE_COLUMN_NAME");
 
 		Blueprints.viewEntriesSpecificOrder(entryList = "Test Blueprint 3,Test Blueprint 2,Test Blueprint 1");
 
@@ -2870,11 +2877,15 @@ definition {
 
 		Blueprints.viewEntriesSpecificOrder(entryList = "Test Blueprint 2,Test Blueprint 3,Test Blueprint 1");
 
-		Button.click(button = "Modified");
+		Click(
+			columnName = "Modified",
+			locator1 = "ClayTable#TABLE_COLUMN_NAME");
 
 		Blueprints.viewEntriesSpecificOrder(entryList = "Test Blueprint 1,Test Blueprint 3,Test Blueprint 2");
 
-		Button.click(button = "Modified");
+		Click(
+			columnName = "Modified",
+			locator1 = "ClayTable#TABLE_COLUMN_NAME");
 
 		Blueprints.viewEntriesSpecificOrder(entryList = "Test Blueprint 2,Test Blueprint 3,Test Blueprint 1");
 	}
@@ -3130,19 +3141,27 @@ definition {
 
 		Search.searchCP(searchTerm = "Test Element");
 
-		Button.click(button = "Title");
+		Click(
+			columnName = "Title",
+			locator1 = "ClayTable#TABLE_COLUMN_NAME");
 
 		Blueprints.viewEntriesSpecificOrder(entryList = "Test Element 1,Test Element 2,Test Element 3");
 
-		Button.click(button = "Title");
+		Click(
+			columnName = "Title",
+			locator1 = "ClayTable#TABLE_COLUMN_NAME");
 
 		Blueprints.viewEntriesSpecificOrder(entryList = "Test Element 3,Test Element 2,Test Element 1");
 
-		Button.click(button = "Created");
+		Click(
+			columnName = "Created",
+			locator1 = "ClayTable#TABLE_COLUMN_NAME");
 
 		Blueprints.viewEntriesSpecificOrder(entryList = "Test Element 1,Test Element 2,Test Element 3");
 
-		Button.click(button = "Created");
+		Click(
+			columnName = "Created",
+			locator1 = "ClayTable#TABLE_COLUMN_NAME");
 
 		Blueprints.viewEntriesSpecificOrder(entryList = "Test Element 3,Test Element 2,Test Element 1");
 
@@ -3170,11 +3189,15 @@ definition {
 
 		Search.searchCP(searchTerm = "Test Element");
 
-		Button.click(button = "Modified");
+		Click(
+			columnName = "Modified",
+			locator1 = "ClayTable#TABLE_COLUMN_NAME");
 
 		Blueprints.viewEntriesSpecificOrder(entryList = "Test Element 1,Test Element 3,Test Element 2");
 
-		Button.click(button = "Modified");
+		Click(
+			columnName = "Modified",
+			locator1 = "ClayTable#TABLE_COLUMN_NAME");
 
 		Blueprints.viewEntriesSpecificOrder(entryList = "Test Element 2,Test Element 3,Test Element 1");
 	}
@@ -4475,6 +4498,10 @@ definition {
 			locale = "de-DE",
 			title = "Titel auf Deutsch");
 
+		Click(
+			key_text = "Done",
+			locator1 = "Modal#MODAL_FOOTER_BUTTON");
+
 		PortletEntry.save();
 
 		Blueprints.viewEntryTitle(title = "Title in English");
@@ -4941,7 +4968,7 @@ definition {
 					webContentTextFieldLabel = "Custom Title",
 					webContentTitle = "Test Web Content ${count}");
 
-				PortletEntry.publish();
+				WebContent.publishWithPermissions();
 			}
 		}
 
@@ -5816,6 +5843,8 @@ definition {
 			AssertNotChecked.assertNotCheckedNotVisible(
 				key_assetType = "Wiki Page",
 				locator1 = "Blueprints#BLUEPRINTS_SEARCHABLE_ASSET_TYPE_CHECKBOX");
+
+			Click(locator1 = "Modal#CLOSE_BUTTON");
 		}
 
 		task ("Save the blueprint, open it again, and navigate back to the 'Query Settings' tab") {

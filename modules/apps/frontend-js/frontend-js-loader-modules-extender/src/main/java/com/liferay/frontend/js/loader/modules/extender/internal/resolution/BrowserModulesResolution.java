@@ -119,15 +119,15 @@ public class BrowserModulesResolution {
 			).put(
 				"errors",
 				() -> {
-					if (!_errors.isEmpty()) {
-						List<String> sortedErrors = new ArrayList<>(_errors);
-
-						Collections.sort(sortedErrors);
-
-						return sortedErrors;
+					if (_errors.isEmpty()) {
+						return null;
 					}
 
-					return null;
+					List<String> sortedErrors = new ArrayList<>(_errors);
+
+					Collections.sort(sortedErrors);
+
+					return sortedErrors;
 				}
 			).put(
 				"explanation",
@@ -149,16 +149,15 @@ public class BrowserModulesResolution {
 			).put(
 				"warnings",
 				() -> {
-					if (!_warnings.isEmpty()) {
-						List<String> sortedWarnings = new ArrayList<>(
-							_warnings);
-
-						Collections.sort(sortedWarnings);
-
-						return sortedWarnings;
+					if (_warnings.isEmpty()) {
+						return null;
 					}
 
-					return null;
+					List<String> sortedWarnings = new ArrayList<>(_warnings);
+
+					Collections.sort(sortedWarnings);
+
+					return sortedWarnings;
 				}
 			).build());
 	}

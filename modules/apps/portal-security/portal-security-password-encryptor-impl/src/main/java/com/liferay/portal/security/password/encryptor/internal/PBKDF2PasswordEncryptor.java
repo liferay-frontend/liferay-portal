@@ -5,6 +5,9 @@
 
 package com.liferay.portal.security.password.encryptor.internal;
 
+import com.liferay.petra.reflect.ReflectionUtil;
+import com.liferay.petra.string.CharPool;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PwdEncryptorException;
 import com.liferay.portal.kernel.io.BigEndianCodec;
@@ -86,6 +89,30 @@ public class PBKDF2PasswordEncryptor implements PasswordEncryptor {
 		}
 		catch (Exception exception) {
 			throw new PwdEncryptorException(exception.getMessage(), exception);
+		}
+	}
+
+	@Override
+	public String getEncryptedPasswordAlgorithmSettings(
+		String encryptedPassword) {
+
+		try {
+			int index = encryptedPassword.indexOf(CharPool.CLOSE_CURLY_BRACE);
+
+			PBKDF2EncryptionConfiguration pbkdf2EncryptionConfiguration =
+				new PBKDF2EncryptionConfiguration();
+
+			pbkdf2EncryptionConfiguration.configure(
+				StringPool.BLANK, encryptedPassword.substring(index + 1));
+
+			return StringBundler.concat(
+				encryptedPassword.substring(1, index), StringPool.FORWARD_SLASH,
+				pbkdf2EncryptionConfiguration.getKeySize(),
+				StringPool.FORWARD_SLASH,
+				pbkdf2EncryptionConfiguration.getRounds());
+		}
+		catch (PwdEncryptorException pwdEncryptorException) {
+			return ReflectionUtil.throwException(pwdEncryptorException);
 		}
 	}
 

@@ -12,6 +12,7 @@ import {sub} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useEffect, useMemo, useRef} from 'react';
 
+import {fromControlsId} from '../../../../../app/components/layout_data_items/Collection';
 import {ITEM_ACTIVATION_ORIGINS} from '../../../../../app/config/constants/itemActivationOrigins';
 import {ITEM_TYPES} from '../../../../../app/config/constants/itemTypes';
 import {
@@ -26,6 +27,7 @@ import {
 	useActivationOrigin,
 	useActiveItemIds,
 	useSelectItem,
+	useSelectMultipleItems,
 } from '../../../../../app/contexts/ControlsContext';
 import {
 	useDisableKeyboardMovement,
@@ -68,6 +70,7 @@ import {formIsRestricted} from '../../../../../app/utils/formIsRestricted';
 import {formIsUnavailable} from '../../../../../app/utils/formIsUnavailable';
 import getFirstControlsId from '../../../../../app/utils/getFirstControlsId';
 import getMappingFieldsKey from '../../../../../app/utils/getMappingFieldsKey';
+import {hasCollectionParent} from '../../../../../app/utils/hasCollectionParent';
 import isItemWidget from '../../../../../app/utils/isItemWidget';
 import loadCollectionFields from '../../../../../app/utils/loadCollectionFields';
 import toMovementItem from '../../../../../app/utils/toMovementItem';
@@ -136,7 +139,7 @@ export default function StructureTreeNode({node}) {
 			isActive={node.activable && isSelected}
 			isMapped={node.mapped}
 			node={node}
-		></NodeContentWithoutDND>
+		/>
 	) : (
 		<MemoizedNodeContent
 			activationOrigin={isSelected ? activationOrigin : null}
@@ -162,10 +165,6 @@ const MemoizedNodeContent = React.memo(NodeContent, (prevProps, nextProps) =>
 
 function NodeContentWithoutDND({isActive, isMapped, node}) {
 	const layoutDataRef = useSelectorRef((store) => store.layoutData);
-	const canUpdatePageStructure = useSelector(selectCanUpdatePageStructure);
-	const selectedViewportSize = useSelector(
-		(state) => state.selectedViewportSize
-	);
 
 	const selectItem = useSelectItem();
 
@@ -184,24 +183,6 @@ function NodeContentWithoutDND({isActive, isMapped, node}) {
 			type: node.type || node.itemType,
 		}),
 		[layoutDataRef, node]
-	);
-
-	const {fieldTypes, fragmentEntryType} = useSelectorCallback(
-		(state) => {
-			if (!node.type === LAYOUT_DATA_ITEM_TYPES.fragment) {
-				return null;
-			}
-
-			const fragmentEntryLink =
-				state.fragmentEntryLinks[item.config?.fragmentEntryLinkId];
-
-			return {
-				fieldTypes: fragmentEntryLink?.fieldTypes ?? [],
-				fragmentEntryType: fragmentEntryLink?.fragmentEntryType ?? null,
-			};
-		},
-		[item],
-		deepEqual
 	);
 
 	return (
@@ -226,20 +207,11 @@ function NodeContentWithoutDND({isActive, isMapped, node}) {
 						selectItem(itemId, {
 							itemType: node.itemType,
 							origin: ITEM_ACTIVATION_ORIGINS.sidebar,
+							parentId: node.parentId,
 						});
 					}
 				}}
 				role="button"
-			/>
-
-			<MoveButton
-				canUpdate={canUpdatePageStructure}
-				fieldTypes={fieldTypes}
-				fragmentEntryType={fragmentEntryType}
-				item={item}
-				node={node}
-				nodeRef={nodeRef}
-				selectedViewportSize={selectedViewportSize}
 			/>
 
 			<NameLabel
@@ -281,6 +253,7 @@ function NodeContent({
 		(state) => state.selectedViewportSize
 	);
 	const selectItem = useSelectItem();
+	const selectItems = useSelectMultipleItems();
 	const setEditedNodeId = useSetEditedNodeId();
 	const setText = useSetMovementText();
 
@@ -346,6 +319,37 @@ function NodeContent({
 				})
 			: moveItems({
 					itemIds: activeItemIds,
+					onMoveEnd: (updatedLayoutData) => {
+
+						// The item is being moved inside a collection
+
+						if (
+							hasCollectionParent(
+								updatedLayoutData.items[parentItemId],
+								updatedLayoutData
+							)
+						) {
+							const itemIds = activeItemIds.map((id) =>
+								getFirstControlsId({
+									item: updatedLayoutData.items[id],
+									layoutData: updatedLayoutData,
+								})
+							);
+
+							selectItems(itemIds);
+						}
+
+						// The item is being moved outside a collection
+
+						else if (
+							hasCollectionParent(
+								layoutDataRef.current.items[node.id],
+								layoutDataRef.current
+							)
+						) {
+							selectItems(activeItemIds.map(fromControlsId));
+						}
+					},
 					parentItemIds: [parentItemId],
 					positions: [position],
 				});

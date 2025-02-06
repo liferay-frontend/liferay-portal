@@ -69,9 +69,6 @@ public abstract class BaseDDMFormFieldTypeSettingsTestCase {
 	protected void setUpLanguageUtil() {
 		LanguageUtil languageUtil = new LanguageUtil();
 
-		Set<Locale> availableLocales = new HashSet<>(
-			Arrays.asList(LocaleUtil.BRAZIL, LocaleUtil.US));
-
 		Mockito.when(
 			language.getAvailableLocales()
 		).thenReturn(
@@ -142,6 +139,8 @@ public abstract class BaseDDMFormFieldTypeSettingsTestCase {
 		);
 	}
 
+	protected Set<Locale> availableLocales = new HashSet<>(
+		Arrays.asList(LocaleUtil.BRAZIL, LocaleUtil.US));
 	protected Language language = Mockito.mock(Language.class);
 
 	private void _assertDDMFormLayoutColumn(

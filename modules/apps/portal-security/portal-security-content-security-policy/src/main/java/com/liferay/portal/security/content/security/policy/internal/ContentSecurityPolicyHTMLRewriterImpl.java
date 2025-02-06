@@ -33,7 +33,7 @@ public class ContentSecurityPolicyHTMLRewriterImpl
 	implements ContentSecurityPolicyHTMLRewriter {
 
 	@Override
-	public String rewriteInlineEventHandlers(
+	public String rewriteInlineAttributes(
 		String html, HttpServletRequest httpServletRequest, boolean recursive) {
 
 		String nonce = _contentSecurityPolicyNonceProvider.getNonce(
@@ -43,7 +43,8 @@ public class ContentSecurityPolicyHTMLRewriterImpl
 			return html;
 		}
 
-		StringBundler sb = new StringBundler();
+		StringBundler scriptSB = new StringBundler();
+		StringBundler styleSB = new StringBundler();
 
 		Document document = Jsoup.parse(html);
 
@@ -52,24 +53,37 @@ public class ContentSecurityPolicyHTMLRewriterImpl
 		boolean containsBody = _containsBody(html);
 
 		if (containsBody) {
-			_extractInlineHandlers(bodyElement, recursive, sb);
+			_extractInlineHandlers(bodyElement, recursive, scriptSB);
+			_extractInlineStyles(bodyElement, recursive, styleSB);
 		}
 		else {
 			for (Element childElement : bodyElement.children()) {
-				_extractInlineHandlers(childElement, recursive, sb);
+				_extractInlineHandlers(childElement, recursive, scriptSB);
+				_extractInlineStyles(childElement, recursive, styleSB);
 			}
 		}
 
-		if (sb.length() == 0) {
+		if ((scriptSB.length() == 0) && (styleSB.length() == 0)) {
 			return html;
 		}
 
-		Element element = new Element("script");
+		if (scriptSB.length() != 0) {
+			Element element = new Element("script");
 
-		element.attr("nonce", nonce);
-		element.html(sb.toString());
+			element.attr("nonce", nonce);
+			element.html(scriptSB.toString());
 
-		bodyElement.appendChild(element);
+			bodyElement.appendChild(element);
+		}
+
+		if (styleSB.length() != 0) {
+			Element element = new Element("style");
+
+			element.attr("nonce", nonce);
+			element.html(styleSB.toString());
+
+			bodyElement.prependChild(element);
+		}
 
 		if (containsBody) {
 			return bodyElement.outerHtml();
@@ -131,6 +145,36 @@ public class ContentSecurityPolicyHTMLRewriterImpl
 		if (recursive) {
 			for (Element childElement : element.children()) {
 				_extractInlineHandlers(childElement, true, sb);
+			}
+		}
+	}
+
+	private void _extractInlineStyles(
+		Element element, boolean recursive, StringBundler sb) {
+
+		String style = element.attr("style");
+
+		if (!Validator.isBlank(style)) {
+			String id = element.attr("id");
+
+			if (Validator.isBlank(id)) {
+				id = StringUtil.randomId(8);
+
+				element.attr("id", id);
+			}
+
+			sb.append("#");
+			sb.append(id);
+			sb.append("{");
+			sb.append(style);
+			sb.append("}");
+
+			element.removeAttr("style");
+		}
+
+		if (recursive) {
+			for (Element childElement : element.children()) {
+				_extractInlineStyles(childElement, recursive, sb);
 			}
 		}
 	}

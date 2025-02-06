@@ -17,19 +17,11 @@ const COMMANDS = {
 	'build:custom': {
 		description: `
 		Builds artifacts for the current project using a custom esbuild configuration.
-`,
-		parameters: '',
-		script: './bundle/custom.mjs',
-	},
-	'build:report': {
-		description: `
-		Generates an aggregated report of build timings.
 
-		The <timings directory> arguments falls back to LIFERAY_NPM_SCRIPTS_TIMING environment
-		variable when not provided.
+		--serve builds and serves the bundle locally in 'watch' mode.
 `,
-		parameters: '[<timings directory>]',
-		script: './bundle/report.mjs',
+		parameters: '[--serve]',
+		script: './bundle/custom.mjs',
 	},
 	'build:theme': {
 		description: `
@@ -107,6 +99,13 @@ const COMMANDS = {
 		parameters: '',
 		script: './format/self.mjs',
 	},
+	'generate:global-config': {
+		description: `
+		Generates global node-scripts.config.js.
+`,
+		parameters: '',
+		script: './generate/globalConfig.mjs',
+	},
 	'generate:tsconfig': {
 		description: `
 		Generates tsconfig.json files for all projects.
@@ -115,15 +114,79 @@ const COMMANDS = {
 		script: './generate/tsconfig.mjs',
 	},
 	'gitmerge:self': {
-		description: `implements a Git merge driver for node-scripts' package.json file`,
+		description: `
+		Implements a Git merge driver for node-scripts' package.json file.
+`,
 		parameters:
 			'--current=<current file> --base=<base file> --other=<other file>',
 		script: './gitmerge/self.mjs',
 	},
 	'gitmerge:setup': {
-		description: 'adds gitmerge:self to .git/config file',
+		description: `
+		Adds gitmerge:self to .git/config file.
+`,
 		parameters: '',
 		script: './gitmerge/setup.mjs',
+	},
+	'report:build': {
+		description: `
+		Generates an aggregated report of build timings.
+
+		The <timings directory> arguments falls back to LIFERAY_NPM_SCRIPTS_TIMING environment
+		variable when not provided.
+`,
+		parameters: '[<timings directory>]',
+		script: './report/build.mjs',
+	},
+	'report:bundle:imports': {
+		description: `
+		Generate aggregated information about external imports found in each bundle.
+
+		This report only shows information about packages, not symbols. If you need to find out the
+		symbols imported from each bundle use report:source:imports instead.
+
+		It is impossible to find symbols in bundled JavaScript files because our build process
+		transforms everything into default and * imports internally.
+
+		This task must be invoked after running 'CREATE_BUNDLE_REPORTS=yes ant all' (i.e: running
+		'ant all' with the environment variable 'CREATE_BUNDLE_REPORTS' set to 'yes', so that JSON
+		reports about bundle sizes are created inside the 'build' directory of each project).
+`,
+		parameters: '',
+		script: './report/bundle/imports.mjs',
+	},
+	'report:bundle:sizes': {
+		description: `
+		Generate aggregated information about bundle sizes. Optionally report the size of internal
+		files inside each bundle (if the --with-internals flag is provided).
+
+		This task must be invoked after running 'CREATE_BUNDLE_REPORTS=yes ant all' (i.e: running
+		'ant all' with the environment variable 'CREATE_BUNDLE_REPORTS' set to 'yes', so that JSON
+		reports about bundle sizes are created inside the 'build' directory of each project).
+`,
+		parameters: '[--with-internals]',
+		script: './report/bundle/sizes.mjs',
+	},
+	'report:java:imports': {
+		description: `
+		Generate aggregated information about imported external packages and symbols by parsing
+		Java and JSP source files.
+`,
+		parameters: '',
+		script: './report/java/imports.mjs',
+	},
+	'report:source:imports': {
+		description: `
+		Generate aggregated information about imported external symbols by parsing JavaScript source
+		files.
+
+		Note that, in general, it is preferred to use report:bundle:imports because it shows dynamic
+		imports. On the contrary, this report only shows static imports because it is focused in
+		finding the	symbols involved in each import, something that is impossible to know for
+		dynamic imports.
+`,
+		parameters: '',
+		script: './report/source/imports.mjs',
 	},
 	'setup': {
 		description: `

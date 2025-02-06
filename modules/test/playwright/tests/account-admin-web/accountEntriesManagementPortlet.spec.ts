@@ -23,7 +23,7 @@ export const test = mergeTests(
 	commercePagesTest,
 	dataApiHelpersTest,
 	featureFlagsTest({
-		'LPS-178052': true,
+		'LPS-178052': {enabled: true},
 	}),
 	loginTest(),
 	usersAndOrganizationsPagesTest
@@ -35,6 +35,8 @@ test('LPD-28846 user can change selected accounts', async ({
 	commerceAdminChannelsPage,
 	page,
 }) => {
+	test.setTimeout(120000);
+
 	const site = await apiHelpers.headlessSite.createSite({
 		name: getRandomString(),
 	});

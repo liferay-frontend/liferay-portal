@@ -23,6 +23,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserNotificationEvent;
@@ -47,10 +48,12 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import javax.portlet.PortletRequest;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -81,6 +84,38 @@ public class PublicationUserNotificationHandlerTest {
 	@Before
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		GroupTestUtil.deleteGroup(_group);
+	}
+
+	@Test
+	public void testGetBodyForChangeSizeClassification() throws Exception {
+		User user = UserTestUtil.addUser();
+
+		CTCollection ctCollection = _ctCollectionLocalService.addCTCollection(
+			null, TestPropsValues.getCompanyId(), user.getUserId(), 0,
+			RandomTestUtil.randomString(), null);
+
+		CTCollectionTestUtil.updateCTCollectionSizeClassification(
+			ctCollection.getCtCollectionId(), _group.getGroupId(), 9999, user);
+
+		ServiceContext serviceContext = _getServiceContext();
+
+		Locale locale = serviceContext.getLocale();
+
+		_assertUserNotificationFeedEntryBody(
+			ctCollection.getCtCollectionId(),
+			_language.format(
+				locale, "the-size-of-publication-x-has-changed-from-x-to-x",
+				new Object[] {
+					ctCollection.getName(), _language.get(locale, "small"),
+					_language.get(locale, "medium")
+				},
+				false),
+			false, user.getUserId());
 	}
 
 	@Test
@@ -173,6 +208,34 @@ public class PublicationUserNotificationHandlerTest {
 				Thread.sleep(5000);
 			}
 		}
+	}
+
+	@Test
+	public void testGetLinkToChangeSizeClassification() throws Exception {
+		User user = UserTestUtil.addUser();
+
+		CTCollection ctCollection = _ctCollectionLocalService.addCTCollection(
+			null, TestPropsValues.getCompanyId(), user.getUserId(), 0,
+			RandomTestUtil.randomString(), null);
+
+		CTCollectionTestUtil.updateCTCollectionSizeClassification(
+			ctCollection.getCtCollectionId(), _group.getGroupId(), 19999, user);
+
+		ServiceContext serviceContext = _getServiceContext();
+
+		_assertUserNotificationFeedEntryLink(
+			ctCollection.getCtCollectionId(),
+			PortletURLBuilder.create(
+				_portal.getControlPanelPortletURL(
+					serviceContext.getRequest(), serviceContext.getScopeGroup(),
+					CTPortletKeys.PUBLICATIONS, 0, 0,
+					PortletRequest.RENDER_PHASE)
+			).setMVCRenderCommandName(
+				"/change_tracking/view_changes"
+			).setParameter(
+				"ctCollectionId", ctCollection.getCtCollectionId()
+			).buildString(),
+			serviceContext, false, user.getUserId());
 	}
 
 	@Test
@@ -349,13 +412,20 @@ public class PublicationUserNotificationHandlerTest {
 			JSONObject jsonObject = _jsonFactory.createJSONObject(
 				userNotificationEvent.getPayload());
 
-			if ((jsonObject.getLong("ctCollectionId") == ctCollectionId) &&
-				(jsonObject.getInt("notificationType") ==
-					UserNotificationDefinition.
-						NOTIFICATION_TYPE_REVIEW_ENTRY) &&
-				(jsonObject.getBoolean("showConflicts") == showConflicts)) {
+			if (jsonObject.getLong("ctCollectionId") == ctCollectionId) {
+				int notificationType = jsonObject.getInt("notificationType");
 
-				return userNotificationEvent;
+				if (((notificationType ==
+						UserNotificationDefinition.
+							NOTIFICATION_TYPE_REVIEW_ENTRY) &&
+					 (jsonObject.getBoolean("showConflicts") ==
+						 showConflicts)) ||
+					(notificationType ==
+						UserNotificationDefinition.
+							NOTIFICATION_TYPE_UPDATE_ENTRY)) {
+
+					return userNotificationEvent;
+				}
 			}
 		}
 
@@ -402,6 +472,9 @@ public class PublicationUserNotificationHandlerTest {
 
 	@Inject
 	private JSONFactory _jsonFactory;
+
+	@Inject
+	private Language _language;
 
 	@Inject
 	private UserNotificationEventLocalService

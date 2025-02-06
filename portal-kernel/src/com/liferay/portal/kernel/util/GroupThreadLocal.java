@@ -10,6 +10,7 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.security.auth.CompanyCentralizedThreadLocal;
 
 /**
  * @author Shinn Lok
@@ -55,10 +56,10 @@ public class GroupThreadLocal {
 		GroupThreadLocal.class);
 
 	private static final ThreadLocal<Boolean> _deleteInProcess =
-		new CentralizedThreadLocal<>(
+		new CompanyCentralizedThreadLocal<>(
 			GroupThreadLocal.class + "._deleteInProcess", () -> Boolean.FALSE);
 	private static final CentralizedThreadLocal<Long> _groupId =
-		new CentralizedThreadLocal<>(
+		new CompanyCentralizedThreadLocal<>(
 			GroupThreadLocal.class + "._groupId",
 			() -> GroupConstants.DEFAULT_LIVE_GROUP_ID);
 

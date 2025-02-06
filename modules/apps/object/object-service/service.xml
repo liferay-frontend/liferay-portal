@@ -55,6 +55,11 @@
 			<finder-column name="companyId" />
 			<finder-column name="objectDefinitionId" />
 		</finder>
+		<finder name="C_A_OATK" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="active" />
+			<finder-column name="objectActionTriggerKey" />
+		</finder>
 		<finder name="O_A_OATK" return-type="Collection">
 			<finder-column name="objectDefinitionId" />
 			<finder-column name="active" />
@@ -94,6 +99,7 @@
 		<column method-name="DBTableName" name="dbTableName" type="String" />
 		<column name="enableCategorization" type="boolean" />
 		<column name="enableComments" type="boolean" />
+		<column name="enableFriendlyURLCustomization" type="boolean" />
 		<column name="enableIndexSearch" type="boolean" />
 		<column name="enableLocalization" type="boolean" />
 		<column name="enableObjectEntryDraft" type="boolean" />
@@ -199,7 +205,9 @@
 		<!-- Other fields -->
 
 		<column name="objectDefinitionId" type="long" />
+		<column name="objectEntryFolderId" type="long" />
 		<column name="rootObjectEntryId" type="long" />
+		<column name="treePath" type="String" />
 		<column name="lastPublishDate" type="Date" />
 		<column name="status" type="int" />
 		<column name="statusByUserId" type="long" />
@@ -250,6 +258,59 @@
 			<finder-column name="objectDefinitionId" />
 		</finder>
 	</entity>
+	<entity local-service="true" name="ObjectEntryFolder" remote-service="true" uuid="true">
+
+		<!-- External reference code -->
+
+		<column name="externalReferenceCode" type="String" />
+
+		<!-- PK fields -->
+
+		<column container-model="true" name="objectEntryFolderId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="parentObjectEntryFolderId" parent-container-model="true" type="long" />
+		<column localized="true" name="label" type="String" />
+		<column name="name" type="String" />
+		<column name="treePath" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="ERC_G_C" return-type="ObjectEntryFolder" unique="true">
+			<finder-column name="externalReferenceCode" />
+			<finder-column name="groupId" />
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="G_C_P" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="companyId" />
+			<finder-column name="parentObjectEntryFolderId" />
+		</finder>
+		<finder name="G_C_LikeT" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="companyId" />
+			<finder-column comparator="LIKE" name="treePath" />
+		</finder>
+		<finder name="G_C_P_N" return-type="ObjectEntryFolder" unique="true">
+			<finder-column name="groupId" />
+			<finder-column name="companyId" />
+			<finder-column name="parentObjectEntryFolderId" />
+			<finder-column name="name" />
+		</finder>
+	</entity>
 	<entity local-service="true" name="ObjectField" remote-service="true" uuid="true">
 
 		<!-- External reference code -->
@@ -297,6 +358,9 @@
 
 		<!-- Finder methods -->
 
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
 		<finder name="ListTypeDefinitionId" return-type="Collection">
 			<finder-column name="listTypeDefinitionId" />
 		</finder>
@@ -491,6 +555,10 @@
 		<finder name="ObjectDefinitionId" return-type="Collection">
 			<finder-column name="objectDefinitionId" />
 		</finder>
+		<finder name="C_DOL" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="defaultObjectLayout" />
+		</finder>
 		<finder name="ODI_DOL" return-type="Collection">
 			<finder-column name="objectDefinitionId" />
 			<finder-column name="defaultObjectLayout" />
@@ -644,6 +712,9 @@
 
 		<!-- Finder methods -->
 
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
 		<finder name="ObjectDefinitionId1" return-type="Collection">
 			<finder-column name="objectDefinitionId1" />
 		</finder>
@@ -655,6 +726,10 @@
 		</finder>
 		<finder name="ParameterObjectFieldId" return-type="Collection">
 			<finder-column name="parameterObjectFieldId" />
+		</finder>
+		<finder name="C_U" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="userId" />
 		</finder>
 		<finder name="ODI1_E" return-type="Collection">
 			<finder-column name="objectDefinitionId1" />
@@ -1028,6 +1103,7 @@
 	<exceptions>
 		<exception>DefaultObjectLayout</exception>
 		<exception>DefaultObjectView</exception>
+		<exception>DuplicateObjectEntryFolderExternalReferenceCode</exception>
 		<exception>DuplicateObjectFieldExternalReferenceCode</exception>
 		<exception>DuplicateObjectRelationship</exception>
 		<exception>DuplicateObjectRelationshipExternalReferenceCode</exception>
@@ -1047,6 +1123,7 @@
 		<exception>ObjectDefinitionClassName</exception>
 		<exception>ObjectDefinitionEnableCategorization</exception>
 		<exception>ObjectDefinitionEnableComments</exception>
+		<exception>ObjectDefinitionEnableFriendlyURLCustomization</exception>
 		<exception>ObjectDefinitionEnableLocalization</exception>
 		<exception>ObjectDefinitionEnableObjectEntryHistory</exception>
 		<exception>ObjectDefinitionExternalReferenceCode</exception>
@@ -1062,6 +1139,8 @@
 		<exception>ObjectDefinitionSystem</exception>
 		<exception>ObjectDefinitionVersion</exception>
 		<exception>ObjectEntryCount</exception>
+		<exception>ObjectEntryFolderName</exception>
+		<exception>ObjectEntryFolderScope</exception>
 		<exception>ObjectEntryValues</exception>
 		<exception>ObjectFieldBusinessType</exception>
 		<exception>ObjectFieldDBType</exception>

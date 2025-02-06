@@ -11,6 +11,7 @@ import {
 } from '@liferay/object-admin-rest-client-js';
 import {expect, mergeTests} from '@playwright/test';
 
+import {accountSettingsPagesTest} from '../../fixtures/accountSettingsPagesTest';
 import {applicationsMenuPageTest} from '../../fixtures/applicationsMenuPageTest';
 import {collectionsPagesTest} from '../../fixtures/collectionsPagesTest';
 import {dataApiHelpersTest} from '../../fixtures/dataApiHelpersTest';
@@ -23,20 +24,23 @@ import {pageEditorPagesTest} from '../../fixtures/pageEditorPagesTest';
 import {workflowPagesTest} from '../../fixtures/workflowPagesTest';
 import {getRandomInt} from '../../utils/getRandomInt';
 import getRandomString from '../../utils/getRandomString';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {journalPagesTest} from '../journal-web/fixtures/journalPagesTest';
 import {mockedObjectFields} from './dependencies/objectMockedFields';
 import {getFDSDateFormat, getPageEditorDateFormat} from './utils/dateFormat';
 import evaluateKeepCheckingAfterFound from './utils/keepCheckingAfterFound';
-import {mockObjectFields} from './utils/mockObjectFields';
+import {createObjectFields, mockObjectFields} from './utils/mockObjectFields';
 
 export const test = mergeTests(
+	accountSettingsPagesTest,
 	applicationsMenuPageTest,
 	collectionsPagesTest,
 	dataApiHelpersTest,
 	isolatedSiteTest,
 	editObjectDefinitionPagesTest,
 	featureFlagsTest({
-		'LPS-178052': true,
+		'LPD-32050': {enabled: true},
+		'LPS-178052': {enabled: true},
 	}),
 	journalPagesTest,
 	loginTest(),
@@ -45,6 +49,16 @@ export const test = mergeTests(
 	workflowPagesTest
 );
 
+let siteLanguage = 'en';
+
+test.afterEach(async ({page}) => {
+	if (siteLanguage !== 'en') {
+		await page.goto('en');
+
+		siteLanguage = 'en';
+	}
+});
+
 test.describe('Manage object entries through Page Templates', () => {
 	test('can view all entries related to an object in the relationship field', async ({
 		apiHelpers,
@@ -52,6 +66,21 @@ test.describe('Manage object entries through Page Templates', () => {
 		viewObjectEntriesPage,
 	}) => {
 		const objectFields: ObjectField[] = [
+			{
+				DBType: ObjectField.DBTypeEnum.Boolean,
+				businessType: ObjectField.BusinessTypeEnum.Boolean,
+				externalReferenceCode: 'booleanField',
+				indexed: true,
+				indexedAsKeyword: false,
+				indexedLanguageId: '',
+				label: {en_US: 'booleanField'},
+				listTypeDefinitionId: 0,
+				localized: true,
+				name: 'booleanField',
+				required: false,
+				system: false,
+				type: ObjectField.TypeEnum.Boolean,
+			},
 			{
 				DBType: ObjectField.DBTypeEnum.String,
 				businessType: ObjectField.BusinessTypeEnum.Text,
@@ -92,7 +121,7 @@ test.describe('Manage object entries through Page Templates', () => {
 				portlet: true,
 				scope: 'company',
 				status: {code: 0},
-				titleObjectFieldName: 'textField',
+				titleObjectFieldName: 'booleanField',
 			});
 
 		apiHelpers.data.push({
@@ -146,6 +175,10 @@ test.describe('Manage object entries through Page Templates', () => {
 		for (let i = 0; i <= 15; i++) {
 			const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
 				{
+					booleanField_i18n: {
+						en_US: false,
+						pt_BR: true,
+					},
 					textField_i18n: {
 						en_US: 'entry_en_US' + i,
 						pt_BR: 'entry_pt_BR' + i,
@@ -154,8 +187,37 @@ test.describe('Manage object entries through Page Templates', () => {
 				applicationName
 			);
 
-			itemValues.push(objectEntry.textField_i18n['pt_BR']);
+			itemValues.push({
+				booleanField: objectEntry.booleanField_i18n['pt_BR'],
+				textField: objectEntry.textField_i18n['pt_BR'],
+			});
 		}
+
+		await viewObjectEntriesPage.goto(objectDefinition2.className, 'pt');
+
+		siteLanguage = 'pt';
+
+		await viewObjectEntriesPage.clickAddObjectEntry();
+
+		await page.getByPlaceholder('Buscar', {exact: true}).click();
+
+		itemValues.forEach((itemValue, index) => {
+			expect(
+				page
+					.getByRole('menuitem', {
+						exact: true,
+						name: String(itemValue.booleanField),
+					})
+					.nth(index)
+			).toBeVisible();
+		});
+
+		await objectDefinitionAPIClient.patchObjectDefinition(
+			objectDefinition1.id,
+			{
+				titleObjectFieldName: 'textField',
+			}
+		);
 
 		await viewObjectEntriesPage.goto(objectDefinition2.className, 'pt');
 
@@ -165,7 +227,10 @@ test.describe('Manage object entries through Page Templates', () => {
 
 		itemValues.forEach((itemValue) => {
 			expect(
-				page.getByRole('menuitem', {exact: true, name: itemValue})
+				page.getByRole('menuitem', {
+					exact: true,
+					name: String(itemValue.textField),
+				})
 			).toBeVisible();
 		});
 	});
@@ -324,7 +389,7 @@ test.describe('Manage object entries through Page Templates', () => {
 
 		await displayPageTemplatesPage.goto();
 
-		await displayPageTemplatesPage.deleteAllDisplayPageTemplates();
+		await displayPageTemplatesPage.deleteTemplate(objectDefinitionLabel);
 	});
 });
 
@@ -486,7 +551,7 @@ test.describe('Manage object entries through View Object Entries', () => {
 			}
 
 			await expect(
-				page.locator('.dnd-td').getByText(matchString, {exact: true})
+				page.locator('td').getByText(matchString, {exact: true})
 			).toBeVisible();
 		}
 	});
@@ -940,6 +1005,185 @@ test.describe('Manage object entries through View Object Entries', () => {
 		await viewObjectEntriesPage.saveObjectEntryButtonArabic.click();
 
 		await expect(viewObjectEntriesPage.successMessageArabic).toBeVisible();
+	});
+
+	test('can delete relation on relationship tab', async ({
+		apiHelpers,
+		editObjectDetailsPage,
+		objectLayoutsPage,
+		page,
+		viewObjectEntriesPage,
+	}) => {
+		const objectFields = createObjectFields('text', [
+			{
+				label: 'Custom Field',
+				name: 'customField',
+			},
+		]);
+
+		const objectDefinition =
+			await apiHelpers.objectAdmin.postRandomObjectDefinition({
+				objectFields,
+				objectFolderExternalReferenceCode: 'default',
+				panelCategoryKey: 'control_panel.object',
+				status: {code: 0},
+				titleObjectFieldName: 'customField',
+			});
+
+		apiHelpers.data.push({
+			id: objectDefinition.id,
+			type: 'objectDefinition',
+		});
+
+		const objectRelationshipApiClient = await apiHelpers.buildRestClient(
+			ObjectRelationshipApi
+		);
+
+		await objectRelationshipApiClient.postObjectDefinitionByExternalReferenceCodeObjectRelationship(
+			objectDefinition.externalReferenceCode,
+			{
+				deletionType: ObjectRelationship.DeletionTypeEnum.Disassociate,
+				label: {
+					en_US: 'Relationship',
+				},
+				name: 'relationship',
+				objectDefinitionExternalReferenceCode1:
+					objectDefinition.externalReferenceCode,
+				objectDefinitionExternalReferenceCode2:
+					objectDefinition.externalReferenceCode,
+				objectDefinitionId1: objectDefinition.id,
+				objectDefinitionId2: objectDefinition.id,
+				type: ObjectRelationship.TypeEnum.OneToMany,
+			}
+		);
+
+		const applicationName =
+			'c/' + objectDefinition.name.toLowerCase() + 's';
+
+		const objectEntryA = await apiHelpers.objectEntry.postObjectEntry(
+			{
+				customField: 'Entry A',
+			},
+			applicationName
+		);
+
+		const objectEntryB = await apiHelpers.objectEntry.postObjectEntry(
+			{
+				customField: 'Entry B',
+			},
+			applicationName
+		);
+
+		const objectLayoutName = 'Layout Name';
+
+		await objectLayoutsPage.goto(objectDefinition.name);
+
+		await objectLayoutsPage.createObjectLayout(objectLayoutName);
+
+		await page.getByRole('link', {name: objectLayoutName}).click();
+
+		await objectLayoutsPage.markAsDefaultButton.check();
+
+		await objectLayoutsPage.createObjectLayoutContent(
+			'Block 1',
+			objectLayoutName,
+			'Field Tab'
+		);
+
+		await objectLayoutsPage.iframeLocator
+			.getByRole('option', {name: 'Custom Field Optional'})
+			.click();
+
+		await objectLayoutsPage.saveAddFieldButton.click();
+
+		await objectLayoutsPage.openObjectLayoutObjectField();
+
+		await objectLayoutsPage.iframeLocator
+			.getByRole('option', {name: 'Relationship Optional'})
+			.click();
+
+		await objectLayoutsPage.saveAddFieldButton.click();
+
+		await objectLayoutsPage.createObjectRelationshipTab(
+			objectLayoutName,
+			'Relationship Tab',
+			'Relationship'
+		);
+
+		await editObjectDetailsPage.goto(objectDefinition.name);
+
+		await editObjectDetailsPage.saveButton.click();
+
+		await waitForAlert(page, 'Success:The object was saved successfully.');
+
+		await viewObjectEntriesPage.goto(objectDefinition.className);
+
+		await page
+			.getByRole('link', {name: objectEntryB.id.toString()})
+			.click();
+
+		await page.getByPlaceholder('Search').click();
+
+		await page.getByRole('menuitem', {name: 'Entry A'}).click();
+
+		await viewObjectEntriesPage.saveObjectEntryButton.click();
+
+		await waitForAlert(page);
+
+		await page.getByRole('link', {name: 'Relationship Tab'}).click();
+
+		await page
+			.getByTestId('visualization-mode-table')
+			.getByText('New')
+			.click();
+
+		await page.getByRole('menuitem', {name: 'Select Existing One'}).click();
+
+		await expect(viewObjectEntriesPage.searchButton).toBeEnabled();
+
+		await viewObjectEntriesPage.frameSelect.getByText('Entry A').click();
+
+		await page.waitForTimeout(2000);
+
+		await page.getByRole('link', {name: 'Field Tab'}).click();
+
+		await expect(viewObjectEntriesPage.saveObjectEntryButton).toBeEnabled();
+
+		await viewObjectEntriesPage.saveObjectEntryButton.click();
+
+		await waitForAlert(page);
+
+		await viewObjectEntriesPage.goto(objectDefinition.className);
+
+		await page
+			.getByRole('link', {name: objectEntryA.id.toString()})
+			.click();
+
+		await page.getByRole('link', {name: 'Relationship Tab'}).click();
+
+		await viewObjectEntriesPage.frontendDatasetActions.click();
+
+		await viewObjectEntriesPage.frontendDatasetDeleteAction.click();
+
+		await page.waitForTimeout(2000);
+
+		await page.getByRole('link', {name: 'Field Tab'}).click();
+
+		await expect(viewObjectEntriesPage.saveObjectEntryButton).toBeEnabled();
+
+		await viewObjectEntriesPage.saveObjectEntryButton.click();
+
+		await waitForAlert(page);
+
+		await viewObjectEntriesPage.goto(objectDefinition.className);
+
+		await page
+			.getByRole('link', {name: objectEntryB.id.toString()})
+			.click();
+
+		await expect(page.getByPlaceholder('Search')).not.toContainText(
+			'Entry A'
+		);
 	});
 });
 

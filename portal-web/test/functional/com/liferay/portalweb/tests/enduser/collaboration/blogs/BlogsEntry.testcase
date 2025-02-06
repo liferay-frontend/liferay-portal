@@ -37,7 +37,7 @@ definition {
 
 		BlogsEntry.addTitle(entryTitle = "Blogs Entry Title");
 
-		Panel.expandPanel(panel = "Configuration");
+		Blogs.expandPanel(panel = "Configuration");
 
 		BlogsEntry.addCustomAbstract(entryAbstractDescription = "Blogs Entry Abstract Description");
 
@@ -107,8 +107,6 @@ definition {
 	@priority = 5
 	@refactorneeded
 	test AddBlogWithFormatting {
-		property testray.component.names = "Training,WYSIWYG";
-
 		BlogsNavigator.openToAddEntry(siteURLKey = "guest");
 
 		BlogsNavigator.gotoSelectFile();
@@ -299,7 +297,7 @@ definition {
 
 		BlogsEntry.addContent(entryContent = "Blogs Entry Content");
 
-		Panel.expandPanel(panel = "Configuration");
+		Blogs.expandPanel(panel = "Configuration");
 
 		BlogsEntry.addCustomAbstract(entryAbstractDescription = '''~!@#$%^&*''');
 
@@ -355,9 +353,9 @@ definition {
 			entrySubtitle = "Blogs Entry Subtitle",
 			entryTitle = "Blogs Entry Title");
 
-		Panel.expandPanel(panel = "Configuration");
+		Blogs.expandPanel(panel = "Friendly URL");
 
-		AssertChecked(locator1 = "Radio#AUTOMATIC_URL");
+		AssertChecked(locator1 = "Radio#DEFAULT_URL");
 
 		AssertTextEquals(
 			locator1 = "TextInput#BLOGS_ENTRY_URL",
@@ -386,8 +384,6 @@ definition {
 	@priority = 4
 	@refactordone
 	test CanAddWithEmbeddedVideo {
-		property testray.component.names = "WYSIWYG";
-
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
 			layoutName = "Blogs Page");
@@ -616,7 +612,7 @@ definition {
 			entryContent = "Blogs Entry Content",
 			entryTitle = "Blogs Entry Title");
 
-		Panel.expandPanel(panel = "Configuration");
+		Blogs.expandPanel(panel = "Configuration");
 
 		BlogsEntry.editDisplayDateYear();
 
@@ -628,7 +624,7 @@ definition {
 
 		BlogsNavigator.gotoEditPG(entryTitle = "Blogs Entry Title");
 
-		Panel.expandPanel(panel = "Configuration");
+		Blogs.expandPanel(panel = "Configuration");
 
 		BlogsEntry.editDisplayDate(minutesAdjustmentValue = "-2");
 
@@ -840,7 +836,7 @@ definition {
 
 		BlogsNavigator.gotoEditCP(entryTitle = "Blogs Entry Title");
 
-		Panel.expandPanel(panel = "Configuration");
+		Blogs.expandPanel(panel = "Configuration");
 
 		BlogsEntry.addCustomAbstract(entryAbstractDescription = "Blogs Entry Custom AbstractEdit");
 
@@ -1150,7 +1146,7 @@ definition {
 			entrySubtitle = "Blogs Entry Subtitle",
 			entryTitle = "Blogs Entry Title");
 
-		Panel.expandPanel(panel = "Configuration");
+		Blogs.expandPanel(panel = "Friendly URL");
 
 		ScrollWebElementIntoView(locator1 = "Button#PUBLISH");
 
@@ -1177,7 +1173,7 @@ definition {
 
 		BlogsEntry.addTitle(entryTitle = "Blogs Title");
 
-		Panel.expandPanel(panel = "Configuration");
+		Blogs.expandPanel(panel = "Configuration");
 
 		Click(locator1 = "Radio#CUSTOM_ABSTRACT");
 
@@ -1346,8 +1342,6 @@ definition {
 		task ("Enable dynamic and manual selection") {
 			AssetPublisherPortlet.enableDynamicAndManualSelection();
 		}
-
-		property testray.component.names = "Security";
 
 		var entryAbstractDescription = '''<script>alert(123)</script>''';
 

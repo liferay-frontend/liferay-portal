@@ -161,7 +161,8 @@ public class TestrayImporter {
 					testrayBuildTitle, testrayBuild.getName(),
 					String.valueOf(testrayBuild.getURL())),
 				_getJenkinsBuildDescriptionElement(
-					"Testray Build ID", String.valueOf(testrayBuild.getID())));
+					"Testray Build ID",
+					"`" + String.valueOf(testrayBuild.getID()) + "`"));
 
 			i++;
 		}

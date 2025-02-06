@@ -312,7 +312,6 @@ definition {
 	@refactordone
 	test CanOnlyCommentOnLiveSite {
 		property portal.acceptance = "true";
-		property testray.component.names = "Comment";
 
 		JSONLayout.addWidgetToPublicLayout(
 			column = 1,
@@ -932,7 +931,6 @@ definition {
 			dmDocumentTitle = "DM Document Title",
 			groupName = "Site Name-staging",
 			mimeType = "image/jpeg",
-			site = "false",
 			sourceFileName = "Document_1.jpeg");
 
 		DMNavigator.openToEditEntryInSite(
@@ -2087,10 +2085,6 @@ definition {
 		DMDocument.viewWebDAVURL(
 			dmDocumentFileName = "Document_3Edit.png",
 			siteName = "site-name");
-
-		DMDocument.viewDocumentMetadataCP(
-			metadataData = "image/png",
-			metadataLabel = "Content Type");
 	}
 
 	@description = "This test covers LPS-155794. It ensures that an image that was published on a site can still be accessed after local staging is disabled."

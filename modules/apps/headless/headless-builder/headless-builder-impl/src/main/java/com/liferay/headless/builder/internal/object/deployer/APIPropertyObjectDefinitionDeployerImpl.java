@@ -13,7 +13,7 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.related.models.ObjectRelatedModelsProvider;
-import com.liferay.object.related.models.ObjectRelatedModelsProviderRegistrarHelper;
+import com.liferay.object.related.models.ObjectRelatedModelsProviderRegistryUtil;
 import com.liferay.object.rest.filter.factory.FilterFactory;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
@@ -69,11 +69,10 @@ public class APIPropertyObjectDefinitionDeployerImpl
 			StringBundler.concat(
 				"(&(objectClass=", ObjectRelatedModelsProvider.class.getName(),
 				")(",
-				ObjectRelatedModelsProviderRegistrarHelper.
+				ObjectRelatedModelsProviderRegistryUtil.
 					KEY_OBJECT_DEFINITION_ERC,
 				"=L_API_PROPERTY)(",
-				ObjectRelatedModelsProviderRegistrarHelper.
-					KEY_RELATIONSHIP_TYPE,
+				ObjectRelatedModelsProviderRegistryUtil.KEY_RELATIONSHIP_TYPE,
 				"=", ObjectRelationshipConstants.TYPE_ONE_TO_MANY, "))"),
 			new ObjectRelatedModelsProviderServiceTrackerCustomizer());
 
@@ -172,10 +171,6 @@ public class APIPropertyObjectDefinitionDeployerImpl
 	private ObjectFieldLocalService _objectFieldLocalService;
 
 	@Reference
-	private ObjectRelatedModelsProviderRegistrarHelper
-		_objectRelatedModelsProviderRegistrarHelper;
-
-	@Reference
 	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 	private ServiceTracker
@@ -212,7 +207,7 @@ public class APIPropertyObjectDefinitionDeployerImpl
 			ServiceRegistration<ObjectRelatedModelsProvider<?>>
 				serviceRegistration =
 					(ServiceRegistration<ObjectRelatedModelsProvider<?>>)
-						_objectRelatedModelsProviderRegistrarHelper.register(
+						ObjectRelatedModelsProviderRegistryUtil.register(
 							_bundleContext,
 							_objectDefinitionLocalService.
 								fetchObjectDefinitionByExternalReferenceCode(

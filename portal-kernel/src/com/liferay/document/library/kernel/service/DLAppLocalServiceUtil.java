@@ -660,6 +660,13 @@ public class DLAppLocalServiceUtil {
 			userId, folderId, parentFolderId, serviceContext);
 	}
 
+	public static void subscribeFileEntry(
+			long userId, long groupId, long fileEntryId)
+		throws PortalException {
+
+		getService().subscribeFileEntry(userId, groupId, fileEntryId);
+	}
+
 	/**
 	 * Subscribe the user to changes in documents of the file entry type. This
 	 * method is only supported by the Liferay repository.
@@ -689,6 +696,13 @@ public class DLAppLocalServiceUtil {
 		throws PortalException {
 
 		getService().subscribeFolder(userId, groupId, folderId);
+	}
+
+	public static void unsubscribeFileEntry(
+			long userId, long groupId, long fileEntryId)
+		throws PortalException {
+
+		getService().unsubscribeFileEntry(userId, groupId, fileEntryId);
 	}
 
 	/**

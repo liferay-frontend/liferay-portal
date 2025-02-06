@@ -7,6 +7,7 @@ package com.liferay.headless.commerce.admin.catalog.resource.v1_0.test;
 
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.commerce.product.model.CPConfigurationEntry;
 import com.liferay.commerce.product.model.CPConfigurationList;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CProduct;
@@ -22,6 +23,7 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -79,8 +81,13 @@ public class ProductConfigurationResourceTest
 	public void tearDown() throws Exception {
 		super.tearDown();
 
-		_cpConfigurationEntryLocalService.deleteCPConfigurationEntries(
-			_masterCPConfigurationList.getCPConfigurationListId());
+		for (CPConfigurationEntry cpConfigurationEntry :
+				_cpConfigurationEntryLocalService.getCPConfigurationEntries(
+					_masterCPConfigurationList.getCPConfigurationListId())) {
+
+			_cpConfigurationEntryLocalService.forceDeleteCPConfigurationEntry(
+				cpConfigurationEntry);
+		}
 	}
 
 	@FeatureFlags("LPD-10889")
@@ -132,6 +139,16 @@ public class ProductConfigurationResourceTest
 
 		super.
 			testGetProductConfigurationListByExternalReferenceCodeProductConfigurationsPage();
+	}
+
+	@FeatureFlags("LPD-10889")
+	@Override
+	@Test
+	public void testGetProductConfigurationListByExternalReferenceCodeProductConfigurationsPageWithFilterDateTimeEquals()
+		throws Exception {
+
+		super.
+			testGetProductConfigurationListByExternalReferenceCodeProductConfigurationsPageWithFilterDateTimeEquals();
 	}
 
 	@FeatureFlags("LPD-10889")
@@ -358,10 +375,24 @@ public class ProductConfigurationResourceTest
 	}
 
 	@Override
+	protected String[] getIgnoredEntityFieldNames() {
+		return new String[] {
+			"purchasable", "shippable", "shippable", "categoryIds",
+			"categoryNames", "createDate", "modifiedDate", "maxOrderQuantity",
+			"minOrderQuantity", "multipleOrderQuantity", "entityName",
+			"productType"
+		};
+	}
+
+	@Override
 	protected ProductConfiguration randomProductConfiguration() {
 		try {
 			CPDefinition cpDefinition = CPTestUtil.addCPDefinition(
 				_commerceCatalog.getGroupId(), "simple");
+
+			_cpConfigurationEntryLocalService.deleteCPConfigurationEntries(
+				_classNameLocalService.getClassNameId(CPDefinition.class),
+				cpDefinition.getCPDefinitionId());
 
 			CProduct cProduct = cpDefinition.getCProduct();
 
@@ -603,6 +634,9 @@ public class ProductConfigurationResourceTest
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		ProductConfigurationResourceTest.class);
+
+	@Inject
+	private ClassNameLocalService _classNameLocalService;
 
 	@DeleteAfterTestRun
 	private CommerceCatalog _commerceCatalog;

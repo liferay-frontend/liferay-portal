@@ -12,7 +12,6 @@ import com.liferay.fragment.internal.upgrade.v2_0_0.util.FragmentEntryLinkTable;
 import com.liferay.fragment.internal.upgrade.v2_0_0.util.FragmentEntryTable;
 import com.liferay.fragment.internal.upgrade.v2_1_0.SchemaUpgradeProcess;
 import com.liferay.fragment.internal.upgrade.v2_4_0.FragmentEntryLinkUpgradeProcess;
-import com.liferay.fragment.internal.upgrade.v2_6_0.util.FragmentEntryVersionTable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
@@ -24,6 +23,7 @@ import com.liferay.portal.kernel.upgrade.DummyUpgradeStep;
 import com.liferay.portal.kernel.upgrade.MVCCVersionUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.UpgradeProcessFactory;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.view.count.ViewCountManager;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
 import org.osgi.service.component.annotations.Component;
@@ -103,9 +103,12 @@ public class FragmentServiceUpgradeStepRegistrator
 				"FragmentEntry", "readOnly BOOLEAN"));
 
 		registry.register(
-			"2.2.1", "2.3.0",
+			"2.2.1", "2.2.2",
 			UpgradeProcessFactory.addColumns(
-				"FragmentEntry", "cacheable BOOLEAN"),
+				"FragmentEntry", "cacheable BOOLEAN"));
+
+		registry.register(
+			"2.2.2", "2.3.0",
 			new com.liferay.fragment.internal.upgrade.v2_3_0.
 				SchemaUpgradeProcess());
 
@@ -118,10 +121,12 @@ public class FragmentServiceUpgradeStepRegistrator
 				FragmentEntryLinkUpgradeProcess());
 
 		registry.register(
-			"2.5.0", "2.6.0",
+			"2.5.0", "2.5.1",
 			new com.liferay.fragment.internal.upgrade.v2_6_0.
-				FragmentEntryUpgradeProcess(),
-			FragmentEntryVersionTable.create(),
+				FragmentEntryUpgradeProcess());
+
+		registry.register(
+			"2.5.1", "2.6.0",
 			new com.liferay.fragment.internal.upgrade.v2_6_0.
 				FragmentEntryVersionUpgradeProcess());
 
@@ -246,6 +251,9 @@ public class FragmentServiceUpgradeStepRegistrator
 			new com.liferay.fragment.internal.upgrade.v2_13_1.
 				FragmentEntryLinkUpgradeProcess(_jsonFactory, _portal));
 	}
+
+	@Reference
+	protected ViewCountManager viewCountManager;
 
 	@Reference
 	private DLFolderLocalService _dlFolderLocalService;

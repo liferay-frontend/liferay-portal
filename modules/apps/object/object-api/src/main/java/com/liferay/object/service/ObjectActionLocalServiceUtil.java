@@ -366,6 +366,13 @@ public class ObjectActionLocalServiceUtil {
 		return getService().getObjectActionsCount();
 	}
 
+	public static Map<Long, List<ObjectAction>> getObjectActionsMap(
+		long companyId, boolean active, String objectActionTriggerKey) {
+
+		return getService().getObjectActionsMap(
+			companyId, active, objectActionTriggerKey);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *

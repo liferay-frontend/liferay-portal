@@ -156,9 +156,22 @@ public class NotificationUtil {
 		}
 		catch (IOException | MessagingException exception) {
 			System.out.println("Unable to send email.");
-			System.out.println(exception.getMessage());
+
+			String message = exception.getMessage();
+
+			System.out.println(message);
 
 			exception.printStackTrace();
+
+			Throwable throwable = exception.getCause();
+
+			if (throwable != null) {
+				String throwableMessage = throwable.getMessage();
+
+				if (throwableMessage.contains("no object DCH for MIME type")) {
+					return;
+				}
+			}
 
 			StringBuilder sb = new StringBuilder();
 
@@ -171,7 +184,7 @@ public class NotificationUtil {
 			sb.append("\nBody: ");
 			sb.append(body);
 			sb.append("\nError: ");
-			sb.append(exception.getMessage());
+			sb.append(message);
 			sb.append("\n\n<@U04GTH03Q>");
 
 			sendSlackNotification(

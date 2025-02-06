@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {cleanup, fireEvent, render} from '@testing-library/react';
+import {act, cleanup, fireEvent, render} from '@testing-library/react';
 import React from 'react';
 
 import ManagementToolbarFilterAndOrder from '../../../../src/main/resources/META-INF/resources/js/components/management-toolbar/ManagementToolbarFilterAndOrder';
@@ -41,7 +41,7 @@ describe('ManagementToolbarFilterAndOrder', () => {
 		expect(sort.disabled).toBeTruthy();
 	});
 
-	it('renders', () => {
+	it('renders', async () => {
 		const {container, queryByText} = render(
 			<ManagementToolbarFilterAndOrder columns={columns} />,
 			{
@@ -63,7 +63,9 @@ describe('ManagementToolbarFilterAndOrder', () => {
 
 		expect(sort.classList).toContain('order-arrow-down-active');
 
-		sort.click();
+		await act(async () => {
+			sort.click();
+		});
 
 		expect(sort.classList).toContain('order-arrow-up-active');
 	});

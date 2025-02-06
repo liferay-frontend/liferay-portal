@@ -412,3 +412,8 @@ bff29c85a4aa1cba8463093ff199f2b2cac70b2e^..e817bb2cadabab967043def2ab2eeb92b2729
 # Bundle Version 27.0.0
 #
 e817bb2cadabab967043def2ab2eeb92b27295a9^..b9431f6cabbe32d9d67c1e2065a192f62eba0e5d=LPD-34387 LPD-35520
+
+#
+# Bundle Version 28.0.0
+#
+b9431f6cabbe32d9d67c1e2065a192f62eba0e5d^..e9fdf9eef9938ad375ca11157bb803919d5ec156=LPD-38675 LPD-44271

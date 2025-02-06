@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import moment from 'moment';
-
 import {Colors, MetricName} from '../../types/global';
 import {toUnix} from '../../utils/date';
 import {AssetMetricComplement} from '../../utils/metrics';
@@ -134,6 +132,20 @@ export function mapPublishedDatesToHistogram(
 	return resultArray;
 }
 
-export function formatPublishedDate(date: string) {
-	return moment(date).utc().minutes(0).seconds(0).format('YYYY-MM-DDTHH:00');
+export function formatPublishedDate(dateString: string) {
+	const date = new Date(dateString);
+
+	return new Date(
+		Date.UTC(
+			date.getUTCFullYear(),
+			date.getUTCMonth(),
+			date.getUTCDate(),
+			date.getUTCHours(),
+			0,
+			0,
+			0
+		)
+	)
+		.toISOString()
+		.slice(0, 16);
 }

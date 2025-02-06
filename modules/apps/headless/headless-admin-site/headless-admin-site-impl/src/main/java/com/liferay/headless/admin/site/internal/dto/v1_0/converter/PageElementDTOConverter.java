@@ -17,6 +17,7 @@ import com.liferay.headless.admin.site.dto.v1_0.PageFormStepDefinition;
 import com.liferay.headless.admin.site.dto.v1_0.PageFragmentDropZoneDefinition;
 import com.liferay.headless.admin.site.dto.v1_0.PageFragmentInstanceDefinition;
 import com.liferay.headless.admin.site.dto.v1_0.PageRowDefinition;
+import com.liferay.headless.admin.site.internal.dto.v1_0.util.PageElementTypeUtil;
 import com.liferay.layout.util.constants.LayoutDataItemTypeConstants;
 import com.liferay.layout.util.structure.CollectionStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.ColumnLayoutStructureItem;
@@ -25,13 +26,15 @@ import com.liferay.layout.util.structure.FormStepContainerStyledLayoutStructureI
 import com.liferay.layout.util.structure.FormStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.FragmentDropZoneLayoutStructureItem;
 import com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem;
+import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.layout.util.structure.RowStyledLayoutStructureItem;
-import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 
-import java.util.Map;
+import java.util.List;
 import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
@@ -58,15 +61,52 @@ public class PageElementDTOConverter
 			LayoutStructureItem layoutStructureItem)
 		throws Exception {
 
+		if (dtoConverterContext == null) {
+			throw new UnsupportedOperationException();
+		}
+
+		LayoutStructure layoutStructure =
+			(LayoutStructure)dtoConverterContext.getAttribute(
+				LayoutStructure.class.getName());
+
+		if (layoutStructure == null) {
+			throw new UnsupportedOperationException();
+		}
+
 		return new PageElement() {
 			{
 				setDefinition(() -> _getDefinition(layoutStructureItem));
 				setExternalReferenceCode(layoutStructureItem::getItemId);
-				setPageElements(() -> new PageElement[0]);
+				setPageElements(
+					() -> _getPageElements(
+						dtoConverterContext, layoutStructure,
+						layoutStructureItem));
 				setParentExternalReferenceCode(
-					layoutStructureItem::getParentItemId);
-				setPosition(() -> 0);
-				setType(() -> _getType(layoutStructureItem.getItemType()));
+					() -> {
+						if (Objects.equals(
+								layoutStructure.getMainItemId(),
+								layoutStructureItem.getParentItemId())) {
+
+							return StringPool.BLANK;
+						}
+
+						return layoutStructureItem.getParentItemId();
+					});
+				setPosition(
+					() -> {
+						LayoutStructureItem parentLayoutStructureItem =
+							layoutStructure.getLayoutStructureItem(
+								layoutStructureItem.getParentItemId());
+
+						List<String> childrenItemIds =
+							parentLayoutStructureItem.getChildrenItemIds();
+
+						return childrenItemIds.indexOf(
+							layoutStructureItem.getItemId());
+					});
+				setType(
+					() -> PageElementTypeUtil.toExternalType(
+						layoutStructureItem.getItemType()));
 			}
 		};
 	}
@@ -170,39 +210,18 @@ public class PageElementDTOConverter
 		throw new UnsupportedOperationException();
 	}
 
-	private PageElement.Type _getType(String type) {
-		if (_internalToExternalValuesMap.containsKey(type)) {
-			return _internalToExternalValuesMap.get(type);
-		}
+	private PageElement[] _getPageElements(
+		DTOConverterContext dtoConverterContext,
+		LayoutStructure layoutStructure,
+		LayoutStructureItem layoutStructureItem) {
 
-		throw new UnsupportedOperationException();
+		return TransformUtil.transformToArray(
+			layoutStructureItem.getChildrenItemIds(),
+			childrenItemId -> toDTO(
+				dtoConverterContext,
+				layoutStructure.getLayoutStructureItem(childrenItemId)),
+			PageElement.class);
 	}
-
-	private static final Map<String, PageElement.Type>
-		_internalToExternalValuesMap = HashMapBuilder.put(
-			LayoutDataItemTypeConstants.TYPE_COLLECTION,
-			PageElement.Type.COLLECTION
-		).put(
-			LayoutDataItemTypeConstants.TYPE_COLLECTION_ITEM,
-			PageElement.Type.COLLECTION_ITEM
-		).put(
-			LayoutDataItemTypeConstants.TYPE_COLUMN, PageElement.Type.COLUMN
-		).put(
-			LayoutDataItemTypeConstants.TYPE_CONTAINER,
-			PageElement.Type.CONTAINER
-		).put(
-			LayoutDataItemTypeConstants.TYPE_DROP_ZONE,
-			PageElement.Type.DROP_ZONE
-		).put(
-			LayoutDataItemTypeConstants.TYPE_FORM, PageElement.Type.FORM
-		).put(
-			LayoutDataItemTypeConstants.TYPE_FRAGMENT, PageElement.Type.FRAGMENT
-		).put(
-			LayoutDataItemTypeConstants.TYPE_FRAGMENT_DROP_ZONE,
-			PageElement.Type.FRAGMENT_DROP_ZONE
-		).put(
-			LayoutDataItemTypeConstants.TYPE_ROW, PageElement.Type.ROW
-		).build();
 
 	@Reference(
 		target = "(component.name=com.liferay.headless.admin.site.internal.dto.v1_0.converter.PageCollectionDefinitionDTOConverter)"

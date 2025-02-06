@@ -29,11 +29,9 @@ export class DocumentLibraryPage {
 		this.exportImportOptionsMenuItem = page.getByRole('menuitem', {
 			name: 'Export / Import',
 		});
-		this.infoPanel = page.locator(
-			'[id="_com_liferay_document_library_web_portlet_DLAdminPortlet_ContextualSidebar"]'
-		);
+		this.infoPanel = page.getByLabel('Info Panel');
 		this.infoPanelButton = page.locator(
-			'[id="_com_liferay_document_library_web_portlet_DLAdminPortlet_OpenContextualSidebar"]'
+			'[id="_com_liferay_document_library_web_portlet_DLAdminPortlet_infoPanelId_trigger"]'
 		);
 		this.infoPanelTab = page.locator(
 			'[id^=_com_liferay_document_library_web_portlet_DLAdminPortlet_tabs_]'
@@ -89,42 +87,6 @@ export class DocumentLibraryPage {
 			)
 		) {
 			await infoPanelTab.click();
-		}
-	}
-
-	async assertInfoPanelCategories(categoryNames: string[]) {
-		await expect(
-			this.page.getByRole('tab', {name: 'Details'})
-		).toBeVisible();
-		await expect(this.infoPanelTab.getByText('Categories')).toBeVisible();
-
-		for (const categoryName of categoryNames) {
-			await expect(this.infoPanelTab.getByText(categoryName)).toBeVisible;
-		}
-	}
-
-	async assertInfoPanelRelatedAssets(relatedAssetNames: string[]) {
-		await expect(
-			this.page.getByRole('tab', {name: 'Details'})
-		).toBeVisible();
-		await expect(
-			this.infoPanelTab.getByText('Related Assets')
-		).toBeVisible();
-
-		for (const relatedAssetName of relatedAssetNames) {
-			await expect(this.infoPanelTab.getByText(relatedAssetName))
-				.toBeVisible;
-		}
-	}
-
-	async assertInfoPanelTags(tags: string[]) {
-		await expect(
-			this.page.getByRole('tab', {name: 'Details'})
-		).toBeVisible();
-		await expect(this.infoPanelTab.getByText('Tags')).toBeVisible();
-
-		for (const tag of tags) {
-			await expect(this.infoPanelTab.getByText(tag)).toBeVisible;
 		}
 	}
 
@@ -196,6 +158,21 @@ export class DocumentLibraryPage {
 			.waitFor();
 	}
 
+	async goToViewHistoryFileEntry(entryTitle: string) {
+		await this.page
+			.getByRole('link', {exact: true, name: entryTitle})
+			.click();
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page.getByRole('menuitem', {
+				exact: true,
+				name: 'View History',
+			}),
+			trigger: this.page.getByRole('button', {name: 'Show Actions'}),
+		});
+	}
+
 	async goToEditFileEntry(entryTitle: string) {
 		await this.page
 			.getByRole('link', {exact: true, name: entryTitle})
@@ -246,6 +223,18 @@ export class DocumentLibraryPage {
 	async goToFileEntryAction(action: string, entryTitle: string) {
 		await clickAndExpectToBeVisible({
 			autoClick: true,
+			target: this.page.getByRole('menuitem', {
+				exact: true,
+				name: action,
+			}),
+			trigger: this.page
+				.locator(`.card-body:has-text('${entryTitle}')`)
+				.getByLabel('Actions'),
+		});
+	}
+
+	async assertFileEntryAction(action: string, entryTitle: string) {
+		await clickAndExpectToBeVisible({
 			target: this.page.getByRole('menuitem', {
 				exact: true,
 				name: action,
@@ -347,6 +336,20 @@ export class DocumentLibraryPage {
 		}
 
 		await fileEntryCheckbox.check();
+	}
+
+	async selectFolder(folderName: string) {
+		const folderCheckbox = this.page
+			.locator(`label:has-text('${folderName}')`)
+			.getByRole('checkbox');
+
+		if (await folderCheckbox.isHidden()) {
+			await this.search(folderName);
+
+			await expect(folderCheckbox).toBeVisible();
+		}
+
+		await folderCheckbox.check();
 	}
 
 	async assertFileEntryPermissions(

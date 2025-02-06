@@ -5,7 +5,7 @@
 
 import {ClayButtonWithIcon} from '@clayui/button';
 import ClayDropDown from '@clayui/drop-down';
-import {FeatureIndicator, ManagementToolbar} from 'frontend-js-components-web';
+import {ManagementToolbar} from 'frontend-js-components-web';
 import {sub} from 'frontend-js-web';
 import React from 'react';
 
@@ -18,7 +18,6 @@ import {useSetMovementSources} from '../../../../../app/contexts/KeyboardMovemen
 import {
 	useDispatch,
 	useSelector,
-	useSelectorRef,
 } from '../../../../../app/contexts/StoreContext';
 import {useGetWidgets} from '../../../../../app/contexts/WidgetsContext';
 import deleteItem from '../../../../../app/thunks/deleteItem';
@@ -34,7 +33,7 @@ import './PageStructureSidebarToolbar.scss';
 export default function PageStructureSidebarToolbar({activeItemIds}) {
 	const dispatch = useDispatch();
 	const fragmentEntryLinks = useSelector((state) => state.fragmentEntryLinks);
-	const layoutDataRef = useSelectorRef((state) => state.layoutData);
+	const layoutData = useSelector((state) => state.layoutData);
 	const selectedViewportSize = useSelector(
 		(state) => state.selectedViewportSize
 	);
@@ -42,8 +41,6 @@ export default function PageStructureSidebarToolbar({activeItemIds}) {
 	const setClipboard = useSetClipboard();
 	const setMovementSources = useSetMovementSources();
 	const getWidgets = useGetWidgets();
-
-	const layoutData = layoutDataRef.current;
 
 	const itemsCanBeDeleted = () =>
 		activeItemIds.every((activeItemId) =>
@@ -99,13 +96,11 @@ export default function PageStructureSidebarToolbar({activeItemIds}) {
 			type: 'divider',
 		},
 		{
-			isBetaFeature: true,
 			label: Liferay.Language.get('copy'),
 			onClick: () => setClipboard(activeItemIds),
 			symbolLeft: 'copy',
 		},
 		{
-			isBetaFeature: true,
 			label: Liferay.Language.get('cut'),
 			onClick: () => {
 				if (itemsCanBeDeleted()) {
@@ -136,7 +131,6 @@ export default function PageStructureSidebarToolbar({activeItemIds}) {
 		},
 		{
 			className: 'keyboard-only',
-			isBetaFeature: true,
 			label: sub(
 				Liferay.Language.get('move-x-items'),
 				activeItemIds.length
@@ -214,12 +208,6 @@ export default function PageStructureSidebarToolbar({activeItemIds}) {
 									symbolLeft={item.symbolLeft}
 								>
 									{item.label}
-
-									{item.isBetaFeature ? (
-										<span className="ml-2">
-											<FeatureIndicator type="beta" />
-										</span>
-									) : null}
 								</ClayDropDown.Item>
 							)
 						}

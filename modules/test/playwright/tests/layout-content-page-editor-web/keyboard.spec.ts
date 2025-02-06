@@ -18,8 +18,8 @@ import getPageDefinition from './utils/getPageDefinition';
 const test = mergeTests(
 	apiHelpersTest,
 	featureFlagsTest({
-		'LPD-18221': true,
-		'LPS-178052': true,
+		'LPD-18221': {enabled: true},
+		'LPS-178052': {enabled: true},
 	}),
 	isolatedSiteTest,
 	loginTest(),
@@ -273,7 +273,7 @@ test('Checks that a fragment is selected when it is added and the panel does not
 
 	await pageEditorPage.selectFragment(headingId);
 
-	await expect(page.getByLabel('Fragments and Widgets Panel')).toBeVisible();
+	await expect(page.getByLabel('Components Panel')).toBeVisible();
 });
 
 test(
@@ -368,6 +368,61 @@ test(
 		expect(await pageEditorPage.isActive(containerId)).toBe(true);
 		expect(await pageEditorPage.isActive(firstHeadingId)).toBe(true);
 		expect(await pageEditorPage.isActive(secondHeadingId)).toBe(true);
+	}
+);
+
+test(
+	'Avoid activating range multiselection when leaving and going back in the page structure tree',
+	{
+		tag: '@LPD-45460',
+	},
+	async ({apiHelpers, page, pageEditorPage, site}) => {
+
+		// Create a page with a Container fragment containing two Headings fragments
+
+		const firstHeading = getFragmentDefinition({
+			id: getRandomString(),
+			key: 'BASIC_COMPONENT-heading',
+		});
+
+		const secondHeading = getFragmentDefinition({
+			id: getRandomString(),
+			key: 'BASIC_COMPONENT-heading',
+		});
+
+		const container = getContainerDefinition({
+			id: getRandomString(),
+			pageElements: [firstHeading, secondHeading],
+		});
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([container]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.goToSidebarTab('Browser');
+
+		// Select the first heading inside the container and go down until the second heading
+
+		await page.locator('.page-editor__page-structure').press('Tab');
+		await page.keyboard.press('Tab');
+		await page.keyboard.press('ArrowRight');
+		await page.keyboard.press('ArrowDown');
+		await page.keyboard.press('Enter');
+		await page.keyboard.press('ArrowDown');
+		await page.keyboard.press('ArrowDown');
+
+		// Navigate until the sidebar resizer and go back to the page structure tree
+
+		await page.keyboard.press('Tab');
+		await page.keyboard.press('Shift+Tab');
+
+		await expect(
+			page.locator('.page-editor__page-structure')
+		).not.toContainText(/Items Selected/);
 	}
 );
 

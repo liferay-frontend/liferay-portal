@@ -7,6 +7,7 @@ package com.liferay.object.model;
 
 import com.liferay.portal.kernel.annotation.ImplementationClassName;
 import com.liferay.portal.kernel.model.PersistedModel;
+import com.liferay.portal.kernel.model.TreeModel;
 import com.liferay.portal.kernel.util.Accessor;
 
 import org.osgi.annotation.versioning.ProviderType;
@@ -20,7 +21,8 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @ImplementationClassName("com.liferay.object.model.impl.ObjectEntryImpl")
 @ProviderType
-public interface ObjectEntry extends ObjectEntryModel, PersistedModel {
+public interface ObjectEntry
+	extends ObjectEntryModel, PersistedModel, TreeModel {
 
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -47,12 +49,22 @@ public interface ObjectEntry extends ObjectEntryModel, PersistedModel {
 
 		};
 
+	@Override
+	public String buildTreePath()
+		throws com.liferay.portal.kernel.exception.PortalException;
+
 	public String getModelClassName();
 
 	public long getNonzeroGroupId()
 		throws com.liferay.portal.kernel.exception.PortalException;
 
 	public String getTitleValue()
+		throws com.liferay.portal.kernel.exception.PortalException;
+
+	public String getURLTitle(java.util.Locale locale)
+		throws com.liferay.portal.kernel.exception.PortalException;
+
+	public java.util.Map<String, String> getURLTitleMap()
 		throws com.liferay.portal.kernel.exception.PortalException;
 
 	public java.util.Map<String, java.io.Serializable> getValues();

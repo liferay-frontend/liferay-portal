@@ -233,11 +233,7 @@ public class BlogsManagementToolbarDisplayContext
 	}
 
 	private boolean _isSearch() {
-		if (Validator.isNull(_getKeywords())) {
-			return false;
-		}
-
-		return true;
+		return Validator.isNotNull(_getKeywords());
 	}
 
 	private boolean _isTrashEnabled() {

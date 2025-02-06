@@ -833,7 +833,7 @@ public class UserFinderImpl extends UserFinderBaseImpl implements UserFinder {
 		for (Map.Entry<String, Object> entry : params.entrySet()) {
 			String key = entry.getKey();
 
-			if (key.equals("expandoAttributes")) {
+			if (key.equals("expandoAttributes") || key.equals("noLDAPUsers")) {
 				continue;
 			}
 
@@ -1289,6 +1289,9 @@ public class UserFinderImpl extends UserFinderBaseImpl implements UserFinder {
 		else if (key.equals("noAccountEntriesAndNoOrganizations")) {
 			join = CustomSQLUtil.get(
 				JOIN_BY_NO_ACCOUNT_ENTRIES_AND_NO_ORGANIZATIONS);
+		}
+		else if (key.equals("noLDAPUsers")) {
+			join = "WHERE User_.ldapServerId = -1";
 		}
 		else if (key.equals("noOrganizations")) {
 			join = CustomSQLUtil.get(JOIN_BY_NO_ORGANIZATIONS);

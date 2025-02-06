@@ -340,6 +340,9 @@ public class PropsValues {
 	public static final String[] COMBO_ALLOWED_FILE_EXTENSIONS =
 		PropsUtil.getArray(PropsKeys.COMBO_ALLOWED_FILE_EXTENSIONS);
 
+	public static final int COMBO_ALLOWED_FILE_MAX_SIZE = GetterUtil.getInteger(
+		PropsUtil.get(PropsKeys.COMBO_ALLOWED_FILE_MAX_SIZE));
+
 	public static final boolean COMBO_CHECK_TIMESTAMP = GetterUtil.getBoolean(
 		PropsUtil.get(PropsKeys.COMBO_CHECK_TIMESTAMP));
 
@@ -1295,6 +1298,15 @@ public class PropsValues {
 	public static final String MAIL_SESSION_MAIL_TRANSPORT_PROTOCOL =
 		PropsUtil.get(PropsKeys.MAIL_SESSION_MAIL_TRANSPORT_PROTOCOL);
 
+	public static final String MARKETPLACE_CLIENT_ID = PropsUtil.get(
+		PropsKeys.MARKETPLACE_CLIENT_ID);
+
+	public static final String MARKETPLACE_REDIRECT = PropsUtil.get(
+		PropsKeys.MARKETPLACE_REDIRECT);
+
+	public static final String MARKETPLACE_URL = PropsUtil.get(
+		PropsKeys.MARKETPLACE_URL);
+
 	public static final boolean MEMBERSHIP_POLICY_AUTO_VERIFY =
 		GetterUtil.getBoolean(
 			PropsUtil.get(PropsKeys.MEMBERSHIP_POLICY_AUTO_VERIFY));
@@ -2216,12 +2228,6 @@ public class PropsValues {
 
 	public static final String[] SPRING_CONFIGS = PropsUtil.getArray(
 		PropsKeys.SPRING_CONFIGS);
-
-	public static final String[]
-		SPRING_HIBERNATE_CONFIGURATION_PROXY_FACTORY_PRELOAD_CLASSLOADER_CLASSES =
-			PropsUtil.getArray(
-				PropsKeys.
-					SPRING_HIBERNATE_CONFIGURATION_PROXY_FACTORY_PRELOAD_CLASSLOADER_CLASSES);
 
 	public static volatile boolean SPRING_HIBERNATE_SESSION_DELEGATED =
 		GetterUtil.getBoolean(

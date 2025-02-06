@@ -22,6 +22,7 @@ import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductConfiguration
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductShippingConfiguration;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductTaxConfiguration;
 import com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.converter.ProductConfigurationDTOConverterContext;
+import com.liferay.headless.commerce.admin.catalog.internal.odata.entity.v1_0.ProductConfigurationEntityModel;
 import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.ProductConfigurationUtil;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductConfigurationResource;
 import com.liferay.portal.kernel.change.tracking.CTAware;
@@ -34,6 +35,7 @@ import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
@@ -48,6 +50,7 @@ import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
 import org.osgi.service.component.annotations.Component;
@@ -86,6 +89,13 @@ public class ProductConfigurationResourceImpl
 	}
 
 	@Override
+	public EntityModel getEntityModel(MultivaluedMap multivaluedMap)
+		throws Exception {
+
+		return _entityModel;
+	}
+
+	@Override
 	public ProductConfiguration getProductByExternalReferenceCodeConfiguration(
 			String externalReferenceCode)
 		throws Exception {
@@ -109,7 +119,7 @@ public class ProductConfigurationResourceImpl
 		throws Exception {
 
 		return _toProductConfiguration(
-			_cpConfigurationEntryService.getCPConfigurationEntry(id));
+			_cpConfigurationEntryService.getCPConfigurationEntry(id), false);
 	}
 
 	@Override
@@ -129,8 +139,9 @@ public class ProductConfigurationResourceImpl
 	@Override
 	public Page<ProductConfiguration>
 			getProductConfigurationListByExternalReferenceCodeProductConfigurationsPage(
-				String externalReferenceCode, String search, Filter filter,
-				Pagination pagination, Sort[] sorts)
+				String externalReferenceCode, String search,
+				Boolean showDifferences, Filter filter, Pagination pagination,
+				Sort[] sorts)
 		throws Exception {
 
 		CPConfigurationList cpConfigurationList =
@@ -139,8 +150,8 @@ public class ProductConfigurationResourceImpl
 					externalReferenceCode, contextCompany.getCompanyId());
 
 		return getProductConfigurationListIdProductConfigurationsPage(
-			cpConfigurationList.getCPConfigurationListId(), search, filter,
-			pagination, sorts);
+			cpConfigurationList.getCPConfigurationListId(), search,
+			showDifferences, filter, pagination, sorts);
 	}
 
 	@NestedField(
@@ -150,8 +161,8 @@ public class ProductConfigurationResourceImpl
 	@Override
 	public Page<ProductConfiguration>
 			getProductConfigurationListIdProductConfigurationsPage(
-				Long id, String search, Filter filter, Pagination pagination,
-				Sort[] sorts)
+				Long id, String search, Boolean showDifferences, Filter filter,
+				Pagination pagination, Sort[] sorts)
 		throws Exception {
 
 		CPConfigurationList cpConfigurationList =
@@ -162,8 +173,7 @@ public class ProductConfigurationResourceImpl
 		return SearchUtil.search(
 			null, booleanQuery -> booleanQuery.getPreBooleanFilter(), filter,
 			CPConfigurationEntry.class.getName(), search, pagination,
-			queryConfig -> queryConfig.setSelectedFieldNames(
-				Field.ENTRY_CLASS_PK),
+			queryConfig -> queryConfig.setSelectedFieldNames(Field.CLASS_PK),
 			object -> {
 				SearchContext searchContext = (SearchContext)object;
 
@@ -177,7 +187,9 @@ public class ProductConfigurationResourceImpl
 			},
 			sorts,
 			document -> _toProductConfiguration(
-				GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK))));
+				_cpConfigurationEntryService.getCPConfigurationEntry(
+					GetterUtil.getLong(document.get(Field.CLASS_PK))),
+				GetterUtil.getBoolean(showDifferences)));
 	}
 
 	@NestedField(parentClass = Product.class, value = "productConfiguration")
@@ -306,7 +318,8 @@ public class ProductConfigurationResourceImpl
 					cpConfigurationEntry.getWeight()),
 				GetterUtil.getDouble(
 					productShippingConfiguration.getWidth(),
-					cpConfigurationEntry.getWidth())));
+					cpConfigurationEntry.getWidth())),
+			false);
 	}
 
 	@Override
@@ -544,7 +557,8 @@ public class ProductConfigurationResourceImpl
 					productTaxConfiguration.getTaxable(), true),
 				GetterUtil.getBoolean(productConfiguration.getVisible(), true),
 				GetterUtil.getDouble(productShippingConfiguration.getWeight()),
-				GetterUtil.getDouble(productShippingConfiguration.getWidth())));
+				GetterUtil.getDouble(productShippingConfiguration.getWidth())),
+			false);
 	}
 
 	private Map<String, Map<String, String>> _getActions(
@@ -608,7 +622,7 @@ public class ProductConfigurationResourceImpl
 	}
 
 	private ProductConfiguration _toProductConfiguration(
-			CPConfigurationEntry cpConfigurationEntry)
+			CPConfigurationEntry cpConfigurationEntry, boolean showDifferences)
 		throws Exception {
 
 		return _productConfigurationDTOConverter.toDTO(
@@ -617,8 +631,8 @@ public class ProductConfigurationResourceImpl
 				_getActions(cpConfigurationEntry),
 				cpConfigurationEntry.getCPConfigurationEntryId(),
 				_dtoConverterRegistry, null,
-				contextAcceptLanguage.getPreferredLocale(), contextUriInfo,
-				contextUser));
+				contextAcceptLanguage.getPreferredLocale(), showDifferences,
+				contextUriInfo, contextUser));
 	}
 
 	private ProductConfiguration _toProductConfiguration(Long cpDefinitionId)
@@ -629,6 +643,9 @@ public class ProductConfigurationResourceImpl
 				_dtoConverterRegistry, cpDefinitionId,
 				contextAcceptLanguage.getPreferredLocale(), null, null));
 	}
+
+	private static final EntityModel _entityModel =
+		new ProductConfigurationEntityModel();
 
 	@Reference(
 		target = "(model.class.name=com.liferay.commerce.product.model.CPConfigurationEntry)"

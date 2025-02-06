@@ -5,9 +5,11 @@
 
 package com.liferay.ant.mirrors.get;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,14 +28,19 @@ import java.nio.charset.StandardCharsets;
 
 import java.util.Base64;
 import java.util.Enumeration;
+import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipFile;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.taskdefs.Checksum;
+import org.apache.tools.tar.TarEntry;
+import org.apache.tools.tar.TarInputStream;
 
 /**
  * @author Peter Yoo
@@ -110,7 +117,48 @@ public class MirrorsGetTask extends Task {
 			return;
 		}
 
-		matcher = _srcPattern.matcher(_src);
+		matcher = _gsURLPattern.matcher(_src);
+
+		if (matcher.matches()) {
+			_fileName = matcher.group("fileName");
+
+			_gcpBucketName = matcher.group("bucketName");
+
+			Map<String, Object> properties = project.getProperties();
+
+			for (String propertyName : properties.keySet()) {
+				Matcher bucketHostNamePropertyMatcher =
+					_gcpBucketHostNamePropertyPattern.matcher(propertyName);
+
+				if (!bucketHostNamePropertyMatcher.matches() ||
+					!Objects.equals(
+						_gcpBucketName,
+						bucketHostNamePropertyMatcher.group("bucketName"))) {
+
+					continue;
+				}
+
+				_hostName = project.getProperty(propertyName);
+
+				break;
+			}
+
+			if (_hostName == null) {
+				throw new RuntimeException(
+					"The property \"mirrors.gcp.bucket.hostname[" +
+						_gcpBucketName + "]\" is not set");
+			}
+
+			_path = matcher.group("path");
+
+			while (_path.endsWith("/")) {
+				_path = _path.substring(0, _path.length() - 1);
+			}
+
+			return;
+		}
+
+		matcher = _httpURLPattern.matcher(_src);
 
 		if (!matcher.find()) {
 			throw new RuntimeException("Invalid src attribute: " + _src);
@@ -133,10 +181,6 @@ public class MirrorsGetTask extends Task {
 		}
 
 		_path = matcher.group("path");
-
-		if (_path.startsWith("mirrors/")) {
-			_path = _path.replaceFirst("mirrors", _getMirrorsHostname());
-		}
 
 		while (_path.endsWith("/")) {
 			_path = _path.substring(0, _path.length() - 1);
@@ -244,6 +288,15 @@ public class MirrorsGetTask extends Task {
 				targetFile.getAbsolutePath() + " failed checksum");
 		}
 
+		if (_isTarGzFileName(targetFile.getName()) &&
+			!_isTarGzFile(targetFile)) {
+
+			targetFile.delete();
+
+			throw new IOException(
+				targetFile.getAbsolutePath() + " is an invalid TAR GZ file");
+		}
+
 		if (_isZipFileName(targetFile.getName()) && !_isZipFile(targetFile)) {
 			targetFile.delete();
 
@@ -286,6 +339,67 @@ public class MirrorsGetTask extends Task {
 		_downloadFile(sourceURL, targetFile);
 	}
 
+	private void _downloadGCPFile(File targetFile) {
+		String gsURL = _getGSURL();
+
+		if (gsURL == null) {
+			return;
+		}
+
+		File gcpCredentialsFile = _getGCPCredentialsFile();
+
+		if (gcpCredentialsFile == null) {
+			StringBuilder sb = new StringBuilder();
+
+			sb.append("Unable to download from ");
+			sb.append(gsURL);
+			sb.append(" because \"mirrors.gcp.credentials.file[");
+			sb.append(_getGCPBucketName());
+			sb.append("]\" is not set.");
+
+			System.out.println(sb.toString());
+
+			return;
+		}
+
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("Downloading ");
+		sb.append(gsURL);
+		sb.append(" to ");
+		sb.append(targetFile.getPath());
+		sb.append(".");
+
+		System.out.println(sb.toString());
+
+		try {
+			Process process = _executeCommands(
+				new String[] {
+					"gcloud", "auth", "activate-service-account", "--key-file",
+					gcpCredentialsFile.toString()
+				});
+
+			if (process.exitValue() != 0) {
+				System.out.println("Unable to activate service account.");
+
+				return;
+			}
+
+			process = _executeCommands(
+				new String[] {
+					"gcloud", "storage", "cp", gsURL, targetFile.toString()
+				});
+
+			if (process.exitValue() != 0) {
+				System.out.println(
+					"Unable to download file from " + gsURL + ".");
+			}
+		}
+		catch (Exception exception) {
+			System.out.println("Unable to run GCP commands to download file.");
+		}
+	}
+
 	private void _execute() throws IOException {
 		if (_src.startsWith("file:")) {
 			File srcFile = new File(_src.substring("file:".length()));
@@ -320,10 +434,20 @@ public class MirrorsGetTask extends Task {
 		File mirrorsCacheFile = _getMirrorsCacheFile();
 
 		File mirrorsCacheTempFile = new File(
-			mirrorsCacheFile.toString() + ".tmp");
+			mirrorsCacheFile,
+			mirrorsCacheFile.getParentFile() + "/" +
+				System.currentTimeMillis() + mirrorsCacheFile.getName());
 
-		if (mirrorsCacheFile.exists() && !_force && _isZipFileName(_fileName)) {
-			_force = !_isZipFile(mirrorsCacheFile);
+		if (mirrorsCacheFile.exists() && !_force) {
+			if (_is7zFileName(_fileName)) {
+				_force = !_is7zFile(mirrorsCacheFile);
+			}
+			else if (_isTarGzFileName(_fileName)) {
+				_force = !_isTarGzFile(mirrorsCacheFile);
+			}
+			else if (_isZipFileName(_fileName)) {
+				_force = !_isZipFile(mirrorsCacheFile);
+			}
 		}
 
 		if (mirrorsCacheFile.exists() && _force) {
@@ -335,6 +459,21 @@ public class MirrorsGetTask extends Task {
 		}
 
 		if (!mirrorsCacheFile.exists()) {
+			_downloadGCPFile(mirrorsCacheTempFile);
+
+			if (mirrorsCacheTempFile.exists()) {
+				_moveFile(mirrorsCacheTempFile, mirrorsCacheFile);
+
+				if (_dest.exists() && _dest.isDirectory()) {
+					_copyFile(mirrorsCacheFile, new File(_dest, _fileName));
+				}
+				else {
+					_copyFile(mirrorsCacheFile, _dest);
+				}
+
+				return;
+			}
+
 			String mirrorsHostname = _getMirrorsHostname();
 
 			if (_tryLocalNetwork && !mirrorsHostname.isEmpty()) {
@@ -408,6 +547,76 @@ public class MirrorsGetTask extends Task {
 		process.waitFor();
 
 		return process;
+	}
+
+	private String _getGCPBucketName() {
+		if (_gcpBucketName != null) {
+			return _gcpBucketName;
+		}
+
+		if (_hostName == null) {
+			return null;
+		}
+
+		Map<String, Object> properties = project.getProperties();
+
+		for (String propertyName : properties.keySet()) {
+			Matcher bucketHostNamePropertyMatcher =
+				_gcpBucketHostNamePropertyPattern.matcher(propertyName);
+
+			if (!bucketHostNamePropertyMatcher.matches() ||
+				!Objects.equals(_hostName, project.getProperty(propertyName))) {
+
+				continue;
+			}
+
+			_gcpBucketName = bucketHostNamePropertyMatcher.group("bucketName");
+
+			break;
+		}
+
+		return _gcpBucketName;
+	}
+
+	private File _getGCPCredentialsFile() {
+		if (_gcpCredentialsFile != null) {
+			return _gcpCredentialsFile;
+		}
+
+		String gcpBucketName = _getGCPBucketName();
+
+		if (gcpBucketName == null) {
+			return null;
+		}
+
+		Project project = getProject();
+
+		String gcpCredentialsFileName = project.getProperty(
+			"mirrors.gcp.credentials.file[" + gcpBucketName + "]");
+
+		if (gcpCredentialsFileName == null) {
+			return null;
+		}
+
+		File gcpCredentialsFile = new File(gcpCredentialsFileName);
+
+		if (!gcpCredentialsFile.exists()) {
+			return null;
+		}
+
+		_gcpCredentialsFile = gcpCredentialsFile;
+
+		return _gcpCredentialsFile;
+	}
+
+	private String _getGSURL() {
+		String gcpBucketName = _getGCPBucketName();
+
+		if (gcpBucketName == null) {
+			return null;
+		}
+
+		return "gs://" + gcpBucketName + "/" + _path + "/" + _fileName;
 	}
 
 	private URL _getLocalURL() {
@@ -677,6 +886,49 @@ public class MirrorsGetTask extends Task {
 		return false;
 	}
 
+	private boolean _isTarGzFile(File file) throws IOException {
+		if (!file.exists()) {
+			return false;
+		}
+
+		try (GZIPInputStream gzipInputStream = new GZIPInputStream(
+				new FileInputStream(file));
+			InputStream bufferedInputStream = new BufferedInputStream(
+				gzipInputStream);
+			TarInputStream tarInputStream = new TarInputStream(
+				bufferedInputStream)) {
+
+			TarEntry tarEntry;
+
+			while ((tarEntry = tarInputStream.getNextEntry()) != null) {
+				if (tarEntry.isDirectory()) {
+					continue;
+				}
+
+				byte[] buffer = new byte[1024];
+				int bytesRead;
+
+				while ((bytesRead = tarInputStream.read(buffer)) != -1) {
+				}
+			}
+
+			return true;
+		}
+		catch (IOException ioException) {
+			System.out.println(file.getPath() + " is an invalid TAR GZ file.");
+
+			return false;
+		}
+	}
+
+	private boolean _isTarGzFileName(String fileName) {
+		if (fileName.endsWith(".tar.gz") || fileName.endsWith(".tgz")) {
+			return true;
+		}
+
+		return false;
+	}
+
 	private boolean _isValidMD5(File file, URL url) throws IOException {
 		if (_skipChecksum) {
 			return true;
@@ -910,19 +1162,26 @@ public class MirrorsGetTask extends Task {
 
 	private static final Pattern _basicAuthenticationURLPattern =
 		Pattern.compile("(https?://)([^:]+):([^@]+)@(.+)");
+	private static final Pattern _gcpBucketHostNamePropertyPattern =
+		Pattern.compile(
+			"mirrors.gcp.bucket.hostname\\[(?<bucketName>[^\\]]+)\\]");
+	private static final Pattern _gsURLPattern = Pattern.compile(
+		"gs://(?<bucketName>[^/]+)/(?<path>.+/)(?<fileName>.+)");
+	private static final Pattern _httpURLPattern = Pattern.compile(
+		"https?://(?<mirrorsHostname>mirrors(\\.[^\\.]+\\.liferay.com)?/)?" +
+			"(?<hostName>[^/]+(/\\d+)?)/(?<path>.+/)(?<fileName>.+)");
 	private static final Pattern _mirrorsHostNamePattern = Pattern.compile(
 		"^mirrors\\.[^\\.]+\\.liferay.com/");
 	private static final Pattern _releaseHostNamePattern = Pattern.compile(
 		"(release-\\d+|release.liferay.com)/(?<id>\\d+)");
-	private static final Pattern _srcPattern = Pattern.compile(
-		"https?://(?<mirrorsHostname>mirrors(\\.[^\\.]+\\.liferay.com)?/)?" +
-			"(?<hostName>[^/]+(/\\d+)?)/(?<path>.+/)(?<fileName>.+)");
 	private static final Pattern _testHostNamePattern = Pattern.compile(
 		"test-\\d+-\\d+");
 
 	private File _dest;
 	private String _fileName;
 	private boolean _force;
+	private String _gcpBucketName;
+	private File _gcpCredentialsFile;
 	private String _hostName;
 	private boolean _ignoreErrors;
 	private String _mirrorsHostname;

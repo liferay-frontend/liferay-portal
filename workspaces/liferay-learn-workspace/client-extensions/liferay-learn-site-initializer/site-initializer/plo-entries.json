@@ -18,9 +18,57 @@
 		}
 	},
 	{
+		"key": "learning-path",
+		"value": {
+			"en-US": "Learning Path"
+		}
+	},
+	{
+		"key": "liferay-education",
+		"value": {
+			"en-US": "Liferay Education"
+		}
+	},
+	{
+		"key": "liferay-education-sign-in-cta",
+		"value": {
+			"en-US": "Level up your Liferay skills! Explore our new guided learning experience in"
+		}
+	},
+	{
+		"key": "login-in-to-liferay-learn",
+		"value": {
+			"en-US": "Log In to Liferay Learn"
+		}
+	},
+	{
+		"key": "looking-for-partner-courses",
+		"value": {
+			"en-US": "Looking for Partner Courses?"
+		}
+	},
+	{
 		"key": "minutes",
 		"value": {
 			"en-US": "Minutes"
+		}
+	},
+	{
+		"key": "nav-item",
+		"value": {
+			"en-US": "Nav Item"
+		}
+	},
+	{
+		"key": "nav-item-description",
+		"value": {
+			"en-US": "Nav Item Description"
+		}
+	},
+	{
+		"key": "nav-item-header",
+		"value": {
+			"en-US": "Nav Item Header"
 		}
 	},
 	{
@@ -65,6 +113,24 @@
 		"key": "recipes",
 		"value": {
 			"en-US": "Recipes"
+		}
+	},
+	{
+		"key": "save-your-learning-progress",
+		"value": {
+			"en-US": "Save your learning progress and start earning Course Badges!"
+		}
+	},
+	{
+		"key": "sign-in-here",
+		"value": {
+			"en-US": "Sign in Here"
+		}
+	},
+	{
+		"key": "site-title",
+		"value": {
+			"en-US": "Site Title"
 		}
 	},
 	{

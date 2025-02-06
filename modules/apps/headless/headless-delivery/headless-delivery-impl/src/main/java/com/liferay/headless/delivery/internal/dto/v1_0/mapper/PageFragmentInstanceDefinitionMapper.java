@@ -285,17 +285,26 @@ public class PageFragmentInstanceDefinitionMapper {
 							if (valueJSONObject.has("color")) {
 								value = valueJSONObject.getString("color");
 							}
+							else {
+								JSONDeserializer<Map<String, Object>>
+									jsonDeserializer =
+										_jsonFactory.createJSONDeserializer();
+
+								value = jsonDeserializer.deserialize(
+									value.toString());
+							}
 						}
 
-						if (value instanceof JSONArray ||
-							value instanceof JSONObject) {
+						if (value instanceof JSONArray) {
+							List<String> values = new ArrayList<>();
 
-							JSONDeserializer<Map<String, Object>>
-								jsonDeserializer =
-									_jsonFactory.createJSONDeserializer();
+							JSONArray jsonArray = (JSONArray)value;
 
-							value = jsonDeserializer.deserialize(
-								value.toString());
+							for (int i = 0; i < jsonArray.length(); i++) {
+								values.add(jsonArray.getString(i));
+							}
+
+							value = values.toArray(new String[0]);
 						}
 
 						put(key, value);
@@ -1108,12 +1117,12 @@ public class PageFragmentInstanceDefinitionMapper {
 											configJSONObject.getJSONObject(
 												"href");
 
-										if (hrefJSONObject != null) {
-											return JSONUtil.toStringMap(
-												hrefJSONObject);
+										if (hrefJSONObject == null) {
+											return null;
 										}
 
-										return null;
+										return JSONUtil.toStringMap(
+											hrefJSONObject);
 									});
 							}
 						};

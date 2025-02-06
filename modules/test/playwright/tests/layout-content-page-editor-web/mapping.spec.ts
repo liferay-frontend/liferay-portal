@@ -3,18 +3,34 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {
+	ObjectActionApi,
+	ObjectDefinitionApi,
+	ObjectField,
+} from '@liferay/object-admin-rest-client-js';
 import {expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../fixtures/apiHelpersTest';
 import {collectionsPagesTest} from '../../fixtures/collectionsPagesTest';
+import {dataApiHelpersTest} from '../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../fixtures/featureFlagsTest';
+import {isolatedSiteTest} from '../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../fixtures/pageEditorPagesTest';
 import {pageManagementSiteTest} from '../../fixtures/pageManagementSiteTest';
 import {clickAndExpectToBeHidden} from '../../utils/clickAndExpectToBeHidden';
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../utils/getRandomString';
-import {ANIMALS_COLLECTION_NAME} from '../setup/page-management-site/constants/animals';
+import addApprovedStructuredContent from '../../utils/structured-content/addApprovedStructuredContent';
+import getBasicWebContentStructureId, {
+	getWebContentStructureId,
+} from '../../utils/structured-content/getBasicWebContentStructureId';
+import {waitForAlert} from '../../utils/waitForAlert';
+import {
+	ANIMALS_COLLECTION_NAME,
+	ANIMAL_DDM_STRUCTURE_KEY,
+} from '../setup/page-management-site/constants/animals';
+import {getObjectERC} from '../setup/page-management-site/utils/getObjectERC';
 import getCollectionDefinition from './utils/getCollectionDefinition';
 import getFragmentDefinition from './utils/getFragmentDefinition';
 import getPageDefinition from './utils/getPageDefinition';
@@ -22,9 +38,12 @@ import getPageDefinition from './utils/getPageDefinition';
 const test = mergeTests(
 	apiHelpersTest,
 	collectionsPagesTest,
+	dataApiHelpersTest,
 	featureFlagsTest({
-		'LPS-178052': true,
+		'LPD-18221': {enabled: true},
+		'LPS-178052': {enabled: true},
 	}),
+	isolatedSiteTest,
 	loginTest(),
 	pageEditorPagesTest,
 	pageManagementSiteTest
@@ -172,7 +191,7 @@ test('Allows selecting specific repeatable collection provider', async ({
 		page.locator('.page-editor__collection-item').first()
 	);
 
-	await page.locator('.lfr-layout-structure-item-collection').last().click();
+	await page.getByText('No Collection Selected').first().click();
 
 	await pageEditorPage.chooseCollectionDisplayOption(
 		'Repeatable Fields Collection Providers',
@@ -184,7 +203,7 @@ test('Allows selecting specific repeatable collection provider', async ({
 	await pageEditorPage.addFragment(
 		'Basic Components',
 		'Heading',
-		page.locator('.page-editor__collection-item.empty').last()
+		page.locator('.page-editor__collection-item.empty').first()
 	);
 
 	// Select editable and map it
@@ -213,3 +232,553 @@ test('Allows selecting specific repeatable collection provider', async ({
 	await expect(page.getByText('Pug')).toBeAttached();
 	await expect(page.getByText('Sphynx')).toBeAttached();
 });
+
+test(
+	'Link information is still kept when the linked page is deleted',
+	{
+		tag: '@LPS-120198',
+	},
+	async ({apiHelpers, page, pageEditorPage, site}) => {
+
+		// Add layout
+
+		const firstLayoutTitle = getRandomString();
+
+		const firstLayout = await apiHelpers.headlessDelivery.createSitePage({
+			siteId: site.id,
+			title: firstLayoutTitle,
+		});
+
+		// Add layout page with a button fragment
+
+		const buttonId = getRandomString();
+
+		const buttonDefinition = getFragmentDefinition({
+			id: buttonId,
+			key: 'BASIC_COMPONENT-button',
+		});
+
+		const secondLayout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([buttonDefinition]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		// Go to edit mode of page
+
+		await pageEditorPage.goto(secondLayout, site.friendlyUrlPath);
+
+		await pageEditorPage.mapEditableLink({
+			editableId: 'link',
+			fragmentName: 'Button',
+			linkConfiguration: {
+				layoutTitle: firstLayoutTitle,
+				type: 'Page',
+			},
+		});
+
+		await expect(page.getByPlaceholder('No Page Selected')).toHaveValue(
+			firstLayoutTitle
+		);
+
+		await expect(page.getByText('Go Somewhere')).toHaveAttribute(
+			'href',
+			`/web${site.friendlyUrlPath}/${firstLayoutTitle}`
+		);
+
+		await pageEditorPage.publishPage();
+
+		// Delete first layout
+
+		await page.goto(
+			`/web${site.friendlyUrlPath}${secondLayout.friendlyUrlPath}`
+		);
+
+		await apiHelpers.jsonWebServicesLayout.deleteLayout(firstLayout.id);
+
+		// Go to second layout and assert link is still visible
+
+		await page.goto(
+			`/web${site.friendlyUrlPath}${secondLayout.friendlyUrlPath}`
+		);
+
+		const link = page.getByRole('link', {name: 'Go Somewhere'});
+
+		await expect(link).toHaveAttribute(
+			'href',
+			`/web${site.friendlyUrlPath}/${firstLayoutTitle}`
+		);
+
+		// Navigate to first layout and assert page not found
+
+		await link.click();
+
+		await expect(page.getByText('Page Not Found')).toBeVisible();
+	}
+);
+
+test(
+	'Map single tag from asset entry to editable field',
+	{
+		tag: '@LPS-116975',
+	},
+	async ({apiHelpers, page, pageEditorPage, site}) => {
+
+		// Create web content with tags
+
+		const contentStructureId =
+			await getBasicWebContentStructureId(apiHelpers);
+
+		const basicWebContentTitle = getRandomString();
+
+		await addApprovedStructuredContent({
+			apiHelpers,
+			contentStructureId,
+			siteId: site.id,
+			tags: ['Dogs', 'Cats'],
+			title: basicWebContentTitle,
+		});
+
+		// Add content page
+
+		const headingId = getRandomString();
+
+		const headingDefinition = getFragmentDefinition({
+			id: headingId,
+			key: 'BASIC_COMPONENT-heading',
+		});
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([headingDefinition]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		// Go to edit mode
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.selectEditable(headingId, 'element-text');
+
+		await pageEditorPage.setMappedItem({
+			entity: 'Web Content',
+			entry: basicWebContentTitle,
+			field: 'Tags (Repeatable)',
+		});
+
+		await expect(page.locator('.component-heading')).toHaveText(
+			'Dogs, Cats'
+		);
+	}
+);
+
+test(
+	'Map specific display page template',
+	{
+		tag: ['@LPS-184193', '@LPS-191986'],
+	},
+	async ({apiHelpers, page, pageEditorPage, pageManagementSite}) => {
+
+		// Add display page template
+
+		const className =
+			await apiHelpers.jsonWebServicesClassName.fetchClassName(
+				'com.liferay.journal.model.JournalArticle'
+			);
+
+		const animalWebContentStructureId = await getWebContentStructureId(
+			apiHelpers,
+			pageManagementSite.id,
+			ANIMAL_DDM_STRUCTURE_KEY
+		);
+
+		const displayPageTemplateName = getRandomString();
+
+		const displayPage =
+			await apiHelpers.jsonWebServicesLayoutPageTemplateEntry.addDisplayPageLayoutPageTemplateEntry(
+				{
+					classNameId: className.classNameId,
+					classTypeId: String(animalWebContentStructureId),
+					groupId: pageManagementSite.id,
+					name: displayPageTemplateName,
+				}
+			);
+
+		// Add content page
+
+		const headingId = getRandomString();
+
+		const headingDefinition = getFragmentDefinition({
+			id: headingId,
+			key: 'BASIC_COMPONENT-heading',
+		});
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([headingDefinition]),
+			siteId: pageManagementSite.id,
+			title: getRandomString(),
+		});
+
+		// Map display page template to heading fragment
+
+		await pageEditorPage.goto(layout, pageManagementSite.friendlyUrlPath);
+
+		await pageEditorPage.mapEditableLink({
+			editableId: 'element-text',
+			fragmentName: 'Heading',
+			linkConfiguration: {
+				mappingConfiguration: {
+					mapping: {
+						entity: 'Web Content',
+						entry: 'Animal 01 - Dogs and Cats categories',
+						field: displayPageTemplateName,
+						folder: 'Animals',
+					},
+				},
+				type: 'Mapped URL',
+			},
+		});
+
+		expect(
+			await page.getByLabel('URL', {exact: true}).inputValue()
+		).toContain(`/e/${displayPageTemplateName}/${className.classNameId}`);
+
+		await pageEditorPage.publishPage();
+
+		// Navigate to display page template
+
+		await page.goto(
+			`/web${pageManagementSite.friendlyUrlPath}${layout.friendlyUrlPath}`
+		);
+
+		await expect(
+			page.getByRole('link', {name: 'Heading Example'})
+		).toHaveAttribute('rel', 'nofollow');
+
+		expect(
+			await page
+				.getByRole('link', {name: 'Heading Example'})
+				.getAttribute('href')
+		).toContain(`/e/${displayPageTemplateName}/${className.classNameId}`);
+
+		// Delete layout
+
+		await apiHelpers.jsonWebServicesLayout.deleteLayout(layout.id);
+
+		// Delete the display page
+
+		await apiHelpers.jsonWebServicesLayoutPageTemplateEntry.deleteLayoutPageTemplateEntry(
+			{
+				layoutPageTemplateEntryId:
+					displayPage.layoutPageTemplateEntryId,
+			}
+		);
+	}
+);
+
+test(
+	'Map web content field with url to image editable field and text editable field',
+	{
+		tag: '@LPS-98031',
+	},
+	async ({apiHelpers, page, pageEditorPage, pageManagementSite}) => {
+
+		// Create a page with a heading and image fragment
+
+		const headingId = getRandomString();
+
+		const headingFragment = getFragmentDefinition({
+			id: headingId,
+			key: 'BASIC_COMPONENT-heading',
+		});
+
+		const imageId = getRandomString();
+
+		const imageFragment = getFragmentDefinition({
+			id: imageId,
+			key: 'BASIC_COMPONENT-image',
+		});
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([headingFragment, imageFragment]),
+			siteId: pageManagementSite.id,
+			title: getRandomString(),
+		});
+
+		await pageEditorPage.goto(layout, pageManagementSite.friendlyUrlPath);
+
+		// Map link to heading fragment and image fragment
+
+		await pageEditorPage.mapEditableLink({
+			editableId: 'element-text',
+			fragmentName: 'Heading',
+			linkConfiguration: {
+				mappingConfiguration: {
+					mapping: {
+						entity: 'Web Content',
+						entry: 'Animal 01 - Dogs and Cats categories',
+						field: 'More Info Link',
+						folder: 'Animals',
+					},
+				},
+				type: 'Mapped URL',
+			},
+		});
+
+		await pageEditorPage.mapEditableLink({
+			editableId: 'image-square',
+			fragmentName: 'Image',
+			linkConfiguration: {
+				mappingConfiguration: {
+					mapping: {
+						entity: 'Web Content',
+						entry: 'Animal 02 - Dogs category',
+						field: 'More Info Link',
+						folder: 'Animals',
+					},
+				},
+				type: 'Mapped URL',
+			},
+		});
+
+		await pageEditorPage.publishPage();
+
+		// Assert link in view mode
+
+		await page.goto(
+			`/web${pageManagementSite.friendlyUrlPath}${layout.friendlyUrlPath}`
+		);
+
+		await expect(
+			page.getByRole('link', {name: 'Heading Example'})
+		).toHaveAttribute('href', 'https://en.wikipedia.org/wiki/Dog');
+
+		await expect(
+			page.locator('.component-image').getByRole('link')
+		).toHaveAttribute('href', 'https://en.wikipedia.org/wiki/Cat');
+
+		// Delete layout
+
+		await apiHelpers.jsonWebServicesLayout.deleteLayout(layout.id);
+	}
+);
+
+test(
+	'Only success object action redirects to the display page template',
+	{
+		tag: '@LPS-195827',
+	},
+	async ({apiHelpers, page, pageEditorPage, site}) => {
+
+		// Create student object definition
+
+		const objectDefinitionAPIClient =
+			await apiHelpers.buildRestClient(ObjectDefinitionApi);
+
+		const {body: potatoProviderObjectDefinition} =
+			await objectDefinitionAPIClient.postObjectDefinition({
+				active: true,
+				externalReferenceCode: 'potatoProviderERC',
+				label: {
+					en_US: 'Potato Provider',
+				},
+				name: 'PotatoProvider',
+				objectFields: [
+					{
+						DBType: ObjectField.DBTypeEnum.String,
+						businessType: ObjectField.BusinessTypeEnum.Text,
+						externalReferenceCode: 'nameERC',
+						indexed: true,
+						indexedAsKeyword: false,
+						label: {
+							en_US: 'Name',
+						},
+						localized: false,
+						name: 'name',
+						required: false,
+					},
+					{
+						DBType: ObjectField.DBTypeEnum.String,
+						businessType: ObjectField.BusinessTypeEnum.Text,
+						externalReferenceCode: 'locationERC',
+						indexed: true,
+						indexedAsKeyword: false,
+						label: {
+							en_US: 'Location',
+						},
+						localized: false,
+						name: 'location',
+						required: false,
+					},
+				],
+				pluralLabel: {
+					en_US: 'Potato Providers',
+				},
+				scope: 'company',
+				status: {
+					code: 0,
+				},
+			});
+
+		apiHelpers.data.push({
+			id: potatoProviderObjectDefinition.id,
+			type: 'objectDefinition',
+		});
+
+		// Add object entries
+
+		const applicationName =
+			'c/' + potatoProviderObjectDefinition.name.toLowerCase() + 's';
+
+		const firstObjectEntry = await apiHelpers.objectEntry.postObjectEntry(
+			{
+				location: 'Holland',
+				name: 'Holland Potatoes',
+			},
+			applicationName
+		);
+
+		const secondObjectEntry = await apiHelpers.objectEntry.postObjectEntry(
+			{
+				location: 'Canary Islands',
+				name: 'Canary Potatoes',
+			},
+			applicationName
+		);
+
+		// Add object action
+
+		const objectActionApiClient =
+			await apiHelpers.buildRestClient(ObjectActionApi);
+
+		await objectActionApiClient.postObjectDefinitionByExternalReferenceCodeObjectAction(
+			potatoProviderObjectDefinition.externalReferenceCode,
+			{
+				active: true,
+				errorMessage: {
+					en_US: 'The location should be Canary Islands.',
+				},
+				label: {
+					en_US: 'addObjectEntryName',
+				},
+				name: 'addObjectEntryName',
+				objectActionExecutorKey: 'add-object-entry',
+				objectActionTriggerKey: 'standalone',
+				parameters: {
+					objectDefinitionExternalReferenceCode:
+						getObjectERC('Potato'),
+					predefinedValues: [
+						{
+							businessType: 'Text',
+							inputAsValue: false,
+							label: {
+								en_US: 'Location',
+							},
+							name: 'potatoOrigin',
+							value: 'location',
+						},
+					],
+				},
+				system: false,
+			}
+		);
+
+		// Add display page template
+
+		const className =
+			await apiHelpers.jsonWebServicesClassName.fetchClassName(
+				potatoProviderObjectDefinition.className
+			);
+
+		const displayPage =
+			await apiHelpers.jsonWebServicesLayoutPageTemplateEntry.addDisplayPageLayoutPageTemplateEntry(
+				{
+					classNameId: className.classNameId,
+					groupId: site.id,
+					name: getRandomString(),
+				}
+			);
+
+		await apiHelpers.jsonWebServicesLayoutPageTemplateEntry.markAsDefaultDisplayPageLayoutPageTemplateEntry(
+			{
+				layoutPageTemplateEntryId:
+					displayPage.layoutPageTemplateEntryId,
+			}
+		);
+
+		// Create content page with a button fragment and go to edit mode
+
+		const firstButtonId = getRandomString();
+
+		const firstButtonDefinition = getFragmentDefinition({
+			id: firstButtonId,
+			key: 'BASIC_COMPONENT-button',
+		});
+
+		const secondButtonId = getRandomString();
+
+		const secondButtonDefinition = getFragmentDefinition({
+			id: secondButtonId,
+			key: 'BASIC_COMPONENT-button',
+		});
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				firstButtonDefinition,
+				secondButtonDefinition,
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		// Map standalone action to buttons
+
+		await pageEditorPage.mapAction({
+			entry: String(firstObjectEntry.id),
+			fragmentId: firstButtonId,
+		});
+
+		await pageEditorPage.mapAction({
+			entry: String(secondObjectEntry.id),
+			fragmentId: secondButtonId,
+		});
+
+		await pageEditorPage.publishPage();
+
+		// Go to view mode
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
+
+		// Wait a second for the page to load to get the buttons
+
+		await page.waitForTimeout(1000);
+
+		const buttons = page.getByText('Go Somewhere');
+
+		// Click first button and assert error
+
+		await buttons.first().click();
+
+		await waitForAlert(
+			page,
+			'Error:The location should be Canary Islands.',
+			{
+				type: 'danger',
+			}
+		);
+
+		await expect(page).toHaveURL(
+			`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`
+		);
+
+		// Click second button and assert success
+
+		await buttons.last().click();
+
+		await expect(
+			page.getByRole('heading', {name: String(secondObjectEntry.id)})
+		).toBeVisible();
+	}
+);

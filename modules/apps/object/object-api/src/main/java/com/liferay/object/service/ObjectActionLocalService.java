@@ -311,6 +311,10 @@ public interface ObjectActionLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getObjectActionsCount();
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Map<Long, List<ObjectAction>> getObjectActionsMap(
+		long companyId, boolean active, String objectActionTriggerKey);
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *

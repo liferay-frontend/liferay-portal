@@ -70,7 +70,7 @@ public class CTServiceCopier<T extends CTModel<T>> {
 		Map<String, Integer> tableColumnsMap =
 			ctPersistence.getTableColumnsMap();
 
-		StringBundler sb = new StringBundler((3 * tableColumnsMap.size()) + 5);
+		StringBundler sb = new StringBundler();
 
 		sb.append("select ");
 
@@ -92,7 +92,7 @@ public class CTServiceCopier<T extends CTModel<T>> {
 		sb.append(ctPersistence.getTableName());
 		sb.append(" t1 where t1.ctCollectionId = ");
 		sb.append(_sourceCTCollectionId);
-		sb.append(" and t1.");
+		sb.append(" and (t1.");
 		sb.append(primaryKeyName);
 		sb.append(" in (");
 
@@ -102,9 +102,7 @@ public class CTServiceCopier<T extends CTModel<T>> {
 			if (i == _BATCH_SIZE) {
 				sb.setStringAt(")", sb.index() - 1);
 
-				sb.append(" or ");
-				sb.append(tableName);
-				sb.append(".");
+				sb.append(" or t1.");
 				sb.append(primaryKeyName);
 				sb.append(" in (");
 
@@ -118,6 +116,8 @@ public class CTServiceCopier<T extends CTModel<T>> {
 		}
 
 		sb.setStringAt(")", sb.index() - 1);
+
+		sb.append(")");
 
 		CTRowUtil.copyCTRows(ctPersistence, connection, sb.toString());
 

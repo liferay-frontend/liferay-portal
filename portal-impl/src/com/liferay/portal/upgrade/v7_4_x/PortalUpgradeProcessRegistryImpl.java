@@ -9,6 +9,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.upgrade.BaseExternalReferenceCodeUpgradeProcess;
+import com.liferay.portal.kernel.upgrade.BaseUuidUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.CTModelUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.DummyUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.GuestUnsupportedResourcePermissionsUpgradeProcess;
@@ -69,7 +70,10 @@ public class PortalUpgradeProcessRegistryImpl
 		upgradeVersionTreeMap.put(new Version(9, 2, 0), new UpgradeCountry());
 
 		upgradeVersionTreeMap.put(
-			new Version(9, 2, 1), new UpgradeListType(),
+			new Version(9, 2, 1, "step-1"), new UpgradeListType());
+
+		upgradeVersionTreeMap.put(
+			new Version(9, 2, 1),
 			UpgradeModulesFactory.create(
 				new String[] {"com.liferay.address.impl"}, null));
 
@@ -216,7 +220,7 @@ public class PortalUpgradeProcessRegistryImpl
 
 		upgradeVersionTreeMap.put(
 			new Version(17, 0, 0),
-			UpgradeProcessFactory.dropColumns("Company", "system"));
+			UpgradeProcessFactory.dropColumns("Company", "system_"));
 
 		upgradeVersionTreeMap.put(
 			new Version(18, 0, 0),
@@ -287,7 +291,7 @@ public class PortalUpgradeProcessRegistryImpl
 				"DLFileVersion", "storeUUID VARCHAR(255) null"));
 
 		upgradeVersionTreeMap.put(
-			new Version(25, 3, 1),
+			new Version(25, 3, 1, "step-1"),
 			UpgradeProcessFactory.alterColumnType(
 				"UserGroupGroupRole", "userGroupGroupRoleId", "LONG not null"),
 			UpgradeProcessFactory.alterColumnType(
@@ -304,9 +308,10 @@ public class PortalUpgradeProcessRegistryImpl
 			UpgradeProcessFactory.alterColumnType(
 				"UserGroupRole", "groupId", "LONG null"),
 			UpgradeProcessFactory.alterColumnType(
-				"UserGroupRole", "roleId", "LONG null"),
-			//
-			new UpgradeUsersUserGroups());
+				"UserGroupRole", "roleId", "LONG null"));
+
+		upgradeVersionTreeMap.put(
+			new Version(25, 3, 1), new UpgradeUsersUserGroups());
 
 		upgradeVersionTreeMap.put(new Version(26, 0, 0), new UpgradeUserType());
 
@@ -342,8 +347,11 @@ public class PortalUpgradeProcessRegistryImpl
 				new String[] {"com.liferay.asset.link.service"}, null));
 
 		upgradeVersionTreeMap.put(
+			new Version(27, 0, 0, "step-1"),
+			new UpgradePartitionedControlTable("ClassName_"));
+
+		upgradeVersionTreeMap.put(
 			new Version(27, 0, 0),
-			new UpgradePartitionedControlTable("ClassName_"),
 			UpgradeModulesFactory.create(
 				new String[] {"com.liferay.comment.web"}, null));
 
@@ -520,6 +528,41 @@ public class PortalUpgradeProcessRegistryImpl
 			new Version(31, 12, 1),
 			UpgradeModulesFactory.create(
 				new String[] {"com.liferay.feature.flag.web"}, null));
+
+		upgradeVersionTreeMap.put(
+			new Version(31, 13, 0),
+			new BaseUuidUpgradeProcess() {
+
+				@Override
+				protected String[][] getTableAndPrimaryKeyColumnNames() {
+					return new String[][] {
+						{"WorkflowDefinitionLink", "workflowDefinitionLinkId"}
+					};
+				}
+
+			});
+
+		upgradeVersionTreeMap.put(
+			new Version(31, 14, 0),
+			new BaseExternalReferenceCodeUpgradeProcess() {
+
+				@Override
+				protected String[][] getTableAndPrimaryKeyColumnNames() {
+					return new String[][] {
+						{"WorkflowDefinitionLink", "workflowDefinitionLinkId"}
+					};
+				}
+
+			});
+
+		upgradeVersionTreeMap.put(
+			new Version(31, 14, 1),
+			UpgradeProcessFactory.dropColumns("Company", "system_"));
+
+		upgradeVersionTreeMap.put(
+			new Version(31, 14, 2),
+			UpgradeProcessFactory.alterColumnType(
+				"AssetVocabulary", "visibilityType", "INTEGER"));
 	}
 
 }

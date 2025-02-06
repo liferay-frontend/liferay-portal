@@ -6,7 +6,9 @@ const inputLabelElement = document.getElementById(
 	`${fragmentEntryLinkNamespace}-rich-text-input-label`
 );
 
-let currentLanguageId = themeDisplay.getDefaultLanguageId();
+const editorName = `${fragmentEntryLinkNamespace}-${input.name}`;
+
+document.getElementById(editorName).name = input.name;
 
 if (input.attributes?.readOnly) {
 	if (inputElement) {
@@ -18,57 +20,64 @@ else if (layoutMode === 'edit') {
 		inputElement.setAttribute('disabled', true);
 	}
 }
-else if (layoutMode !== 'edit' && input.localizable) {
-	CKEDITOR.on('instanceReady', (editorEvent) => {
-		if (editorEvent.editor.name === input.name) {
-			editorEvent.editor.on('change', () => {
-				const value = editorEvent.editor.getData();
-
-				const translationInput =
-					getOrCreateTranslationInput(currentLanguageId);
-
-				translationInput.value = value;
-
-				Liferay.fire('localizationSelect:updateTranslationStatus', {
-					languageId: currentLanguageId,
-				});
-			});
-		}
-
-		Liferay.on('localizationSelect:localeChanged', (event) => {
-			currentLanguageId = event.languageId;
-
-			const translationInput =
-				getOrCreateTranslationInput(currentLanguageId);
-
-			if (translationInput.getAttribute('value') !== null) {
-				editorEvent.editor.setData(translationInput.value);
+else if (Liferay.FeatureFlags['LPD-37927']) {
+	const editorPromise = new Promise((resolve) => {
+		CKEDITOR.on('instanceReady', (editorEvent) => {
+			if (editorEvent.editor.name === editorName) {
+				resolve(editorEvent.editor);
 			}
 		});
 	});
 
-	if (input.valueI18n) {
-		Object.entries(input.valueI18n).forEach(([languageId, value]) => {
-			const translationInput = getOrCreateTranslationInput(languageId);
+	import('@liferay/fragment-impl').then(
+		({registerLocalizedInput, registerUnlocalizedInput}) => {
+			if (input.localizable) {
+				const {onChange} = registerLocalizedInput({
+					defaultLanguageId: themeDisplay.getDefaultLanguageId(),
+					initialValues: input.valueI18n,
+					inputName: input.name,
+					localizationInputsContainer:
+						inputLabelElement.parentElement,
+					namespace: fragmentNamespace,
+					onLocaleChange: ({value}) => {
+						editorPromise.then((editor) => {
+							editor.setData(value);
+						});
+					},
+				});
 
-			translationInput.value = value;
-		});
-	}
-}
+				editorPromise.then((editor) => {
+					editor.on('change', () => {
+						const value = editor.getData();
 
-function getOrCreateTranslationInput(languageId) {
-	const inputId = `${fragmentNamespace}${input.name}_${languageId}`;
+						onChange(value);
+					});
+				});
+			}
+			else {
+				registerUnlocalizedInput({
+					defaultLanguageId: themeDisplay.getDefaultLanguageId(),
+					onLocaleChange: (languageId) => {
+						editorPromise.then((editor) => {
+							if (
+								languageId ===
+								themeDisplay.getDefaultLanguageId()
+							) {
+								editor.setReadOnly(false);
+							}
+							else {
+								editor.setReadOnly(true);
+							}
+						});
+					},
+					unlocalizedFieldsState:
+						input.attributes.unlocalizedFieldsState,
 
-	let translationInput = document.getElementById(inputId);
-
-	if (!translationInput) {
-		translationInput = document.createElement('input');
-		translationInput.type = 'hidden';
-		translationInput.id = inputId;
-		translationInput.name = `${input.name}_${languageId}`;
-
-		inputLabelElement.parentElement.appendChild(translationInput);
-	}
-
-	return translationInput;
+					unlocalizedMessageContainer: document.getElementById(
+						`${fragmentNamespace}-unlocalized-info`
+					),
+				});
+			}
+		}
+	);
 }

@@ -1,6 +1,6 @@
 /**
  * Object
- * A Java client JAR is available for use with the group ID \'com.liferay\', artifact ID \'com.liferay.object.admin.rest.client\', and version \'1.0.73\'.
+ * A Java client JAR is available for use with the group ID \'com.liferay\', artifact ID \'com.liferay.object.admin.rest.client\', and version \'1.0.75\'.
  *
  * The version of the OpenAPI document: v1.0
  * 
@@ -30,6 +30,7 @@ export class ObjectDefinition {
     'defaultLanguageId'?: string;
     'enableCategorization'?: boolean;
     'enableComments'?: boolean;
+    'enableFriendlyURLCustomization'?: boolean;
     'enableIndexSearch'?: boolean;
     'enableLocalization'?: boolean;
     'enableObjectEntryDraft'?: boolean;
@@ -110,6 +111,11 @@ export class ObjectDefinition {
         {
             "name": "enableComments",
             "baseName": "enableComments",
+            "type": "boolean"
+        },
+        {
+            "name": "enableFriendlyURLCustomization",
+            "baseName": "enableFriendlyURLCustomization",
             "type": "boolean"
         },
         {

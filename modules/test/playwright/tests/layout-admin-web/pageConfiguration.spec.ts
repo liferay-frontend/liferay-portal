@@ -19,7 +19,7 @@ import {liferayConfig} from '../../liferay.config';
 import {checkAccessibility} from '../../utils/checkAccessibility';
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../utils/getRandomString';
-import performLogin, {performLogout} from '../../utils/performLogin';
+import {performLoginViaApi, performLogout} from '../../utils/performLogin';
 import {selectAndExpectToHaveValue} from '../../utils/selectAndExpectToHaveValue';
 import {waitForAlert} from '../../utils/waitForAlert';
 import {pagesPagesTest} from './fixtures/pagesPagesTest';
@@ -27,7 +27,7 @@ import {pagesPagesTest} from './fixtures/pagesPagesTest';
 const test = mergeTests(
 	apiHelpersTest,
 	featureFlagsTest({
-		'LPS-178052': true,
+		'LPS-178052': {enabled: true},
 	}),
 	isolatedSiteTest,
 	loginTest(),
@@ -215,735 +215,7 @@ test.describe('General configuration', () => {
 	);
 });
 
-test.describe('Page types configuration', () => {
-	test('Can configure an embedded page', async ({
-		apiHelpers,
-		page,
-		pageConfigurationPage,
-		pagesAdminPage,
-		site,
-	}) => {
-		await apiHelpers.jsonWebServicesLayout.addLayout({
-			groupId: site.id,
-			options: {
-				type: 'embedded',
-			},
-			title: 'Embedded',
-		});
-
-		await pagesAdminPage.goto(site.friendlyUrlPath);
-
-		await pageConfigurationPage.setInputValueAndSave(
-			page.getByLabel('URL').first(),
-			'Embedded',
-			'General',
-			'https://www.google.com'
-		);
-
-		// Check URL was updated
-
-		await pagesAdminPage.goto(site.friendlyUrlPath);
-
-		await pageConfigurationPage.goToSection('Embedded', 'General');
-
-		await expect(page.getByLabel('URL').first()).toHaveValue(
-			'https://www.google.com'
-		);
-	});
-
-	test('Can configure a full page application', async ({
-		apiHelpers,
-		page,
-		pageConfigurationPage,
-		pagesAdminPage,
-		site,
-	}) => {
-		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
-			groupId: site.id,
-			options: {
-				type: 'full_page_application',
-			},
-			title: 'Full Page Application',
-		});
-
-		await pagesAdminPage.goto(site.friendlyUrlPath);
-
-		await pageConfigurationPage.goToSection(
-			'Full Page Application',
-			'General'
-		);
-
-		await selectAndExpectToHaveValue({
-			optionLabel: 'Wiki',
-			select: page.getByLabel('Full Page Application'),
-		});
-
-		await pageConfigurationPage.save();
-
-		// Go to view mode of page
-
-		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
-
-		await expect(page.getByRole('heading', {name: 'Wiki'})).toBeVisible();
-	});
-
-	test('Can configure a panel page', async ({
-		apiHelpers,
-		page,
-		pageConfigurationPage,
-		pagesAdminPage,
-		site,
-	}) => {
-
-		// Create page and go to General configuration
-
-		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
-			groupId: site.id,
-			options: {
-				type: 'panel',
-			},
-			title: 'Panel',
-		});
-
-		await pagesAdminPage.goto(site.friendlyUrlPath);
-
-		await pageConfigurationPage.goToSection('Panel', 'General');
-
-		// Select Collaboration application
-
-		await page
-			.locator('.treeview-link[data-id*="collaboration"]')
-			.getByRole('checkbox')
-			.check();
-
-		await pageConfigurationPage.save();
-
-		// Go to view mode of page
-
-		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
-
-		await expect(
-			page.getByRole('link', {exact: true, name: 'Blogs'})
-		).toBeVisible();
-	});
-
-	test(
-		'Can configure a link to page',
-		{
-			tag: '@LPS-159631',
-		},
-		async ({
-			apiHelpers,
-			page,
-			pageConfigurationPage,
-			pagesAdminPage,
-			site,
-		}) => {
-
-			// Create widget page
-
-			const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
-				groupId: site.id,
-				title: getRandomString(),
-			});
-
-			// Create link to URL page
-
-			const linkToURLTitle = getRandomString();
-
-			await apiHelpers.jsonWebServicesLayout.addLayout({
-				groupId: site.id,
-				options: {
-					type: 'url',
-				},
-				title: linkToURLTitle,
-			});
-
-			// Update URL
-
-			await pagesAdminPage.goto(site.friendlyUrlPath);
-
-			await pageConfigurationPage.setInputValueAndSave(
-				page.getByLabel('URL').first(),
-				linkToURLTitle,
-				'General',
-				'https://www.google.com'
-			);
-
-			// Navigate to page
-
-			await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
-
-			// Check target is not set
-
-			await expect(
-				page.getByRole('menuitem', {name: linkToURLTitle})
-			).not.toHaveAttribute('target');
-
-			// Update specific target to _blank
-
-			await pagesAdminPage.goto(site.friendlyUrlPath);
-
-			await pageConfigurationPage.setInputValueAndSave(
-				page.getByLabel('Target', {exact: true}),
-				linkToURLTitle,
-				'General',
-				'_blank'
-			);
-
-			// Navigate to page
-
-			await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
-
-			// Check target is set to _blank
-
-			await expect(
-				page.getByRole('menuitem', {name: linkToURLTitle})
-			).toHaveAttribute('target', '_blank');
-
-			// Update target type to new tab
-
-			await pagesAdminPage.goto(site.friendlyUrlPath);
-
-			await pageConfigurationPage.goToSection(linkToURLTitle, 'General');
-
-			await selectAndExpectToHaveValue({
-				optionLabel: 'New Tab',
-				select: page.getByLabel('Target type'),
-			});
-
-			await pageConfigurationPage.save();
-
-			// Navigate to page
-
-			await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
-
-			// Check target is set to _blank
-
-			await expect(
-				page.getByRole('menuitem', {name: linkToURLTitle})
-			).toHaveAttribute('target', '_blank');
-		}
-	);
-});
-
-test.describe('SEO configuration', () => {
-	test('Can disable open graph', async ({
-		apiHelpers,
-		page,
-		pagesAdminPage,
-		site,
-		systemSettingsPage,
-	}) => {
-
-		// Create page
-
-		const pageName = getRandomString();
-
-		await apiHelpers.jsonWebServicesLayout.addLayout({
-			groupId: site.id,
-			title: pageName,
-		});
-
-		// Disable open graph
-
-		await systemSettingsPage.goToSystemSetting('Pages', 'SEO');
-
-		const openGraphCheckInput = page.getByLabel('Enable Open Graph');
-
-		await openGraphCheckInput.uncheck();
-
-		await page.locator('.btn-primary').click();
-
-		await waitForAlert(page);
-
-		// Assert open graph section is not present
-
-		await pagesAdminPage.goto(site.friendlyUrlPath);
-
-		await pagesAdminPage.clickOnAction('Configure', pageName);
-
-		await expect(
-			page.locator('nav.menubar', {
-				has: page.getByText('Open Graph'),
-			})
-		).not.toBeAttached();
-
-		// Enable open graph
-
-		await systemSettingsPage.goToSystemSetting('Pages', 'SEO');
-
-		await openGraphCheckInput.check();
-
-		await page.locator('.btn-primary').click();
-
-		await waitForAlert(page);
-
-		// Assert open graph section is present
-
-		await pagesAdminPage.goto(site.friendlyUrlPath);
-
-		await pagesAdminPage.clickOnAction('Configure', pageName);
-
-		await expect(
-			page.locator('nav.menubar', {
-				has: page.getByText('Open Graph'),
-			})
-		).toBeAttached();
-	});
-
-	test('Checks page SEO HTML title is not shown in edit mode', async ({
-		apiHelpers,
-		page,
-		pageConfigurationPage,
-		pageEditorPage,
-		pagesAdminPage,
-		site,
-	}) => {
-
-		// Create page
-
-		const pageName = getRandomString();
-
-		const layout = await apiHelpers.headlessDelivery.createSitePage({
-			siteId: site.id,
-			title: pageName,
-		});
-
-		// Change SEO HTML title
-
-		await pagesAdminPage.goto(site.friendlyUrlPath);
-		await pageConfigurationPage.goToSection(pageName, 'SEO');
-
-		const HTMLTitle = getRandomString();
-
-		await pageConfigurationPage.setHTMLTitle(HTMLTitle);
-
-		// Check SEO HTML title is shown in view mode
-
-		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
-
-		expect(await page.title()).toBe(
-			`${HTMLTitle} - ${site.name} - Liferay DXP`
-		);
-
-		// Check SEO HTML title is not shown in view mode
-
-		await pageEditorPage.goto(layout, site.friendlyUrlPath);
-
-		expect(await page.title()).toBe(
-			`${pageName} - ${site.name} - Liferay DXP (Editing)`
-		);
-	});
-
-	test('SEO preview', async ({
-		apiHelpers,
-		page,
-		pageConfigurationPage,
-		pagesAdminPage,
-		site,
-	}) => {
-
-		// Create page and go to SEO
-
-		const pageName = getRandomString();
-
-		await apiHelpers.headlessDelivery.createSitePage({
-			siteId: site.id,
-			title: pageName,
-		});
-
-		await pagesAdminPage.goto(site.friendlyUrlPath);
-		await pageConfigurationPage.goToSection(pageName, 'SEO');
-
-		// Change SEO HTML title and description in default language
-
-		const defaultLanguageHTMLTitle = getRandomString();
-
-		await page.getByLabel('HTML Title').fill(defaultLanguageHTMLTitle);
-
-		const defaultLanguageDescription = getRandomString();
-
-		await page.getByLabel('Description').fill(defaultLanguageDescription);
-
-		// Assert preview
-
-		await expect(page.locator('.preview-seo-title')).toContainText(
-			`${defaultLanguageHTMLTitle} - ${site.name}`
-		);
-
-		await expect(page.locator('.preview-seo-description')).toContainText(
-			defaultLanguageDescription
-		);
-
-		// Switch language
-
-		await page
-			.getByRole('button')
-			.filter({hasText: 'en-US'})
-			.first()
-			.click();
-
-		await page.getByRole('menuitem').filter({hasText: 'es-ES'}).click();
-
-		// Change SEO HTML title and description in spanish
-
-		const spanishLanguageHTMLTitle = getRandomString();
-
-		await page.getByLabel('HTML Title').fill(spanishLanguageHTMLTitle);
-
-		const spanishLanguageDescription = getRandomString();
-
-		await page.getByLabel('Description').fill(spanishLanguageDescription);
-
-		// Assert preview
-
-		await expect(page.locator('.preview-seo-title')).toContainText(
-			`${spanishLanguageHTMLTitle} - ${site.name}`
-		);
-
-		await expect(page.locator('.preview-seo-description')).toContainText(
-			spanishLanguageDescription
-		);
-	});
-
-	test('User can customize canonical url', async ({
-		apiHelpers,
-		page,
-		pageConfigurationPage,
-		pagesAdminPage,
-		site,
-	}) => {
-
-		// Create page
-
-		const pageName = getRandomString();
-
-		await apiHelpers.jsonWebServicesLayout.addLayout({
-			groupId: site.id,
-			title: pageName,
-		});
-
-		// Assert canonical url
-
-		await performLogout(page);
-
-		await page.goto(`/web${site.friendlyUrlPath}/${pageName}`);
-
-		expect(
-			await page.locator('link[rel="canonical"]').getAttribute('href')
-		).toBe(
-			`${liferayConfig.environment.baseUrl}/web${site.friendlyUrlPath}`
-		);
-
-		await performLogin(page, 'test');
-
-		// Go to SEO
-
-		await pagesAdminPage.goto(site.friendlyUrlPath);
-
-		await pageConfigurationPage.goToSection(pageName, 'SEO');
-
-		// Configure custom canonical url
-
-		await page.getByLabel('Use Custom Canonical URL').check();
-
-		await expect(
-			page.getByText('Due to the customization of the canonical URL')
-		).toBeAttached();
-
-		const canonicalURL = page.getByLabel('Canonical URL', {exact: true});
-
-		await expect(canonicalURL).toHaveValue(
-			`${liferayConfig.environment.baseUrl}/web${site.friendlyUrlPath}`
-		);
-
-		await canonicalURL.fill('http://mycustomizedurl.com/mydesiredurl');
-
-		// Save configuration
-
-		await pageConfigurationPage.save();
-
-		// Assert custom canonical url
-
-		await performLogout(page);
-
-		await page.goto(`/web${site.friendlyUrlPath}/${pageName}`);
-
-		expect(
-			await page.locator('link[rel="canonical"]').getAttribute('href')
-		).toBe('http://mycustomizedurl.com/mydesiredurl');
-	});
-
-	test('User can customize custom meta tags', async ({
-		apiHelpers,
-		page,
-		pageConfigurationPage,
-		pagesAdminPage,
-		site,
-	}) => {
-
-		// Create page
-
-		const pageName = getRandomString();
-
-		await apiHelpers.jsonWebServicesLayout.addLayout({
-			groupId: site.id,
-			title: pageName,
-		});
-
-		// Configure custom meta tags
-
-		await pagesAdminPage.goto(site.friendlyUrlPath);
-
-		await pageConfigurationPage.goToSection(pageName, 'Custom Meta Tags');
-
-		// Edit custom meta tags
-
-		await page.getByLabel('Add Custom Tags').waitFor();
-
-		const property1 = page.getByLabel('Property', {exact: true}).nth(0);
-
-		await property1.waitFor();
-
-		const property1Name = getRandomString();
-
-		await property1.fill(property1Name);
-
-		const content1 = page.getByLabel('Content', {exact: true}).nth(0);
-
-		const content1DefaultValue = getRandomString();
-
-		await content1.fill(content1DefaultValue);
-
-		// Add new custom meta tag
-
-		await page.getByLabel('Add Custom Tags').click();
-
-		// Edit new custom meta tag
-
-		const property2 = page.getByLabel('Property', {exact: true}).nth(1);
-
-		await property2.waitFor();
-
-		const property2Name = getRandomString();
-
-		await property2.fill(property2Name);
-
-		const content2 = page.getByLabel('Content', {exact: true}).nth(1);
-
-		const content2DefaultValue = getRandomString();
-
-		await content2.fill(content2DefaultValue);
-
-		// Switch language
-
-		await page.getByRole('button').filter({hasText: 'en-US'}).click();
-
-		await page.getByRole('link').filter({hasText: 'es-ES'}).click();
-
-		// Translate custom meta tags
-
-		const content1SpanishValue = getRandomString();
-
-		await content1.fill(content1SpanishValue);
-
-		const content2SpanishValue = getRandomString();
-
-		await content2.fill(content2SpanishValue);
-
-		// Save configuration
-
-		await pageConfigurationPage.save();
-
-		// Assert spanish language custom meta tags
-
-		await performLogout(page);
-
-		await page.goto(`/es/web${site.friendlyUrlPath}/${pageName}`);
-
-		await expect(
-			page.locator(
-				`meta[property="${property1Name}"][content="${content1SpanishValue}"]`
-			)
-		).toBeAttached();
-
-		await expect(
-			page.locator(
-				`meta[property="${property2Name}"][content="${content2SpanishValue}"]`
-			)
-		).toBeAttached();
-
-		// Assert default language custom meta tags
-
-		await page.goto(`/en/web${site.friendlyUrlPath}/${pageName}`);
-
-		await expect(
-			page.locator(
-				`meta[property="${property1Name}"][content="${content1DefaultValue}"]`
-			)
-		).toBeAttached();
-
-		await expect(
-			page.locator(
-				`meta[property="${property2Name}"][content="${content2DefaultValue}"]`
-			)
-		).toBeAttached();
-	});
-
-	test(
-		'User can customize open graph tags',
-		{
-			tag: '@LPS-134658',
-		},
-		async ({
-			apiHelpers,
-			page,
-			pageConfigurationPage,
-			pagesAdminPage,
-			site,
-		}) => {
-
-			// Create page
-
-			const pageName = getRandomString();
-
-			await apiHelpers.jsonWebServicesLayout.addLayout({
-				groupId: site.id,
-				title: pageName,
-			});
-
-			// Configure open graph tags
-
-			await pagesAdminPage.goto(site.friendlyUrlPath);
-
-			await pageConfigurationPage.goToSection(pageName, 'Open Graph');
-
-			// Configure image
-
-			const fileChooserPromise = page.waitForEvent('filechooser');
-
-			await page.getByLabel('Select Image', {exact: true}).click();
-
-			const iframe = page.frameLocator('iframe[title="Select Image"]');
-
-			await expect(
-				iframe.getByText('Drag & Drop Your Images or Browse to Upload')
-			).toBeVisible();
-
-			await iframe
-				.getByText('Drag & Drop Your Images or Browse to Upload')
-				.click();
-
-			const fileChooser = await fileChooserPromise;
-
-			await fileChooser.setFiles(
-				path.join(__dirname, '/dependencies/thumbnail.jpg')
-			);
-
-			await iframe
-				.getByRole('button', {exact: true, name: 'Add'})
-				.click();
-
-			// Configure image alt description
-
-			const imageAltDescription = getRandomString();
-
-			await page
-				.getByLabel('Image Alt Description')
-				.fill(imageAltDescription);
-
-			// Configure title
-
-			await page.getByLabel('Use Custom Title').check();
-
-			const title = getRandomString();
-
-			await page.getByPlaceholder('Title', {exact: true}).fill(title);
-
-			// Configure description
-
-			await page.getByLabel('Use Custom Description').check();
-
-			const description = getRandomString();
-
-			await page
-				.getByPlaceholder('Description', {exact: true})
-				.fill(description);
-
-			await pageConfigurationPage.save();
-
-			// Assert open graph tags
-
-			await performLogout(page);
-
-			await page.goto(`/web${site.friendlyUrlPath}/${pageName}`);
-
-			await expect(
-				page.locator(`meta[property="og:title"][content="${title}"]`)
-			).toBeAttached();
-
-			await expect(
-				page.locator(
-					`meta[property="og:description"][content="${description}"]`
-				)
-			).toBeAttached();
-
-			await expect(
-				page.locator(
-					`meta[property="og:image"][content*="thumbnail.jpg"]`
-				)
-			).toBeAttached();
-
-			await expect(
-				page.locator(
-					`meta[property="og:image:alt"][content="${imageAltDescription}"]`
-				)
-			).toBeAttached();
-		}
-	);
-});
-
-test.describe('Utility Page', () => {
-	test(
-		'Asserts the Utility Pages configuration view',
-		{
-			tag: '@LPD-4459',
-		},
-		async ({
-			page,
-			pageEditorPage,
-			site,
-			utilityPageConfigurationPage,
-			utilityPagesPage,
-		}) => {
-			await page.goto('/');
-
-			// The configuration action must be available from the card
-			// The configuration view should only allow setting the htmlTitle and htmlDescription SEO fields
-
-			await utilityPagesPage.goto(site.friendlyUrlPath);
-			await utilityPageConfigurationPage.setUtilityPageConfiguration(
-				getRandomString(),
-				getRandomString(),
-				'404 Error'
-			);
-
-			// During editing the "More Page Design Options" link should not be available
-
-			await utilityPagesPage.goto(site.friendlyUrlPath);
-			await utilityPagesPage.goToEdit('404 Error');
-			await pageEditorPage.goToSidebarTab('Page Design Options');
-
-			await expect(page.getByText('Master', {exact: true})).toBeVisible();
-			expect(
-				await page.getByTitle('More Page Design Options').count()
-			).toEqual(0);
-		}
-	);
-});
-
-test.describe('CSS Client Extensions', () => {
+test.describe('Design configuration', () => {
 	test(
 		'Add CSS extension to page',
 		{
@@ -1138,9 +410,7 @@ test.describe('CSS Client Extensions', () => {
 			await deleteClientExtension(apiHelpers, clientExtension);
 		}
 	);
-});
 
-test.describe('JavaScript Client Extensions', () => {
 	test(
 		'Add JS extension to page',
 		{
@@ -1339,9 +609,7 @@ test.describe('JavaScript Client Extensions', () => {
 			await deleteClientExtension(apiHelpers, clientExtension);
 		}
 	);
-});
 
-test.describe('Theme Favicon', () => {
 	test(
 		'Add theme favicon to page',
 		{
@@ -1601,6 +869,866 @@ test.describe('Theme Favicon', () => {
 			await deleteClientExtension(apiHelpers, clientExtension1);
 
 			await deleteClientExtension(apiHelpers, clientExtension2);
+		}
+	);
+
+	test(
+		'Check draft alert is shown when it applies',
+		{tag: ['@LPS-175136']},
+		async ({
+			apiHelpers,
+			page,
+			pageConfigurationPage,
+			pageEditorPage,
+			pagesAdminPage,
+			site,
+		}) => {
+
+			// Create page
+
+			const pageName = getRandomString();
+
+			const layout = await apiHelpers.headlessDelivery.createSitePage({
+				siteId: site.id,
+				title: pageName,
+			});
+
+			// Go to Design configuration and change something
+
+			await pagesAdminPage.goto(site.friendlyUrlPath);
+
+			await pageConfigurationPage.goToSection(pageName, 'Design');
+
+			await expect(async () => {
+				await page
+					.getByText('Define a custom theme for this page')
+					.click();
+
+				await expect(
+					page.getByRole('checkbox', {name: 'Show Footer'})
+				).toBeEnabled({
+					timeout: 1000,
+				});
+			}).toPass();
+
+			// Save and check alert is displayed
+
+			await pageConfigurationPage.save();
+
+			await expect(
+				page.getByText(
+					'These design configurations are now saved in a draft'
+				)
+			).toBeVisible();
+
+			// Publish page via page editor and check alert is not displayed
+
+			await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+			await pageEditorPage.publishPage();
+
+			await pagesAdminPage.goto(site.friendlyUrlPath);
+
+			await pageConfigurationPage.goToSection(pageName, 'Design');
+
+			await page
+				.getByText('Define a custom theme for this page')
+				.waitFor();
+
+			await expect(
+				page.getByText(
+					'These design configurations are now saved in a draft'
+				)
+			).not.toBeVisible();
+		}
+	);
+
+	test(
+		'Check error message for invalid javascript',
+		{
+			tag: ['@LPD-45835'],
+		},
+		async ({
+			apiHelpers,
+			page,
+			pageConfigurationPage,
+			pagesAdminPage,
+			site,
+		}) => {
+
+			// Create page
+
+			const pageName = getRandomString();
+
+			await apiHelpers.headlessDelivery.createSitePage({
+				siteId: site.id,
+				title: pageName,
+			});
+
+			// Go to Design configuration
+
+			await pagesAdminPage.goto(site.friendlyUrlPath);
+
+			await pageConfigurationPage.goToSection(pageName, 'Design');
+
+			await pagesAdminPage.clickOnJavaScriptClientExtensionsTab();
+
+			await page
+				.getByPlaceholder('JavaScript')
+				.fill('<script>console.log()</script>');
+
+			// Save configuration
+
+			await pageConfigurationPage.saveButton.click();
+
+			// Assert error message
+
+			await waitForAlert(page, 'Error:Your request failed to complete.', {
+				type: 'danger',
+			});
+
+			await expect(
+				page.getByText(
+					'Error:Scripts tags are not supported inside custom JavaScript.'
+				)
+			).toBeVisible();
+		}
+	);
+});
+
+test.describe('SEO configuration', () => {
+	test('Can disable open graph', async ({
+		apiHelpers,
+		page,
+		pagesAdminPage,
+		site,
+		systemSettingsPage,
+	}) => {
+
+		// Create page
+
+		const pageName = getRandomString();
+
+		await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			title: pageName,
+		});
+
+		// Disable open graph
+
+		await systemSettingsPage.goToSystemSetting('Pages', 'SEO');
+
+		const openGraphCheckInput = page.getByLabel('Enable Open Graph');
+
+		await openGraphCheckInput.uncheck();
+
+		await page.locator('.btn-primary').click();
+
+		await waitForAlert(page);
+
+		// Assert open graph section is not present
+
+		await pagesAdminPage.goto(site.friendlyUrlPath);
+
+		await pagesAdminPage.clickOnAction('Configure', pageName);
+
+		await expect(
+			page.locator('nav.menubar', {
+				has: page.getByText('Open Graph'),
+			})
+		).not.toBeAttached();
+
+		// Enable open graph
+
+		await systemSettingsPage.goToSystemSetting('Pages', 'SEO');
+
+		await openGraphCheckInput.check();
+
+		await page.locator('.btn-primary').click();
+
+		await waitForAlert(page);
+
+		// Assert open graph section is present
+
+		await pagesAdminPage.goto(site.friendlyUrlPath);
+
+		await pagesAdminPage.clickOnAction('Configure', pageName);
+
+		await expect(
+			page.locator('nav.menubar', {
+				has: page.getByText('Open Graph'),
+			})
+		).toBeAttached();
+	});
+
+	test('Checks page SEO HTML title is not shown in edit mode', async ({
+		apiHelpers,
+		page,
+		pageConfigurationPage,
+		pageEditorPage,
+		pagesAdminPage,
+		site,
+	}) => {
+
+		// Create page
+
+		const pageName = getRandomString();
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			siteId: site.id,
+			title: pageName,
+		});
+
+		// Change SEO HTML title
+
+		await pagesAdminPage.goto(site.friendlyUrlPath);
+		await pageConfigurationPage.goToSection(pageName, 'SEO');
+
+		const HTMLTitle = getRandomString();
+
+		await pageConfigurationPage.setHTMLTitle(HTMLTitle);
+
+		// Check SEO HTML title is shown in view mode
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
+
+		expect(await page.title()).toBe(
+			`${HTMLTitle} - ${site.name} - Liferay DXP`
+		);
+
+		// Check SEO HTML title is not shown in view mode
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		expect(await page.title()).toBe(
+			`${pageName} - ${site.name} - Liferay DXP (Editing)`
+		);
+	});
+
+	test('SEO preview', async ({
+		apiHelpers,
+		page,
+		pageConfigurationPage,
+		pagesAdminPage,
+		site,
+	}) => {
+
+		// Create page and go to SEO
+
+		const pageName = getRandomString();
+
+		await apiHelpers.headlessDelivery.createSitePage({
+			siteId: site.id,
+			title: pageName,
+		});
+
+		await pagesAdminPage.goto(site.friendlyUrlPath);
+		await pageConfigurationPage.goToSection(pageName, 'SEO');
+
+		// Change SEO HTML title and description in default language
+
+		const defaultLanguageHTMLTitle = getRandomString();
+
+		await page.getByLabel('HTML Title').fill(defaultLanguageHTMLTitle);
+
+		const defaultLanguageDescription = getRandomString();
+
+		await page.getByLabel('Description').fill(defaultLanguageDescription);
+
+		// Assert preview
+
+		await expect(page.locator('.preview-seo-title')).toContainText(
+			`${defaultLanguageHTMLTitle} - ${site.name}`
+		);
+
+		await expect(page.locator('.preview-seo-description')).toContainText(
+			defaultLanguageDescription
+		);
+
+		// Switch language
+
+		await page
+			.getByRole('button')
+			.filter({hasText: 'en-US'})
+			.first()
+			.click();
+
+		await page.getByRole('menuitem').filter({hasText: 'es-ES'}).click();
+
+		// Change SEO HTML title and description in spanish
+
+		const spanishLanguageHTMLTitle = getRandomString();
+
+		await page.getByLabel('HTML Title').fill(spanishLanguageHTMLTitle);
+
+		const spanishLanguageDescription = getRandomString();
+
+		await page.getByLabel('Description').fill(spanishLanguageDescription);
+
+		// Assert preview
+
+		await expect(page.locator('.preview-seo-title')).toContainText(
+			`${spanishLanguageHTMLTitle} - ${site.name}`
+		);
+
+		await expect(page.locator('.preview-seo-description')).toContainText(
+			spanishLanguageDescription
+		);
+	});
+
+	test('User can customize canonical url', async ({
+		apiHelpers,
+		page,
+		pageConfigurationPage,
+		pagesAdminPage,
+		site,
+	}) => {
+
+		// Create page
+
+		const pageName = getRandomString();
+
+		await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			title: pageName,
+		});
+
+		// Assert canonical url
+
+		await performLogout(page);
+
+		await page.goto(`/web${site.friendlyUrlPath}/${pageName}`);
+
+		expect(
+			await page.locator('link[rel="canonical"]').getAttribute('href')
+		).toBe(
+			`${liferayConfig.environment.baseUrl}/web${site.friendlyUrlPath}`
+		);
+
+		await performLoginViaApi(page, 'test');
+
+		// Go to SEO
+
+		await pagesAdminPage.goto(site.friendlyUrlPath);
+
+		await pageConfigurationPage.goToSection(pageName, 'SEO');
+
+		// Configure custom canonical url
+
+		await page.getByLabel('Use Custom Canonical URL').check();
+
+		await expect(
+			page.getByText('Due to the customization of the canonical URL')
+		).toBeAttached();
+
+		const canonicalURL = page.getByLabel('Canonical URL', {exact: true});
+
+		await expect(canonicalURL).toHaveValue(
+			`${liferayConfig.environment.baseUrl}/web${site.friendlyUrlPath}`
+		);
+
+		await canonicalURL.fill('http://mycustomizedurl.com/mydesiredurl');
+
+		// Save configuration
+
+		await pageConfigurationPage.save();
+
+		// Assert custom canonical url
+
+		await performLogout(page);
+
+		await page.goto(`/web${site.friendlyUrlPath}/${pageName}`);
+
+		expect(
+			await page.locator('link[rel="canonical"]').getAttribute('href')
+		).toBe('http://mycustomizedurl.com/mydesiredurl');
+	});
+
+	test('User can customize custom meta tags', async ({
+		apiHelpers,
+		page,
+		pageConfigurationPage,
+		pagesAdminPage,
+		site,
+	}) => {
+
+		// Create page
+
+		const pageName = getRandomString();
+
+		await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			title: pageName,
+		});
+
+		// Configure custom meta tags
+
+		await pagesAdminPage.goto(site.friendlyUrlPath);
+
+		await pageConfigurationPage.goToSection(pageName, 'Custom Meta Tags');
+
+		// Edit custom meta tags
+
+		await page.getByRole('button', {name: 'Add'}).waitFor();
+
+		const property1 = page.getByLabel('Property', {exact: true}).nth(0);
+
+		await property1.waitFor();
+
+		const property1Name = getRandomString();
+
+		await property1.fill(property1Name);
+
+		const content1 = page.getByLabel('Content', {exact: true}).nth(0);
+
+		const content1DefaultValue = getRandomString();
+
+		await content1.fill(content1DefaultValue);
+
+		// Add new custom meta tag
+
+		await page.getByRole('button', {name: 'Add'}).click();
+
+		// Edit new custom meta tag
+
+		const property2 = page.getByLabel('Property', {exact: true}).nth(1);
+
+		await property2.waitFor();
+
+		const property2Name = getRandomString();
+
+		await property2.fill(property2Name);
+
+		const content2 = page.getByLabel('Content', {exact: true}).nth(1);
+
+		const content2DefaultValue = getRandomString();
+
+		await content2.fill(content2DefaultValue);
+
+		// Switch language
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {
+				name: 'Not translated into Spanish.',
+			}),
+			trigger: page
+				.getByRole('button')
+				.filter({hasText: 'en-US'})
+				.first(),
+		});
+
+		// Translate custom meta tags
+
+		const content1SpanishValue = getRandomString();
+
+		await content1.fill(content1SpanishValue);
+
+		const content2SpanishValue = getRandomString();
+
+		await content2.fill(content2SpanishValue);
+
+		// Save configuration
+
+		await pageConfigurationPage.save();
+
+		// Assert spanish language custom meta tags
+
+		await performLogout(page);
+
+		await page.goto(`/es/web${site.friendlyUrlPath}/${pageName}`);
+
+		await expect(
+			page.locator(
+				`meta[property="${property1Name}"][content="${content1SpanishValue}"]`
+			)
+		).toBeAttached();
+
+		await expect(
+			page.locator(
+				`meta[property="${property2Name}"][content="${content2SpanishValue}"]`
+			)
+		).toBeAttached();
+
+		// Assert default language custom meta tags
+
+		await page.goto(`/en/web${site.friendlyUrlPath}/${pageName}`);
+
+		await expect(
+			page.locator(
+				`meta[property="${property1Name}"][content="${content1DefaultValue}"]`
+			)
+		).toBeAttached();
+
+		await expect(
+			page.locator(
+				`meta[property="${property2Name}"][content="${content2DefaultValue}"]`
+			)
+		).toBeAttached();
+	});
+
+	test(
+		'User can customize open graph tags',
+		{
+			tag: '@LPS-134658',
+		},
+		async ({
+			apiHelpers,
+			page,
+			pageConfigurationPage,
+			pagesAdminPage,
+			site,
+		}) => {
+
+			// Create page
+
+			const pageName = getRandomString();
+
+			await apiHelpers.jsonWebServicesLayout.addLayout({
+				groupId: site.id,
+				title: pageName,
+			});
+
+			// Configure open graph tags
+
+			await pagesAdminPage.goto(site.friendlyUrlPath);
+
+			await pageConfigurationPage.goToSection(pageName, 'Open Graph');
+
+			// Configure image
+
+			const fileChooserPromise = page.waitForEvent('filechooser');
+
+			const iframe = page.frameLocator('iframe[title="Select Image"]');
+
+			await clickAndExpectToBeVisible({
+				target: iframe.getByText(
+					'Drag & Drop Your Images or Browse to Upload'
+				),
+				timeout: 2000,
+				trigger: page.getByLabel('Select Image', {exact: true}),
+			});
+
+			await iframe
+				.getByText('Drag & Drop Your Images or Browse to Upload')
+				.click();
+
+			const fileChooser = await fileChooserPromise;
+
+			await fileChooser.setFiles(
+				path.join(__dirname, '/dependencies/thumbnail.jpg')
+			);
+
+			await iframe
+				.getByRole('button', {exact: true, name: 'Add'})
+				.click();
+
+			// Configure image alt description
+
+			const imageAltDescription = getRandomString();
+
+			await page
+				.getByLabel('Image Alt Description')
+				.fill(imageAltDescription);
+
+			// Configure title
+
+			await page.getByLabel('Use Custom Title').check();
+
+			const title = getRandomString();
+
+			await page.getByPlaceholder('Title', {exact: true}).fill(title);
+
+			// Configure description
+
+			await page.getByLabel('Use Custom Description').check();
+
+			const description = getRandomString();
+
+			await page
+				.getByPlaceholder('Description', {exact: true})
+				.fill(description);
+
+			await pageConfigurationPage.save();
+
+			// Assert open graph tags
+
+			await performLogout(page);
+
+			await page.goto(`/web${site.friendlyUrlPath}/${pageName}`);
+
+			await expect(
+				page.locator(`meta[property="og:title"][content="${title}"]`)
+			).toBeAttached();
+
+			await expect(
+				page.locator(
+					`meta[property="og:description"][content="${description}"]`
+				)
+			).toBeAttached();
+
+			await expect(
+				page.locator(
+					`meta[property="og:image"][content*="thumbnail.jpg"]`
+				)
+			).toBeAttached();
+
+			await expect(
+				page.locator(
+					`meta[property="og:image:alt"][content="${imageAltDescription}"]`
+				)
+			).toBeAttached();
+		}
+	);
+});
+
+test.describe('Page types configuration', () => {
+	test('Can configure an embedded page', async ({
+		apiHelpers,
+		page,
+		pageConfigurationPage,
+		pagesAdminPage,
+		site,
+	}) => {
+		await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			options: {
+				type: 'embedded',
+			},
+			title: 'Embedded',
+		});
+
+		await pagesAdminPage.goto(site.friendlyUrlPath);
+
+		await pageConfigurationPage.setInputValueAndSave(
+			page.getByLabel('URL').first(),
+			'Embedded',
+			'General',
+			'https://www.google.com'
+		);
+
+		// Check URL was updated
+
+		await pagesAdminPage.goto(site.friendlyUrlPath);
+
+		await pageConfigurationPage.goToSection('Embedded', 'General');
+
+		await expect(page.getByLabel('URL').first()).toHaveValue(
+			'https://www.google.com'
+		);
+	});
+
+	test('Can configure a full page application', async ({
+		apiHelpers,
+		page,
+		pageConfigurationPage,
+		pagesAdminPage,
+		site,
+	}) => {
+		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			options: {
+				type: 'full_page_application',
+			},
+			title: 'Full Page Application',
+		});
+
+		await pagesAdminPage.goto(site.friendlyUrlPath);
+
+		await pageConfigurationPage.goToSection(
+			'Full Page Application',
+			'General'
+		);
+
+		await selectAndExpectToHaveValue({
+			optionLabel: 'Wiki',
+			select: page.getByLabel('Full Page Application'),
+		});
+
+		await pageConfigurationPage.save();
+
+		// Go to view mode of page
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+		await expect(page.getByRole('heading', {name: 'Wiki'})).toBeVisible();
+	});
+
+	test('Can configure a panel page', async ({
+		apiHelpers,
+		page,
+		pageConfigurationPage,
+		pagesAdminPage,
+		site,
+	}) => {
+
+		// Create page and go to General configuration
+
+		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			options: {
+				type: 'panel',
+			},
+			title: 'Panel',
+		});
+
+		await pagesAdminPage.goto(site.friendlyUrlPath);
+
+		await pageConfigurationPage.goToSection('Panel', 'General');
+
+		// Select Collaboration application
+
+		await page
+			.locator('.treeview-link[data-id*="collaboration"]')
+			.getByRole('checkbox')
+			.check();
+
+		await pageConfigurationPage.save();
+
+		// Go to view mode of page
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+		await expect(
+			page.getByRole('link', {exact: true, name: 'Blogs'})
+		).toBeVisible();
+	});
+
+	test(
+		'Can configure a link to page',
+		{
+			tag: '@LPS-159631',
+		},
+		async ({
+			apiHelpers,
+			page,
+			pageConfigurationPage,
+			pagesAdminPage,
+			site,
+		}) => {
+
+			// Create widget page
+
+			const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+				groupId: site.id,
+				title: getRandomString(),
+			});
+
+			// Create link to URL page
+
+			const linkToURLTitle = getRandomString();
+
+			await apiHelpers.jsonWebServicesLayout.addLayout({
+				groupId: site.id,
+				options: {
+					type: 'url',
+				},
+				title: linkToURLTitle,
+			});
+
+			// Update URL
+
+			await pagesAdminPage.goto(site.friendlyUrlPath);
+
+			await pageConfigurationPage.setInputValueAndSave(
+				page.getByLabel('URL').first(),
+				linkToURLTitle,
+				'General',
+				'https://www.google.com'
+			);
+
+			// Navigate to page
+
+			await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+			// Check target is not set
+
+			await expect(
+				page.getByRole('menuitem', {name: linkToURLTitle})
+			).not.toHaveAttribute('target');
+
+			// Update specific target to _blank
+
+			await pagesAdminPage.goto(site.friendlyUrlPath);
+
+			await pageConfigurationPage.setInputValueAndSave(
+				page.getByLabel('Target', {exact: true}),
+				linkToURLTitle,
+				'General',
+				'_blank'
+			);
+
+			// Navigate to page
+
+			await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+			// Check target is set to _blank
+
+			await expect(
+				page.getByRole('menuitem', {name: linkToURLTitle})
+			).toHaveAttribute('target', '_blank');
+
+			// Update target type to new tab
+
+			await pagesAdminPage.goto(site.friendlyUrlPath);
+
+			await pageConfigurationPage.goToSection(linkToURLTitle, 'General');
+
+			await selectAndExpectToHaveValue({
+				optionLabel: 'New Tab',
+				select: page.getByLabel('Target type'),
+			});
+
+			await pageConfigurationPage.save();
+
+			// Navigate to page
+
+			await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+			// Check target is set to _blank
+
+			await expect(
+				page.getByRole('menuitem', {name: linkToURLTitle})
+			).toHaveAttribute('target', '_blank');
+		}
+	);
+});
+
+test.describe('Utility Page', () => {
+	test(
+		'Asserts the Utility Pages configuration view',
+		{
+			tag: '@LPD-4459',
+		},
+		async ({
+			page,
+			pageEditorPage,
+			site,
+			utilityPageConfigurationPage,
+			utilityPagesPage,
+		}) => {
+			await page.goto('/');
+
+			// The configuration action must be available from the card
+			// The configuration view should only allow setting the htmlTitle and htmlDescription SEO fields
+
+			await utilityPagesPage.goto(site.friendlyUrlPath);
+			await utilityPageConfigurationPage.setUtilityPageConfiguration(
+				getRandomString(),
+				getRandomString(),
+				'404 Error'
+			);
+
+			// During editing the "More Page Design Options" link should not be available
+
+			await utilityPagesPage.goto(site.friendlyUrlPath);
+			await utilityPagesPage.goToEdit('404 Error');
+			await pageEditorPage.goToSidebarTab('Page Design Options');
+
+			await expect(page.getByText('Master', {exact: true})).toBeVisible();
+			expect(
+				await page.getByTitle('More Page Design Options').count()
+			).toEqual(0);
 		}
 	);
 });

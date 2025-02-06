@@ -6,7 +6,12 @@
 import React, {ReactNode, useContext, useEffect, useState} from 'react';
 
 import {FormLayoutDataItem} from '../../types/layout_data/FormLayoutDataItem';
+import {useGlobalContext} from '../contexts/GlobalContext';
+import {useActivationOrigin, useActiveItemIds} from '../js-index';
+import {getFormStepIndex} from '../utils/getFormStepIndex';
+import getLayoutDataItemTopperUniqueClassName from '../utils/getLayoutDataItemTopperUniqueClassName';
 import getLayoutDataItemUniqueClassName from '../utils/getLayoutDataItemUniqueClassName';
+import {useSelectorRef} from './StoreContext';
 
 const FormStepContext = React.createContext<{
 	activeStep: number;
@@ -23,6 +28,12 @@ function FormStepContextProvider({
 }) {
 	const [activeStep, setActiveStep] = useState<number>(0);
 
+	const activationOrigin = useActivationOrigin();
+	const activeItemIds = useActiveItemIds();
+
+	const globalContext = useGlobalContext();
+	const layoutDataRef = useSelectorRef((state) => state.layoutData);
+
 	useEffect(() => {
 		const onStepChange = ({
 			emitter,
@@ -31,7 +42,7 @@ function FormStepContextProvider({
 			emitter: HTMLElement;
 			step: number | 'next' | 'previous';
 		}) => {
-			const formElement = document.querySelector(
+			const formElement = globalContext.document.querySelector(
 				`.${getLayoutDataItemUniqueClassName(form.itemId)}`
 			);
 
@@ -48,14 +59,50 @@ function FormStepContextProvider({
 			}
 		};
 
-		Liferay.on('formFragment:changeStep', onStepChange);
+		(globalContext.window as any).Liferay.on(
+			'formFragment:changeStep',
+			onStepChange
+		);
 
 		return () =>
-			Liferay.detach(
+			(globalContext.window as any).Liferay.detach(
 				'formFragment:changeStep',
 				onStepChange as () => void
 			);
-	}, [activeStep, form]);
+	}, [activeStep, form, globalContext.document, globalContext.window]);
+
+	useEffect(() => {
+		if (activationOrigin === 'sidebar') {
+			const itemId = activeItemIds[activeItemIds.length - 1];
+			const item = layoutDataRef.current?.items[itemId];
+
+			if (!item) {
+				return;
+			}
+
+			const formStepIndex = getFormStepIndex(item, layoutDataRef.current);
+
+			if (formStepIndex !== null && formStepIndex !== activeStep) {
+				const element = globalContext.document.querySelector(
+					`.${getLayoutDataItemTopperUniqueClassName(itemId)}`
+				);
+
+				Liferay.fire('formFragment:changeStep', {
+					emitter: element,
+					step: formStepIndex,
+				});
+
+				setActiveStep(formStepIndex);
+			}
+		}
+	}, [
+		activationOrigin,
+		activeItemIds,
+		activeStep,
+		form,
+		globalContext.document,
+		layoutDataRef,
+	]);
 
 	return (
 		<FormStepContext.Provider

@@ -15,6 +15,7 @@ import com.liferay.object.action.executor.ObjectActionExecutorRegistry;
 import com.liferay.object.constants.ObjectActionConstants;
 import com.liferay.object.constants.ObjectActionExecutorConstants;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
+import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.definition.util.ObjectDefinitionUtil;
 import com.liferay.object.exception.DuplicateObjectActionExternalReferenceCodeException;
@@ -32,11 +33,14 @@ import com.liferay.object.internal.security.permission.resource.util.ObjectDefin
 import com.liferay.object.model.ObjectAction;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
+import com.liferay.object.model.ObjectFolder;
 import com.liferay.object.scope.CompanyScoped;
 import com.liferay.object.scope.ObjectDefinitionScoped;
 import com.liferay.object.scripting.exception.ObjectScriptingException;
 import com.liferay.object.scripting.validator.ObjectScriptingValidator;
+import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.object.service.ObjectFieldLocalService;
+import com.liferay.object.service.ObjectFolderLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.service.base.ObjectActionLocalServiceBaseImpl;
 import com.liferay.object.service.persistence.ObjectDefinitionPersistence;
@@ -73,6 +77,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.security.script.management.configuration.helper.ScriptManagementConfigurationHelper;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -175,7 +180,7 @@ public class ObjectActionLocalServiceImpl
 					new ObjectDefinitionTreeFactory(
 						_objectDefinitionPersistence,
 						_objectRelationshipLocalService),
-					_portletLocalService, _resourceActions);
+					_portletLocalService, _resourceActions, null);
 			}
 			catch (Exception exception) {
 				ReflectionUtil.throwException(exception);
@@ -326,6 +331,26 @@ public class ObjectActionLocalServiceImpl
 
 		return objectActionPersistence.findByO_A_OATK(
 			objectDefinitionId, true, objectActionTriggerKey);
+	}
+
+	@Override
+	public Map<Long, List<ObjectAction>> getObjectActionsMap(
+		long companyId, boolean active, String objectActionTriggerKey) {
+
+		Map<Long, List<ObjectAction>> objectActionsMap = new HashMap<>();
+
+		for (ObjectAction objectAction :
+				objectActionPersistence.findByC_A_OATK(
+					companyId, active, objectActionTriggerKey)) {
+
+			List<ObjectAction> objectActions = objectActionsMap.computeIfAbsent(
+				objectAction.getObjectDefinitionId(),
+				objectDefinitionId -> new ArrayList<>());
+
+			objectActions.add(objectAction);
+		}
+
+		return objectActionsMap;
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -510,7 +535,7 @@ public class ObjectActionLocalServiceImpl
 			ObjectDefinition objectDefinition)
 		throws PortalException {
 
-		if (!FeatureFlagManagerUtil.isEnabled("LPS-187142") ||
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-34594") ||
 			objectDefinition.isRootNode()) {
 
 			return;
@@ -674,7 +699,7 @@ public class ObjectActionLocalServiceImpl
 		throws PortalException {
 
 		if (FeatureFlagManagerUtil.isEnabled(
-				objectDefinition.getCompanyId(), "LPS-187142") &&
+				objectDefinition.getCompanyId(), "LPD-34594") &&
 			StringUtil.equals(
 				objectActionTriggerKey,
 				ObjectActionTriggerConstants.KEY_ON_AFTER_ROOT_UPDATE) &&
@@ -781,40 +806,41 @@ public class ObjectActionLocalServiceImpl
 				objectActionExecutorKey,
 				ObjectActionExecutorConstants.KEY_UPDATE_OBJECT_ENTRY)) {
 
-			long objectDefinitionId = GetterUtil.getLong(
-				parametersUnicodeProperties.get("objectDefinitionId"));
-
-			ObjectDefinition objectDefinition =
-				_objectDefinitionPersistence.fetchByPrimaryKey(
-					objectDefinitionId);
+			ObjectDefinition objectDefinition = null;
 
 			String objectDefinitionExternalReferenceCode = GetterUtil.getString(
 				parametersUnicodeProperties.remove(
 					"objectDefinitionExternalReferenceCode"));
 
 			if (Validator.isNotNull(objectDefinitionExternalReferenceCode)) {
-				ObjectDefinition existingObjectDefinition =
-					_objectDefinitionPersistence.fetchByERC_C(
-						objectDefinitionExternalReferenceCode, companyId);
+				objectDefinition = _objectDefinitionPersistence.fetchByERC_C(
+					objectDefinitionExternalReferenceCode, companyId);
 
-				if (existingObjectDefinition != null) {
-					objectDefinition = existingObjectDefinition;
+				if (objectDefinition == null) {
+					ObjectFolder defaultObjectFolder =
+						_objectFolderLocalService.getOrAddDefaultObjectFolder(
+							companyId);
 
-					parametersUnicodeProperties.put(
-						"objectDefinitionId",
-						String.valueOf(
-							objectDefinition.getObjectDefinitionId()));
+					objectDefinition =
+						ObjectDefinitionLocalServiceUtil.addObjectDefinition(
+							objectDefinitionExternalReferenceCode, userId,
+							defaultObjectFolder.getObjectFolderId(), true,
+							ObjectDefinitionConstants.SCOPE_COMPANY, false);
 				}
+
+				parametersUnicodeProperties.put(
+					"objectDefinitionId",
+					String.valueOf(objectDefinition.getObjectDefinitionId()));
+			}
+			else {
+				objectDefinition =
+					_objectDefinitionPersistence.fetchByPrimaryKey(
+						GetterUtil.getLong(
+							parametersUnicodeProperties.get(
+								"objectDefinitionId")));
 			}
 
-			if ((objectDefinition == null) ||
-				(Objects.equals(
-					objectActionExecutorKey,
-					ObjectActionExecutorConstants.KEY_ADD_OBJECT_ENTRY) &&
-				 (!objectDefinition.isActive() ||
-				  !objectDefinition.isApproved()) &&
-				 !objectDefinition.isModifiableAndSystem())) {
-
+			if (objectDefinition == null) {
 				errorMessageKeys.put("objectDefinitionId", "invalid");
 			}
 			else {
@@ -933,8 +959,11 @@ public class ObjectActionLocalServiceImpl
 			ObjectField objectField = _objectFieldLocalService.fetchObjectField(
 				objectDefinitionId, name);
 
-			if ((objectField == null) ||
-				objectField.compareBusinessType(
+			if (objectField == null) {
+				continue;
+			}
+
+			if (objectField.compareBusinessType(
 					ObjectFieldConstants.BUSINESS_TYPE_AUTO_INCREMENT)) {
 
 				predefinedValuesErrorMessageKeys.put(name, "invalid");
@@ -1036,6 +1065,9 @@ public class ObjectActionLocalServiceImpl
 
 	@Reference
 	private ObjectFieldLocalService _objectFieldLocalService;
+
+	@Reference
+	private ObjectFolderLocalService _objectFolderLocalService;
 
 	@Reference
 	private ObjectRelationshipLocalService _objectRelationshipLocalService;

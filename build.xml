@@ -69,19 +69,21 @@
 					</else>
 				</if>
 
-				<if>
-					<equals arg1="${clean.temp.dir}" arg2="true" />
-					<then>
-						<delete dir="${app.server.temp.dir}" />
-					</then>
-				</if>
+				<sequential>
+					<if>
+						<equals arg1="${clean.work.dir}" arg2="true" />
+						<then>
+							<delete dir="${app.server.work.dir}" />
+						</then>
+					</if>
 
-				<if>
-					<equals arg1="${clean.work.dir}" arg2="true" />
-					<then>
-						<delete dir="${app.server.work.dir}" />
-					</then>
-				</if>
+					<if>
+						<equals arg1="${clean.temp.dir}" arg2="true" />
+						<then>
+							<delete dir="${app.server.temp.dir}" />
+						</then>
+					</if>
+				</sequential>
 			</parallel>
 		</sequential>
 	</macrodef>
@@ -526,15 +528,6 @@ message.
 			<equals arg1="${app.server.type}" arg2="tomcat" />
 			<then>
 				<ant dir="support-tomcat" inheritAll="false" target="deploy" />
-
-				<copy
-					todir="${app.server.shielded-container-lib.portal.dir}"
-				>
-					<fileset
-						dir="lib/development"
-						includes="activation.jar,mail.jar"
-					/>
-				</copy>
 			</then>
 		</if>
 
@@ -1360,7 +1353,7 @@ print AdminControl.invoke(appManager, 'startApplication', 'liferay-portal')
 			classname="com.liferay.portal.tools.ConfigurationEnvBuilder"
 			classpathref="project.classpath"
 			dir="${project.dir}"
-			fork="${fork.mode}"
+			fork="true"
 			newenvironment="true"
 		>
 			<arg value="configuration.java.files=${configuration.java.files}" />
@@ -1368,6 +1361,7 @@ print AdminControl.invoke(appManager, 'startApplication', 'liferay-portal')
 			<arg value="language.properties.file=${project.dir}/${language.properties.file}" />
 			<arg value="properties.output.file=${project.dir}/portal-impl/src/portal-osgi-configuration.properties" />
 			<jvmarg if:true="${jvm.debug}" line="${jpda.settings}" />
+			<jvmarg line="--add-opens java.base/java.lang.invoke=ALL-UNNAMED" />
 		</java>
 
 		<gradle-execute dir="${workspace.module.dir}" task="formatSource">

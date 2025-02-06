@@ -70,6 +70,15 @@ public class CommerceOrderModelResourcePermissionLogic
 
 		if ((accountEntry.getAccountEntryId() ==
 				AccountConstants.ACCOUNT_ENTRY_ID_GUEST) &&
+			permissionChecker.isSignedIn() &&
+			_hasOwnerPermission(permissionChecker, commerceOrder) &&
+			actionId.equals(ActionKeys.VIEW)) {
+
+			return true;
+		}
+
+		if ((accountEntry.getAccountEntryId() ==
+				AccountConstants.ACCOUNT_ENTRY_ID_GUEST) &&
 			permissionChecker.isSignedIn()) {
 
 			return _hasPermission(
@@ -172,7 +181,8 @@ public class CommerceOrderModelResourcePermissionLogic
 				permissionChecker, commerceOrder);
 		}
 
-		return false;
+		return _hasPermission(
+			permissionChecker, commerceOrder.getGroupId(), actionId);
 	}
 
 	private boolean _containsCheckoutPermission(
@@ -271,10 +281,10 @@ public class CommerceOrderModelResourcePermissionLogic
 			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_RESTRICTED_NOTES :
 				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_NOTES;
 
-		if (_hasRoleAccountSupplier(permissionChecker, commerceOrder) &&
-			_hasPermission(
+		if (_hasPermission(
 				permissionChecker, accountEntry.getAccountEntryGroupId(),
-				actionIds)) {
+				actionIds) ||
+			_hasRoleAccountSupplier(permissionChecker, commerceOrder)) {
 
 			return true;
 		}

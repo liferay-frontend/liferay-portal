@@ -220,7 +220,8 @@ public class CommerceCartResource {
 				_commerceOrderItemService.addOrUpdateCommerceOrderItem(
 					commerceOrder.getCommerceOrderId(), cpInstanceId, options,
 					_commerceOrderItemQuantityFormatter.parse(
-						quantity, LocaleUtil.fromLanguageId(languageId)),
+						CommerceOrderItem.class.getName(), quantity,
+						LocaleUtil.fromLanguageId(languageId)),
 					0, BigDecimal.ZERO, unitOfMeasureKey, commerceContext,
 					serviceContext);
 
@@ -447,7 +448,7 @@ public class CommerceCartResource {
 
 			ProductSettingsModel productSettingsModel =
 				_productHelper.getProductSettingsModel(
-					commerceOrderItem.getCPDefinitionId());
+					commerceOrderItem.getCPDefinitionId(), commerceContext);
 
 			BigDecimal quantity = commerceOrderItem.getQuantity();
 

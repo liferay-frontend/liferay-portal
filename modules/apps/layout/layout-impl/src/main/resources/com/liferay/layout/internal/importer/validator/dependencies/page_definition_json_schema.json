@@ -2062,10 +2062,6 @@
 		"PageRuleAction": {
 			"additionalProperties": false,
 			"properties": {
-				"action": {
-					"title": "The action Schema",
-					"type": "string"
-				},
 				"id": {
 					"title": "The id Schema",
 					"type": "string"
@@ -2085,20 +2081,31 @@
 		"PageRuleCondition": {
 			"additionalProperties": false,
 			"properties": {
-				"condition": {
-					"title": "The condition Schema",
+				"field": {
+					"title": "The field Schema",
 					"type": "string"
 				},
 				"id": {
 					"title": "The id Schema",
 					"type": "string"
 				},
+				"options": {
+					"additionalProperties": false,
+					"properties": {
+						"type": {
+							"title": "The type Schema",
+							"type": "string"
+						},
+						"value": {
+							"title": "The value Schema",
+							"type": "string"
+						}
+					},
+					"title": "The options Schema",
+					"type": "object"
+				},
 				"type": {
 					"title": "The type Schema",
-					"type": "string"
-				},
-				"value": {
-					"title": "The value Schema",
 					"type": "string"
 				}
 			},

@@ -44,13 +44,11 @@
 		{
 			"actions": [
 				{
-					"action": "fragment",
 					"id": "action1",
 					"itemId": "container2",
 					"type": "show"
 				},
 				{
-					"action": "fragment",
 					"id": "action2",
 					"itemId": "fragment1",
 					"type": "hide"
@@ -59,16 +57,58 @@
 			"conditionType": "all",
 			"conditions": [
 				{
-					"condition": "role",
+					"field": "role",
 					"id": "condition1",
-					"type": "user",
-					"value": "${ROLE_ID}"
+					"options": {
+						"type": "equal",
+						"value": "${ROLE_ID_1}"
+					},
+					"type": "user"
 				},
 				{
-					"condition": "segment",
+					"field": "role",
 					"id": "condition2",
-					"type": "user",
-					"value": "${SEGMENTS_ENTRY_ID}"
+					"options": {
+						"type": "not-equal",
+						"value": "${ROLE_ID_2}"
+					},
+					"type": "user"
+				},
+				{
+					"field": "segment",
+					"id": "condition3",
+					"options": {
+						"type": "equal",
+						"value": "${SEGMENTS_ENTRY_ID_1}"
+					},
+					"type": "user"
+				},
+				{
+					"field": "segment",
+					"id": "condition4",
+					"options": {
+						"type": "not-equal",
+						"value": "${SEGMENTS_ENTRY_ID_2}"
+					},
+					"type": "user"
+				},
+				{
+					"field": "user",
+					"id": "condition5",
+					"options": {
+						"type": "equal",
+						"value": "${USER_ID_1}"
+					},
+					"type": "user"
+				},
+				{
+					"field": "user",
+					"id": "condition6",
+					"options": {
+						"type": "not-equal",
+						"value": "${USER_ID_2}"
+					},
+					"type": "user"
 				}
 			],
 			"id": "rule1",

@@ -138,27 +138,17 @@ public class GradleDependenciesCheck extends BaseFileCheck {
 
 		ListUtil.distinct(sortedDependencies, new GradleDependencyComparator());
 
-		StringBundler sb = new StringBundler();
-
-		String previousConfiguration = null;
+		StringBundler sb = new StringBundler(
+			(sortedDependencies.size() * 4) + 1);
 
 		for (String dependency : sortedDependencies) {
-			String configuration = GradleSourceUtil.getConfiguration(
-				dependency);
-
-			if ((previousConfiguration == null) ||
-				!previousConfiguration.equals(configuration)) {
-
-				previousConfiguration = configuration;
-
-				sb.append("\n");
-			}
-
+			sb.append("\n");
 			sb.append(indent);
 			sb.append("\t");
 			sb.append(dependency);
-			sb.append("\n");
 		}
+
+		sb.append("\n");
 
 		return StringUtil.replace(content, dependencies, sb.toString());
 	}

@@ -32,7 +32,6 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -116,9 +115,68 @@ public class TaxonomyVocabularyResourceImpl
 	}
 
 	@Override
-	public Page<TaxonomyVocabulary> getAssetLibraryTaxonomyVocabulariesPage(
-			Long assetLibraryId, String search, Aggregation aggregation,
-			Filter filter, Pagination pagination, Sort[] sorts)
+	public EntityModel getEntityModel(MultivaluedMap multivaluedMap) {
+		return _entityModel;
+	}
+
+	@Override
+	public TaxonomyVocabulary patchTaxonomyVocabulary(
+			Long taxonomyVocabularyId, TaxonomyVocabulary taxonomyVocabulary)
+		throws Exception {
+
+		AssetVocabulary assetVocabulary = _assetVocabularyService.getVocabulary(
+			taxonomyVocabularyId);
+
+		if (!ArrayUtil.contains(
+				assetVocabulary.getAvailableLanguageIds(),
+				contextAcceptLanguage.getPreferredLanguageId())) {
+
+			throw new BadRequestException(
+				StringBundler.concat(
+					"Unable to patch taxonomy vocabulary with language ",
+					LocaleUtil.toW3cLanguageId(
+						contextAcceptLanguage.getPreferredLanguageId()),
+					" because it is only available in the following languages ",
+					StringUtil.merge(
+						LocaleUtil.toW3cLanguageIds(
+							assetVocabulary.getAvailableLanguageIds()))));
+		}
+
+		AssetType[] assetTypes = taxonomyVocabulary.getAssetTypes();
+
+		if (assetTypes == null) {
+			assetTypes = _getAssetTypes(
+				new AssetVocabularySettingsHelper(
+					assetVocabulary.getSettings()),
+				assetVocabulary.getGroupId());
+		}
+
+		assetVocabulary = _assetVocabularyService.updateVocabulary(
+			assetVocabulary.getVocabularyId(), null,
+			LocalizedMapUtil.patchLocalizedMap(
+				assetVocabulary.getTitleMap(),
+				contextAcceptLanguage.getPreferredLocale(),
+				taxonomyVocabulary.getName(),
+				taxonomyVocabulary.getName_i18n()),
+			LocalizedMapUtil.patchLocalizedMap(
+				assetVocabulary.getDescriptionMap(),
+				contextAcceptLanguage.getPreferredLocale(),
+				taxonomyVocabulary.getDescription(),
+				taxonomyVocabulary.getDescription_i18n()),
+			_getSettings(assetTypes, assetVocabulary.getGroupId()),
+			ServiceContextBuilder.create(
+				assetVocabulary.getGroupId(), contextHttpServletRequest,
+				taxonomyVocabulary.getViewableByAsString()
+			).build());
+
+		return _toTaxonomyVocabulary(assetVocabulary);
+	}
+
+	@Override
+	protected Page<TaxonomyVocabulary>
+			doGetAssetLibraryTaxonomyVocabulariesPage(
+				Long assetLibraryId, String search, Aggregation aggregation,
+				Filter filter, Pagination pagination, Sort[] sorts)
 		throws Exception {
 
 		return _getTaxonomyVocabulariesPage(
@@ -154,8 +212,8 @@ public class TaxonomyVocabularyResourceImpl
 	}
 
 	@Override
-	public TaxonomyVocabulary
-			getAssetLibraryTaxonomyVocabularyByExternalReferenceCode(
+	protected TaxonomyVocabulary
+			doGetAssetLibraryTaxonomyVocabularyByExternalReferenceCode(
 				Long assetLibraryId, String externalReferenceCode)
 		throws Exception {
 
@@ -165,12 +223,7 @@ public class TaxonomyVocabularyResourceImpl
 	}
 
 	@Override
-	public EntityModel getEntityModel(MultivaluedMap multivaluedMap) {
-		return _entityModel;
-	}
-
-	@Override
-	public Page<TaxonomyVocabulary> getSiteTaxonomyVocabulariesPage(
+	protected Page<TaxonomyVocabulary> doGetSiteTaxonomyVocabulariesPage(
 			Long siteId, String search, Aggregation aggregation, Filter filter,
 			Pagination pagination, Sort[] sorts)
 		throws Exception {
@@ -207,8 +260,9 @@ public class TaxonomyVocabularyResourceImpl
 	}
 
 	@Override
-	public TaxonomyVocabulary getSiteTaxonomyVocabularyByExternalReferenceCode(
-			Long siteId, String externalReferenceCode)
+	protected TaxonomyVocabulary
+			doGetSiteTaxonomyVocabularyByExternalReferenceCode(
+				Long siteId, String externalReferenceCode)
 		throws Exception {
 
 		return _toTaxonomyVocabulary(
@@ -217,7 +271,8 @@ public class TaxonomyVocabularyResourceImpl
 	}
 
 	@Override
-	public TaxonomyVocabulary getTaxonomyVocabulary(Long taxonomyVocabularyId)
+	protected TaxonomyVocabulary doGetTaxonomyVocabulary(
+			Long taxonomyVocabularyId)
 		throws Exception {
 
 		AssetVocabulary assetVocabulary = _assetVocabularyService.getVocabulary(
@@ -232,56 +287,7 @@ public class TaxonomyVocabularyResourceImpl
 	}
 
 	@Override
-	public TaxonomyVocabulary patchTaxonomyVocabulary(
-			Long taxonomyVocabularyId, TaxonomyVocabulary taxonomyVocabulary)
-		throws Exception {
-
-		AssetVocabulary assetVocabulary = _assetVocabularyService.getVocabulary(
-			taxonomyVocabularyId);
-
-		if (!ArrayUtil.contains(
-				assetVocabulary.getAvailableLanguageIds(),
-				contextAcceptLanguage.getPreferredLanguageId())) {
-
-			throw new BadRequestException(
-				StringBundler.concat(
-					"Unable to patch taxonomy vocabulary with language ",
-					LocaleUtil.toW3cLanguageId(
-						contextAcceptLanguage.getPreferredLanguageId()),
-					" because it is only available in the following languages ",
-					StringUtil.merge(
-						LocaleUtil.toW3cLanguageIds(
-							assetVocabulary.getAvailableLanguageIds()))));
-		}
-
-		AssetType[] assetTypes = taxonomyVocabulary.getAssetTypes();
-
-		if (assetTypes == null) {
-			assetTypes = _getAssetTypes(
-				new AssetVocabularySettingsHelper(
-					assetVocabulary.getSettings()),
-				assetVocabulary.getGroupId());
-		}
-
-		return _toTaxonomyVocabulary(
-			_assetVocabularyService.updateVocabulary(
-				assetVocabulary.getVocabularyId(), null,
-				LocalizedMapUtil.patchLocalizedMap(
-					assetVocabulary.getTitleMap(),
-					contextAcceptLanguage.getPreferredLocale(),
-					taxonomyVocabulary.getName(),
-					taxonomyVocabulary.getName_i18n()),
-				LocalizedMapUtil.patchLocalizedMap(
-					assetVocabulary.getDescriptionMap(),
-					contextAcceptLanguage.getPreferredLocale(),
-					taxonomyVocabulary.getDescription(),
-					taxonomyVocabulary.getDescription_i18n()),
-				_getSettings(assetTypes, assetVocabulary.getGroupId()),
-				new ServiceContext()));
-	}
-
-	@Override
-	public TaxonomyVocabulary postAssetLibraryTaxonomyVocabulary(
+	protected TaxonomyVocabulary doPostAssetLibraryTaxonomyVocabulary(
 			Long assetLibraryId, TaxonomyVocabulary taxonomyVocabulary)
 		throws Exception {
 
@@ -289,7 +295,7 @@ public class TaxonomyVocabularyResourceImpl
 	}
 
 	@Override
-	public TaxonomyVocabulary postSiteTaxonomyVocabulary(
+	protected TaxonomyVocabulary doPostSiteTaxonomyVocabulary(
 			Long siteId, TaxonomyVocabulary taxonomyVocabulary)
 		throws Exception {
 
@@ -300,8 +306,8 @@ public class TaxonomyVocabularyResourceImpl
 	}
 
 	@Override
-	public TaxonomyVocabulary
-			putAssetLibraryTaxonomyVocabularyByExternalReferenceCode(
+	protected TaxonomyVocabulary
+			doPutAssetLibraryTaxonomyVocabularyByExternalReferenceCode(
 				Long assetLibraryId, String externalReferenceCode,
 				TaxonomyVocabulary taxonomyVocabulary)
 		throws Exception {
@@ -322,9 +328,10 @@ public class TaxonomyVocabularyResourceImpl
 	}
 
 	@Override
-	public TaxonomyVocabulary putSiteTaxonomyVocabularyByExternalReferenceCode(
-			Long siteId, String externalReferenceCode,
-			TaxonomyVocabulary taxonomyVocabulary)
+	protected TaxonomyVocabulary
+			doPutSiteTaxonomyVocabularyByExternalReferenceCode(
+				Long siteId, String externalReferenceCode,
+				TaxonomyVocabulary taxonomyVocabulary)
 		throws Exception {
 
 		AssetVocabulary assetVocabulary =
@@ -343,7 +350,7 @@ public class TaxonomyVocabularyResourceImpl
 	}
 
 	@Override
-	public TaxonomyVocabulary putTaxonomyVocabulary(
+	protected TaxonomyVocabulary doPutTaxonomyVocabulary(
 			Long taxonomyVocabularyId, TaxonomyVocabulary taxonomyVocabulary)
 		throws Exception {
 
@@ -752,7 +759,10 @@ public class TaxonomyVocabularyResourceImpl
 			_getSettings(
 				taxonomyVocabulary.getAssetTypes(),
 				assetVocabulary.getGroupId()),
-			new ServiceContext());
+			ServiceContextBuilder.create(
+				assetVocabulary.getGroupId(), contextHttpServletRequest,
+				taxonomyVocabulary.getViewableByAsString()
+			).build());
 	}
 
 	private static final Map<String, String> _assetTypeTypeToClassNames =

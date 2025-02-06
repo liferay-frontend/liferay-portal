@@ -5,17 +5,21 @@
 
 package com.liferay.customer;
 
-import com.liferay.client.extension.util.spring.boot.ClientExtensionUtilSpringBootComponentScan;
+import com.liferay.client.extension.util.spring.boot3.ClientExtensionUtilSpringBootComponentScan;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Import;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * @author Raymond Augé
  * @author Gregory Amerson
  * @author Brian Wing Shun Chan
  */
+@EnableCaching
+@EnableScheduling
 @Import(ClientExtensionUtilSpringBootComponentScan.class)
 @SpringBootApplication
 public class CustomerSpringBootApplication {

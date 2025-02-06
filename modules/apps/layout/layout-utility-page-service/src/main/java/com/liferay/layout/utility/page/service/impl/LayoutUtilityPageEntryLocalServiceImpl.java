@@ -6,6 +6,8 @@
 package com.liferay.layout.utility.page.service.impl;
 
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
+import com.liferay.layout.constants.LayoutTypeSettingsConstants;
+import com.liferay.layout.utility.page.exception.DefaultLayoutUtilityPageEntryException;
 import com.liferay.layout.utility.page.exception.LayoutUtilityPageEntryNameException;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.layout.utility.page.service.base.LayoutUtilityPageEntryLocalServiceBaseImpl;
@@ -98,7 +100,8 @@ public class LayoutUtilityPageEntryLocalServiceImpl
 
 		if (plid == 0) {
 			Layout layout = _addLayout(
-				userId, groupId, name, masterLayoutPlid, serviceContext);
+				userId, groupId, name, masterLayoutPlid,
+				defaultLayoutUtilityPageEntry, serviceContext);
 
 			if (layout != null) {
 				plid = layout.getPlid();
@@ -340,6 +343,13 @@ public class LayoutUtilityPageEntryLocalServiceImpl
 			layoutUtilityPageEntryPersistence.findByPrimaryKey(
 				layoutUtilityPageEntryId);
 
+		Layout layout = _layoutLocalService.getLayout(
+			layoutUtilityPageEntry.getPlid());
+
+		if (!layout.isPublished()) {
+			throw new DefaultLayoutUtilityPageEntryException();
+		}
+
 		LayoutUtilityPageEntry defaultLayoutUtilityPageEntry =
 			layoutUtilityPageEntryPersistence.fetchByG_D_T_First(
 				layoutUtilityPageEntry.getGroupId(), true,
@@ -434,7 +444,7 @@ public class LayoutUtilityPageEntryLocalServiceImpl
 
 	private Layout _addLayout(
 			long userId, long groupId, String name, long masterLayoutPlid,
-			ServiceContext serviceContext)
+			boolean published, ServiceContext serviceContext)
 		throws PortalException {
 
 		Map<Locale, String> titleMap = Collections.singletonMap(
@@ -454,6 +464,11 @@ public class LayoutUtilityPageEntryLocalServiceImpl
 			typeSettingsUnicodeProperties.setProperty(
 				"lfr-theme:regular:wrap-widget-page-content",
 				Boolean.FALSE.toString());
+		}
+
+		if (published) {
+			typeSettingsUnicodeProperties.put(
+				LayoutTypeSettingsConstants.KEY_PUBLISHED, "true");
 		}
 
 		String typeSettings = typeSettingsUnicodeProperties.toString();
@@ -484,6 +499,10 @@ public class LayoutUtilityPageEntryLocalServiceImpl
 			layout = _layoutLocalService.updateLookAndFeel(
 				groupId, false, layout.getLayoutId(), themeId, colorSchemeId,
 				StringPool.BLANK);
+		}
+
+		if (published) {
+			return layout;
 		}
 
 		return _layoutLocalService.updateStatus(

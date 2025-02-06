@@ -1719,6 +1719,9 @@ public interface DLAppService extends BaseService {
 			long repositoryId, SearchContext searchContext, Query query)
 		throws SearchException;
 
+	public void subscribeFileEntry(long groupId, long fileEntryId)
+		throws PortalException;
+
 	/**
 	 * Subscribe the user to changes in documents of the file entry type. This
 	 * method is only supported by the Liferay repository.
@@ -1764,6 +1767,9 @@ public interface DLAppService extends BaseService {
 	public void unlockFolder(
 			long repositoryId, long parentFolderId, String name,
 			String lockUuid)
+		throws PortalException;
+
+	public void unsubscribeFileEntry(long groupId, long fileEntryId)
 		throws PortalException;
 
 	/**

@@ -155,7 +155,7 @@ components:
 info:
     description:
         "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
-        'com.liferay.headless.batch.engine.client', and version '1.0.28'."
+        'com.liferay.headless.batch.engine.client', and version '1.0.29'."
     license:
         name: "Apache 2.0"
         url: "http://www.apache.org/licenses/LICENSE-2.0.html"
@@ -219,6 +219,10 @@ paths:
                 - in: path
                   name: contentType
                   required: true
+                  schema:
+                      type: string
+                - in: query
+                  name: batchNestedFields
                   schema:
                       type: string
                 - in: query
@@ -424,6 +428,10 @@ paths:
                   schema:
                       type: string
                 - in: query
+                  name: batchRestrictFields
+                  schema:
+                      type: string
+                - in: query
                   name: callbackURL
                   schema:
                       type: string
@@ -444,10 +452,6 @@ paths:
                   name: importStrategy
                   schema:
                       enum: [ON_ERROR_CONTINUE, ON_ERROR_FAIL]
-                      type: string
-                - in: query
-                  name: restrictedFieldNames
-                  schema:
                       type: string
                 - in: query
                   name: taskItemDelegateName

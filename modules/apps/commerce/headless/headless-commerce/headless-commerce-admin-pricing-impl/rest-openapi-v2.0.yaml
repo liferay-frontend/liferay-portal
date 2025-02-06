@@ -810,6 +810,14 @@ components:
                 currencyCode:
                     example: EUR
                     type: string
+                currencyExternalReferenceCode:
+                    example: AAB-34098-789-N
+                    type: string
+                currencyId:
+                    example: 30130
+                    format: int64
+                    minimum: 0
+                    type: integer
                 customFields:
                     additionalProperties: true
                     type: object
@@ -1487,7 +1495,7 @@ info:
         name: Commerce Team
     description:
         "Liferay Commerce Admin Pricing API. A Java client JAR is available for use with the group ID 'com.liferay',
-        artifact ID 'com.liferay.headless.commerce.admin.pricing.client', and version '4.0.40'."
+        artifact ID 'com.liferay.headless.commerce.admin.pricing.client', and version '4.0.41'."
     license:
         name: "Apache 2.0"
         url: "http://www.apache.org/licenses/LICENSE-2.0.html"

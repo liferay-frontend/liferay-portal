@@ -180,6 +180,11 @@
 			font-weight: 700 !important;
 			line-height: 1.5rem;
 			padding: 0.5rem 1rem 0rem 0.625rem;
+			scroll-margin-top: 200px;
+		}
+
+		.search-results .search-results-entry .search-results-entry-title a {
+			color: var(--color-neutral-10, #282934);
 		}
 
 		.search-results .search-results-entry .search-results-entry-title .search-results-entry-content {
@@ -200,6 +205,10 @@
 			border-top: 0.0625rem solid var(--color-neutral-2, #E2E2E4);
 		}
 	}
+
+	.lfr-layout-structure-item-row {
+		overflow: visible;
+	}
 </style>
 
 <div class="container-release-highlights-search">
@@ -210,7 +219,12 @@
 
 				<#if restArticle?has_content>
 					<div class="align-items-stretch pt-2 search-results-entry">
-						<div class="font-weight-bold search-results-entry-title text-decoration-none unstyled">
+						<#assign
+							articleTitle = restArticle.title
+							escapedTitle = htmlUtil.escapeURL(articleTitle)
+						/>
+
+						<div class="font-weight-bold search-results-entry-title text-decoration-none unstyled" id="${escapedTitle}">
 							<div class="product-capabilities">
 								<#list restArticle.taxonomyCategoryBriefs as taxonomyCategoryBrief>
 									<#assign taxonomyVocabularyName = taxonomyCategoryBrief.embeddedTaxonomyCategory.parentTaxonomyVocabulary.name />
@@ -223,7 +237,9 @@
 								</#list>
 							</div>
 
-							${restArticle.title}
+							<a class="text-decoration-none" href="#${escapedTitle}">
+								${articleTitle}
+							</a>
 
 							<div class="description search-results-entry-content">
 								<#list restArticle.contentFields as fieldData>

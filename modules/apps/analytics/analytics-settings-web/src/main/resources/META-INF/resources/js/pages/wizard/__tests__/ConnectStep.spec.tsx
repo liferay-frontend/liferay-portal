@@ -19,7 +19,7 @@ describe('Connect Step', () => {
 			'use-the-token-genereted-in-your-analytics-cloud-to-connect-this-workspace'
 		);
 
-		const connectStepTitleLang = getByText('connect-analytics-cloud');
+		const connectStepTitleLang = getByText('connect-to-analytics-cloud');
 
 		expect(connectStepDescription).toBeInTheDocument();
 
@@ -33,7 +33,7 @@ describe('Connect Step', () => {
 			<ConnectStep onCancel={() => {}} onChangeStep={() => {}} />
 		);
 
-		const wizardCardTitle = getByText('connect-analytics-cloud');
+		const wizardCardTitle = getByText('connect-to-analytics-cloud');
 
 		const wizardCardDescription = getByText(
 			'use-the-token-genereted-in-your-analytics-cloud-to-connect-this-workspace'

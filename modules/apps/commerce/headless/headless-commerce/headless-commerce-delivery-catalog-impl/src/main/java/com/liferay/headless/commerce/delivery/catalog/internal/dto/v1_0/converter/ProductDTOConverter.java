@@ -26,8 +26,6 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
-import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
-import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -99,11 +97,10 @@ public class ProductDTOConverter
 				setName(() -> cpDefinition.getName(languageId));
 				setProductConfiguration(
 					() -> _productConfigurationDTOConverter.toDTO(
-						new DefaultDTOConverterContext(
-							_dtoConverterRegistry,
+						new ProductConfigurationDTOConverterContext(
+							productDTOConverterContext.getCommerceContext(),
 							cpDefinition.getCPDefinitionId(),
-							productDTOConverterContext.getLocale(), null,
-							null)));
+							productDTOConverterContext.getLocale())));
 				setProductId(cpDefinition::getCProductId);
 				setProductType(cpDefinition::getProductTypeName);
 				setShortDescription(
@@ -152,9 +149,6 @@ public class ProductDTOConverter
 
 	@Reference
 	private CPDefinitionLocalService _cpDefinitionLocalService;
-
-	@Reference
-	private DTOConverterRegistry _dtoConverterRegistry;
 
 	@Reference
 	private Language _language;

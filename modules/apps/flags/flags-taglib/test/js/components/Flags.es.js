@@ -74,19 +74,20 @@ describe('Flags', () => {
 				testingField: 'testingValue',
 			},
 		});
+
 		fetch.mockResponse('');
 
 		await act(async () => {
 			fireEvent.click(getByRole('button'));
-
-			const form = await findByRole('form');
-
-			[...form.elements].forEach((element) => {
-				element.value = 'someValue';
-			});
-
-			fireEvent.submit(form);
 		});
+
+		const form = await findByRole('form');
+
+		[...form.elements].forEach((element) => {
+			element.value = 'someValue';
+		});
+
+		fireEvent.submit(form);
 
 		expect(fetch).toHaveBeenCalledTimes(1);
 

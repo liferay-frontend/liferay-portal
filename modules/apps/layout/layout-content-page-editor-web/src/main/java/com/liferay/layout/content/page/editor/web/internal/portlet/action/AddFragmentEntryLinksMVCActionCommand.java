@@ -13,7 +13,9 @@ import com.liferay.fragment.model.FragmentComposition;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentCompositionService;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
+import com.liferay.layout.content.page.editor.web.internal.exception.FormContainerParentItemRequiredException;
 import com.liferay.layout.content.page.editor.web.internal.exception.NoninstanceablePortletException;
+import com.liferay.layout.content.page.editor.web.internal.manager.FormItemManager;
 import com.liferay.layout.content.page.editor.web.internal.manager.FragmentEntryLinkManager;
 import com.liferay.layout.content.page.editor.web.internal.util.layout.structure.LayoutStructureUtil;
 import com.liferay.layout.importer.LayoutsImporter;
@@ -82,7 +84,18 @@ public class AddFragmentEntryLinksMVCActionCommand
 
 		String errorMessage = "an-unexpected-error-occurred";
 
-		if (exception.getCause() instanceof NoninstanceablePortletException) {
+		if (exception instanceof FormContainerParentItemRequiredException) {
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+			errorMessage = _language.get(
+				themeDisplay.getLocale(),
+				"form-components-can-only-be-placed-inside-a-mapped-form-" +
+					"container");
+		}
+		else if (exception.getCause() instanceof
+					NoninstanceablePortletException) {
+
 			ThemeDisplay themeDisplay =
 				(ThemeDisplay)actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
@@ -165,6 +178,10 @@ public class AddFragmentEntryLinksMVCActionCommand
 					fragmentComposition.getData(), position, false,
 					segmentsExperienceId);
 
+			_formItemManager.checkFormContainerParentItemRequired(
+				fragmentEntryLinks, layoutStructure, themeDisplay.getLocale(),
+				parentItemId);
+
 			for (FragmentEntryLink fragmentEntryLink : fragmentEntryLinks) {
 				for (FragmentEntryLinkListener fragmentEntryLinkListener :
 						_fragmentEntryLinkListenerRegistry.
@@ -210,6 +227,9 @@ public class AddFragmentEntryLinksMVCActionCommand
 			);
 		}
 	}
+
+	@Reference
+	private FormItemManager _formItemManager;
 
 	@Reference
 	private FragmentCollectionContributorRegistry

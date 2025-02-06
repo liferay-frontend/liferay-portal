@@ -4,6 +4,5 @@
  */
 
 module.exports = {
-	main: 'src/main/resources/META-INF/resources/invite_members/js/InviteMembers.js',
-	npmscripts: {},
+	main: './src/main/resources/META-INF/resources/invite_members/js/InviteMembers.js',
 };

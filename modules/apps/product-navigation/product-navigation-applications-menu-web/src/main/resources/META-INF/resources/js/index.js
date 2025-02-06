@@ -10,7 +10,7 @@ import ClayLayout from '@clayui/layout';
 import ClayModal, {useModal} from '@clayui/modal';
 import ClaySticker from '@clayui/sticker';
 import ClayTabs from '@clayui/tabs';
-import {ReactDOMServer, useEventListener} from '@liferay/frontend-js-react-web';
+import {useEventListener} from '@liferay/frontend-js-react-web';
 import classNames from 'classnames';
 import {useId} from 'frontend-js-components-web';
 import {fetch, navigate, openSelectionModal} from 'frontend-js-web';
@@ -21,22 +21,23 @@ import useKeyboardNavigation from './hooks/useKeyboardNavigation';
 
 import '../css/ApplicationsMenu.scss';
 
-const getOpenMenuTooltip = (keyLabel) => (
-	<>
-		<div>{Liferay.Language.get('open-applications-menu')}</div>
-		<kbd className="c-kbd c-kbd-dark mt-1">
-			<kbd className="c-kbd">Ctrl</kbd>
+const getOpenMenuTooltipMarkup = (keyLabel) =>
+	`
+	<div>${Liferay.Language.get('open-applications-menu')}</div>
+	<kbd class="c-kbd c-kbd-dark mt-1">
+		<kbd class="c-kbd">Ctrl</kbd>
 
-			<span className="c-kbd-separator">+</span>
+		<span class="c-kbd-separator">+</span>
 
-			<kbd className="c-kbd">{keyLabel}</kbd>
+		<kbd class="c-kbd">${keyLabel}</kbd>
 
-			<span className="c-kbd-separator">+</span>
+		<span class="c-kbd-separator">+</span>
 
-			<kbd className="c-kbd">A</kbd>
-		</kbd>
-	</>
-);
+		<kbd class="c-kbd">A</kbd>
+	</kbd>
+`
+		.replaceAll('\n', '')
+		.replaceAll('\t', '');
 
 const SitesPanel = ({portletNamespace, sites, virtualInstance}) => {
 	return (
@@ -237,9 +238,7 @@ const AppsPanel = ({
 			className="applications-menu-wrapper"
 		>
 			<div className="applications-menu-header">
-				<ClayLayout.ContainerFluid
-					size={Liferay?.FeatureFlags?.['LPS-184404'] ? false : 'xl'}
-				>
+				<ClayLayout.ContainerFluid size="xl">
 					<ClayLayout.Row>
 						<ClayLayout.Col>
 							<ClayLayout.ContentRow
@@ -285,9 +284,7 @@ const AppsPanel = ({
 			</div>
 
 			<div className="applications-menu-bg applications-menu-border-top applications-menu-content">
-				<ClayLayout.ContainerFluid
-					size={Liferay?.FeatureFlags?.['LPS-184404'] ? false : 'xl'}
-				>
+				<ClayLayout.ContainerFluid size="xl">
 					<ClayLayout.Row>
 						<ClayLayout.Col className="pr-0" md="9" xl="8">
 							<ClayTabs.Content activeIndex={activeTab}>
@@ -331,9 +328,7 @@ const AppsPanel = ({
 			</div>
 
 			<div className="applications-menu-bg applications-menu-footer">
-				<ClayLayout.ContainerFluid
-					size={Liferay?.FeatureFlags?.['LPS-184404'] ? false : 'xl'}
-				>
+				<ClayLayout.ContainerFluid size="xl">
 					<ClayLayout.Row>
 						<ClayLayout.Col className="pr-3" md="9" xl="8">
 							<ClayLayout.ContentRow
@@ -441,7 +436,7 @@ const ApplicationsMenu = ({
 	const buttonTitle = useMemo(() => {
 		const keyLabel = Liferay.Browser.isMac() ? '⌥' : 'Alt';
 
-		return getOpenMenuTooltip(keyLabel);
+		return getOpenMenuTooltipMarkup(keyLabel);
 	}, []);
 
 	const fetchCategoriesPromiseRef = useRef();
@@ -536,7 +531,7 @@ const ApplicationsMenu = ({
 				aria-labelledby={buttonTitleId}
 				className="control-menu-nav-link dropdown-toggle lfr-portal-tooltip"
 				data-qa-id="applicationsMenu"
-				data-title={ReactDOMServer.renderToString(buttonTitle)}
+				data-title={buttonTitle}
 				data-title-set-as-html
 				data-tooltip-align="bottom-left"
 				displayType="unstyled"
@@ -548,9 +543,11 @@ const ApplicationsMenu = ({
 				symbol="grid"
 			/>
 
-			<div className="sr-only" id={buttonTitleId}>
-				{buttonTitle}
-			</div>
+			<div
+				className="sr-only"
+				dangerouslySetInnerHTML={{__html: buttonTitle}}
+				id={buttonTitleId}
+			/>
 		</>
 	);
 };

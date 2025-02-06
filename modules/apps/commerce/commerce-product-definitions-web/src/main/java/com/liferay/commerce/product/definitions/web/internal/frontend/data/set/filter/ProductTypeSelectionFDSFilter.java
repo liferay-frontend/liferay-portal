@@ -5,6 +5,7 @@
 
 package com.liferay.commerce.product.definitions.web.internal.frontend.data.set.filter;
 
+import com.liferay.commerce.product.definitions.web.internal.constants.CPConfigurationFDSNames;
 import com.liferay.commerce.product.definitions.web.internal.constants.CommerceProductFDSNames;
 import com.liferay.commerce.product.type.CPType;
 import com.liferay.commerce.product.type.CPTypeRegistry;
@@ -23,7 +24,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Marco Leo
  */
 @Component(
-	property = "frontend.data.set.name=" + CommerceProductFDSNames.PRODUCT_DEFINITIONS,
+	property = {
+		"frontend.data.set.name=" + CommerceProductFDSNames.PRODUCT_DEFINITIONS,
+		"frontend.data.set.name=" + CPConfigurationFDSNames.PRODUCT_CONFIGURATIONS
+	},
 	service = FDSFilter.class
 )
 public class ProductTypeSelectionFDSFilter extends BaseSelectionFDSFilter {

@@ -4,17 +4,19 @@
  */
 
 import ClayEmptyState from '@clayui/empty-state';
+import ClayLabel from '@clayui/label';
 import ClayLayout from '@clayui/layout';
 import ClayLink from '@clayui/link';
 import ClayPanel from '@clayui/panel';
-import React from 'react';
-
-import {PublicationScoreLabel} from '../components/PublicationScoreLabel';
+import ClayPopover from '@clayui/popover';
+import React, {useState} from 'react';
 
 export default function ChangeTrackingOverview({
 	itemsOverview,
-	publicationScore,
+	publicationSizeClassification,
 }) {
+	const [openPopover, setOpenPopover] = useState(false);
+
 	return (
 		<ClayPanel
 			collapsable
@@ -27,9 +29,36 @@ export default function ChangeTrackingOverview({
 						</ClayLayout.ContentCol>
 
 						<ClayLayout.ContentCol>
-							<PublicationScoreLabel
-								publicationScore={publicationScore}
-							/>
+							{publicationSizeClassification ? (
+								<ClayPopover
+									alignPosition="bottom"
+									onShowChange={setOpenPopover}
+									show={openPopover}
+									trigger={
+										<ClayLabel
+											displayType="info"
+											onMouseOut={() =>
+												setOpenPopover(false)
+											}
+											onMouseOver={() =>
+												setOpenPopover(true)
+											}
+										>
+											{Liferay.Language.get(
+												'publication-size'
+											) +
+												': ' +
+												publicationSizeClassification}
+										</ClayLabel>
+									}
+								>
+									<div>
+										{Liferay.Language.get(
+											'publication-size-description'
+										)}
+									</div>
+								</ClayPopover>
+							) : null}
 						</ClayLayout.ContentCol>
 					</ClayLayout.ContentRow>
 				</ClayPanel.Title>

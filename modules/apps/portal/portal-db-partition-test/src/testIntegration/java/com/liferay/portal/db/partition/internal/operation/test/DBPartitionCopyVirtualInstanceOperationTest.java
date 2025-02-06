@@ -11,12 +11,12 @@ import com.liferay.portal.db.partition.test.util.BaseDBPartitionTestCase;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.service.CompanyLocalService;
-import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -25,7 +25,6 @@ import org.junit.runner.RunWith;
 /**
  * @author István András Dézsi
  */
-@DataGuard(scope = DataGuard.Scope.NONE)
 @RunWith(Arquillian.class)
 public class DBPartitionCopyVirtualInstanceOperationTest
 	extends BaseVirtualInstanceOperationTestCase {
@@ -36,6 +35,10 @@ public class DBPartitionCopyVirtualInstanceOperationTest
 
 		_company = _companyLocalService.fetchCompanyByVirtualHost(
 			TestPropsValues.COMPANY_WEB_ID);
+	}
+
+	@AfterClass
+	public static void tearDownClass() {
 	}
 
 	@Override

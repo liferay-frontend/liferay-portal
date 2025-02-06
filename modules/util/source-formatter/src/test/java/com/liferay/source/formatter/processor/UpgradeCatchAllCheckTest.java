@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -75,19 +76,17 @@ public class UpgradeCatchAllCheckTest extends BaseSourceProcessorTestCase {
 			String[] fileTypes = _getValidExtensions(jsonObject);
 
 			for (String fileType : fileTypes) {
-				if (_hasValidUpgradeFiles(issueKey, fileType)) {
-					issueKeyFileTypesMap.compute(
-						issueKey,
-						(key, value) -> {
-							if (value == null) {
-								value = new HashSet<>();
-							}
+				issueKeyFileTypesMap.compute(
+					issueKey,
+					(key, value) -> {
+						if (value == null) {
+							value = new HashSet<>();
+						}
 
-							value.add(fileType);
+						value.add(fileType);
 
-							return value;
-						});
-				}
+						return value;
+					});
 			}
 		}
 
@@ -125,10 +124,23 @@ public class UpgradeCatchAllCheckTest extends BaseSourceProcessorTestCase {
 			StringUtil.replace(_issueKey, CharPool.DASH, CharPool.UNDERLINE) +
 				".test" + _fileType;
 
-		if (_hasValidUpgradeFiles(_issueKey, _fileType)) {
-			_testUpgradeCatchAllCheck(
-				"upgrade/upgrade-catch-all-check/" + fileName);
-		}
+		Path filePath = Paths.get(
+			"src/test/resources/com/liferay/source/formatter/dependencies" +
+				"/upgrade/upgrade-catch-all-check/" + fileName);
+
+		Assert.assertTrue(
+			"Missing unit test in " + filePath, Files.exists(filePath));
+
+		Path expectedFilePath = Paths.get(
+			"src/test/resources/com/liferay/source/formatter/dependencies" +
+				"/expected/upgrade/upgrade-catch-all-check/" + fileName);
+
+		Assert.assertTrue(
+			"Missing unit test in " + expectedFilePath,
+			Files.exists(expectedFilePath));
+
+		_testUpgradeCatchAllCheck(
+			"upgrade/upgrade-catch-all-check/" + fileName);
 	}
 
 	@Override
@@ -155,20 +167,6 @@ public class UpgradeCatchAllCheckTest extends BaseSourceProcessorTestCase {
 		}
 
 		return validExtensions;
-	}
-
-	private static boolean _hasValidUpgradeFiles(
-		String issueKey, String fileType) {
-
-		String fileName =
-			StringUtil.replace(issueKey, CharPool.DASH, CharPool.UNDERLINE) +
-				".test" + fileType;
-
-		Path filePath = Paths.get(
-			"src/test/resources/com/liferay/source/formatter/dependencies" +
-				"/upgrade/upgrade-catch-all-check/" + fileName);
-
-		return Files.exists(filePath);
 	}
 
 	private void _testUpgradeCatchAllCheck(String fileName) throws Exception {

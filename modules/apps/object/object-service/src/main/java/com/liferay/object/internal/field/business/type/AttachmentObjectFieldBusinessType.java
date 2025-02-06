@@ -79,14 +79,35 @@ public class AttachmentObjectFieldBusinessType
 	}
 
 	@Override
+	public Map<String, Object> getLocalizedValues(
+			ObjectField objectField, Long userId, Map<String, Object> values)
+		throws PortalException {
+
+		Map<String, Object> localizedValues = super.getLocalizedValues(
+			objectField, userId, values);
+
+		if (localizedValues == null) {
+			return null;
+		}
+
+		for (Map.Entry<String, Object> entry : localizedValues.entrySet()) {
+			localizedValues.put(
+				entry.getKey(), _getFileEntryId(entry.getValue()));
+		}
+
+		return localizedValues;
+	}
+
+	@Override
 	public String getName() {
 		return ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT;
 	}
 
 	@Override
 	public Map<String, Object> getProperties(
-		ObjectField objectField,
-		ObjectFieldRenderingContext objectFieldRenderingContext) {
+			ObjectField objectField,
+			ObjectFieldRenderingContext objectFieldRenderingContext)
+		throws PortalException {
 
 		Map<String, Object> properties = super.getProperties(
 			objectField, objectFieldRenderingContext);
@@ -138,34 +159,12 @@ public class AttachmentObjectFieldBusinessType
 			ObjectField objectField, long userId, Map<String, Object> values)
 		throws PortalException {
 
-		Object value = values.get(objectField.getName());
+		return _getFileEntryId(super.getValue(objectField, userId, values));
+	}
 
-		long fileEntryId = GetterUtil.getLong(value);
-
-		if (fileEntryId > 0) {
-			return fileEntryId;
-		}
-
-		if (value instanceof Map) {
-			fileEntryId = MapUtil.getLong((Map<String, Object>)value, "id");
-		}
-		else {
-			String stringValue = MapUtil.getString(
-				values, objectField.getName());
-
-			if (JSONUtil.isJSONObject(stringValue)) {
-				JSONObject jsonObject = jsonFactory.createJSONObject(
-					stringValue);
-
-				fileEntryId = GetterUtil.getLong(jsonObject.get("id"));
-			}
-		}
-
-		if (fileEntryId > 0) {
-			return fileEntryId;
-		}
-
-		return value;
+	@Override
+	public boolean isLocalizable() {
+		return true;
 	}
 
 	@Override
@@ -233,6 +232,34 @@ public class AttachmentObjectFieldBusinessType
 				objectFieldSettingsValues.get(
 					ObjectFieldSettingConstants.NAME_MAX_FILE_SIZE));
 		}
+	}
+
+	private Object _getFileEntryId(Object value) throws PortalException {
+		long fileEntryId = GetterUtil.getLong(value);
+
+		if (fileEntryId > 0) {
+			return fileEntryId;
+		}
+
+		if (value instanceof Map) {
+			fileEntryId = MapUtil.getLong((Map<String, Object>)value, "id");
+		}
+		else {
+			String valueString = String.valueOf(value);
+
+			if (JSONUtil.isJSONObject(valueString)) {
+				JSONObject jsonObject = jsonFactory.createJSONObject(
+					valueString);
+
+				fileEntryId = GetterUtil.getLong(jsonObject.get("id"));
+			}
+		}
+
+		if (fileEntryId > 0) {
+			return fileEntryId;
+		}
+
+		return value;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

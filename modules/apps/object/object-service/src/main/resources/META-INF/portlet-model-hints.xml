@@ -55,6 +55,7 @@
 		</field>
 		<field name="enableCategorization" type="boolean" />
 		<field name="enableComments" type="boolean" />
+		<field name="enableFriendlyURLCustomization" type="boolean" />
 		<field name="enableIndexSearch" type="boolean" />
 		<field name="enableLocalization" type="boolean" />
 		<field name="enableObjectEntryDraft" type="boolean" />
@@ -83,7 +84,9 @@
 	<model name="com.liferay.object.model.ObjectEntry">
 		<field name="mvccVersion" type="long" />
 		<field name="uuid" type="String" />
-		<field name="externalReferenceCode" type="String" />
+		<field name="externalReferenceCode" type="String">
+			<hint name="max-length">1000</hint>
+		</field>
 		<field name="objectEntryId" type="long" />
 		<field name="groupId" type="long" />
 		<field name="companyId" type="long" />
@@ -92,12 +95,34 @@
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="objectDefinitionId" type="long" />
+		<field name="objectEntryFolderId" type="long" />
 		<field name="rootObjectEntryId" type="long" />
+		<field name="treePath" type="String">
+			<hint name="max-length">4000</hint>
+		</field>
 		<field name="lastPublishDate" type="Date" />
 		<field name="status" type="int" />
 		<field name="statusByUserId" type="long" />
 		<field name="statusByUserName" type="String" />
 		<field name="statusDate" type="Date" />
+	</model>
+	<model name="com.liferay.object.model.ObjectEntryFolder">
+		<field name="mvccVersion" type="long" />
+		<field name="uuid" type="String" />
+		<field name="externalReferenceCode" type="String" />
+		<field name="objectEntryFolderId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="parentObjectEntryFolderId" type="long" />
+		<field localized="true" name="label" type="String" />
+		<field name="name" type="String" />
+		<field name="treePath" type="String">
+			<hint name="max-length">4000</hint>
+		</field>
 	</model>
 	<model name="com.liferay.object.model.ObjectField">
 		<field name="mvccVersion" type="long" />

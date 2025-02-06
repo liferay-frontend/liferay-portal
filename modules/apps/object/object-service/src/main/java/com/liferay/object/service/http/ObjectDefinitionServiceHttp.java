@@ -45,6 +45,7 @@ public class ObjectDefinitionServiceHttp {
 			addCustomObjectDefinition(
 				HttpPrincipal httpPrincipal, long objectFolderId,
 				String className, boolean enableComments,
+				boolean enableFriendlyURLCustomization,
 				boolean enableIndexSearch, boolean enableLocalization,
 				boolean enableObjectEntryDraft,
 				java.util.Map<java.util.Locale, String> labelMap, String name,
@@ -62,9 +63,10 @@ public class ObjectDefinitionServiceHttp {
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, objectFolderId, className, enableComments,
-				enableIndexSearch, enableLocalization, enableObjectEntryDraft,
-				labelMap, name, panelAppOrder, panelCategoryKey, pluralLabelMap,
-				portlet, scope, storageType, objectFields);
+				enableFriendlyURLCustomization, enableIndexSearch,
+				enableLocalization, enableObjectEntryDraft, labelMap, name,
+				panelAppOrder, panelCategoryKey, pluralLabelMap, portlet, scope,
+				storageType, objectFields);
 
 			Object returnObj = null;
 
@@ -96,7 +98,8 @@ public class ObjectDefinitionServiceHttp {
 
 	public static com.liferay.object.model.ObjectDefinition addObjectDefinition(
 			HttpPrincipal httpPrincipal, String externalReferenceCode,
-			long objectFolderId, boolean modifiable, boolean system)
+			long objectFolderId, boolean modifiable, String scope,
+			boolean system)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -106,7 +109,7 @@ public class ObjectDefinitionServiceHttp {
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, objectFolderId, modifiable,
-				system);
+				scope, system);
 
 			Object returnObj = null;
 
@@ -140,6 +143,7 @@ public class ObjectDefinitionServiceHttp {
 			addSystemObjectDefinition(
 				HttpPrincipal httpPrincipal, String externalReferenceCode,
 				long userId, long objectFolderId, boolean enableComments,
+				boolean enableFriendlyURLCustomization,
 				boolean enableIndexSearch, boolean enableLocalization,
 				java.util.Map<java.util.Locale, String> labelMap, String name,
 				String panelAppOrder, String panelCategoryKey,
@@ -156,9 +160,10 @@ public class ObjectDefinitionServiceHttp {
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, userId, objectFolderId,
-				enableComments, enableIndexSearch, enableLocalization, labelMap,
-				name, panelAppOrder, panelCategoryKey, pluralLabelMap, portlet,
-				scope, objectFields);
+				enableComments, enableFriendlyURLCustomization,
+				enableIndexSearch, enableLocalization, labelMap, name,
+				panelAppOrder, panelCategoryKey, pluralLabelMap, portlet, scope,
+				objectFields);
 
 			Object returnObj = null;
 
@@ -592,8 +597,9 @@ public class ObjectDefinitionServiceHttp {
 				long descriptionObjectFieldId, long objectFolderId,
 				long titleObjectFieldId, boolean accountEntryRestricted,
 				boolean active, String className, boolean enableCategorization,
-				boolean enableComments, boolean enableIndexSearch,
-				boolean enableLocalization, boolean enableObjectEntryDraft,
+				boolean enableComments, boolean enableFriendlyURLCustomization,
+				boolean enableIndexSearch, boolean enableLocalization,
+				boolean enableObjectEntryDraft,
 				boolean enableObjectEntryHistory,
 				java.util.Map<java.util.Locale, String> labelMap, String name,
 				String panelAppOrder, String panelCategoryKey, boolean portlet,
@@ -612,7 +618,8 @@ public class ObjectDefinitionServiceHttp {
 				accountEntryRestrictedObjectFieldId, descriptionObjectFieldId,
 				objectFolderId, titleObjectFieldId, accountEntryRestricted,
 				active, className, enableCategorization, enableComments,
-				enableIndexSearch, enableLocalization, enableObjectEntryDraft,
+				enableFriendlyURLCustomization, enableIndexSearch,
+				enableLocalization, enableObjectEntryDraft,
 				enableObjectEntryHistory, labelMap, name, panelAppOrder,
 				panelCategoryKey, portlet, pluralLabelMap, scope, status);
 
@@ -823,18 +830,20 @@ public class ObjectDefinitionServiceHttp {
 	private static final Class<?>[] _addCustomObjectDefinitionParameterTypes0 =
 		new Class[] {
 			long.class, String.class, boolean.class, boolean.class,
-			boolean.class, boolean.class, java.util.Map.class, String.class,
-			String.class, String.class, java.util.Map.class, boolean.class,
-			String.class, String.class, java.util.List.class
+			boolean.class, boolean.class, boolean.class, java.util.Map.class,
+			String.class, String.class, String.class, java.util.Map.class,
+			boolean.class, String.class, String.class, java.util.List.class
 		};
 	private static final Class<?>[] _addObjectDefinitionParameterTypes1 =
-		new Class[] {String.class, long.class, boolean.class, boolean.class};
+		new Class[] {
+			String.class, long.class, boolean.class, String.class, boolean.class
+		};
 	private static final Class<?>[] _addSystemObjectDefinitionParameterTypes2 =
 		new Class[] {
 			String.class, long.class, long.class, boolean.class, boolean.class,
-			boolean.class, java.util.Map.class, String.class, String.class,
-			String.class, java.util.Map.class, boolean.class, String.class,
-			java.util.List.class
+			boolean.class, boolean.class, java.util.Map.class, String.class,
+			String.class, String.class, java.util.Map.class, boolean.class,
+			String.class, java.util.List.class
 		};
 	private static final Class<?>[] _deleteObjectDefinitionParameterTypes3 =
 		new Class[] {long.class};
@@ -867,9 +876,9 @@ public class ObjectDefinitionServiceHttp {
 			String.class, long.class, long.class, long.class, long.class,
 			long.class, boolean.class, boolean.class, String.class,
 			boolean.class, boolean.class, boolean.class, boolean.class,
-			boolean.class, boolean.class, java.util.Map.class, String.class,
-			String.class, String.class, boolean.class, java.util.Map.class,
-			String.class, int.class
+			boolean.class, boolean.class, boolean.class, java.util.Map.class,
+			String.class, String.class, String.class, boolean.class,
+			java.util.Map.class, String.class, int.class
 		};
 	private static final Class<?>[]
 		_updateExternalReferenceCodeParameterTypes14 = new Class[] {

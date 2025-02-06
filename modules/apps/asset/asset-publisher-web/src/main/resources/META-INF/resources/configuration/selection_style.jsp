@@ -19,7 +19,7 @@
 		<liferay-ui:message key="dynamic-and-manual-asset-selection-are-deprecated,-we-recommend-creating-a-collection-from-current-asset-selection-to-enhance-reusability" />
 
 		<liferay-learn:message
-			key="read-more-about-asset-publisher-changes"
+			key="asset-publisher-changes"
 			resource="asset-publisher-web"
 		/>
 

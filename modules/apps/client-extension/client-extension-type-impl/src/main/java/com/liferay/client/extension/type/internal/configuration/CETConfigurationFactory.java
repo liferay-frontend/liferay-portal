@@ -13,6 +13,7 @@ import com.liferay.client.extension.type.ThemeCSSCET;
 import com.liferay.client.extension.type.configuration.CETConfiguration;
 import com.liferay.client.extension.type.manager.CETManager;
 import com.liferay.osgi.util.configuration.ConfigurationFactoryUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
@@ -30,6 +31,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 
 import java.util.List;
@@ -57,36 +59,106 @@ public class CETConfigurationFactory {
 	protected void activate(Map<String, Object> properties) throws Exception {
 		_properties = properties;
 
+		String externalReferenceCode = _getExternalReferenceCode(properties);
+
+		if (_log.isDebugEnabled()) {
+			_log.debug(
+				StringBundler.concat(
+					"Activating client extension ", externalReferenceCode,
+					"with properties:\n", MapUtil.toString(properties)));
+		}
+		else if (_log.isInfoEnabled()) {
+			_log.info("Activating client extension " + externalReferenceCode);
+		}
+
 		ConfigurationFactoryUtil.executeAsCompany(
 			_companyLocalService, properties,
 			companyId -> {
-				CETConfiguration cetConfiguration =
-					ConfigurableUtil.createConfigurable(
-						CETConfiguration.class, properties);
+				try {
+					if (_log.isInfoEnabled()) {
+						_log.info(
+							StringBundler.concat(
+								"Adding CET for client extension ",
+								externalReferenceCode, " and company ",
+								companyId));
+					}
 
-				_cet = _cetManager.addCET(
-					cetConfiguration, companyId,
-					_getExternalReferenceCode(properties));
+					_cet = _cetManager.addCET(
+						ConfigurableUtil.createConfigurable(
+							CETConfiguration.class, properties),
+						companyId, externalReferenceCode);
 
-				if (Objects.equals(
-						_cet.getType(),
-						ClientExtensionEntryConstants.TYPE_THEME_CSS)) {
+					if (_log.isInfoEnabled()) {
+						_log.info(
+							StringBundler.concat(
+								"Adding client extension entry relations for ",
+								"client extension ", externalReferenceCode,
+								" and company ", companyId));
+					}
 
-					_addControlPanelThemeCSSClientExtensionEntryRel(companyId);
+					if (Objects.equals(
+							_cet.getType(),
+							ClientExtensionEntryConstants.TYPE_THEME_CSS)) {
+
+						_addControlPanelThemeCSSClientExtensionEntryRel(
+							companyId);
+					}
+				}
+				catch (Exception exception) {
+					_log.error(
+						StringBundler.concat(
+							"Unable to activate client extension ",
+							externalReferenceCode, " for company ", companyId),
+						exception);
+
+					throw exception;
 				}
 			});
 	}
 
 	@Deactivate
 	protected void deactivate() {
+		String externalReferenceCode = _getExternalReferenceCode(_properties);
+
+		if (_log.isInfoEnabled()) {
+			_log.info("Deactivating client extension " + externalReferenceCode);
+		}
+
 		ConfigurationFactoryUtil.executeAsCompany(
 			_companyLocalService, _properties,
 			companyId -> {
-				_cetManager.deleteCET(_cet);
+				try {
+					if (_log.isInfoEnabled()) {
+						_log.info(
+							StringBundler.concat(
+								"Deleting CET for client extension ",
+								externalReferenceCode, " and company ",
+								companyId));
+					}
 
-				_clientExtensionEntryRelLocalService.
-					deleteClientExtensionEntryRels(
-						companyId, _cet.getExternalReferenceCode());
+					_cetManager.deleteCET(_cet);
+
+					if (_log.isInfoEnabled()) {
+						_log.info(
+							StringBundler.concat(
+								"Deleting client extension entry relations ",
+								"for client extension ", externalReferenceCode,
+								" and company ", companyId));
+					}
+
+					_clientExtensionEntryRelLocalService.
+						deleteClientExtensionEntryRels(
+							companyId, _cet.getExternalReferenceCode());
+				}
+				catch (Exception exception) {
+					_log.error(
+						StringBundler.concat(
+							"Unable to deactivate client extension ",
+							externalReferenceCode, " for company ", companyId),
+						exception);
+
+					throw exception;
+				}
 			});
 
 		_properties = null;
@@ -96,28 +168,81 @@ public class CETConfigurationFactory {
 	protected void modified(Map<String, Object> properties) throws Exception {
 		_properties = properties;
 
+		String externalReferenceCode = _getExternalReferenceCode(properties);
+
+		if (_log.isDebugEnabled()) {
+			_log.debug(
+				StringBundler.concat(
+					"Modifying client extension ", externalReferenceCode,
+					"with properties:\n", MapUtil.toString(properties)));
+		}
+		else if (_log.isInfoEnabled()) {
+			_log.info("Modifying client extension " + externalReferenceCode);
+		}
+
 		ConfigurationFactoryUtil.executeAsCompany(
 			_companyLocalService, properties,
 			companyId -> {
-				_cetManager.deleteCET(_cet);
+				try {
+					if (_log.isInfoEnabled()) {
+						_log.info(
+							StringBundler.concat(
+								"Deleting CET for client extension ",
+								externalReferenceCode, " and company ",
+								companyId));
+					}
 
-				CETConfiguration cetConfiguration =
-					ConfigurableUtil.createConfigurable(
-						CETConfiguration.class, properties);
+					_cetManager.deleteCET(_cet);
 
-				_cet = _cetManager.addCET(
-					cetConfiguration, companyId,
-					_getExternalReferenceCode(properties));
+					if (_log.isInfoEnabled()) {
+						_log.info(
+							StringBundler.concat(
+								"Adding CET for client extension ",
+								externalReferenceCode, " and company ",
+								companyId));
+					}
 
-				if (Objects.equals(
-						_cet.getType(),
-						ClientExtensionEntryConstants.TYPE_THEME_CSS)) {
+					_cet = _cetManager.addCET(
+						ConfigurableUtil.createConfigurable(
+							CETConfiguration.class, properties),
+						companyId, externalReferenceCode);
+
+					if (_log.isInfoEnabled()) {
+						_log.info(
+							StringBundler.concat(
+								"Deleting client extension entry relations ",
+								"for client extension ", externalReferenceCode,
+								" and company ", companyId));
+					}
 
 					_clientExtensionEntryRelLocalService.
 						deleteClientExtensionEntryRels(
 							companyId, _cet.getExternalReferenceCode());
 
-					_addControlPanelThemeCSSClientExtensionEntryRel(companyId);
+					if (_log.isInfoEnabled()) {
+						_log.info(
+							StringBundler.concat(
+								"Adding client extension entry relations for ",
+								"client extension ", externalReferenceCode,
+								" and company ", companyId));
+					}
+
+					if (Objects.equals(
+							_cet.getType(),
+							ClientExtensionEntryConstants.TYPE_THEME_CSS)) {
+
+						_addControlPanelThemeCSSClientExtensionEntryRel(
+							companyId);
+					}
+				}
+				catch (Exception exception) {
+					_log.error(
+						StringBundler.concat(
+							"Unable to modify client extension ",
+							externalReferenceCode, " for company ", companyId),
+						exception);
+
+					throw exception;
 				}
 			});
 	}

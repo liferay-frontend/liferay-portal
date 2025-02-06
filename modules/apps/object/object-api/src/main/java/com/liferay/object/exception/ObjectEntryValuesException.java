@@ -6,6 +6,7 @@
 package com.liferay.object.exception;
 
 import com.liferay.object.model.ObjectState;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 
 import java.io.Serializable;
@@ -179,9 +180,10 @@ public class ObjectEntryValuesException extends PortalException {
 			String fileExtension, String objectFieldName) {
 
 			super(
-				String.format(
-					"The file extension %s is invalid for object field \"%s\"",
-					fileExtension, objectFieldName));
+				StringBundler.concat(
+					"The file extension \"", fileExtension,
+					"\" is invalid for object field \"", objectFieldName,
+					"\""));
 
 			_fileExtension = fileExtension;
 			_objectFieldName = objectFieldName;

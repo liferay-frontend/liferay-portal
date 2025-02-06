@@ -237,7 +237,9 @@ public class OfflineOpenIdConnectSessionManager {
 					JSONObjectUtils.parse(oAuthClientEntry.getInfoJSON())),
 				_authorizationServerMetadataResolver.
 					resolveOIDCProviderMetadata(
-						openIdConnectSession.getAuthServerWellKnownURI()),
+						openIdConnectSession.getAuthServerWellKnownURI(),
+						oAuthClientEntry.getMetadataCacheInSeconds(),
+						oAuthClientEntry.getOAuthClientEntryId()),
 				refreshToken, oAuthClientEntry.getTokenRequestParametersJSON());
 
 			_updateOpenIdConnectSession(

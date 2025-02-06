@@ -9,15 +9,13 @@ dependencies {
 	api group: "commons-logging", name: "commons-logging", version: "1.2"
 	api group: "org.apache.felix", name: "org.apache.felix.http.servlet-api", version: "1.1.2"
 	api group: "org.springframework", name: "spring-core", version: "4.3.30.RELEASE"
-
 	compileOnly group: "org.springframework", name: "spring-web", transitive: false, version: "4.3.30.RELEASE"
 }
 
 jar {
-	setActions([])
-
 	dependsOn jarPatched
 	finalizedBy jarManifest
+	setActions([])
 }
 
 jarManifest {
@@ -30,9 +28,7 @@ jarPatched {
 	archiveFileName = jar.archiveFileName
 	destinationDirectory = jar.destinationDirectory
 	duplicatesStrategy = "exclude"
-
 	exclude "org/springframework/web/util/UriComponentsBuilder*.class"
-
 	from sourceSets.main.output
 
 	from {
@@ -55,6 +51,5 @@ patch {
 
 	fileNames "org/springframework/http/HttpHeaders.java"
 	fileNames "org/springframework/web/context/request/ServletWebRequest.java"
-
 	originalLibModuleName = "spring-web"
 }

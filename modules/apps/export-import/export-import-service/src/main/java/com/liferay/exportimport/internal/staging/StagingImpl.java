@@ -1094,9 +1094,8 @@ public class StagingImpl implements Staging {
 		}
 		else if (exception instanceof FileExtensionException) {
 			errorMessage = _language.format(
-				locale,
-				"document-names-must-end-with-one-of-the-following-extensions",
-				".lar", false);
+				locale, "please-enter-a-file-with-a-valid-extension-x", ".lar",
+				false);
 			errorType = ServletResponseConstants.SC_FILE_EXTENSION_EXCEPTION;
 		}
 		else if (exception instanceof FileNameException) {
@@ -2016,19 +2015,17 @@ public class StagingImpl implements Staging {
 				JSONUtil.put(
 					"info",
 					() -> {
-						if (Validator.isNotNull(
-								missingReference.getClassName())) {
-
-							return _language.format(
-								locale,
-								"the-original-x-does-not-exist-in-the-" +
-									"current-environment",
-								ResourceActionsUtil.getModelResource(
-									locale, missingReference.getClassName()),
-								false);
+						if (Validator.isNull(missingReference.getClassName())) {
+							return null;
 						}
 
-						return null;
+						return _language.format(
+							locale,
+							"the-original-x-does-not-exist-in-the-current-" +
+								"environment",
+							ResourceActionsUtil.getModelResource(
+								locale, missingReference.getClassName()),
+							false);
 					}
 				).put(
 					"size",
@@ -3979,11 +3976,7 @@ public class StagingImpl implements Staging {
 		String tabs1 = ParamUtil.getString(portletRequest, "tabs1");
 
 		if (Validator.isNotNull(tabs1)) {
-			if (tabs1.equals("public-pages")) {
-				return false;
-			}
-
-			return true;
+			return !tabs1.equals("public-pages");
 		}
 
 		return ParamUtil.getBoolean(portletRequest, "privateLayout", true);

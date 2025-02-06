@@ -4,7 +4,6 @@ definition {
 	property ci.retries.disabled = "true";
 	property portal.release = "true";
 	property portal.upstream = "true";
-	property testray.component.names = "Web Content Administration";
 	property testray.main.component.name = "Web Content Administration";
 
 	setUp {
@@ -151,7 +150,7 @@ definition {
 		}
 
 		task ("Then the user could publish the web content") {
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 
 			LexiconEntry.changeDisplayStyle(displayStyle = "cards");
 
@@ -173,7 +172,7 @@ definition {
 				dmFolderName = "Provided by Liferay",
 				imageFileName = "moon.png");
 
-			PortletEntry.publish();
+			WebContent.publishExistingWCArticleWithPermissions();
 
 			LexiconEntry.changeDisplayStyle(displayStyle = "cards");
 
@@ -317,7 +316,7 @@ definition {
 					categoryNameList = "Category Name",
 					vocabularyName = "Vocabulary Name");
 
-				PortletEntry.publish();
+				WebContent.publishWithPermissions();
 			}
 
 			task ("Assert the web content is added successfully") {
@@ -428,7 +427,7 @@ definition {
 					categoryNameList = "Category Name",
 					vocabularyName = "Vocabulary Name");
 
-				PortletEntry.publish();
+				WebContent.publishWithPermissions();
 			}
 
 			task ("Assert the web content is added successfully") {
@@ -595,7 +594,6 @@ definition {
 	@priority = 5
 	test EditWebContent {
 		property portal.acceptance = "true";
-		property testray.component.names = "Web Content Administration,WYSIWYG";
 
 		task ("Add a web content") {
 			JSONWebcontent.addWebContent(
@@ -929,7 +927,7 @@ definition {
 				webContentDateFieldLabel = "Date and Time",
 				webContentTitle = "Web Content Title");
 
-			PageEditor.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("When we have a content page with a date fragment") {
@@ -1014,7 +1012,7 @@ definition {
 				webContentDateFieldLabel = "Date and Time",
 				webContentTitle = "Web Content Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("When we have a display page with a date fragment") {
@@ -1115,7 +1113,6 @@ definition {
 	@priority = 5
 	test MoveWebContentToFolder {
 		property portal.acceptance = "true";
-		property testray.component.names = "Training";
 
 		task ("Add a folder") {
 			JSONWebcontent.addFolder(
@@ -1196,7 +1193,7 @@ definition {
 				webContentTitle = "WC WebContent Title 2",
 				webContentWebContent = "Web Content Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 
 			JSONLayout.addPublicLayout(
 				groupName = "Test Site Name",
@@ -1349,7 +1346,7 @@ definition {
 				webContentContent = "Web Content Content Edit",
 				webContentTitle = "Web Content Title Edit");
 
-			PortletEntry.submitForWorkflow();
+			WebContent.submitForWorkflow();
 		}
 
 		task ("View the usages of the Web Content article") {
@@ -1387,11 +1384,7 @@ definition {
 				webContentContent = "Web Content Content",
 				webContentTitle = "Web Content Title");
 
-			WebContent.editDisplayDate(
-				displayDate = "01/01/2100",
-				displayTime = "01:01 AM");
-
-			WebContent.publishWithPermissions();
+			WebContent.scheduleWCArticleWithPermissions(displayDate = "2100-11-20 01:01");
 		}
 
 		task ("Add a page with a Web Content Display widget and display the Web Content article in the Web Content Display widget") {
@@ -1415,7 +1408,7 @@ definition {
 
 		task ("Access to web content editor via warning message link") {
 			Click(
-				key_warningMessage = "Web Content Title is scheduled and will be displayed on 1/1/00 1:01 AM.",
+				key_warningMessage = "Web Content Title is scheduled and will be displayed on 11/20/00, 1:01 AM.",
 				locator1 = "Message#WARNING_SPECIFIC_LINK");
 
 			WebContent.viewCP(
@@ -1584,7 +1577,7 @@ definition {
 				folderName = "WC Folder Name",
 				searchTerm = "WC Folder Name");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("View the new folder and web content are shown in Asset Publisher") {
@@ -1728,7 +1721,7 @@ definition {
 				webContentLinkToPage = "P12",
 				webContentTitle = "Web Content Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("View the P12 shown in Link to Page field") {
@@ -1901,37 +1894,9 @@ definition {
 		}
 	}
 
-	@description = "The content cannot be lost after try to publish a web content without title."
-	@priority = 4
-	test ViewContentNotLostWithBlankTitle {
-		task ("View cannot add a web content without title") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContentNavigator.gotoAddCP();
-
-			WebContent.addNullCP(webContentContent = "Web Content Content");
-		}
-
-		task ("View content is still shown") {
-			WaitForElementPresent(
-				key_fieldLabel = "Content",
-				locator1 = "CKEditor#BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
-
-			SelectFrame.selectFrameNoLoading(
-				key_fieldLabel = "Content",
-				locator1 = "CKEditor#BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
-
-			AssertTextEquals(
-				locator1 = "CKEditor#BODY",
-				value1 = "Web Content Content");
-		}
-	}
-
 	@description = "This is a use case for LPS-138504. Assert display page is still selected after adding a web content without adding required category."
 	@priority = 4
 	test ViewDisplayPageAfterAddingWebContentWithoutAddingRequiredCategory {
-		property testray.component.names = "Asset Publisher";
-
 		task ("Add a widget page and add Asset Publisher in it") {
 			JSONLayout.addPublicLayout(
 				groupName = "Test Site Name",
@@ -2072,8 +2037,6 @@ definition {
 	@priority = 4
 	@uitest
 	test ViewMultipleCategoriesInWebContentEditor {
-		property testray.component.names = "Categories,Web Content Administration";
-
 		task ("Add five categories") {
 			JSONCategory.addVocabulary(
 				groupName = "Test Site Name",
@@ -2155,8 +2118,6 @@ definition {
 	@description = "View available vocabularies within a web content."
 	@priority = 4
 	test ViewMultipleVocabulariesInWebContentEditor {
-		property testray.component.names = "Categories,Web Content Administration";
-
 		task ("Add five vocabularies with one category in each one") {
 			for (var i : list "1,2,3,4,5") {
 				JSONCategory.addVocabulary(
@@ -2292,7 +2253,7 @@ definition {
 				webContentRichTextFieldLabel = "HTML",
 				webContentTitle = "Web Content Title");
 
-			PageEditor.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Then the reserved-article-id should be available on web content") {
@@ -2356,7 +2317,7 @@ definition {
 
 				WebContent.editFriendlyURL(webContentFriendlyURL = "wc-es");
 
-				PortletEntry.publish();
+				WebContent.publishExistingWCArticleWithPermissions();
 			}
 
 			task ("Add another site") {

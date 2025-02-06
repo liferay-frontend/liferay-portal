@@ -8,22 +8,24 @@ import {expect, mergeTests} from '@playwright/test';
 import {apiHelpersTest} from '../../fixtures/apiHelpersTest';
 import {changeTrackingPagesTest} from '../../fixtures/changeTrackingPagesTest';
 import {dataApiHelpersTest} from '../../fixtures/dataApiHelpersTest';
+import {isolatedSiteTest} from '../../fixtures/isolatedSiteTest';
 import getRandomString from '../../utils/getRandomString';
 import performLogin, {performLogout} from '../../utils/performLogin';
-import {waitForAlert} from '../../utils/waitForAlert';
-import {journalPagesTest} from '../journal-web/fixtures/journalPagesTest';
+import getBasicWebContentStructureId from '../../utils/structured-content/getBasicWebContentStructureId';
 
 export const test = mergeTests(
 	apiHelpersTest,
 	dataApiHelpersTest,
-	journalPagesTest,
-	changeTrackingPagesTest
+	changeTrackingPagesTest,
+	isolatedSiteTest
 );
 
 let user;
 
 test.afterEach(async ({apiHelpers, ctCollection}) => {
-	await apiHelpers.headlessChangeTracking.deleteCTCollection(ctCollection.id);
+	await apiHelpers.headlessChangeTracking.deleteCTCollection(
+		ctCollection.body.id
+	);
 
 	const role = await apiHelpers.headlessAdminUser.getRoles('Administrator');
 
@@ -34,7 +36,7 @@ test.afterEach(async ({apiHelpers, ctCollection}) => {
 });
 
 test.beforeEach(async ({apiHelpers, ctCollection}) => {
-	await apiHelpers.headlessChangeTracking.checkoutCTCollection('0');
+	await apiHelpers.headlessChangeTracking.checkoutCTCollection(0);
 
 	user = await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
 		'demo.unprivileged@liferay.com'
@@ -49,26 +51,29 @@ test.beforeEach(async ({apiHelpers, ctCollection}) => {
 	);
 
 	await apiHelpers.headlessChangeTracking.checkoutCTCollection(
-		ctCollection.id
+		ctCollection.body.id
 	);
 });
 
 test('LPD-17130 Only comment owners are allowed to perform actions on the comment', async ({
+	apiHelpers,
 	changeTrackingPage,
 	ctCollection,
-	journalEditArticlePage,
 	page,
+	site,
 }) => {
 	const journalName = getRandomString();
-	await journalEditArticlePage.goto();
-	await journalEditArticlePage.fillTitle(journalName);
-	await page.getByRole('button', {name: 'Publish'}).click();
-	await waitForAlert(
-		page,
-		`Success:${journalName} was created successfully.`
-	);
 
-	await changeTrackingPage.goToReviewChanges(ctCollection.name);
+	const basicWebContentStructureId =
+		await getBasicWebContentStructureId(apiHelpers);
+
+	await apiHelpers.jsonWebServicesJournal.addWebContent({
+		ddmStructureId: basicWebContentStructureId,
+		groupId: site.id,
+		titleMap: {en_US: journalName},
+	});
+
+	await changeTrackingPage.goToReviewChanges(ctCollection.body.name);
 
 	await changeTrackingPage.addComment();
 
@@ -80,7 +85,7 @@ test('LPD-17130 Only comment owners are allowed to perform actions on the commen
 
 	await performLogin(page, user.alternateName);
 
-	await changeTrackingPage.goToReviewChanges(ctCollection.name);
+	await changeTrackingPage.goToReviewChanges(ctCollection.body.name);
 
 	await changeTrackingPage.openComments();
 

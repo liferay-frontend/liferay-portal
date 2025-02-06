@@ -5,6 +5,7 @@
 
 package com.liferay.headless.admin.user.internal.resource.v1_0;
 
+import com.liferay.account.constants.AccountWebKeys;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountEntryUserRel;
 import com.liferay.account.service.AccountEntryService;
@@ -47,14 +48,18 @@ import com.liferay.portal.kernel.cookies.constants.CookiesConstants;
 import com.liferay.portal.kernel.exception.UserLockoutException;
 import com.liferay.portal.kernel.exception.UserPasswordException;
 import com.liferay.portal.kernel.model.Address;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.Contact;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ListTypeConstants;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.PasswordPolicy;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.model.Website;
+import com.liferay.portal.kernel.portlet.PortalPreferences;
+import com.liferay.portal.kernel.portlet.PortletPreferencesFactory;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
@@ -70,8 +75,12 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.service.CompanyService;
 import com.liferay.portal.kernel.service.ContactLocalService;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.GroupService;
 import com.liferay.portal.kernel.service.OrganizationService;
+import com.liferay.portal.kernel.service.PortalPreferencesLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
@@ -389,6 +398,48 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 	}
 
 	@Override
+	public Boolean getSiteAccountUserAccountSelected(
+			Long siteId, Long accountId, Long userAccountId)
+		throws Exception {
+
+		AccountEntryUserRel accountEntryUserRel =
+			_accountEntryUserRelService.getAccountEntryUserRel(
+				accountId, userAccountId);
+		Group group = _groupService.getGroup(siteId);
+
+		PortalPreferences portalPreferences =
+			_portletPreferencesFactory.getPortalPreferences(
+				accountEntryUserRel.getAccountUserId(), false);
+
+		long currentAccountEntryId = GetterUtil.getLong(
+			portalPreferences.getValue(
+				AccountEntry.class.getName(),
+				AccountWebKeys.CURRENT_ACCOUNT_ENTRY_ID + group.getGroupId()));
+
+		return accountEntryUserRel.getAccountEntryId() == currentAccountEntryId;
+	}
+
+	@Override
+	public Boolean
+			getSiteByFriendlyUrlPathAccountByExternalReferenceCodeAccountExternalReferenceCodeUserAccountByExternalReferenceCodeUserAccountExternalReferenceCodeSelected(
+				String friendlyUrlPath, String accountExternalReferenceCode,
+				String userAccountExternalReferenceCode)
+		throws Exception {
+
+		Group group = _groupLocalService.getFriendlyURLGroup(
+			contextCompany.getCompanyId(), "/" + friendlyUrlPath);
+		AccountEntry accountEntry =
+			_accountEntryService.getAccountEntryByExternalReferenceCode(
+				accountExternalReferenceCode, contextCompany.getCompanyId());
+		UserAccount userAccount = getUserAccountByExternalReferenceCode(
+			userAccountExternalReferenceCode);
+
+		return getSiteAccountUserAccountSelected(
+			group.getGroupId(), accountEntry.getAccountEntryId(),
+			userAccount.getId());
+	}
+
+	@Override
 	public Page<UserAccount> getSiteUserAccountsPage(
 			Long siteId, String search, Filter filter, Pagination pagination,
 			Sort[] sorts)
@@ -564,6 +615,50 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 			document -> _toUserAccount(
 				Collections.emptyMap(),
 				GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK))));
+	}
+
+	@Override
+	public void patchSiteAccountUserAccountSelected(
+			Long siteId, Long accountId, Long userAccountId)
+		throws Exception {
+
+		AccountEntryUserRel accountEntryUserRel =
+			_accountEntryUserRelService.getAccountEntryUserRel(
+				accountId, userAccountId);
+		Group group = _groupService.getGroup(siteId);
+
+		PortalPreferences portalPreferences =
+			_portletPreferencesFactory.getPortalPreferences(
+				accountEntryUserRel.getAccountUserId(), false);
+
+		portalPreferences.setValue(
+			AccountEntry.class.getName(),
+			AccountWebKeys.CURRENT_ACCOUNT_ENTRY_ID + group.getGroupId(),
+			String.valueOf(accountId));
+
+		_portalPreferencesLocalService.updatePreferences(
+			accountEntryUserRel.getAccountUserId(),
+			PortletKeys.PREFS_OWNER_TYPE_USER, portalPreferences);
+	}
+
+	@Override
+	public void
+			patchSiteByFriendlyUrlPathAccountByExternalReferenceCodeAccountExternalReferenceCodeUserAccountByExternalReferenceCodeUserAccountExternalReferenceCodeSelected(
+				String friendlyUrlPath, String accountExternalReferenceCode,
+				String userAccountExternalReferenceCode)
+		throws Exception {
+
+		Group group = _groupLocalService.getFriendlyURLGroup(
+			contextCompany.getCompanyId(), "/" + friendlyUrlPath);
+		AccountEntry accountEntry =
+			_accountEntryService.getAccountEntryByExternalReferenceCode(
+				accountExternalReferenceCode, contextCompany.getCompanyId());
+		UserAccount userAccount = getUserAccountByExternalReferenceCode(
+			userAccountExternalReferenceCode);
+
+		patchSiteAccountUserAccountSelected(
+			group.getGroupId(), accountEntry.getAccountEntryId(),
+			userAccount.getId());
 	}
 
 	@Override
@@ -914,6 +1009,16 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 				User.class.getName(), contextCompany.getCompanyId(),
 				userAccount.getCustomFields(),
 				contextAcceptLanguage.getPreferredLocale()));
+
+		if (Validator.isNull(serviceContext.getPathMain()) ||
+			Validator.isNull(serviceContext.getPortalURL())) {
+
+			Company company = _companyService.getCompanyById(
+				contextCompany.getCompanyId());
+
+			serviceContext.setPathMain(Portal.PATH_MAIN);
+			serviceContext.setPortalURL(company.getPortalURL(0));
+		}
 
 		if (contextUser.isGuestUser()) {
 			if (_captchaSettings.isCreateAccountCaptchaEnabled()) {
@@ -1429,15 +1534,15 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 			}
 		}
 
-		if ((imageId > 0) &&
-			((user == null) || (user.getPortraitId() != imageId))) {
+		if ((imageId <= 0) ||
+			((user != null) && (user.getPortraitId() == imageId))) {
 
-			FileEntry fileEntry = _dlAppLocalService.getFileEntry(imageId);
-
-			return _file.getBytes(fileEntry.getContentStream());
+			return null;
 		}
 
-		return null;
+		FileEntry fileEntry = _dlAppLocalService.getFileEntry(imageId);
+
+		return _file.getBytes(fileEntry.getContentStream());
 	}
 
 	private long _getPrefixId(Contact contact, UserAccount userAccount) {
@@ -1790,6 +1895,9 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 	private CaptchaSettings _captchaSettings;
 
 	@Reference
+	private CompanyService _companyService;
+
+	@Reference
 	private ContactLocalService _contactLocalService;
 
 	@Reference
@@ -1809,6 +1917,12 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 
 	@Reference
 	private File _file;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
+
+	@Reference
+	private GroupService _groupService;
 
 	@Reference(
 		target = "(model.class.name=com.liferay.portal.kernel.model.Organization)"
@@ -1831,6 +1945,12 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private PortalPreferencesLocalService _portalPreferencesLocalService;
+
+	@Reference
+	private PortletPreferencesFactory _portletPreferencesFactory;
 
 	@Reference
 	private UADAnonymousUserProvider _uadAnonymousUserProvider;

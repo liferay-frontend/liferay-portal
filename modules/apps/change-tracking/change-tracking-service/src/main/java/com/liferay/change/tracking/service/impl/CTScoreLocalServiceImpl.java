@@ -5,10 +5,13 @@
 
 package com.liferay.change.tracking.service.impl;
 
+import com.liferay.change.tracking.constants.PublicationRoleConstants;
 import com.liferay.change.tracking.internal.CTServiceRegistry;
+import com.liferay.change.tracking.internal.helper.CTUserNotificationHelper;
 import com.liferay.change.tracking.model.CTCollection;
 import com.liferay.change.tracking.model.CTEntry;
 import com.liferay.change.tracking.model.CTScore;
+import com.liferay.change.tracking.model.impl.CTScoreImpl;
 import com.liferay.change.tracking.service.CTEntryLocalService;
 import com.liferay.change.tracking.service.base.CTScoreLocalServiceBaseImpl;
 import com.liferay.change.tracking.service.persistence.CTCollectionPersistence;
@@ -24,15 +27,25 @@ import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.jdbc.CurrentConnection;
+import com.liferay.portal.kernel.dao.orm.EntityCache;
+import com.liferay.portal.kernel.dao.orm.LockMode;
+import com.liferay.portal.kernel.dao.orm.Session;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.increment.BufferedIncrement;
 import com.liferay.portal.kernel.increment.NumberIncrement;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.notifications.UserNotificationDefinition;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
-import com.liferay.portal.kernel.service.ExceptionRetryAcceptor;
+import com.liferay.portal.kernel.service.SQLStateAcceptor;
 import com.liferay.portal.kernel.service.change.tracking.CTService;
 import com.liferay.portal.kernel.spring.aop.Property;
 import com.liferay.portal.kernel.spring.aop.Retry;
+import com.liferay.portal.kernel.transaction.Propagation;
+import com.liferay.portal.kernel.transaction.Transactional;
+import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -42,6 +55,7 @@ import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.osgi.framework.BundleContext;
@@ -92,18 +106,20 @@ public class CTScoreLocalServiceImpl extends CTScoreLocalServiceBaseImpl {
 	@BufferedIncrement(incrementClass = NumberIncrement.class)
 	@Override
 	@Retry(
-		acceptor = ExceptionRetryAcceptor.class,
+		acceptor = SQLStateAcceptor.class,
 		properties = {
 			@Property(
-				name = ExceptionRetryAcceptor.EXCEPTION_NAME,
-				value = "org.hibernate.StaleObjectStateException"
+				name = SQLStateAcceptor.SQLSTATE,
+				value = SQLStateAcceptor.SQLSTATE_INTEGRITY_CONSTRAINT_VIOLATION + "," + SQLStateAcceptor.SQLSTATE_TRANSACTION_ROLLBACK
 			)
 		}
 	)
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public CTScore decrementScore(long ctCollectionId, long modelClassNameId) {
 		return _updateScore(ctCollectionId, modelClassNameId, false);
 	}
 
+	@Override
 	public CTScore fetchCTScoreByCTCollectionId(long ctCollectionId) {
 		return ctScorePersistence.fetchByCtCollectionId(ctCollectionId);
 	}
@@ -111,14 +127,15 @@ public class CTScoreLocalServiceImpl extends CTScoreLocalServiceBaseImpl {
 	@BufferedIncrement(incrementClass = NumberIncrement.class)
 	@Override
 	@Retry(
-		acceptor = ExceptionRetryAcceptor.class,
+		acceptor = SQLStateAcceptor.class,
 		properties = {
 			@Property(
-				name = ExceptionRetryAcceptor.EXCEPTION_NAME,
-				value = "org.hibernate.StaleObjectStateException"
+				name = SQLStateAcceptor.SQLSTATE,
+				value = SQLStateAcceptor.SQLSTATE_INTEGRITY_CONSTRAINT_VIOLATION + "," + SQLStateAcceptor.SQLSTATE_TRANSACTION_ROLLBACK
 			)
 		}
 	)
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public CTScore incrementScore(long ctCollectionId, long modelClassNameId) {
 		return _updateScore(ctCollectionId, modelClassNameId, true);
 	}
@@ -230,32 +247,105 @@ public class CTScoreLocalServiceImpl extends CTScoreLocalServiceBaseImpl {
 			});
 	}
 
+	private void _sendUserNotificationEvents(
+		CTScore ctScore, CTScore originalCTScore) {
+
+		String originalSizeClassification =
+			originalCTScore.getSizeClassification();
+		String sizeClassification = ctScore.getSizeClassification();
+
+		if (Objects.equals(originalSizeClassification, sizeClassification)) {
+			return;
+		}
+
+		long ctCollectionId = ctScore.getCtCollectionId();
+
+		try {
+			CTCollection ctCollection =
+				_ctCollectionPersistence.findByPrimaryKey(ctCollectionId);
+
+			Set<Long> userIds = SetUtil.fromArray(
+				_ctUserNotificationHelper.getPublicationRoleUserIds(
+					ctCollection, true, PublicationRoleConstants.NAME_ADMIN,
+					PublicationRoleConstants.NAME_PUBLISHER));
+
+			_ctUserNotificationHelper.sendUserNotificationEvents(
+				ctCollection,
+				JSONUtil.put(
+					"ctCollectionId", ctCollectionId
+				).put(
+					"notificationType",
+					UserNotificationDefinition.NOTIFICATION_TYPE_UPDATE_ENTRY
+				).put(
+					"originalSizeClassification", originalSizeClassification
+				).put(
+					"sizeClassification", sizeClassification
+				),
+				ArrayUtil.toLongArray(userIds));
+		}
+		catch (PortalException portalException) {
+			_log.error(
+				"Unable to send user notification events", portalException);
+		}
+	}
+
 	private CTScore _updateScore(
 		long ctCollectionId, long modelClassNameId, boolean increment) {
 
-		CTScore ctScore = ctScorePersistence.fetchByCtCollectionId(
+		CTCollection ctCollection = _ctCollectionPersistence.fetchByPrimaryKey(
 			ctCollectionId);
 
-		if (ctScore == null) {
+		if (ctCollection == null) {
+			return null;
+		}
+
+		CTScore originalCTScore = ctScorePersistence.fetchByCtCollectionId(
+			ctCollectionId);
+
+		if (originalCTScore == null) {
 			return addCTScore(ctCollectionId);
 		}
 
-		int score = ctScore.getScore();
+		int score = _calculate(modelClassNameId);
 
-		if (increment) {
-			score += _calculate(modelClassNameId);
-		}
-		else {
-			score -= _calculate(modelClassNameId);
+		if (!increment) {
+			score *= -1;
 		}
 
-		if (score < 0) {
-			score = 0;
+		Session session = ctScorePersistence.openSession();
+
+		CTScore ctScore = null;
+
+		try {
+			ctScore = (CTScore)session.get(
+				CTScoreImpl.class, originalCTScore.getCtScoreId(),
+				LockMode.UPGRADE);
+
+			if (ctScore == null) {
+				return ctScore;
+			}
+
+			score = ctScore.getScore() + score;
+
+			if (score < 0) {
+				score = 0;
+			}
+
+			ctScore.setScore(score);
+
+			ctScore = (CTScore)session.merge(ctScore);
+		}
+		finally {
+			ctScorePersistence.closeSession(session);
 		}
 
-		ctScore.setScore(score);
+		_entityCache.putResult(CTScoreImpl.class, ctScore, false, true);
 
-		return ctScorePersistence.update(ctScore);
+		ctScore.resetOriginalValues();
+
+		_sendUserNotificationEvents(ctScore, originalCTScore);
+
+		return ctScore;
 	}
 
 	private static final int _COUNT_DIVISOR = 50000000;
@@ -276,7 +366,13 @@ public class CTScoreLocalServiceImpl extends CTScoreLocalServiceBaseImpl {
 	private CTServiceRegistry _ctServiceRegistry;
 
 	@Reference
+	private CTUserNotificationHelper _ctUserNotificationHelper;
+
+	@Reference
 	private CurrentConnection _currentConnection;
+
+	@Reference
+	private EntityCache _entityCache;
 
 	@Reference
 	private MultiVMPool _multiVMPool;

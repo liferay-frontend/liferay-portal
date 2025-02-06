@@ -18,7 +18,7 @@ import getPageDefinition from './utils/getPageDefinition';
 const test = mergeTests(
 	apiHelpersTest,
 	featureFlagsTest({
-		'LPS-178052': true,
+		'LPS-178052': {enabled: true},
 	}),
 	isolatedSiteTest,
 	loginTest(),
@@ -28,7 +28,7 @@ const test = mergeTests(
 test(
 	'The page creator could preview changes in a new tab',
 	{
-		tag: '@LPS-153367',
+		tag: ['@LPS-125933', '@LPS-153367'],
 	},
 	async ({apiHelpers, context, page, pageEditorPage, site}) => {
 

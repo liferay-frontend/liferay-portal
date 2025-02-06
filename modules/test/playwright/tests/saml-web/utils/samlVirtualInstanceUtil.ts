@@ -16,10 +16,6 @@ import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisibl
 import {getRandomInt} from '../../../utils/getRandomInt';
 import performLogin, {userData} from '../../../utils/performLogin';
 import {waitForAlert} from '../../../utils/waitForAlert';
-import {
-	deleteAfterTestProviderConnections,
-	deleteAfterTestVirtualInstances,
-} from '../saml.spec';
 import {connectSpAndIdp} from './samlProviderConnectionUtil';
 
 export const DEFAULT_IDP_NAME = 'www.able.com';
@@ -30,6 +26,8 @@ export const SECONDARY_IDP_NAME = 'www.charlie.com';
 export const SECONDARY_IDP_URL = `http://${SECONDARY_IDP_NAME}:8080`;
 export const SECONDARY_SP_NAME = 'www.dog.com';
 export const SECONDARY_SP_URL = `http://${SECONDARY_SP_NAME}:8080`;
+export const deleteAfterTestProviderConnections = new Set<string>();
+export const deleteAfterTestVirtualInstances = new Set<string>();
 
 export async function createCustomField(
 	adminPage: Page,
@@ -150,6 +148,8 @@ export async function deleteVirtualInstance(name: string, page: Page) {
 export async function performSamlSafeLogin(
 	browser,
 	domain: string,
+	baseUrl = '/web/guest?p_p_id=com_liferay_login_web_portlet_LoginPortlet&' +
+		'p_p_state=maximized',
 	mailId = domain !== 'localhost' ? `@${domain}.com` : undefined,
 	rememberMe = true,
 	screenName = 'test'
@@ -158,14 +158,7 @@ export async function performSamlSafeLogin(
 		baseURL: `http://${domain}:8080`,
 	});
 
-	await performLogin(
-		page,
-		screenName,
-		'?p_p_id=com_liferay_login_web_portlet_LoginPortlet&' +
-			'p_p_state=maximized',
-		mailId,
-		rememberMe
-	);
+	await performLogin(page, screenName, baseUrl, mailId, rememberMe);
 
 	return page;
 }

@@ -36,6 +36,11 @@ public class PortletPermissionsEditModePortletConfigurationIcon
 	implements EditModePortletConfigurationIcon {
 
 	@Override
+	public int getPortletConfigurationIconGroup() {
+		return PORTLET_CONFIGURATION_ICON_GROUP_CONFIGURATION;
+	}
+
+	@Override
 	public String getTitle(HttpServletRequest httpServletRequest) {
 		return _language.get(httpServletRequest, "permissions");
 	}

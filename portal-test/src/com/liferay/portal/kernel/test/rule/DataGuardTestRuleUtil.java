@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.dao.orm.SessionWrapper;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.BaseModel;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -53,6 +54,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -522,19 +524,30 @@ public class DataGuardTestRuleUtil {
 		_getPersistedModelLocalServices() {
 
 		Map<String, PersistedModelLocalService>
-			scrubbedPersistedModelLocalServices = new HashMap<>();
+			scrubbedPersistedModelLocalServices = new LinkedHashMap<>();
 
 		ServiceTrackerMap<String, PersistedModelLocalService>
 			serviceTrackerMap = ReflectionTestUtil.getFieldValue(
 				PersistedModelLocalServiceRegistryUtil.class,
 				"_serviceTrackerMap");
 
-		for (String modeClassName : serviceTrackerMap.keySet()) {
-			if (!_blacklistedModelClassNames.contains(modeClassName) &&
-				(modeClassName.indexOf(CharPool.POUND) == -1)) {
+		for (String modelClassName : _PRIORITIZED_MODEL_CLASS_NAMES) {
+			if (serviceTrackerMap.containsKey(modelClassName) &&
+				(modelClassName.indexOf(CharPool.POUND) == -1)) {
 
 				scrubbedPersistedModelLocalServices.put(
-					modeClassName, serviceTrackerMap.getService(modeClassName));
+					modelClassName,
+					serviceTrackerMap.getService(modelClassName));
+			}
+		}
+
+		for (String modelClassName : serviceTrackerMap.keySet()) {
+			if (!_blacklistedModelClassNames.contains(modelClassName) &&
+				(modelClassName.indexOf(CharPool.POUND) == -1)) {
+
+				scrubbedPersistedModelLocalServices.put(
+					modelClassName,
+					serviceTrackerMap.getService(modelClassName));
 			}
 		}
 
@@ -643,6 +656,10 @@ public class DataGuardTestRuleUtil {
 		return () -> ReflectionTestUtil.setFieldValue(
 			basePersistence, "_sessionFactory", originalSessionFactory);
 	}
+
+	private static final String[] _PRIORITIZED_MODEL_CLASS_NAMES = {
+		Company.class.getName()
+	};
 
 	private static final Set<String> _blacklistedModelClassNames =
 		SetUtil.fromArray(

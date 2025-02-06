@@ -5,11 +5,14 @@
 
 package com.liferay.style.book.web.internal.display.context;
 
+import com.liferay.client.extension.type.manager.CETManager;
 import com.liferay.frontend.taglib.clay.servlet.taglib.display.context.SearchContainerManagementToolbarDisplayContext;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
+import com.liferay.frontend.token.definition.FrontendTokenDefinition;
+import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -22,7 +25,9 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.style.book.constants.StyleBookActionKeys;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.web.internal.security.permissions.resource.StyleBookPermission;
+import com.liferay.style.book.web.internal.util.StyleBookUtil;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +43,8 @@ public class StyleBookManagementToolbarDisplayContext
 	extends SearchContainerManagementToolbarDisplayContext {
 
 	public StyleBookManagementToolbarDisplayContext(
+		CETManager cetManager,
+		FrontendTokenDefinitionRegistry frontendTokenDefinitionRegistry,
 		HttpServletRequest httpServletRequest,
 		LiferayPortletRequest liferayPortletRequest,
 		LiferayPortletResponse liferayPortletResponse,
@@ -46,6 +53,9 @@ public class StyleBookManagementToolbarDisplayContext
 		super(
 			httpServletRequest, liferayPortletRequest, liferayPortletResponse,
 			searchContainer);
+
+		_cetManager = cetManager;
+		_frontendTokenDefinitionRegistry = frontendTokenDefinitionRegistry;
 
 		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
@@ -107,6 +117,13 @@ public class StyleBookManagementToolbarDisplayContext
 	@Override
 	public Map<String, Object> getAdditionalProps() {
 		return HashMapBuilder.<String, Object>put(
+			"addStyleBookEntryURL",
+			PortletURLBuilder.createActionURL(
+				liferayPortletResponse
+			).setActionName(
+				"/style_book/add_style_book_entry"
+			).buildString()
+		).put(
 			"copyStyleBookEntryURL",
 			() -> PortletURLBuilder.createActionURL(
 				liferayPortletResponse
@@ -126,6 +143,9 @@ public class StyleBookManagementToolbarDisplayContext
 
 				return exportStyleBookEntriesURL.toString();
 			}
+		).put(
+			"frontendTokenDefinitionProviders",
+			() -> _getFrontendTokenDefinitionProviders()
 		).build();
 	}
 
@@ -193,6 +213,32 @@ public class StyleBookManagementToolbarDisplayContext
 		return new String[] {"name", "create-date"};
 	}
 
+	private List<Map<String, Object>> _getFrontendTokenDefinitionProviders() {
+		List<Map<String, Object>> frontendTokenDefinitionProviders =
+			new ArrayList<>();
+
+		for (FrontendTokenDefinition frontendTokenDefinition :
+				_frontendTokenDefinitionRegistry.getFrontendTokenDefinitions(
+					_themeDisplay.getCompanyId())) {
+
+			frontendTokenDefinitionProviders.add(
+				HashMapBuilder.<String, Object>put(
+					"name",
+					StyleBookUtil.getThemeName(
+						_cetManager, _themeDisplay.getCompanyId(),
+						httpServletRequest,
+						frontendTokenDefinition.getThemeId())
+				).put(
+					"themeId", frontendTokenDefinition.getThemeId()
+				).build());
+		}
+
+		return frontendTokenDefinitionProviders;
+	}
+
+	private final CETManager _cetManager;
+	private final FrontendTokenDefinitionRegistry
+		_frontendTokenDefinitionRegistry;
 	private final ThemeDisplay _themeDisplay;
 
 }

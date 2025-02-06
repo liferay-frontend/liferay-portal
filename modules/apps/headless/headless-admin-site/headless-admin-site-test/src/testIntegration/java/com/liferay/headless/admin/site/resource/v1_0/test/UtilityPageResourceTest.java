@@ -12,8 +12,12 @@ import com.liferay.headless.admin.site.client.pagination.Page;
 import com.liferay.headless.admin.site.client.pagination.Pagination;
 import com.liferay.headless.admin.site.client.problem.Problem;
 import com.liferay.headless.admin.site.client.resource.v1_0.UtilityPageResource;
+import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutUtilityPageEntryTestUtil;
+import com.liferay.headless.admin.site.resource.v1_0.test.util.PageSpecificationsTestUtil;
+import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryLocalService;
+import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -21,12 +25,18 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
+import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.util.PropsValues;
 
 import java.util.List;
@@ -35,7 +45,9 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.junit.Assert;
+import org.junit.ClassRule;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -45,6 +57,13 @@ import org.junit.runner.RunWith;
 @FeatureFlags("LPD-35443")
 @RunWith(Arquillian.class)
 public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
+
+	@ClassRule
+	@Rule
+	public static final AggregateTestRule aggregateTestRule =
+		new AggregateTestRule(
+			new LiferayIntegrationTestRule(),
+			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Override
 	@Test
@@ -71,20 +90,13 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 					postUtilityPage.getExternalReferenceCode(),
 					testGroup.getGroupId()));
 
-		try {
-			utilityPageResource.
-				deleteSiteSiteByExternalReferenceCodeUtilityPage(
-					testGroup.getExternalReferenceCode(),
-					postUtilityPage.getExternalReferenceCode());
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("NOT_FOUND", problem.getStatus());
-			Assert.assertNull(problem.getTitle());
-		}
+		_assertProblemException(
+			"NOT_FOUND",
+			() ->
+				utilityPageResource.
+					deleteSiteSiteByExternalReferenceCodeUtilityPage(
+						testGroup.getExternalReferenceCode(),
+						postUtilityPage.getExternalReferenceCode()));
 	}
 
 	@Override
@@ -104,27 +116,20 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 		assertEquals(postUtilityPage, getUtilityPage);
 		assertValid(getUtilityPage);
 
-		try {
-			utilityPageResource.getSiteSiteByExternalReferenceCodeUtilityPage(
-				testGroup.getExternalReferenceCode(),
-				RandomTestUtil.randomString());
+		_assertProblemException(
+			"NOT_FOUND",
+			() ->
+				utilityPageResource.
+					getSiteSiteByExternalReferenceCodeUtilityPage(
+						testGroup.getExternalReferenceCode(),
+						RandomTestUtil.randomString()));
 
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("NOT_FOUND", problem.getStatus());
-			Assert.assertNull(problem.getTitle());
-		}
-
-		UtilityPageResource curUtilityPageResource = _getUtilityPageResource();
+		UtilityPageResource utilityPageResource = _getUtilityPageResource();
 
 		_assertNestedFields(
-			curUtilityPageResource.
-				getSiteSiteByExternalReferenceCodeUtilityPage(
-					testGroup.getExternalReferenceCode(),
-					postUtilityPage.getExternalReferenceCode()));
+			utilityPageResource.getSiteSiteByExternalReferenceCodeUtilityPage(
+				testGroup.getExternalReferenceCode(),
+				postUtilityPage.getExternalReferenceCode()));
 	}
 
 	@Ignore
@@ -211,60 +216,111 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 	public void testPatchSiteSiteByExternalReferenceCodeUtilityPage()
 		throws Exception {
 
-		UtilityPage utilityPage =
-			testPostSiteSiteByExternalReferenceCodeUtilityPage_addUtilityPage(
-				randomUtilityPage());
+		LayoutUtilityPageEntry layoutUtilityPageEntry =
+			LayoutUtilityPageEntryTestUtil.getLayoutUtilityPageEntry(
+				ServiceContextTestUtil.getServiceContext(
+					testGroup.getGroupId(), TestPropsValues.getUserId()));
 
 		_testPatchSiteSiteByExternalReferenceCodeUtilityPage(
 			Boolean.FALSE,
 			_getUtilityPage(
-				Boolean.FALSE, utilityPage.getExternalReferenceCode()));
+				Boolean.FALSE,
+				layoutUtilityPageEntry.getExternalReferenceCode()));
+
+		Layout layout = _layoutLocalService.getLayout(
+			layoutUtilityPageEntry.getPlid());
+
+		ContentLayoutTestUtil.publishLayout(layout.fetchDraftLayout(), layout);
+
 		_testPatchSiteSiteByExternalReferenceCodeUtilityPage(
 			Boolean.TRUE,
 			_getUtilityPage(
-				Boolean.TRUE, utilityPage.getExternalReferenceCode()));
+				Boolean.TRUE,
+				layoutUtilityPageEntry.getExternalReferenceCode()));
 		_testPatchSiteSiteByExternalReferenceCodeUtilityPage(
 			Boolean.TRUE,
-			_getUtilityPage(null, utilityPage.getExternalReferenceCode()));
+			_getUtilityPage(
+				null, layoutUtilityPageEntry.getExternalReferenceCode()));
 
-		try {
-			utilityPageResource.patchSiteSiteByExternalReferenceCodeUtilityPage(
-				testGroup.getExternalReferenceCode(),
-				RandomTestUtil.randomString(), randomUtilityPage());
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("NOT_FOUND", problem.getStatus());
-			Assert.assertNull(problem.getTitle());
-		}
+		_assertProblemException(
+			"NOT_FOUND",
+			() ->
+				utilityPageResource.
+					patchSiteSiteByExternalReferenceCodeUtilityPage(
+						testGroup.getExternalReferenceCode(),
+						RandomTestUtil.randomString(), randomUtilityPage()));
 	}
 
-	@Ignore
 	@Override
 	@Test
 	public void testPostSiteSiteByExternalReferenceCodeUtilityPagePageSpecification()
 		throws Exception {
 
-		super.
-			testPostSiteSiteByExternalReferenceCodeUtilityPagePageSpecification();
+		UtilityPageResource utilityPageResource = _getUtilityPageResource();
+
+		UtilityPage utilityPage =
+			utilityPageResource.postSiteSiteByExternalReferenceCodeUtilityPage(
+				testGroup.getExternalReferenceCode(),
+				_getUtilityPage(Boolean.FALSE, RandomTestUtil.randomString()));
+
+		LayoutUtilityPageEntry layoutUtilityPageEntry =
+			_layoutUtilityPageEntryLocalService.
+				getLayoutUtilityPageEntryByExternalReferenceCode(
+					utilityPage.getExternalReferenceCode(),
+					testGroup.getGroupId());
+
+		PageSpecificationsTestUtil.
+			testPostSiteSiteByExternalReferenceCodePageSpecification(
+				_layoutLocalService.getLayout(layoutUtilityPageEntry.getPlid()),
+				utilityPage.getPageSpecifications(),
+				ServiceContextTestUtil.getServiceContext(
+					testGroup.getGroupId(), TestPropsValues.getUserId()),
+				contentPageSpecification ->
+					utilityPageResource.
+						postSiteSiteByExternalReferenceCodeUtilityPagePageSpecification(
+							testGroup.getExternalReferenceCode(),
+							utilityPage.getExternalReferenceCode(),
+							contentPageSpecification));
 	}
 
 	@Override
 	@Test
+	@TestInfo("LPD-42587")
 	public void testPutSiteSiteByExternalReferenceCodeUtilityPage()
 		throws Exception {
 
 		_testPutSiteSiteByExternalReferenceCodeUtilityPage(randomUtilityPage());
 
-		UtilityPage utilityPage =
-			testPostSiteSiteByExternalReferenceCodeUtilityPage_addUtilityPage(
-				randomUtilityPage());
+		LayoutUtilityPageEntry layoutUtilityPageEntry =
+			LayoutUtilityPageEntryTestUtil.getLayoutUtilityPageEntry(
+				ServiceContextTestUtil.getServiceContext(
+					testGroup.getGroupId(), TestPropsValues.getUserId()));
+
+		Layout layout = _layoutLocalService.getLayout(
+			layoutUtilityPageEntry.getPlid());
+
+		Assert.assertFalse(layout.isPublished());
+
+		_assertProblemException(
+			"BAD_REQUEST",
+			() -> _testPutSiteSiteByExternalReferenceCodeUtilityPage(
+				_getUtilityPage(
+					Boolean.TRUE,
+					layoutUtilityPageEntry.getExternalReferenceCode())));
+
+		ContentLayoutTestUtil.publishLayout(layout.fetchDraftLayout(), layout);
 
 		_testPutSiteSiteByExternalReferenceCodeUtilityPage(
-			_getUtilityPage(null, utilityPage.getExternalReferenceCode()));
+			_getUtilityPage(
+				Boolean.FALSE,
+				layoutUtilityPageEntry.getExternalReferenceCode()));
+		_testPutSiteSiteByExternalReferenceCodeUtilityPage(
+			_getUtilityPage(
+				Boolean.TRUE,
+				layoutUtilityPageEntry.getExternalReferenceCode()));
+		_testPutSiteSiteByExternalReferenceCodeUtilityPage(
+			_getUtilityPage(
+				null, layoutUtilityPageEntry.getExternalReferenceCode()));
 	}
 
 	@Ignore
@@ -367,6 +423,26 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 			Assert.assertEquals(
 				jsonArray.toString(), entry.getValue(), jsonArray.getString(0));
 		}
+
+		PageSpecificationsTestUtil.assertPageSpecifications(
+			layout, utilityPage.getPageSpecifications());
+	}
+
+	private void _assertProblemException(
+			String status, UnsafeRunnable<Exception> unsafeRunnable)
+		throws Exception {
+
+		try {
+			unsafeRunnable.run();
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals(status, problem.getStatus());
+			Assert.assertNull(problem.getTitle());
+		}
 	}
 
 	private UtilityPage _getUtilityPage(
@@ -407,7 +483,7 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 		).locale(
 			LocaleUtil.getDefault()
 		).parameters(
-			"nestedFields", "friendlyUrlHistory"
+			"nestedFields", "friendlyUrlHistory,pageSpecifications"
 		).build();
 	}
 
@@ -426,10 +502,10 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 			testGetSiteSiteByExternalReferenceCodeUtilityPagesPage_addUtilityPage(
 				testGroup.getExternalReferenceCode(), randomUtilityPage());
 
-		UtilityPageResource curUtilityPageResource = _getUtilityPageResource();
+		UtilityPageResource utilityPageResource = _getUtilityPageResource();
 
 		page =
-			curUtilityPageResource.
+			utilityPageResource.
 				getSiteSiteByExternalReferenceCodeUtilityPagesPage(
 					testGroup.getExternalReferenceCode(), null, null, null,
 					Pagination.of(1, 10), null);

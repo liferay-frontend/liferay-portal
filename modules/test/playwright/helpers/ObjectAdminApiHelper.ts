@@ -47,12 +47,14 @@ export class ObjectAdminApiHelper {
 	async postRandomObjectDefinition({
 		objectFields,
 		objectFolderExternalReferenceCode,
+		panelCategoryKey,
 		scope = 'company',
 		status,
 		titleObjectFieldName,
 	}: {
 		objectFields?: Partial<ObjectField>[];
 		objectFolderExternalReferenceCode?: string;
+		panelCategoryKey?: string;
 		scope?: 'site' | 'company';
 		status: {code: number};
 		titleObjectFieldName?: string;
@@ -77,6 +79,7 @@ export class ObjectAdminApiHelper {
 					indexedLanguageId: '',
 					label: {en_US: 'textField'},
 					listTypeDefinitionId: 0,
+					localized: false,
 					name: 'textField',
 					required: false,
 					system: false,
@@ -84,6 +87,7 @@ export class ObjectAdminApiHelper {
 				},
 			],
 			objectFolderExternalReferenceCode,
+			panelCategoryKey: panelCategoryKey ?? '',
 			pluralLabel: {
 				en_US: objectDefinitionExternalReferenceCode,
 			},

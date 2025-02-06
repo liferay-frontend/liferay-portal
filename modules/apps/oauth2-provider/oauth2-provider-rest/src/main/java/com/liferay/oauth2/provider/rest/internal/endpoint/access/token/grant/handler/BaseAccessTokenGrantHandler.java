@@ -65,11 +65,7 @@ public abstract class BaseAccessTokenGrantHandler
 			client2.getProperties(),
 			OAuth2ProviderRESTEndpointConstants.PROPERTY_KEY_COMPANY_ID);
 
-		if (Objects.equals(companyId1, companyId2)) {
-			return true;
-		}
-
-		return false;
+		return Objects.equals(companyId1, companyId2);
 	}
 
 	protected abstract ServerAccessToken doCreateAccessToken(

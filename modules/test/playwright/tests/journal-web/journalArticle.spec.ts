@@ -70,23 +70,18 @@ const expect = baseExpect.extend({
 const assetPublisherDeprecationTest = mergeTests(
 	baseTest,
 	featureFlagsTest({
-		'LPD-39304': true,
+		'LPD-39304': {enabled: true},
 	})
 );
 
 const keepTitlesUntranslated = mergeTests(baseTest);
 
-const prefixUrlTest = mergeTests(
-	baseTest,
-	featureFlagsTest({
-		'LPD-11147': true,
-	})
-);
+const prefixUrlTest = mergeTests(baseTest);
 
 const translationAndAutosaveTest = mergeTests(
 	baseTest,
 	featureFlagsTest({
-		'LPD-11228': true,
+		'LPD-11228': {enabled: true},
 	})
 );
 
@@ -207,6 +202,74 @@ baseTest(
 		templateName = page.getByLabel('Template Name');
 
 		await expect(templateName).toHaveValue('Basic Web Content');
+	}
+);
+
+baseTest(
+	'Web Content Schedule Publication Feature Flag is only in UTC and wrong time is displayed after scheduled',
+	{
+		tag: '@LPD-31427',
+	},
+	async ({journalEditArticlePage, page, site}) => {
+		page.on('dialog', (dialog) => dialog.accept());
+
+		await journalEditArticlePage.goto({siteUrl: site.friendlyUrlPath});
+
+		const title = getRandomString();
+
+		await journalEditArticlePage.content.waitFor();
+
+		await journalEditArticlePage.fillTitle(title);
+
+		await expect(async () => {
+			await clickAndExpectToBeVisible({
+				autoClick: true,
+				target: page.getByRole('menuitem', {
+					name: 'Schedule Publication',
+				}),
+				trigger: page.getByRole('button', {
+					name: /select and confirm publish settings|sélectionnez et confirmez les/i,
+				}),
+			});
+
+			await expect(page.getByLabel('Date and Time')).toBeVisible({
+				timeout: 2000,
+			});
+		}).toPass();
+
+		const currentDate = new Date();
+
+		currentDate.setMinutes(currentDate.getMinutes() - 5);
+
+		const beforeCurrentDateUTC = new Date(
+			currentDate.toLocaleString('en-US', {timeZone: 'UTC'})
+		);
+
+		await page
+			.getByPlaceholder('YYYY-MM-DD HH:mm')
+			.fill(
+				`${beforeCurrentDateUTC.getFullYear()}-${String(beforeCurrentDateUTC.getMonth() + 1).padStart(2, '0')}-${String(beforeCurrentDateUTC.getDate()).padStart(2, '0')} ${String(beforeCurrentDateUTC.getHours()).padStart(2, '0')}:${String(beforeCurrentDateUTC.getMinutes()).padStart(2, '0')}`
+			);
+
+		await expect(
+			page.getByText('Error: The date entered is in the past.')
+		).toBeVisible();
+
+		currentDate.setMinutes(currentDate.getMinutes() + 10);
+
+		const afterCurrentDateUTC = new Date(
+			currentDate.toLocaleString('en-US', {timeZone: 'UTC'})
+		);
+
+		await page
+			.getByPlaceholder('YYYY-MM-DD HH:mm')
+			.fill(
+				`${afterCurrentDateUTC.getFullYear()}-${String(afterCurrentDateUTC.getMonth() + 1).padStart(2, '0')}-${String(afterCurrentDateUTC.getDate()).padStart(2, '0')} ${String(afterCurrentDateUTC.getHours()).padStart(2, '0')}:${String(afterCurrentDateUTC.getMinutes()).padStart(2, '0')}`
+			);
+
+		await expect(
+			page.getByText('Error: The date entered is in the past.')
+		).not.toBeVisible();
 	}
 );
 
@@ -643,7 +706,7 @@ prefixUrlTest(
 
 		await friendlyUrlInstanceSettingsPage.goto();
 
-		const urlSeparator = 'content';
+		const urlSeparator = 'web-content';
 
 		await friendlyUrlInstanceSettingsPage.modifySeparator(
 			'Web Content URL Separator',
@@ -1565,6 +1628,7 @@ assetPublisherDeprecationTest(
 		tag: '@LPD-35348',
 	},
 	async ({
+		apiHelpers,
 		journalEditArticlePage,
 		journalPage,
 		page,
@@ -1588,11 +1652,12 @@ assetPublisherDeprecationTest(
 
 		await pagesAdminPage.goto(site.friendlyUrlPath);
 
-		const name = getRandomString();
-		await pagesAdminPage.addWidgetPage({name});
+		const widgetLayout = await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			title: getRandomString(),
+		});
 
-		await pagesAdminPage.goto(site.friendlyUrlPath);
-		await page.getByLabel(name, {exact: true}).click();
+		await widgetPagePage.goto(widgetLayout, site.friendlyUrlPath);
 
 		await widgetPagePage.addPortlet('Asset Publisher');
 		await page
@@ -1621,8 +1686,7 @@ assetPublisherDeprecationTest(
 		await configurationFrame.getByRole('button', {name: 'Save'}).click();
 		await page.getByLabel('close', {exact: true}).click();
 
-		await pagesAdminPage.goto(site.friendlyUrlPath);
-		await page.getByLabel(name, {exact: true}).click();
+		await widgetPagePage.goto(widgetLayout, site.friendlyUrlPath);
 
 		await page.getByLabel('Go to page, 2').click();
 

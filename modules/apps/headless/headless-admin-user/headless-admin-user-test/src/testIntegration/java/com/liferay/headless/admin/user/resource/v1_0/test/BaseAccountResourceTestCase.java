@@ -104,9 +104,8 @@ public abstract class BaseAccountResourceTestCase {
 		com.liferay.portal.kernel.model.User testCompanyAdminUser =
 			UserTestUtil.getAdminUser(testCompany.getCompanyId());
 
-		AccountResource.Builder builder = AccountResource.builder();
-
-		accountResource = builder.authentication(
+		accountResource = AccountResource.builder(
+		).authentication(
 			testCompanyAdminUser.getEmailAddress(),
 			PropsValues.DEFAULT_ADMIN_PASSWORD
 		).endpoint(
@@ -3622,6 +3621,24 @@ public abstract class BaseAccountResourceTestCase {
 			}
 
 			if (Objects.equals(
+					"accountGroupBriefs", additionalAssertFieldName)) {
+
+				if (account.getAccountGroupBriefs() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("accountRoles", additionalAssertFieldName)) {
+				if (account.getAccountRoles() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
 					"accountUserAccounts", additionalAssertFieldName)) {
 
 				if (account.getAccountUserAccounts() == null) {
@@ -3633,6 +3650,14 @@ public abstract class BaseAccountResourceTestCase {
 
 			if (Objects.equals("actions", additionalAssertFieldName)) {
 				if (account.getActions() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("creator", additionalAssertFieldName)) {
+				if (account.getCreator() == null) {
 					valid = false;
 				}
 
@@ -3719,6 +3744,14 @@ public abstract class BaseAccountResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("keywords", additionalAssertFieldName)) {
+				if (account.getKeywords() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals(
 					"logoExternalReferenceCode", additionalAssertFieldName)) {
 
@@ -3799,6 +3832,14 @@ public abstract class BaseAccountResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("permissions", additionalAssertFieldName)) {
+				if (account.getPermissions() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("postalAddresses", additionalAssertFieldName)) {
 				if (account.getPostalAddresses() == null) {
 					valid = false;
@@ -3817,6 +3858,16 @@ public abstract class BaseAccountResourceTestCase {
 
 			if (Objects.equals("taxId", additionalAssertFieldName)) {
 				if (account.getTaxId() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"taxonomyCategoryBriefs", additionalAssertFieldName)) {
+
+				if (account.getTaxonomyCategoryBriefs() == null) {
 					valid = false;
 				}
 
@@ -3960,6 +4011,30 @@ public abstract class BaseAccountResourceTestCase {
 			}
 
 			if (Objects.equals(
+					"accountGroupBriefs", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						account1.getAccountGroupBriefs(),
+						account2.getAccountGroupBriefs())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("accountRoles", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						account1.getAccountRoles(),
+						account2.getAccountRoles())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
 					"accountUserAccounts", additionalAssertFieldName)) {
 
 				if (!Objects.deepEquals(
@@ -3976,6 +4051,16 @@ public abstract class BaseAccountResourceTestCase {
 				if (!equals(
 						(Map)account1.getActions(),
 						(Map)account2.getActions())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("creator", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						account1.getCreator(), account2.getCreator())) {
 
 					return false;
 				}
@@ -4114,6 +4199,16 @@ public abstract class BaseAccountResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("keywords", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						account1.getKeywords(), account2.getKeywords())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals(
 					"logoExternalReferenceCode", additionalAssertFieldName)) {
 
@@ -4218,6 +4313,16 @@ public abstract class BaseAccountResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("permissions", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						account1.getPermissions(), account2.getPermissions())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("postalAddresses", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						account1.getPostalAddresses(),
@@ -4242,6 +4347,19 @@ public abstract class BaseAccountResourceTestCase {
 			if (Objects.equals("taxId", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						account1.getTaxId(), account2.getTaxId())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"taxonomyCategoryBriefs", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						account1.getTaxonomyCategoryBriefs(),
+						account2.getTaxonomyCategoryBriefs())) {
 
 					return false;
 				}
@@ -4371,12 +4489,27 @@ public abstract class BaseAccountResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("accountGroupBriefs")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("accountRoles")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("accountUserAccounts")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}
 
 		if (entityFieldName.equals("actions")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("creator")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}
@@ -4658,6 +4791,11 @@ public abstract class BaseAccountResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("keywords")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("logoExternalReferenceCode")) {
 			Object object = account.getLogoExternalReferenceCode();
 
@@ -4868,6 +5006,11 @@ public abstract class BaseAccountResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("permissions")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("postalAddresses")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -4923,6 +5066,11 @@ public abstract class BaseAccountResourceTestCase {
 			}
 
 			return sb.toString();
+		}
+
+		if (entityFieldName.equals("taxonomyCategoryBriefs")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
 		}
 
 		if (entityFieldName.equals("type")) {

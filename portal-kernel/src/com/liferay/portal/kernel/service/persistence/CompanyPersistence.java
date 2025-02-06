@@ -115,38 +115,139 @@ public interface CompanyPersistence extends BasePersistence<Company> {
 	public int countByMx(String mx);
 
 	/**
-	 * Returns the company where logoId = &#63; or throws a <code>NoSuchCompanyException</code> if it could not be found.
+	 * Returns all the companies where logoId = &#63;.
 	 *
 	 * @param logoId the logo ID
-	 * @return the matching company
+	 * @return the matching companies
+	 */
+	public java.util.List<Company> findByLogoId(long logoId);
+
+	/**
+	 * Returns a range of all the companies where logoId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CompanyModelImpl</code>.
+	 * </p>
+	 *
+	 * @param logoId the logo ID
+	 * @param start the lower bound of the range of companies
+	 * @param end the upper bound of the range of companies (not inclusive)
+	 * @return the range of matching companies
+	 */
+	public java.util.List<Company> findByLogoId(
+		long logoId, int start, int end);
+
+	/**
+	 * Returns an ordered range of all the companies where logoId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CompanyModelImpl</code>.
+	 * </p>
+	 *
+	 * @param logoId the logo ID
+	 * @param start the lower bound of the range of companies
+	 * @param end the upper bound of the range of companies (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching companies
+	 */
+	public java.util.List<Company> findByLogoId(
+		long logoId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Company>
+			orderByComparator);
+
+	/**
+	 * Returns an ordered range of all the companies where logoId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CompanyModelImpl</code>.
+	 * </p>
+	 *
+	 * @param logoId the logo ID
+	 * @param start the lower bound of the range of companies
+	 * @param end the upper bound of the range of companies (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching companies
+	 */
+	public java.util.List<Company> findByLogoId(
+		long logoId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Company>
+			orderByComparator,
+		boolean useFinderCache);
+
+	/**
+	 * Returns the first company in the ordered set where logoId = &#63;.
+	 *
+	 * @param logoId the logo ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching company
 	 * @throws NoSuchCompanyException if a matching company could not be found
 	 */
-	public Company findByLogoId(long logoId) throws NoSuchCompanyException;
+	public Company findByLogoId_First(
+			long logoId,
+			com.liferay.portal.kernel.util.OrderByComparator<Company>
+				orderByComparator)
+		throws NoSuchCompanyException;
 
 	/**
-	 * Returns the company where logoId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 * Returns the first company in the ordered set where logoId = &#63;.
 	 *
 	 * @param logoId the logo ID
-	 * @return the matching company, or <code>null</code> if a matching company could not be found
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching company, or <code>null</code> if a matching company could not be found
 	 */
-	public Company fetchByLogoId(long logoId);
+	public Company fetchByLogoId_First(
+		long logoId,
+		com.liferay.portal.kernel.util.OrderByComparator<Company>
+			orderByComparator);
 
 	/**
-	 * Returns the company where logoId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 * Returns the last company in the ordered set where logoId = &#63;.
 	 *
 	 * @param logoId the logo ID
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the matching company, or <code>null</code> if a matching company could not be found
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching company
+	 * @throws NoSuchCompanyException if a matching company could not be found
 	 */
-	public Company fetchByLogoId(long logoId, boolean useFinderCache);
+	public Company findByLogoId_Last(
+			long logoId,
+			com.liferay.portal.kernel.util.OrderByComparator<Company>
+				orderByComparator)
+		throws NoSuchCompanyException;
 
 	/**
-	 * Removes the company where logoId = &#63; from the database.
+	 * Returns the last company in the ordered set where logoId = &#63;.
 	 *
 	 * @param logoId the logo ID
-	 * @return the company that was removed
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching company, or <code>null</code> if a matching company could not be found
 	 */
-	public Company removeByLogoId(long logoId) throws NoSuchCompanyException;
+	public Company fetchByLogoId_Last(
+		long logoId,
+		com.liferay.portal.kernel.util.OrderByComparator<Company>
+			orderByComparator);
+
+	/**
+	 * Returns the companies before and after the current company in the ordered set where logoId = &#63;.
+	 *
+	 * @param companyId the primary key of the current company
+	 * @param logoId the logo ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next company
+	 * @throws NoSuchCompanyException if a company with the primary key could not be found
+	 */
+	public Company[] findByLogoId_PrevAndNext(
+			long companyId, long logoId,
+			com.liferay.portal.kernel.util.OrderByComparator<Company>
+				orderByComparator)
+		throws NoSuchCompanyException;
+
+	/**
+	 * Removes all the companies where logoId = &#63; from the database.
+	 *
+	 * @param logoId the logo ID
+	 */
+	public void removeByLogoId(long logoId);
 
 	/**
 	 * Returns the number of companies where logoId = &#63;.

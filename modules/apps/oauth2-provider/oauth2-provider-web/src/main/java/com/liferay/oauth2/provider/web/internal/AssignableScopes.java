@@ -72,13 +72,8 @@ public class AssignableScopes {
 	}
 
 	public boolean contains(AssignableScopes assignableScopes) {
-		if (!_liferayOAuth2Scopes.containsAll(
-				assignableScopes.getLiferayOAuth2Scopes())) {
-
-			return false;
-		}
-
-		return true;
+		return _liferayOAuth2Scopes.containsAll(
+			assignableScopes.getLiferayOAuth2Scopes());
 	}
 
 	@Override
@@ -93,14 +88,8 @@ public class AssignableScopes {
 
 		AssignableScopes assignableScopes = (AssignableScopes)object;
 
-		if (Objects.equals(
-				_liferayOAuth2Scopes,
-				assignableScopes.getLiferayOAuth2Scopes())) {
-
-			return true;
-		}
-
-		return false;
+		return Objects.equals(
+			_liferayOAuth2Scopes, assignableScopes.getLiferayOAuth2Scopes());
 	}
 
 	public AssignableScopes getApplicationAssignableScopes(

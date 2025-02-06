@@ -4,19 +4,18 @@ apply plugin: "com.liferay.patcher"
 
 task patch(type: PatchTask)
 
-sourceCompatibility = "1.6"
-targetCompatibility = "1.6"
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
 
 dependencies {
 	api group: "com.google.protobuf", name: "protobuf-java", version: "2.4.1"
 	api group: "com.liferay", name: "org.mvel2", version: "2.1.0.drools16.LIFERAY-PATCHED-3"
 	api group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "3.0.0"
 	api group: "com.thoughtworks.xstream", name: "xstream", version: "1.4.20"
-	api group: "org.antlr", name: "antlr", version: "3.3"
-	api group: "org.antlr", name: "antlr-runtime", version: "3.3"
+	api group: "org.antlr", name: "antlr", version: "3.5.3"
+	api group: "org.antlr", name: "antlr-runtime", version: "3.5.3"
 	api group: "org.drools", name: "knowledge-api", version: "5.4.0.Final"
 	api group: "org.drools", name: "knowledge-internal-api", version: "5.4.0.Final"
-
 	compileOnly group: "org.drools", name: "drools-core", version: "5.4.0.Final"
 }
 
@@ -31,6 +30,5 @@ patch {
 
 	fileNames "org/drools/base/ClassFieldAccessorCache.java"
 	fileNames "org/drools/xml/ExtensibleXmlParser.java"
-
 	originalLibModuleName = "drools-core"
 }

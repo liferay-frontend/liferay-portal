@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.vulcan.extension.PropertyDefinition;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -59,6 +60,29 @@ public class MultiselectPicklistObjectFieldBusinessType
 	@Override
 	public String getLabel(Locale locale) {
 		return _language.get(locale, "multiselect-picklist");
+	}
+
+	@Override
+	public Map<String, Object> getLocalizedValues(
+			ObjectField objectField, Long userId, Map<String, Object> values)
+		throws PortalException {
+
+		Map<String, Object> localizedValues =
+			ObjectFieldBusinessType.super.getLocalizedValues(
+				objectField, userId, values);
+
+		if (localizedValues == null) {
+			return null;
+		}
+
+		for (Map.Entry<String, Object> entry : localizedValues.entrySet()) {
+			localizedValues.put(
+				entry.getKey(),
+				_getValue(
+					objectField.getName(), entry.getValue(), new HashMap<>()));
+		}
+
+		return localizedValues;
 	}
 
 	@Override
@@ -111,7 +135,19 @@ public class MultiselectPicklistObjectFieldBusinessType
 			ObjectField objectField, long userId, Map<String, Object> values)
 		throws PortalException {
 
-		Object value = values.get(objectField.getName());
+		return _getValue(
+			objectField.getName(),
+			ObjectFieldBusinessType.super.getValue(objectField, userId, values),
+			values);
+	}
+
+	@Override
+	public boolean isLocalizable() {
+		return true;
+	}
+
+	private Object _getValue(
+		String objectFieldName, Object value, Map<String, Object> values) {
 
 		if (value instanceof List) {
 			List<String> keys = new ArrayList<>();
@@ -131,21 +167,24 @@ public class MultiselectPicklistObjectFieldBusinessType
 				}
 			}
 
-			values.put(objectField.getName(), keys);
+			values.put(objectFieldName, keys);
+
+			return keys;
 		}
 		else if (value instanceof String) {
 			String valueString = GetterUtil.getString(value);
 
 			if (valueString.contains(StringPool.COMMA_AND_SPACE)) {
-				values.put(
-					objectField.getName(),
-					ListUtil.fromString(
-						valueString, StringPool.COMMA_AND_SPACE));
+				List<String> keys = ListUtil.fromString(
+					valueString, StringPool.COMMA_AND_SPACE);
+
+				values.put(objectFieldName, keys);
+
+				return keys;
 			}
 		}
 
-		return ObjectFieldBusinessType.super.getValue(
-			objectField, userId, values);
+		return value;
 	}
 
 	@Reference

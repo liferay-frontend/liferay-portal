@@ -37,10 +37,21 @@ public class DispatchTriggerHelper {
 			String timeZoneId)
 		throws DispatchTriggerSchedulerException {
 
+		Date date = new Date();
+
+		Date endDate = dispatchTrigger.getEndDate();
+		Date startDate = dispatchTrigger.getStartDate();
+
+		if ((startDate != null) && startDate.before(date) &&
+			((endDate == null) ||
+			 (startDate.before(endDate) && endDate.after(date)))) {
+
+			startDate = date;
+		}
+
 		Trigger trigger = _triggerFactory.createTrigger(
 			_getJobName(dispatchTrigger), _getGroupName(dispatchTrigger),
-			dispatchTrigger.getStartDate(), dispatchTrigger.getEndDate(),
-			dispatchTrigger.getCronExpression(),
+			startDate, endDate, dispatchTrigger.getCronExpression(),
 			TimeZone.getTimeZone(timeZoneId));
 
 		Message message = new Message();

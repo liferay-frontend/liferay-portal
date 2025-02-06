@@ -9,7 +9,6 @@ import com.liferay.list.type.model.ListTypeDefinition;
 import com.liferay.list.type.service.ListTypeDefinitionService;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.model.ObjectField;
-import com.liferay.object.service.ObjectFieldSettingLocalService;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -21,8 +20,7 @@ public class ObjectFieldUtil {
 
 	public static JSONObject toJSONObject(
 		ListTypeDefinitionService listTypeDefinitionService,
-		ObjectField objectField,
-		ObjectFieldSettingLocalService objectFieldSettingLocalService) {
+		ObjectField objectField) {
 
 		return JSONUtil.put(
 			"businessType", objectField.getBusinessType()
@@ -30,9 +28,9 @@ public class ObjectFieldUtil {
 			"DBType", objectField.getDBType()
 		).put(
 			"defaultValue",
-			com.liferay.object.field.setting.util.ObjectFieldSettingUtil.
-				getDefaultValueAsString(
-					null, objectField, objectFieldSettingLocalService, null)
+			String.valueOf(
+				com.liferay.object.field.setting.util.ObjectFieldSettingUtil.
+					getDefaultValue(null, objectField, null))
 		).put(
 			"externalReferenceCode", objectField.getExternalReferenceCode()
 		).put(

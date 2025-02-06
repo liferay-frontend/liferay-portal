@@ -3,7 +3,6 @@ definition {
 
 	property portal.release = "true";
 	property portal.upstream = "true";
-	property testray.component.names = "Auto Tagging";
 	property testray.main.component.name = "Depot";
 
 	setUp {
@@ -243,6 +242,7 @@ definition {
 			dmDocumentTitle = "DM Document JPG",
 			groupName = "Test Depot Name",
 			mimeType = "image/jpeg",
+			site = "false",
 			sourceFileName = "Document_4.jpg");
 
 		DepotNavigator.openToDMEntryInDepot(

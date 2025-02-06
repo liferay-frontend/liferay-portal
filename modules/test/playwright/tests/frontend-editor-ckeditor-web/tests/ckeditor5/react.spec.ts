@@ -15,8 +15,8 @@ export const test = mergeTests(
 	apiHelpersTest,
 	ckeditorSamplePageTest,
 	featureFlagsTest({
-		'LPD-11235': true,
-		'LPS-178052': true,
+		'LPD-11235': {enabled: true},
+		'LPS-178052': {enabled: true},
 	}),
 	isolatedSiteTest,
 	loginTest()
@@ -32,3 +32,44 @@ test.beforeEach(async ({ckeditorSamplePage, site}) => {
 test('Assert editor is rendered', {tag: '@LPD-11235'}, async ({page}) => {
 	expect(page.getByText('Lorem ipsum dolor sit amet')).toBeVisible();
 });
+
+test(
+	'Assert editor is rendered with a custom list of plugins configuration',
+	{tag: '@LPD-11235'},
+	async ({page}) => {
+		const editorToolbar = page.getByLabel('Editor toolbar');
+		const expectedButtons = [
+			'Undo',
+			'Redo',
+			'Styles',
+			'Normal',
+			'Bold',
+			'Italic',
+			'Underline',
+			'Strikethrough',
+			'Font Color',
+			'Font Background Color',
+			'Remove Format',
+			'Numbered List',
+			'Bulleted List',
+			'Increase indent',
+			'Decrease indent',
+			'Block quote',
+			'Link',
+			'Insert table',
+			'Insert media',
+			'Horizontal line',
+			'Text alignment',
+			'Source',
+		];
+
+		await expect(editorToolbar).toBeVisible();
+
+		const availableButtons = await editorToolbar
+			.getByRole('button')
+			.locator('.ck-button__label')
+			.allInnerTexts();
+
+		expect(availableButtons).toEqual(expectedButtons);
+	}
+);

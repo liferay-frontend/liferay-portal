@@ -88,22 +88,32 @@ export class JSONWebServicesJournalApiHelper {
 		};
 
 		urlSearchParams.append(
-			'externalReferenceCode',
-			webContent.externalReferenceCode
+			'content',
+			`<root>
+				<dynamic-element field-reference="content" index-type="text" name="content" type="rich_text">
+				<dynamic-content><![CDATA[<p>${webContent.content}</p>]]></dynamic-content>
+				</dynamic-element>
+				</root>`
 		);
-		urlSearchParams.append('groupId', String(webContent.groupId));
-		urlSearchParams.append('folderId', String(webContent.folderId));
-		urlSearchParams.append('titleMap', JSON.stringify(webContent.titleMap));
+
 		urlSearchParams.append(
 			'descriptionMap',
 			JSON.stringify(webContent.descriptionMap)
 		);
-		urlSearchParams.append('content', '<p>' + webContent.content + '</p>');
+
 		urlSearchParams.append(
 			'ddmStructureId',
 			String(webContent.ddmStructureId)
 		);
+
 		urlSearchParams.append('ddmTemplateKey', webContent.ddmTemplateKey);
+		urlSearchParams.append(
+			'externalReferenceCode',
+			webContent.externalReferenceCode
+		);
+		urlSearchParams.append('folderId', String(webContent.folderId));
+		urlSearchParams.append('groupId', String(webContent.groupId));
+		urlSearchParams.append('titleMap', JSON.stringify(webContent.titleMap));
 		urlSearchParams.append(
 			'serviceContext',
 			JSON.stringify(webContent.serviceContext)

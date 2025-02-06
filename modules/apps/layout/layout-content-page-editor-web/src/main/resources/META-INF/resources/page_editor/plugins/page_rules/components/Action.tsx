@@ -12,14 +12,14 @@ import RuleBuilderItem from './RuleBuilderItem';
 import RuleSelect from './RuleSelect';
 
 export interface Action {
-	action?: 'fragment';
 	id: string;
 	itemId?: string;
-	type: 'show' | 'hide' | undefined;
+	type: 'show' | 'hide' | 'enable' | 'disable' | undefined;
 }
 
 interface ActionProps {
 	action: Action;
+	inputFragmentItems: {label: string; value: string}[];
 	layoutDataItems: {label: string; value: string}[];
 	onActionChange: (action: Action) => void;
 	onDeleteAction: () => void;
@@ -37,6 +37,14 @@ export const ACTION_TYPE_ITEMS = [
 		label: Liferay.Language.get('hide'),
 		value: 'hide',
 	},
+	{
+		label: Liferay.Language.get('enable'),
+		value: 'enable',
+	},
+	{
+		label: Liferay.Language.get('disable'),
+		value: 'disable',
+	},
 ] as const;
 
 export const ACTION_ITEMS = [
@@ -48,6 +56,7 @@ export const ACTION_ITEMS = [
 
 export default function Action({
 	action,
+	inputFragmentItems,
 	layoutDataItems,
 	onActionChange,
 	onDeleteAction,
@@ -58,7 +67,7 @@ export default function Action({
 
 	const [{description}] = useActionValues({
 		actions: [action],
-		items: layoutDataItems,
+		items: [...layoutDataItems, ...inputFragmentItems],
 	});
 
 	const selectRef = useRef<HTMLButtonElement | undefined>();
@@ -93,26 +102,13 @@ export default function Action({
 			/>
 
 			{action.type ? (
-				<RuleSelect
-					aria-label={Liferay.Language.get(
-						'select-item-for-the-action'
-					)}
-					items={ACTION_ITEMS}
-					onSelectionChange={(selectedAction) =>
-						onActionChange({
-							...action,
-							action: selectedAction,
-							itemId: undefined,
-						})
-					}
-					selectedKey={action.action}
-				/>
-			) : null}
-
-			{action.action ? (
 				<FragmentSelector
 					itemId={action.itemId}
-					layoutDataItems={layoutDataItems}
+					layoutDataItems={
+						action.type === 'enable' || action.type === 'disable'
+							? inputFragmentItems
+							: layoutDataItems
+					}
 					onItemIdChanged={(itemId) => {
 						onActionChange({
 							...action,

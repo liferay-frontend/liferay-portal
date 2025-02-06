@@ -23,10 +23,12 @@ import {config as calendarWebConfig} from './tests/calendar-web/config';
 import {config as captchaWebConfig} from './tests/captcha-web/config';
 import {config as changeTrackingWebConfig} from './tests/change-tracking-web/config';
 import {config as clientExtensionWebConfig} from './tests/client-extension-web/config';
+import {config as clientExtensionWebClusterConfig} from './tests/client-extension-web/tests/cluster/config';
 import {config as commerceAccountWebConfig} from './tests/commerce/commerce-account-web/config';
 import {config as commerceCartContentWebConfig} from './tests/commerce/commerce-cart-content-web/config';
 import {config as commerceChannelWebConfig} from './tests/commerce/commerce-channel-web/config';
 import {config as commerceCheckoutWebConfig} from './tests/commerce/commerce-checkout-web/config';
+import {config as commerceCurrencyWebConfig} from './tests/commerce/commerce-currency-web/config';
 import {config as commerceDiscountContentWebConfig} from './tests/commerce/commerce-discount-content-web/config';
 import {config as commerceOrderContentWebConfig} from './tests/commerce/commerce-order-content-web/config';
 import {config as commerceOrderWebConfig} from './tests/commerce/commerce-order-web/config';
@@ -37,6 +39,7 @@ import {config as commerceProductDefinitionsWebConfig} from './tests/commerce/co
 import {config as commerceProductOptionsWebConfig} from './tests/commerce/commerce-product-options-web/config';
 import {config as commerceShippingEngineWebConfig} from './tests/commerce/commerce-shipping-engine-fixed-web/config';
 import {config as commerceSiteInitializerWebConfig} from './tests/commerce/commerce-site-initializer/config';
+import {config as commerceTaxEngineWebConfig} from './tests/commerce/commerce-tax-engine-web/config';
 import {config as commerceThemeMiniumWebConfig} from './tests/commerce/commerce-theme-minium/config';
 import {config as commerceWishListWebConfig} from './tests/commerce/commerce-wish-list-web/config';
 import {config as configurationAdminWebConfig} from './tests/configuration-admin-web/config';
@@ -84,6 +87,7 @@ import {config as portalSecurityAuditWebConfig} from './tests/portal-security-au
 import {config as portalSecurityScriptManagementWebConfig} from './tests/portal-security-script-management-web/config';
 import {config as portalSecurityServiceAccessPolicyService} from './tests/portal-security-service-access-policy-service/config';
 import {config as portalToolsRestBuilderTestImpl} from './tests/portal-tools-rest-builder-test-impl/config';
+import {config as portalUserLocaleOptionsConfig} from './tests/portal-user-locale-options-web/config';
 import {config as portalWebConfig} from './tests/portal-web/config';
 import {config as portalWorkflowKaleoDesignerWebConfig} from './tests/portal-workflow-kaleo-designer-web/config';
 import {config as portalWorkflowTaskWebConfig} from './tests/portal-workflow-task-web/config';
@@ -98,6 +102,7 @@ import {config as samlWebConfig} from './tests/saml-web/config';
 import {config as scimConfiguraitonWebConfig} from './tests/scim-configuration-web/config';
 import {config as searchExperiencesWebConfig} from './tests/search-experiences-web/config';
 import {config as segmentExperimentWebConfig} from './tests/segment-experiment-web/config';
+import {config as segmentsWebConfig} from './tests/segments-web/config';
 import {
 	pageManagementSiteSetup,
 	pageManagementSiteTeardown,
@@ -142,10 +147,12 @@ export default defineConfig({
 		captchaWebConfig,
 		changeTrackingWebConfig,
 		clientExtensionWebConfig,
+		clientExtensionWebClusterConfig,
 		commerceAccountWebConfig,
 		commerceCartContentWebConfig,
 		commerceChannelWebConfig,
 		commerceCheckoutWebConfig,
+		commerceCurrencyWebConfig,
 		commerceDiscountContentWebConfig,
 		commerceOrderWebConfig,
 		commerceOrderContentWebConfig,
@@ -156,6 +163,7 @@ export default defineConfig({
 		commerceProductOptionsWebConfig,
 		commerceShippingEngineWebConfig,
 		commerceSiteInitializerWebConfig,
+		commerceTaxEngineWebConfig,
 		commerceThemeMiniumWebConfig,
 		commerceWishListWebConfig,
 		commerceWorkspaceConfig,
@@ -207,6 +215,7 @@ export default defineConfig({
 		portalSecurityScriptManagementWebConfig,
 		portalSecurityServiceAccessPolicyService,
 		portalToolsRestBuilderTestImpl,
+		portalUserLocaleOptionsConfig,
 		portalWebConfig,
 		portalWorkflowKaleoDesignerWebConfig,
 		portalWorkflowTaskWebConfig,
@@ -221,6 +230,7 @@ export default defineConfig({
 		scimConfiguraitonWebConfig,
 		searchExperiencesWebConfig,
 		segmentExperimentWebConfig,
+		segmentsWebConfig,
 		siteAdminWebConfig,
 		siteNavigationAdminWebConfig,
 		siteNavigationBreadcrumbWebConfig,

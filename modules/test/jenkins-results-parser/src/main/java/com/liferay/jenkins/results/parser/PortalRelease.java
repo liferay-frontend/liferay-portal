@@ -14,7 +14,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
 import org.dom4j.Node;
 
 /**
@@ -27,7 +26,10 @@ public class PortalRelease {
 			return false;
 		}
 
-		return portalVersion.matches(_QUARTERLY_RELEASE_VERSION_REGEX);
+		Matcher matcher = _quarterlyReleaseVersionPattern.matcher(
+			portalVersion);
+
+		return matcher.matches();
 	}
 
 	public PortalRelease(String portalVersion) {
@@ -41,18 +43,18 @@ public class PortalRelease {
 
 			try {
 				bundlesBaseURLContent = JenkinsResultsParserUtil.toString(
-					bundlesBaseURLString + "/", true, 0, 5, 0);
+					bundlesBaseURLString + "/", true, 1, 5, 0);
 
 				bundlesBaseURL = new URL(bundlesBaseURLString);
 
 				break;
 			}
-			catch (IOException ioException) {
+			catch (Exception exception) {
 			}
 
 			try {
 				String xml = JenkinsResultsParserUtil.toString(
-					baseURLString + "/");
+					baseURLString + "/", true, 1, 5, 0);
 
 				xml = xml.substring(xml.indexOf("<html>"));
 
@@ -83,7 +85,7 @@ public class PortalRelease {
 
 						break;
 					}
-					catch (IOException ioException) {
+					catch (Exception exception) {
 					}
 				}
 
@@ -93,7 +95,7 @@ public class PortalRelease {
 					break;
 				}
 			}
-			catch (DocumentException | IOException exception) {
+			catch (Exception exception) {
 				throw new RuntimeException(exception);
 			}
 		}
@@ -105,7 +107,7 @@ public class PortalRelease {
 
 		_portalVersion = portalVersion;
 
-		_bundlesBaseURL = _getLocalURL(bundlesBaseURL.toString());
+		_bundlesBaseURL = _getRemoteURL(bundlesBaseURL.toString());
 
 		_initializeURLs();
 	}
@@ -143,7 +145,7 @@ public class PortalRelease {
 			portalVersion = bundlesBaseURLMatcher.group("portalVersion");
 		}
 
-		_bundlesBaseURL = _getLocalURL(bundlesBaseURLString);
+		_bundlesBaseURL = _getRemoteURL(bundlesBaseURLString);
 
 		_portalVersion = portalVersion;
 
@@ -168,7 +170,7 @@ public class PortalRelease {
 				0, bundlesBaseURLString.length() - 1);
 		}
 
-		_bundlesBaseURL = _getLocalURL(bundlesBaseURLString);
+		_bundlesBaseURL = _getRemoteURL(bundlesBaseURLString);
 
 		_initializeURLs();
 	}
@@ -304,7 +306,7 @@ public class PortalRelease {
 		Matcher matcher = _portalVersionPattern.matcher(_portalVersion);
 
 		if (!matcher.find()) {
-			return "master";
+			return getQuarterlyReleaseBranchName();
 		}
 
 		StringBuilder sb = new StringBuilder();
@@ -372,6 +374,17 @@ public class PortalRelease {
 
 	public URL getPortalWarURL() {
 		return _getRemoteURL(_portalWarURLString);
+	}
+
+	public String getQuarterlyReleaseBranchName() {
+		Matcher matcher = _quarterlyReleaseVersionPattern.matcher(
+			_portalVersion);
+
+		if (matcher.find()) {
+			return "release-" + matcher.group("branchVersion");
+		}
+
+		return "master";
 	}
 
 	public void setPluginsWarZipURL(URL pluginsWarZipURL) {
@@ -523,7 +536,7 @@ public class PortalRelease {
 			return null;
 		}
 
-		return getBundlesBaseLocalURL() + "/" + matcher.group("fileName");
+		return getBundlesBaseURL() + "/" + matcher.group("fileName");
 	}
 
 	private String _getURLStringFromBuildProperties(String basePropertyName) {
@@ -643,7 +656,7 @@ public class PortalRelease {
 
 		try {
 			bundlesBaseURLContent = JenkinsResultsParserUtil.toString(
-				getBundlesBaseLocalURL() + "/", false, 0, 5, 0);
+				getBundlesBaseURL() + "/", false, 0, 5, 0);
 		}
 		catch (IOException ioException) {
 			return;
@@ -674,9 +687,8 @@ public class PortalRelease {
 	}
 
 	private static final String[] _BASE_URL_STRINGS = {
-		"http://mirrors.lax.liferay.com/releases.liferay.com/portal",
-		"http://mirrors.lax.liferay.com/files.liferay.com/private/ee/portal",
 		"https://releases.liferay.com/portal",
+		"https://releases.liferay.com/dxp",
 		"https://files.liferay.com/private/ee/portal"
 	};
 
@@ -685,7 +697,7 @@ public class PortalRelease {
 			"(\\-(ep|ga|rc|sp)\\d+)?)";
 
 	private static final String _QUARTERLY_RELEASE_VERSION_REGEX =
-		"(?<portalVersion>\\d{4}.[Qq]\\d+.\\d+)";
+		"(?<portalVersion>(?<branchVersion>\\d{4}.[Qq]\\d+).\\d+)";
 
 	private static final MultiPattern _bundleFileNamePattern = new MultiPattern(
 		".+\\-" + _PORTAL_VERSION_REGEX + ".*\\.(7z|tar.gz|zip)",
@@ -733,6 +745,8 @@ public class PortalRelease {
 				"(-dxp-(?<dxpVersion>\\d+))?.*");
 	private static final Pattern _portalWarFileNamePattern = Pattern.compile(
 		"href=\\\"[^\\\"]*(?<fileName>liferay-[^\\\"]+\\.war)\\\"");
+	private static final Pattern _quarterlyReleaseVersionPattern =
+		Pattern.compile(_QUARTERLY_RELEASE_VERSION_REGEX);
 
 	private final URL _bundlesBaseURL;
 	private String _pluginsWarZipURLString;

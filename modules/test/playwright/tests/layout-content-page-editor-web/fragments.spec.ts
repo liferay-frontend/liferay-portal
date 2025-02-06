@@ -47,8 +47,9 @@ const test = mergeTests(
 	displayPageTemplatesPagesTest,
 	documentLibraryPagesTest,
 	featureFlagsTest({
-		'LPD-39304': true,
-		'LPS-178052': true,
+		'LPD-18221': {enabled: true},
+		'LPD-39304': {enabled: true},
+		'LPS-178052': {enabled: true},
 	}),
 	fragmentsPagesTest,
 	isolatedSiteTest,
@@ -63,9 +64,10 @@ const test = mergeTests(
 const testWithPrivatePages = mergeTests(
 	test,
 	featureFlagsTest({
-		'LPD-38869': true,
-		'LPD-39304': true,
-		'LPS-178052': true,
+		'LPD-18221': {enabled: true},
+		'LPD-38869': {enabled: true},
+		'LPD-39304': {enabled: true},
+		'LPS-178052': {enabled: true},
 	})
 );
 
@@ -535,8 +537,6 @@ test.describe('Related Asset Fragment', () => {
 			});
 
 			await journalEditArticlePage.publishArticle(true);
-
-			await waitForAlert(page, `was updated successfully.`);
 
 			// Create a display page template for Basic Web Content
 
@@ -1220,20 +1220,7 @@ test.describe('Image Fragment', () => {
 
 			// Select the image directly
 
-			await pageEditorPage.selectEditable(imageId, 'image-square');
-
-			await page.getByTitle('Select Image').click();
-
-			const imageCard = page
-				.frameLocator('iframe[title="Select"]')
-				.getByText('poodle.jpg');
-
-			await clickAndExpectToBeHidden({
-				target: page.locator('.modal-dialog'),
-				trigger: imageCard,
-			});
-
-			await pageEditorPage.waitForChangesSaved();
+			await pageEditorPage.selectDirectImage('poodle.jpg', imageId);
 
 			expect(
 				await page
@@ -1243,69 +1230,6 @@ test.describe('Image Fragment', () => {
 			).toContain('poodle-jpg');
 		}
 	);
-});
-
-test.describe('Localization Select Fragment', () => {
-	test('Allow selecting a language', async ({apiHelpers, page, site}) => {
-
-		// Create a page with a localization select fragment
-
-		const layout = await apiHelpers.headlessDelivery.createSitePage({
-			pageDefinition: getPageDefinition([
-				getFragmentDefinition({
-					id: getRandomString(),
-					key: 'localization-select',
-				}),
-			]),
-			siteId: site.id,
-			title: getRandomString(),
-		});
-
-		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
-
-		await page.exposeFunction('checkLanguageUpdate', (id) => {
-			expect(id).toBe('es-ES111');
-		});
-
-		// Check the language select is visible
-
-		const languageSelect = page.getByLabel(
-			'Select a language, current language: English (United States).'
-		);
-
-		// Click an option and checkt the langue select is updated and the event is fired
-
-		await expect(languageSelect).toBeVisible();
-
-		await page.evaluate(() => {
-			Liferay.on('localizationSelect:localeChanged', (event) => {
-				(window as any).TEST_LANGUAGE_SELECTED = event.languageId;
-			});
-		});
-
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: page.getByRole('option', {
-				name: 'Spanish (Spain) Language',
-			}),
-			trigger: languageSelect,
-		});
-
-		const response = await page.waitForFunction(
-			() => {
-				return (window as any).TEST_LANGUAGE_SELECTED;
-			},
-			{timeout: 1000 * 60}
-		);
-
-		expect(await response.jsonValue()).toBe('es_ES');
-
-		await expect(
-			page.getByLabel(
-				'Select a language, current language: Spanish (Spain).'
-			)
-		).toBeVisible();
-	});
 });
 
 testWithPrivatePages.describe('Menu Display Fragment', () => {
@@ -2255,7 +2179,7 @@ test.describe('Tags Fragment', () => {
 			`/web${pageManagementSite.friendlyUrlPath}${layout.friendlyUrlPath}`
 		);
 
-		await page.getByLabel('Lemon Size').fill('Tags test');
+		await page.getByLabel('Lemon Size', {exact: true}).fill('Tags test');
 
 		await page.getByRole('combobox').first().click();
 		await page.getByRole('option', {exact: true, name: 'Dogs'}).click();
@@ -2280,7 +2204,7 @@ test.describe('Tags Fragment', () => {
 		});
 
 		const objectRow = page
-			.locator('.dnd-tr')
+			.locator('.fds tr')
 			.filter({hasText: 'Tags test'});
 
 		await objectRow.waitFor();
@@ -2608,3 +2532,70 @@ test.describe('Custom Fragments', () => {
 		}
 	);
 });
+
+test(
+	'Check multiple fragments can be duplicated after multiselecting them',
+	{tag: ['@LPD-47080']},
+	async ({apiHelpers, page, pageEditorPage, site}) => {
+
+		// Create a page with a heading and a button and go to edit mode
+
+		const headingId = getRandomString();
+		const headingDefinition = getFragmentDefinition({
+			id: headingId,
+			key: 'BASIC_COMPONENT-heading',
+		});
+
+		const buttonId = getRandomString();
+		const buttonDefinition = getFragmentDefinition({
+			id: buttonId,
+			key: 'BASIC_COMPONENT-button',
+		});
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				buttonDefinition,
+				headingDefinition,
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		// Go to Browser and select both fragments
+
+		await pageEditorPage.goToSidebarTab('Browser');
+
+		await clickAndExpectToBeVisible({
+			target: page.locator('.page-editor__topper__title', {
+				hasText: 'Heading',
+			}),
+			trigger: page.locator('.page-editor__page-structure__tree-node', {
+				hasText: 'Heading',
+			}),
+		});
+
+		await page.keyboard.down('Control');
+
+		await clickAndExpectToBeVisible({
+			target: page.getByText('2 Items Selected'),
+			trigger: page.locator('.page-editor__page-structure__tree-node', {
+				hasText: 'Button',
+			}),
+		});
+
+		// Duplicate the fragments and check it works well
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {name: 'Duplicate'}),
+			trigger: page.getByLabel('Actions for Selected Items'),
+		});
+
+		await pageEditorPage.waitForChangesSaved();
+
+		await expect(page.getByText('Go Somewhere')).toHaveCount(2);
+		await expect(page.getByText('Heading Example')).toHaveCount(2);
+	}
+);

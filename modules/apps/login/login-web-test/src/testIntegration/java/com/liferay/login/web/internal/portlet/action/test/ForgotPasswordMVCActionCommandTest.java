@@ -7,9 +7,11 @@ package com.liferay.login.web.internal.portlet.action.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.model.PasswordPolicy;
 import com.liferay.portal.kernel.model.Ticket;
+import com.liferay.portal.kernel.model.TicketConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
@@ -21,14 +23,19 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
+import com.liferay.portal.kernel.test.randomizerbumpers.NumericStringRandomizerBumper;
+import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.PrefsPropsTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.JavaConstants;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -61,69 +68,41 @@ public class ForgotPasswordMVCActionCommandTest {
 		new LiferayIntegrationTestRule();
 
 	@Test
-	public void testLDAPPasswordPolicyPreventsPasswordReset() throws Exception {
-		_user = UserTestUtil.addUser();
+	public void testLDAPPasswordPolicyPreventsLDAPUserPasswordReset()
+		throws Exception {
 
-		Dictionary<String, Object> configurations =
-			_ldapAuthConfigurationProvider.getConfigurationProperties(
-				_user.getCompanyId());
+		_createUser(true, false);
 
-		Object existingValue = configurations.put(
-			"passwordPolicyEnabled", true);
+		List<Ticket> tickets = _processAction(true);
 
-		_ldapAuthConfigurationProvider.updateProperties(
-			_user.getCompanyId(), configurations);
+		Assert.assertTrue(tickets.isEmpty());
+	}
 
-		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
-				new ConfigurationTemporarySwapper(
-					"com.liferay.captcha.configuration.CaptchaConfiguration",
-					HashMapDictionaryBuilder.<String, Object>put(
-						"sendPasswordCaptchaEnabled", false
-					).build());
-			SafeCloseable safeCloseable =
-				PrefsPropsTestUtil.swapWithSafeCloseable(
-					_user.getCompanyId(),
-					PropsKeys.USERS_REMINDER_QUERIES_ENABLED,
-					Boolean.FALSE.toString())) {
+	@Test
+	public void testLDAPUserWithoutLDAPPasswordPolicyCanResetPassword()
+		throws Exception {
 
-			List<Ticket> tickets = _ticketLocalService.getTickets(
-				_user.getCompanyId(), User.class.getName(), _user.getUserId());
+		_createUser(true, false);
 
-			MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
-				_getMockLiferayPortletActionRequest();
+		List<Ticket> tickets = _processAction(false);
 
-			_mvcActionCommand.processAction(
-				mockLiferayPortletActionRequest,
-				new MockLiferayPortletActionResponse());
+		Assert.assertEquals(tickets.toString(), 1, tickets.size());
+	}
 
-			Object message = SessionMessages.get(
-				_portal.getHttpServletRequest(mockLiferayPortletActionRequest),
-				"forgotPasswordSent");
+	@Test
+	public void testPortalUserWithLDAPPasswordPolicyCanResetPassword()
+		throws Exception {
 
-			Assert.assertNotNull(message);
+		_createUser(false, false);
 
-			Assert.assertEquals(
-				tickets,
-				_ticketLocalService.getTickets(
-					_user.getCompanyId(), User.class.getName(),
-					_user.getUserId()));
-		}
-		finally {
-			if (existingValue != null) {
-				configurations.put("passwordPolicyEnabled", existingValue);
-			}
-			else {
-				configurations.remove("passwordPolicyEnabled");
-			}
+		List<Ticket> tickets = _processAction(true);
 
-			_ldapAuthConfigurationProvider.updateProperties(
-				_user.getCompanyId(), configurations);
-		}
+		Assert.assertEquals(tickets.toString(), 1, tickets.size());
 	}
 
 	@Test
 	public void testSendPasswordReminderToLockedOutUser() throws Exception {
-		_createUser();
+		_createUser(false, true);
 
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
 				new ConfigurationTemporarySwapper(
@@ -151,10 +130,27 @@ public class ForgotPasswordMVCActionCommandTest {
 		}
 	}
 
-	private void _createUser() throws Exception {
-		_user = UserTestUtil.addUser();
+	private void _createUser(boolean ldapUser, boolean lockout)
+		throws Exception {
 
-		_user.setLockout(true);
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
+		serviceContext.setAttribute("ldapServerId", ldapUser ? 1 : -1);
+
+		_user = UserTestUtil.addUser(
+			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			StringPool.BLANK,
+			RandomTestUtil.randomString() + RandomTestUtil.nextLong() +
+				"@liferay.com",
+			RandomTestUtil.randomString(
+				NumericStringRandomizerBumper.INSTANCE,
+				UniqueStringRandomizerBumper.INSTANCE),
+			LocaleUtil.getDefault(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(),
+			new long[] {TestPropsValues.getGroupId()}, serviceContext);
+
+		_user.setLockout(lockout);
 		_user.setLockoutDate(new Date());
 
 		_user = _userLocalService.updateUser(_user);
@@ -162,7 +158,7 @@ public class ForgotPasswordMVCActionCommandTest {
 		_passwordPolicyRelLocalService.deletePasswordPolicyRel(
 			User.class.getName(), _user.getUserId());
 
-		ServiceContext serviceContext = new ServiceContext();
+		serviceContext = new ServiceContext();
 
 		serviceContext.setUserId(_user.getUserId());
 
@@ -170,7 +166,7 @@ public class ForgotPasswordMVCActionCommandTest {
 			serviceContext);
 
 		_testPasswordPolicy.setChangeable(true);
-		_testPasswordPolicy.setLockout(true);
+		_testPasswordPolicy.setLockout(lockout);
 		_testPasswordPolicy.setLockoutDuration(0);
 		_testPasswordPolicy.setResetTicketMaxAge(10);
 
@@ -205,6 +201,62 @@ public class ForgotPasswordMVCActionCommandTest {
 			WebKeys.THEME_DISPLAY, themeDisplay);
 
 		return mockLiferayPortletActionRequest;
+	}
+
+	private List<Ticket> _processAction(boolean passwordPolicyEnabled)
+		throws Exception {
+
+		Dictionary<String, Object> configurationProperties =
+			_ldapAuthConfigurationProvider.getConfigurationProperties(
+				_user.getCompanyId());
+
+		Object originalPasswordPolicyEnabled = configurationProperties.put(
+			"passwordPolicyEnabled", passwordPolicyEnabled);
+
+		_ldapAuthConfigurationProvider.updateProperties(
+			_user.getCompanyId(), configurationProperties);
+
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					"com.liferay.captcha.configuration.CaptchaConfiguration",
+					HashMapDictionaryBuilder.<String, Object>put(
+						"sendPasswordCaptchaEnabled", false
+					).build());
+			SafeCloseable safeCloseable =
+				PrefsPropsTestUtil.swapWithSafeCloseable(
+					_user.getCompanyId(),
+					PropsKeys.USERS_REMINDER_QUERIES_ENABLED,
+					Boolean.FALSE.toString())) {
+
+			MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+				_getMockLiferayPortletActionRequest();
+
+			_mvcActionCommand.processAction(
+				mockLiferayPortletActionRequest,
+				new MockLiferayPortletActionResponse());
+
+			Assert.assertNotNull(
+				SessionMessages.get(
+					_portal.getHttpServletRequest(
+						mockLiferayPortletActionRequest),
+					"forgotPasswordSent"));
+
+			return _ticketLocalService.getTickets(
+				_user.getCompanyId(), User.class.getName(), _user.getUserId(),
+				TicketConstants.TYPE_PASSWORD);
+		}
+		finally {
+			if (originalPasswordPolicyEnabled != null) {
+				configurationProperties.put(
+					"passwordPolicyEnabled", originalPasswordPolicyEnabled);
+			}
+			else {
+				configurationProperties.remove("passwordPolicyEnabled");
+			}
+
+			_ldapAuthConfigurationProvider.updateProperties(
+				_user.getCompanyId(), configurationProperties);
+		}
 	}
 
 	@DeleteAfterTestRun

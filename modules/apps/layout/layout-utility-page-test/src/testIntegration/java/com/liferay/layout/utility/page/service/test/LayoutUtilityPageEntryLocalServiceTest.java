@@ -6,13 +6,20 @@
 package com.liferay.layout.utility.page.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.layout.test.util.ContentLayoutTestUtil;
+import com.liferay.layout.utility.page.exception.DefaultLayoutUtilityPageEntryException;
 import com.liferay.layout.utility.page.exception.DuplicateLayoutUtilityPageEntryExternalReferenceCodeException;
+import com.liferay.layout.utility.page.kernel.constants.LayoutUtilityPageEntryConstants;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryLocalService;
 import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryService;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -24,6 +31,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -75,24 +83,47 @@ public class LayoutUtilityPageEntryLocalServiceTest {
 		Assert.assertTrue(
 			Validator.isNotNull(
 				layoutUtilityPageEntry.getExternalReferenceCode()));
-	}
 
-	@Test(
-		expected = DuplicateLayoutUtilityPageEntryExternalReferenceCodeException.class
-	)
-	public void testAddLayoutUtilityPageEntryWithExistingExternalReferenceCode()
-		throws Exception {
+		Layout layout = _layoutLocalService.getLayout(
+			layoutUtilityPageEntry.getPlid());
 
-		String externalReferenceCode = RandomTestUtil.randomString();
+		Assert.assertTrue(layout.isPublished());
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, layout.getStatus());
 
-		_layoutUtilityPageEntryLocalService.addLayoutUtilityPageEntry(
-			externalReferenceCode, TestPropsValues.getUserId(),
-			_group.getGroupId(), 0, 0, true, RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), 0, _serviceContext);
-		_layoutUtilityPageEntryLocalService.addLayoutUtilityPageEntry(
-			externalReferenceCode, TestPropsValues.getUserId(),
-			_group.getGroupId(), 0, 0, true, RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), 0, _serviceContext);
+		layoutUtilityPageEntry =
+			_layoutUtilityPageEntryLocalService.addLayoutUtilityPageEntry(
+				null, TestPropsValues.getUserId(), _group.getGroupId(), 0, 0,
+				false, RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(), 0, _serviceContext);
+
+		Assert.assertTrue(
+			Validator.isNotNull(
+				layoutUtilityPageEntry.getExternalReferenceCode()));
+
+		layout = _layoutLocalService.getLayout(
+			layoutUtilityPageEntry.getPlid());
+
+		Assert.assertFalse(layout.isPublished());
+		Assert.assertEquals(WorkflowConstants.STATUS_DRAFT, layout.getStatus());
+
+		try {
+			_layoutUtilityPageEntryLocalService.addLayoutUtilityPageEntry(
+				layoutUtilityPageEntry.getExternalReferenceCode(),
+				TestPropsValues.getUserId(), _group.getGroupId(), 0, 0, true,
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(), 0,
+				_serviceContext);
+
+			Assert.fail();
+		}
+		catch (DuplicateLayoutUtilityPageEntryExternalReferenceCodeException
+					duplicateLayoutUtilityPageEntryExternalReferenceCodeException) {
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					duplicateLayoutUtilityPageEntryExternalReferenceCodeException);
+			}
+		}
 	}
 
 	@Test
@@ -126,6 +157,10 @@ public class LayoutUtilityPageEntryLocalServiceTest {
 			"test-layout-utility-page",
 			layoutUtilityPageEntry.getExternalReferenceCode());
 
+		_testGetExternalReferenceCode(
+			layoutUtilityPageEntry.getExternalReferenceCode(),
+			layoutUtilityPageEntry.getLayoutUtilityPageEntryId());
+
 		layoutUtilityPageEntry =
 			_layoutUtilityPageEntryService.addLayoutUtilityPageEntry(
 				"ERC", _group.getGroupId(), 0, 0, true,
@@ -134,10 +169,94 @@ public class LayoutUtilityPageEntryLocalServiceTest {
 
 		Assert.assertEquals(
 			"ERC", layoutUtilityPageEntry.getExternalReferenceCode());
+
+		_testGetExternalReferenceCode(
+			layoutUtilityPageEntry.getExternalReferenceCode(),
+			layoutUtilityPageEntry.getLayoutUtilityPageEntryId());
 	}
+
+	@Test
+	public void testSetDefaultLayoutUtilityPageEntry() throws Exception {
+		LayoutUtilityPageEntry layoutUtilityPageEntry1 =
+			_layoutUtilityPageEntryLocalService.addLayoutUtilityPageEntry(
+				null, TestPropsValues.getUserId(), _group.getGroupId(), 0, 0,
+				true, RandomTestUtil.randomString(),
+				LayoutUtilityPageEntryConstants.TYPE_SC_NOT_FOUND, 0,
+				_serviceContext);
+
+		Assert.assertTrue(
+			layoutUtilityPageEntry1.isDefaultLayoutUtilityPageEntry());
+
+		LayoutUtilityPageEntry layoutUtilityPageEntry2 =
+			_layoutUtilityPageEntryLocalService.addLayoutUtilityPageEntry(
+				null, TestPropsValues.getUserId(), _group.getGroupId(), 0, 0,
+				false, RandomTestUtil.randomString(),
+				LayoutUtilityPageEntryConstants.TYPE_SC_NOT_FOUND, 0,
+				_serviceContext);
+
+		Assert.assertFalse(
+			layoutUtilityPageEntry2.isDefaultLayoutUtilityPageEntry());
+
+		Layout layout = _layoutLocalService.getLayout(
+			layoutUtilityPageEntry2.getPlid());
+
+		Assert.assertFalse(layout.isPublished());
+
+		try {
+			_layoutUtilityPageEntryLocalService.
+				setDefaultLayoutUtilityPageEntry(
+					layoutUtilityPageEntry2.getLayoutUtilityPageEntryId());
+
+			Assert.fail();
+		}
+		catch (DefaultLayoutUtilityPageEntryException
+					defaultLayoutUtilityPageEntryException) {
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(defaultLayoutUtilityPageEntryException);
+			}
+		}
+
+		ContentLayoutTestUtil.publishLayout(layout.fetchDraftLayout(), layout);
+
+		layoutUtilityPageEntry2 =
+			_layoutUtilityPageEntryLocalService.
+				setDefaultLayoutUtilityPageEntry(
+					layoutUtilityPageEntry2.getLayoutUtilityPageEntryId());
+
+		Assert.assertTrue(
+			layoutUtilityPageEntry2.isDefaultLayoutUtilityPageEntry());
+
+		layoutUtilityPageEntry1 =
+			_layoutUtilityPageEntryLocalService.getLayoutUtilityPageEntry(
+				layoutUtilityPageEntry1.getLayoutUtilityPageEntryId());
+
+		Assert.assertFalse(
+			layoutUtilityPageEntry1.isDefaultLayoutUtilityPageEntry());
+	}
+
+	private void _testGetExternalReferenceCode(
+			String externalReferenceCode, long layoutUtilityPageEntryId)
+		throws Exception {
+
+		LayoutUtilityPageEntry layoutUtilityPageEntry =
+			_layoutUtilityPageEntryService.
+				getLayoutUtilityPageEntryByExternalReferenceCode(
+					externalReferenceCode, _group.getGroupId());
+
+		Assert.assertEquals(
+			layoutUtilityPageEntryId,
+			layoutUtilityPageEntry.getLayoutUtilityPageEntryId());
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		LayoutUtilityPageEntryLocalServiceTest.class);
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	@Inject
+	private LayoutLocalService _layoutLocalService;
 
 	@Inject
 	private LayoutUtilityPageEntryLocalService

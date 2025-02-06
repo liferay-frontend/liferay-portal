@@ -9,8 +9,6 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
-import com.liferay.asset.list.constants.AssetListEntryTypeConstants;
-import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.asset.list.service.AssetListEntryLocalService;
 import com.liferay.asset.test.util.AssetTestUtil;
 import com.liferay.client.extension.constants.ClientExtensionEntryConstants;
@@ -50,26 +48,30 @@ import com.liferay.info.field.InfoField;
 import com.liferay.info.form.InfoForm;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemFormProvider;
-import com.liferay.item.selector.criteria.InfoListItemSelectorReturnType;
 import com.liferay.journal.constants.JournalArticleConstants;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
-import com.liferay.layout.constants.LayoutTypeSettingsConstants;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelLocalService;
+import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
 import com.liferay.layout.provider.LayoutStructureProvider;
 import com.liferay.layout.seo.model.LayoutSEOEntry;
+import com.liferay.layout.seo.model.LayoutSEOEntryCustomMetaTag;
+import com.liferay.layout.seo.model.LayoutSEOEntryCustomMetaTagProperty;
 import com.liferay.layout.seo.service.LayoutSEOEntryLocalService;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.layout.util.LayoutServiceContextHelper;
 import com.liferay.layout.util.constants.LayoutDataItemTypeConstants;
+import com.liferay.layout.utility.page.kernel.constants.LayoutUtilityPageEntryConstants;
+import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
+import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryLocalService;
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -83,7 +85,6 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutFriendlyURL;
 import com.liferay.portal.kernel.model.PortletPreferencesIds;
 import com.liferay.portal.kernel.model.StagedModel;
@@ -138,6 +139,7 @@ import com.liferay.template.model.TemplateEntry;
 import com.liferay.template.service.TemplateEntryLocalService;
 import com.liferay.template.test.util.TemplateTestUtil;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -265,6 +267,69 @@ public class LayoutStagedModelDataHandlerTest
 		finally {
 			serviceRegistration.unregister();
 		}
+	}
+
+	@Test
+	@TestInfo("LPD-46179")
+	public void testDeleteLayoutWithLayoutPageTemplateEntry() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		_stagingLocalService.enableLocalStaging(
+			TestPropsValues.getUserId(), group, false, false,
+			ServiceContextTestUtil.getServiceContext(
+				group.getGroupId(), TestPropsValues.getUserId()));
+
+		Group stagingGroup = group.getStagingGroup();
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+				stagingGroup.getGroupId(),
+				_portal.getClassNameId(AssetCategory.class.getName()), 0, true,
+				WorkflowConstants.STATUS_APPROVED);
+
+		LayoutUtilityPageEntry layoutUtilityPageEntry =
+			_layoutUtilityPageEntryLocalService.addLayoutUtilityPageEntry(
+				null, TestPropsValues.getUserId(), stagingGroup.getGroupId(), 0,
+				0, false, RandomTestUtil.randomString(),
+				LayoutUtilityPageEntryConstants.TYPE_SC_INTERNAL_SERVER_ERROR,
+				0,
+				ServiceContextTestUtil.getServiceContext(
+					stagingGroup.getGroupId(), TestPropsValues.getUserId()));
+
+		_publishLayouts(group, stagingGroup);
+
+		LayoutPageTemplateEntry liveLayoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.
+				getLayoutPageTemplateEntryByUuidAndGroupId(
+					layoutPageTemplateEntry.getUuid(), group.getGroupId());
+
+		Assert.assertEquals(
+			layoutPageTemplateEntry.getName(),
+			liveLayoutPageTemplateEntry.getName());
+
+		_layoutPageTemplateEntryLocalService.deleteLayoutPageTemplateEntry(
+			layoutPageTemplateEntry);
+
+		LayoutUtilityPageEntry liveLayoutUtilityPageEntry =
+			_layoutUtilityPageEntryLocalService.
+				getLayoutUtilityPageEntryByUuidAndGroupId(
+					layoutUtilityPageEntry.getUuid(), group.getGroupId());
+
+		Assert.assertEquals(
+			layoutUtilityPageEntry.getName(),
+			liveLayoutUtilityPageEntry.getName());
+
+		_layoutUtilityPageEntryLocalService.deleteLayoutUtilityPageEntry(
+			layoutUtilityPageEntry);
+
+		_publishLayouts(group, stagingGroup);
+
+		Assert.assertNull(
+			_layoutPageTemplateEntryLocalService.fetchLayoutPageTemplateEntry(
+				liveLayoutPageTemplateEntry.getLayoutPageTemplateEntryId()));
+		Assert.assertNull(
+			_layoutUtilityPageEntryLocalService.fetchLayoutUtilityPageEntry(
+				liveLayoutUtilityPageEntry.getLayoutUtilityPageEntryId()));
 	}
 
 	@Test
@@ -915,85 +980,6 @@ public class LayoutStagedModelDataHandlerTest
 		Assert.assertNotNull(
 			_styleBookEntryLocalService.fetchStyleBookEntry(
 				importedLayout.getStyleBookEntryId()));
-	}
-
-	@Test
-	@TestInfo("LPS-139864")
-	public void testTypeCollectionLayout() throws Exception {
-		Group group = GroupTestUtil.addGroup();
-
-		AssetListEntry assetListEntry =
-			_assetListEntryLocalService.addAssetListEntry(
-				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-				group.getGroupId(), RandomTestUtil.randomString(),
-				AssetListEntryTypeConstants.TYPE_MANUAL,
-				ServiceContextTestUtil.getServiceContext(group.getGroupId()));
-
-		Layout layout = _layoutLocalService.addLayout(
-			null, TestPropsValues.getUserId(), group.getGroupId(), false,
-			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID, 0, 0,
-			RandomTestUtil.randomLocaleStringMap(), null,
-			Collections.emptyMap(), Collections.emptyMap(),
-			Collections.emptyMap(), LayoutConstants.TYPE_COLLECTION,
-			UnicodePropertiesBuilder.put(
-				LayoutTypeSettingsConstants.KEY_PUBLISHED, "true"
-			).put(
-				"collectionPK", assetListEntry.getAssetListEntryId()
-			).put(
-				"collectionType", InfoListItemSelectorReturnType.class.getName()
-			).buildString(),
-			false, false, Collections.emptyMap(), 0,
-			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
-
-		_stagingLocalService.enableLocalStaging(
-			TestPropsValues.getUserId(), group, true, false,
-			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
-
-		Group stagingGroup = group.getStagingGroup();
-
-		AssetListEntry stagingGroupAssetListEntry =
-			_assetListEntryLocalService.fetchAssetListEntryByUuidAndGroupId(
-				assetListEntry.getUuid(), stagingGroup.getGroupId());
-
-		Layout stagingGroupLayout =
-			_layoutLocalService.fetchLayoutByUuidAndGroupId(
-				layout.getUuid(), stagingGroup.getGroupId(), false);
-
-		UnicodeProperties stagingGroupLayoutTypeSettingsUnicodeProperties =
-			stagingGroupLayout.getTypeSettingsProperties();
-
-		Assert.assertEquals(
-			stagingGroupAssetListEntry.getAssetListEntryId(),
-			GetterUtil.getLong(
-				stagingGroupLayoutTypeSettingsUnicodeProperties.getProperty(
-					"collectionPK")));
-		Assert.assertEquals(
-			stagingGroupLayoutTypeSettingsUnicodeProperties.getProperty(
-				"collectionType"),
-			InfoListItemSelectorReturnType.class.getName());
-
-		AssetListEntry liveGroupAssetListEntry =
-			_assetListEntryLocalService.fetchAssetListEntryByUuidAndGroupId(
-				assetListEntry.getUuid(), group.getGroupId());
-
-		Layout liveGroupLayout =
-			_layoutLocalService.fetchLayoutByUuidAndGroupId(
-				layout.getUuid(), group.getGroupId(), false);
-
-		UnicodeProperties liveGroupLayoutTypeSettingsUnicodeProperties =
-			liveGroupLayout.getTypeSettingsProperties();
-
-		Assert.assertEquals(
-			liveGroupAssetListEntry.getAssetListEntryId(),
-			GetterUtil.getLong(
-				liveGroupLayoutTypeSettingsUnicodeProperties.getProperty(
-					"collectionPK")));
-		Assert.assertEquals(
-			liveGroupLayoutTypeSettingsUnicodeProperties.getProperty(
-				"collectionType"),
-			InfoListItemSelectorReturnType.class.getName());
-
-		_groupLocalService.deleteGroup(group);
 	}
 
 	@Test
@@ -1755,7 +1741,48 @@ public class LayoutStagedModelDataHandlerTest
 			_layoutSEOEntryLocalService.fetchLayoutSEOEntryByUuidAndGroupId(
 				uuid, groupId);
 
+		_assertLayoutSEOEntryCustomMetaTags(layoutSEOEntry);
 		_assertMapEquals(canonicalURLMap, layoutSEOEntry.getCanonicalURLMap());
+	}
+
+	private void _assertLayoutSEOEntryCustomMetaTags(
+		LayoutSEOEntry layoutSEOEntry) {
+
+		List<LayoutSEOEntryCustomMetaTag> layoutSEOEntryCustomMetaTags =
+			_layoutSEOEntryLocalService.getLayoutSEOEntryCustomMetaTags(
+				layoutSEOEntry.getGroupId(),
+				layoutSEOEntry.getLayoutSEOEntryId());
+
+		Assert.assertFalse(layoutSEOEntryCustomMetaTags.isEmpty());
+		Assert.assertEquals(
+			layoutSEOEntryCustomMetaTags.toString(), 2,
+			layoutSEOEntryCustomMetaTags.size());
+
+		LayoutSEOEntryCustomMetaTag firstLayoutSEOEntryCustomMetaTag =
+			layoutSEOEntryCustomMetaTags.get(0);
+
+		Assert.assertEquals(
+			"property1", firstLayoutSEOEntryCustomMetaTag.getProperty());
+		Assert.assertEquals(
+			"content1",
+			firstLayoutSEOEntryCustomMetaTag.getContent(
+				LocaleUtil.getSiteDefault()));
+		Assert.assertEquals(
+			"contenido1",
+			firstLayoutSEOEntryCustomMetaTag.getContent(LocaleUtil.SPAIN));
+
+		LayoutSEOEntryCustomMetaTag secondLayoutSEOEntryCustomMetaTag =
+			layoutSEOEntryCustomMetaTags.get(1);
+
+		Assert.assertEquals(
+			"property2", secondLayoutSEOEntryCustomMetaTag.getProperty());
+		Assert.assertEquals(
+			"content2",
+			secondLayoutSEOEntryCustomMetaTag.getContent(
+				LocaleUtil.getSiteDefault()));
+		Assert.assertEquals(
+			"contenido2",
+			secondLayoutSEOEntryCustomMetaTag.getContent(LocaleUtil.SPAIN));
 	}
 
 	private void _assertMapEquals(
@@ -1869,6 +1896,9 @@ public class LayoutStagedModelDataHandlerTest
 			ExportImportConfigurationParameterMapFactoryUtil.
 				buildParameterMap();
 
+		parameterMap.put(
+			PortletDataHandlerKeys.DELETIONS,
+			new String[] {Boolean.TRUE.toString()});
 		parameterMap.put(
 			PortletDataHandlerKeys.PORTLET_DATA,
 			new String[] {Boolean.TRUE.toString()});
@@ -2125,6 +2155,28 @@ public class LayoutStagedModelDataHandlerTest
 				ServiceContextTestUtil.getServiceContext(
 					layout.getGroupId(), TestPropsValues.getUserId()));
 
+		_layoutSEOEntryLocalService.updateCustomMetaTags(
+			TestPropsValues.getUserId(), layout.getGroupId(), false,
+			layout.getLayoutId(),
+			Arrays.asList(
+				new LayoutSEOEntryCustomMetaTagProperty(
+					HashMapBuilder.put(
+						LocaleUtil.getSiteDefault(), "content1"
+					).put(
+						LocaleUtil.SPAIN, "contenido1"
+					).build(),
+					"property1"),
+				new LayoutSEOEntryCustomMetaTagProperty(
+					HashMapBuilder.put(
+						LocaleUtil.getSiteDefault(), "content2"
+					).put(
+						LocaleUtil.SPAIN, "contenido2"
+					).build(),
+					"property2")),
+			ServiceContextTestUtil.getServiceContext(
+				layout.getGroupId(), TestPropsValues.getUserId()));
+
+		_assertLayoutSEOEntryCustomMetaTags(layoutSEOEntry);
 		_assertMapEquals(canonicalURLMap, layoutSEOEntry.getCanonicalURLMap());
 
 		return layoutSEOEntry;
@@ -2221,6 +2273,10 @@ public class LayoutStagedModelDataHandlerTest
 
 	@Inject
 	private LayoutStructureProvider _layoutStructureProvider;
+
+	@Inject
+	private LayoutUtilityPageEntryLocalService
+		_layoutUtilityPageEntryLocalService;
 
 	@Inject
 	private Portal _portal;

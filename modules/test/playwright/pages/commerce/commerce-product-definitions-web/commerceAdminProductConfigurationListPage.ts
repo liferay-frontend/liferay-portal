@@ -6,17 +6,25 @@
 import {Locator, Page} from '@playwright/test';
 
 export class CommerceAdminProductConfigurationListPage {
+	readonly accountElgibilityTitle: Locator;
+	readonly allAccountsLabel: Locator;
+	readonly allChannelsLabel: Locator;
+	readonly allOrderTypesLabel: Locator;
 	readonly allowedOrderQuantitiesInput: Locator;
 	readonly backOrdersInput: Locator;
 	readonly catalogNameInput: Locator;
+	readonly channelElgibilityTitle: Locator;
 	readonly commerceAvailabilityEstimateIdInput: Locator;
 	readonly CPDefinitionInventoryEngineInput: Locator;
 	readonly CPTaxCategoryIdInput: Locator;
 	readonly depthInput: Locator;
 	readonly detailsMenuItem: Locator;
 	readonly displayAvailabilityInput: Locator;
+	readonly displayDateInput: Locator;
 	readonly displayStockQuantityInput: Locator;
+	readonly eligibilitiesTab: Locator;
 	readonly entriesMenuItem: Locator;
+	readonly expirationDateInput: Locator;
 	readonly freeShippingInput: Locator;
 	readonly heightInput: Locator;
 	readonly lowStockActivityInput: Locator;
@@ -25,7 +33,10 @@ export class CommerceAdminProductConfigurationListPage {
 	readonly minStockQuantityInput: Locator;
 	readonly multipleOrderQuantityInput: Locator;
 	readonly nameInput: Locator;
+	readonly neverExpireInput: Locator;
+	readonly orderTypeElgibilityTitle: Locator;
 	readonly page: Page;
+	readonly parentCPConfigurationListNameInput: Locator;
 	readonly priorityInput: Locator;
 	readonly purchasableInput: Locator;
 	readonly saveButton: Locator;
@@ -37,11 +48,16 @@ export class CommerceAdminProductConfigurationListPage {
 	readonly widthInput: Locator;
 
 	constructor(page: Page) {
+		this.accountElgibilityTitle = page.getByText('Account Eligibility');
+		this.allAccountsLabel = page.getByLabel('All Accounts');
+		this.allChannelsLabel = page.getByLabel('All Channels');
+		this.allOrderTypesLabel = page.getByLabel('All Order Types');
 		this.allowedOrderQuantitiesInput = page.getByTestId(
 			'allowedOrderQuantitiesInput'
 		);
 		this.backOrdersInput = page.getByTestId('backOrdersInput');
 		this.catalogNameInput = page.getByTestId('catalogNameInput');
+		this.channelElgibilityTitle = page.getByText('Channel Eligibility');
 		this.commerceAvailabilityEstimateIdInput = page.getByTestId(
 			'commerceAvailabilityEstimateIdInput'
 		);
@@ -54,10 +70,19 @@ export class CommerceAdminProductConfigurationListPage {
 		this.displayAvailabilityInput = page.getByTestId(
 			'displayAvailabilityInput'
 		);
+		this.displayDateInput = page
+			.getByTestId('displayDate')
+			.getByLabel('Display Date');
 		this.displayStockQuantityInput = page.getByTestId(
 			'displayStockQuantityInput'
 		);
+		this.eligibilitiesTab = page.getByRole('link', {
+			name: 'Eligibility',
+		});
 		this.entriesMenuItem = page.getByRole('link', {name: 'Entries'});
+		this.expirationDateInput = page
+			.getByTestId('expirationDate')
+			.getByLabel('Expiration Date');
 		this.freeShippingInput = page.getByTestId('freeShippingInput');
 		this.heightInput = page.getByTestId('heightInput');
 		this.lowStockActivityInput = page.getByTestId('lowStockActivityInput');
@@ -68,7 +93,16 @@ export class CommerceAdminProductConfigurationListPage {
 			'multipleOrderQuantityInput'
 		);
 		this.nameInput = page.getByTestId('nameInput');
+		this.neverExpireInput = page
+			.getByTestId('expirationDate')
+			.getByText('Never Expire');
+		this.orderTypeElgibilityTitle = page.getByText(
+			'Order Type Eligibility'
+		);
 		this.page = page;
+		this.parentCPConfigurationListNameInput = page.getByTestId(
+			'parentCPConfigurationListNameInput'
+		);
 		this.priorityInput = page.getByTestId('priorityInput');
 		this.purchasableInput = page.getByTestId('purchasableInput');
 		this.saveButton = page.getByRole('link', {exact: true, name: 'Save'});

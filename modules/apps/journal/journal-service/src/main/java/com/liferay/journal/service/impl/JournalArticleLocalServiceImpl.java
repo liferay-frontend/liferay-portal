@@ -94,6 +94,7 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.string.CharPool;
@@ -2642,19 +2643,10 @@ public class JournalArticleLocalServiceImpl
 
 	@Override
 	public List<String> getArticleLocalizationLanguageIds(long articlePK) {
-		List<JournalArticleLocalization> journalArticleLocalizationList =
-			_journalArticleLocalizationPersistence.findByArticlePK(articlePK);
-
-		List<String> availableLanguageIds = new ArrayList<>();
-
-		for (JournalArticleLocalization journalArticleLocalization :
-				journalArticleLocalizationList) {
-
-			availableLanguageIds.add(
+		return TransformUtil.transform(
+			_journalArticleLocalizationPersistence.findByArticlePK(articlePK),
+			journalArticleLocalization ->
 				journalArticleLocalization.getLanguageId());
-		}
-
-		return availableLanguageIds;
 	}
 
 	/**
@@ -4374,12 +4366,12 @@ public class JournalArticleLocalServiceImpl
 			groupId, articleId, 0, 1,
 			ArticleVersionComparator.getInstance(false));
 
-		if (!articles.isEmpty()) {
-			return journalArticleLocalService.moveArticleToTrash(
-				userId, articles.get(0));
+		if (articles.isEmpty()) {
+			return null;
 		}
 
-		return null;
+		return journalArticleLocalService.moveArticleToTrash(
+			userId, articles.get(0));
 	}
 
 	/**
@@ -6186,17 +6178,43 @@ public class JournalArticleLocalServiceImpl
 						_log.debug("Expiring article " + article.getId());
 					}
 
-					ServiceContext serviceContext = new ServiceContext();
+					if (isExpireAllArticleVersions(companyId)) {
+						List<JournalArticle> currentArticles =
+							journalArticleLocalService.getArticles(
+								article.getGroupId(), article.getArticleId(),
+								QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+								ArticleVersionComparator.getInstance(true));
 
-					serviceContext.setCommand(Constants.UPDATE);
-					serviceContext.setScopeGroupId(article.getGroupId());
+						for (JournalArticle currentArticle : currentArticles) {
+							if (currentArticle.getVersion() >=
+									article.getVersion()) {
 
-					journalArticleLocalService.expireArticle(
-						_portal.getValidUserId(
-							article.getCompanyId(),
-							article.getStatusByUserId()),
-						article.getGroupId(), article.getArticleId(), null,
-						serviceContext);
+								continue;
+							}
+
+							currentArticle.setExpirationDate(
+								article.getExpirationDate());
+							currentArticle.setStatus(
+								WorkflowConstants.STATUS_EXPIRED);
+
+							currentArticle = journalArticlePersistence.update(
+								currentArticle);
+
+							notifySubscribers(
+								0, currentArticle, "expired",
+								new ServiceContext());
+						}
+					}
+
+					article.setStatus(WorkflowConstants.STATUS_EXPIRED);
+
+					article = journalArticleLocalService.updateJournalArticle(
+						article);
+
+					notifySubscribers(
+						0, article, "expired", new ServiceContext());
+
+					updatePreviousApprovedArticle(article);
 
 					if (indexer != null) {
 						indexableActionableDynamicQuery.addDocuments(
@@ -7885,12 +7903,12 @@ public class JournalArticleLocalServiceImpl
 				journalGroupServiceConfiguration.emailArticleReviewBody());
 		}
 
-		if (emailType.equals("update")) {
-			return _localization.getMap(
-				journalGroupServiceConfiguration.emailArticleUpdatedBody());
+		if (!emailType.equals("update")) {
+			return null;
 		}
 
-		return null;
+		return _localization.getMap(
+			journalGroupServiceConfiguration.emailArticleUpdatedBody());
 	}
 
 	private Map<Locale, String> _getLocalizedSubjectMap(
@@ -7954,12 +7972,12 @@ public class JournalArticleLocalServiceImpl
 				journalGroupServiceConfiguration.emailArticleReviewSubject());
 		}
 
-		if (emailType.equals("update")) {
-			return _localization.getMap(
-				journalGroupServiceConfiguration.emailArticleUpdatedSubject());
+		if (!emailType.equals("update")) {
+			return null;
 		}
 
-		return null;
+		return _localization.getMap(
+			journalGroupServiceConfiguration.emailArticleUpdatedSubject());
 	}
 
 	private JournalArticleModelValidator _getModelValidator() {

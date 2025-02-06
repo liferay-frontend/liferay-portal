@@ -26,29 +26,38 @@ export {default as searchResults} from './search_results/SearchResults';
 export function accountSelectorTag({
 	accountEntryAllowedTypes,
 	accountSelectorId,
+	checkoutURL,
 	commerceChannelId,
 	createNewOrderURL,
+	currencyCode,
 	currentCommerceAccount,
 	currentCommerceOrder,
+	hasAddCommerceOrderPermission,
+	hasCommerceOpenOrderContentPortlet,
+	hasManageAccountsPermission,
+	orderTypes,
 	refreshPageOnAccountSelected,
 	selectOrderURL,
 	setCurrentAccountURL,
-	showOrderTypeModal,
 }) {
 	accountSelector(accountSelectorId, accountSelectorId, {
 		accountEntryAllowedTypes:
 			typeof accountEntryAllowedTypes === 'string'
 				? JSON.parse(accountEntryAllowedTypes)
 				: accountEntryAllowedTypes,
+		checkoutURL,
 		commerceChannelId,
 		createNewOrderURL,
+		currencyCode,
 		currentCommerceAccount,
 		currentCommerceOrder,
-		namespace: accountSelectorId,
+		hasAddCommerceOrderPermission,
+		hasCommerceOpenOrderContentPortlet,
+		hasManageAccountsPermission,
+		orderTypes,
 		refreshPageOnAccountSelected,
 		selectOrderURL,
 		setCurrentAccountURL,
-		showOrderTypeModal,
 	});
 }
 
@@ -206,6 +215,8 @@ export function cart({
 	displayDiscountLevels,
 	displayTotalItemsQuantity,
 	groupId,
+	guestOrderEnabled,
+	hasCommerceOpenOrderContentPortlet,
 	id,
 	itemsQuantity,
 	labels,
@@ -214,18 +225,19 @@ export function cart({
 	orderId,
 	productURLSeparator,
 	requestQuoteEnabled,
+	signInURL,
 	siteDefaultURL,
 	toggleable,
 }) {
-	MiniCart(miniCartId, miniCartId, {
+	const props = {
 		accountId: Number(accountId),
 		cartActionURLs: {
 			checkoutURL,
 			orderDetailURL,
 			productURLSeparator,
+			signInURL,
 			siteDefaultURL,
 		},
-		cartViews,
 		channel: {
 			currencyCode,
 			groupId,
@@ -234,10 +246,37 @@ export function cart({
 		detachedOpener,
 		displayDiscountLevels,
 		displayTotalItemsQuantity,
+		guestOrderEnabled,
+		hasCommerceOpenOrderContentPortlet,
 		itemsQuantity: Number(itemsQuantity),
-		labels,
 		orderId: Number(orderId),
 		requestQuoteEnabled,
 		toggleable,
-	});
+	};
+
+	const customCartViews = Object.entries(cartViews);
+
+	if (customCartViews.length) {
+		props.cartViews = customCartViews.reduce(
+			(views, [viewName, contentRendererModuleUrl]) => ({
+				...views,
+				[viewName]: {contentRendererModuleUrl},
+			}),
+			{}
+		);
+	}
+
+	const customLabels = Object.entries(labels);
+
+	if (customLabels.length) {
+		props.labels = customLabels.reduce(
+			(labels, [key, value]) => ({
+				...labels,
+				[key]: value,
+			}),
+			{}
+		);
+	}
+
+	MiniCart(miniCartId, miniCartId, props);
 }

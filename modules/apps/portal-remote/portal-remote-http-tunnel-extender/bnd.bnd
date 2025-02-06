@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Remote HTTP Tunnel Extender
 Bundle-SymbolicName: com.liferay.portal.remote.http.tunnel.extender
-Bundle-Version: 6.0.17
+Bundle-Version: 6.0.18
 Provide-Capability:\
 	liferay.extender;\
 		liferay.extender="http.tunnel.extender";\

@@ -19,10 +19,10 @@ import com.liferay.object.field.setting.util.ObjectFieldSettingUtil;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectFieldSetting;
 import com.liferay.object.service.ObjectFieldLocalServiceUtil;
-import com.liferay.object.service.ObjectFieldSettingLocalServiceUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
@@ -251,9 +251,8 @@ public class ObjectFieldUtil {
 			if (existingValues.get(objectField.getName()) == null) {
 				existingValues.put(
 					objectField.getName(),
-					ObjectFieldSettingUtil.getDefaultValueAsString(
-						null, objectField,
-						ObjectFieldSettingLocalServiceUtil.getService(), null));
+					ObjectFieldSettingUtil.getDefaultValue(
+						null, objectField, null));
 			}
 
 			if (objectField.isLocalized()) {
@@ -340,6 +339,20 @@ public class ObjectFieldUtil {
 			Objects.equals(
 				objectField.getDBType(), ObjectFieldConstants.DB_TYPE_LONG)) {
 
+			if (Objects.equals(
+					objectField.getBusinessType(),
+					ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT) &&
+				Objects.equals(
+					JSONFactoryUtil.createJSONObject(
+						JSONFactoryUtil.looseSerialize(value)
+					).get(
+						"id"
+					),
+					existingValue.toString())) {
+
+				return;
+			}
+
 			BigDecimal bigDecimal1 = new BigDecimal(existingValue.toString());
 			BigDecimal bigDecimal2 = new BigDecimal(value.toString());
 
@@ -358,8 +371,21 @@ public class ObjectFieldUtil {
 					 ObjectFieldConstants.DB_TYPE_STRING)) {
 
 			if (Objects.equals(
-					GetterUtil.getString(value),
-					GetterUtil.getString(existingValue))) {
+					objectField.getBusinessType(),
+					ObjectFieldConstants.BUSINESS_TYPE_PICKLIST) &&
+				Objects.equals(
+					JSONFactoryUtil.createJSONObject(
+						JSONFactoryUtil.looseSerializeDeep(value)
+					).get(
+						"key"
+					),
+					existingValue)) {
+
+				return;
+			}
+			else if (Objects.equals(
+						GetterUtil.getString(value),
+						GetterUtil.getString(existingValue))) {
 
 				return;
 			}

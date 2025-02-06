@@ -80,6 +80,16 @@ public class PasswordEncryptorUtil {
 		return _encrypt(algorithm, plainTextPassword, encryptedPassword, false);
 	}
 
+	public static String getEncryptedPasswordAlgorithmSettings(
+		String encryptedPassword) {
+
+		PasswordEncryptor passwordEncryptor = _getPasswordEncryptor(
+			_getEncryptedPasswordAlgorithm(encryptedPassword));
+
+		return passwordEncryptor.getEncryptedPasswordAlgorithmSettings(
+			encryptedPassword);
+	}
+
 	private static String _encrypt(
 			String algorithm, String plainTextPassword,
 			String encryptedPassword, boolean upgradeHashSecurity)
@@ -126,7 +136,7 @@ public class PasswordEncryptorUtil {
 			}
 		}
 
-		PasswordEncryptor passwordEncryptor = _select(algorithm);
+		PasswordEncryptor passwordEncryptor = _getPasswordEncryptor(algorithm);
 
 		String newEncryptedPassword = passwordEncryptor.encrypt(
 			algorithm, plainTextPassword, encryptedPassword, false);
@@ -215,7 +225,7 @@ public class PasswordEncryptorUtil {
 		return null;
 	}
 
-	private static PasswordEncryptor _select(String algorithm) {
+	private static PasswordEncryptor _getPasswordEncryptor(String algorithm) {
 		if (Validator.isNull(algorithm)) {
 			throw new IllegalArgumentException("Invalid algorithm");
 		}

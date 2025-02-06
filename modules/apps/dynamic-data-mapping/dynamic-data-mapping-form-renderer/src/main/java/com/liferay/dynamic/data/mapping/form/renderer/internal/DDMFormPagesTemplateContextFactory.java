@@ -23,6 +23,7 @@ import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.google.places.util.GooglePlacesUtil;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.log.Log;
@@ -157,16 +158,11 @@ public class DDMFormPagesTemplateContextFactory {
 	private List<Object> _createColumnsTemplateContext(
 		List<DDMFormLayoutColumn> ddmFormLayoutColumns) {
 
-		List<Object> columnsTemplateContext = new ArrayList<>();
-
-		for (DDMFormLayoutColumn ddmFormLayoutColumn : ddmFormLayoutColumns) {
-			columnsTemplateContext.add(
-				_createColumnTemplateContext(
-					ddmFormLayoutColumn.getDDMFormFieldNames(),
-					ddmFormLayoutColumn.getSize()));
-		}
-
-		return columnsTemplateContext;
+		return TransformUtil.transform(
+			ddmFormLayoutColumns,
+			ddmFormLayoutColumn -> _createColumnTemplateContext(
+				ddmFormLayoutColumn.getDDMFormFieldNames(),
+				ddmFormLayoutColumn.getSize()));
 	}
 
 	private Map<String, Object> _createColumnTemplateContext(
@@ -270,14 +266,9 @@ public class DDMFormPagesTemplateContextFactory {
 	private List<Object> _createRowsTemplateContext(
 		List<DDMFormLayoutRow> ddmFormLayoutRows) {
 
-		List<Object> rowsTemplateContext = new ArrayList<>();
-
-		for (DDMFormLayoutRow ddmFormLayoutRow : ddmFormLayoutRows) {
-			rowsTemplateContext.add(
-				_createRowTemplateContext(ddmFormLayoutRow));
-		}
-
-		return rowsTemplateContext;
+		return TransformUtil.transform(
+			ddmFormLayoutRows,
+			ddmFormLayoutRow -> _createRowTemplateContext(ddmFormLayoutRow));
 	}
 
 	private Map<String, Object> _createRowTemplateContext(
@@ -375,11 +366,7 @@ public class DDMFormPagesTemplateContextFactory {
 		Set<Integer> disabledPagesIndexes =
 			_ddmFormEvaluatorEvaluateResponse.getDisabledPagesIndexes();
 
-		if (disabledPagesIndexes.contains(pageIndex)) {
-			return false;
-		}
-
-		return true;
+		return !disabledPagesIndexes.contains(pageIndex);
 	}
 
 	private boolean _isViewMode() {

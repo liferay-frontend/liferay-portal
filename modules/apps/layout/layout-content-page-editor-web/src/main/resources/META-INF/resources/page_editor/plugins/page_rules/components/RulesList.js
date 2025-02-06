@@ -112,7 +112,7 @@ function Rule({onDelete, onEdit, rule, savedRuleId, setSavedRuleId}) {
 		}))
 	);
 
-	const conditions = useConditionValues(rule);
+	const conditions = useConditionValues({...rule, items});
 	const actions = useActionValues({...rule, items});
 
 	return (
@@ -225,8 +225,6 @@ function Action({action}) {
 			) : null}
 
 			<span className="font-weight-semi-bold">{action.type}</span>
-
-			{action.action}
 
 			<ClayLabel className="m-0" displayType="secondary">
 				{action.item}

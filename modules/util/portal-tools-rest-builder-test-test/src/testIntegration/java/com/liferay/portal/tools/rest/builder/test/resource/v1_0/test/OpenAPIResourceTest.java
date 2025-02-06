@@ -28,7 +28,26 @@ public class OpenAPIResourceTest {
 				"components",
 				JSONUtil.put(
 					"schemas",
-					JSONUtil.put("TestEntity", JSONUtil.put("x-test", true)))
+					JSONUtil.put(
+						"EntityModelResourceTestEntity1",
+						JSONUtil.put("x-filterable", JSONUtil.putAll())
+					).put(
+						"EntityModelResourceTestEntity2",
+						JSONUtil.put("x-filterable", JSONUtil.putAll("id"))
+					).put(
+						"TestEntity",
+						JSONUtil.put(
+							"x-filterable",
+							JSONUtil.putAll(
+								"companyId", "customFields/booleanField",
+								"customFields/integerField",
+								"customFields/stringField", "dateModified",
+								"description", "id", "keywords", "published",
+								"statusCode")
+						).put(
+							"x-test", true
+						)
+					))
 			).toString(),
 			HTTPTestUtil.invokeToJSONObject(
 				null, "test/v1.0/openapi.json", Http.Method.GET

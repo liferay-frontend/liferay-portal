@@ -4,7 +4,6 @@ definition {
 	property ci.retries.disabled = "true";
 	property portal.release = "true";
 	property portal.upstream = "true";
-	property testray.component.names = "Categories";
 	property testray.main.component.name = "Categories";
 
 	setUp {
@@ -144,7 +143,7 @@ definition {
 
 			BlogsNavigator.gotoEditCP(entryTitle = "Blogs Entry Title");
 
-			Panel.expandPanel(panel = "Categorization");
+			Blogs.expandPanel(panel = "Categorization");
 
 			AssetCategorization.addCategory(
 				categoryName = "Public Category Name",
@@ -655,61 +654,6 @@ definition {
 			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
 
 			LAR.importPortlet(larFileName = "Moon-Rocks-Unit-Category-Hierarchy.lar");
-		}
-	}
-
-	@description = "This is a test for LPS-187080. Changing the category filter 'Vocabulary' setting from 'All' to 'Filter' may not work properly."
-	@priority = 3
-	test FilterCategoryFilterByVocabularies {
-		property custom.properties = "feature.flag.LPD-27566=true";
-
-		task ("Given a user has a Category Filter widget on a content page") {
-			JSONCategory.addVocabulary(
-				groupName = "Test Site Name",
-				title = "Vocabulary Name");
-
-			JSONCategory.addCategory(
-				groupName = "Test Site Name",
-				title = "Category Name",
-				vocabularyName = "Vocabulary Name");
-
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Page Name",
-				type = "content");
-
-			ContentPagesNavigator.openEditContentPage(
-				pageName = "Test Page Name",
-				siteName = "Test Site Name");
-
-			PageEditor.addWidget(portletName = "Category Filter");
-		}
-
-		task ("When the user filters Category Filter by vocabularies") {
-			Portlet.gotoPortletOptions(
-				portletName = "Category Filter",
-				portletOption = "Configuration");
-
-			IFrame.selectModalFrame();
-
-			Select(
-				key_fieldLabel = "Vocabularies",
-				locator1 = "Select#GENERIC_SELECT_FIELD",
-				value1 = "Filter");
-
-			PortletEntry.save();
-
-			IFrame.closeFrame();
-
-			PageEditor.publish();
-		}
-
-		task ("Then the user could see categories on Category Filter") {
-			Portlet.expandTree();
-
-			AssertVisible(
-				key_nodeName = "Category Name",
-				locator1 = "Treeview#NODE_ITEM");
 		}
 	}
 
@@ -1375,9 +1319,11 @@ definition {
 				menuItem = "Configure",
 				pageName = "Page Name");
 
-			PagesAdmin.viewVocabularyNotPresent(
-				pageName = "Page Name",
-				vocabularyName = "Vocabulary Name");
+			Navigator.gotoNavTab(navTab = "SEO");
+
+			AssertElementNotPresent(
+				key_vocabularyName = "Vocabulary Name",
+				locator1 = "AssetCategorization#CATEGORY_SELECT");
 		}
 	}
 

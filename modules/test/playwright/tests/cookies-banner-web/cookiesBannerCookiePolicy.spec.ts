@@ -12,7 +12,7 @@ import {waitForAlert} from '../../utils/waitForAlert';
 
 export const test = mergeTests(
 	featureFlagsTest({
-		'LPD-10588': true,
+		'LPD-10588': {enabled: true},
 	}),
 	loginTest(),
 	systemSettingsPageTest
@@ -118,13 +118,13 @@ test('LPD-30561 Cookie Banner Cookie Policy Page', async ({
 				objectDefinitionPortlets[objectDefinitionPortletIndex];
 
 			await expect(
-				objectDefinitionPortlet.locator('.dnd-thead')
+				objectDefinitionPortlet.locator('.fds thead')
 			).toBeVisible({
 				timeout: 100 * 1000,
 			});
 
 			const tableRows = await objectDefinitionPortlet
-				.locator('.dnd-tr')
+				.locator('.fds tr')
 				.all();
 
 			expect(tableRows.length).toBeGreaterThan(0);

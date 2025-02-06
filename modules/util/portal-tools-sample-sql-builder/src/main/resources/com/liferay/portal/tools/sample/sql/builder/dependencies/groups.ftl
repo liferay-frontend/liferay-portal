@@ -8,8 +8,6 @@
 
 <#include "ddm.ftl">
 
-<#include "custom_object_definitions.ftl">
-
 <#list dataFactory.newGroupModels() as groupModel>
 	<#assign groupId = groupModel.groupId />
 
@@ -28,8 +26,6 @@
 	<#include "object_definition_layout.ftl">
 
 	<#include "users.ftl">
-
-	<#include "wiki.ftl">
 
 	<@insertDLFolder
 		_ddmStructureId = dataFactory.defaultDLDDMStructureId

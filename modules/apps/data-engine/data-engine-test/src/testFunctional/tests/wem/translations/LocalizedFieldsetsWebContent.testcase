@@ -1,4 +1,4 @@
-@component-name = "data-engine"
+@component-name = "portal-bpm"
 definition {
 
 	property portal.release = "true";
@@ -80,7 +80,7 @@ definition {
 
 		PortletEntry.inputTitle(title = "WC Titulo");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContent.viewTitle(webContentTitle = "WC Title");
 	}
@@ -414,21 +414,7 @@ definition {
 				webContentTextFieldLabel = "Text pt-BR",
 				webContentTitle = "Web Content Title pt-BR");
 
-			PortletEntry.publish();
-
-			AssertClick(
-				buttonName = "Publish With Permissions",
-				locator1 = "WCEditWebContent#PUBLISH_WITH_PERMISSIONS_BUTTON",
-				value1 = "Publish With Permissions");
-
-			WaitForElementPresent(
-				locator1 = "Modal#SELECT_WITH_LABEL",
-				selectLabel = "Viewable by");
-
-			AssertClick(
-				buttonName = "Publish",
-				locator1 = "Modal#PRIMARY_BUTTON",
-				value1 = "Publish");
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Assert that the web content was created correctly using the fieldset") {
@@ -756,7 +742,7 @@ definition {
 			webContentTextFieldLabel = "Text en-US",
 			webContentTitle = "Web Content Title en-US");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContent.viewWithStructureCP(
 			webContentDate = "02/02/2021",
@@ -767,7 +753,7 @@ definition {
 			webContentTextFieldLabel = "Text",
 			webContentTitle = "Web Content Title");
 
-		PortletEntry.publish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		WebContent.viewWithStructureCP(
 			webContentDate = "02/03/2021",
@@ -780,7 +766,7 @@ definition {
 			webContentTitle = "Web Content Title",
 			webContentTitleTranslated = "Web Content Title en-US");
 
-		PortletEntry.publish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		NavItem.gotoStructures();
 

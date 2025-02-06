@@ -1,0 +1,287 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.object.service.impl;
+
+import com.liferay.object.constants.ObjectEntryFolderConstants;
+import com.liferay.object.exception.DuplicateObjectEntryFolderExternalReferenceCodeException;
+import com.liferay.object.exception.ObjectEntryFolderNameException;
+import com.liferay.object.exception.ObjectEntryFolderScopeException;
+import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.model.ObjectEntryFolder;
+import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.base.ObjectEntryFolderLocalServiceBaseImpl;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.aop.AopService;
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ResourceLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.Validator;
+
+import java.util.Locale;
+import java.util.Map;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+
+/**
+ * @author Marco Leo
+ */
+@Component(
+	property = "model.class.name=com.liferay.object.model.ObjectEntryFolder",
+	service = AopService.class
+)
+public class ObjectEntryFolderLocalServiceImpl
+	extends ObjectEntryFolderLocalServiceBaseImpl {
+
+	@Override
+	public ObjectEntryFolder addObjectEntryFolder(
+			String externalReferenceCode, long userId, long groupId,
+			long parentObjectEntryFolderId, Map<Locale, String> labelMap,
+			String name, ServiceContext serviceContext)
+		throws PortalException {
+
+		User user = _userLocalService.getUser(userId);
+
+		_validateExternalReferenceCode(
+			externalReferenceCode, groupId, user.getCompanyId());
+
+		_validateParentObjectEntryFolderId(groupId, parentObjectEntryFolderId);
+		_validateName(
+			groupId, user.getCompanyId(), 0, parentObjectEntryFolderId, name);
+
+		ObjectEntryFolder objectEntryFolder =
+			objectEntryFolderPersistence.create(
+				counterLocalService.increment());
+
+		objectEntryFolder.setUuid(serviceContext.getUuid());
+		objectEntryFolder.setExternalReferenceCode(externalReferenceCode);
+		objectEntryFolder.setGroupId(groupId);
+		objectEntryFolder.setCompanyId(user.getCompanyId());
+		objectEntryFolder.setUserId(user.getUserId());
+		objectEntryFolder.setUserName(user.getFullName());
+		objectEntryFolder.setParentObjectEntryFolderId(
+			parentObjectEntryFolderId);
+		objectEntryFolder.setLabelMap(_getLabelMap(labelMap, name));
+		objectEntryFolder.setName(name);
+		objectEntryFolder.setTreePath(objectEntryFolder.buildTreePath());
+
+		objectEntryFolder = objectEntryFolderPersistence.update(
+			objectEntryFolder);
+
+		if (serviceContext.isAddGroupPermissions() ||
+			serviceContext.isAddGuestPermissions()) {
+
+			_resourceLocalService.addResources(
+				objectEntryFolder.getCompanyId(),
+				objectEntryFolder.getGroupId(), objectEntryFolder.getUserId(),
+				ObjectEntryFolder.class.getName(),
+				objectEntryFolder.getObjectEntryFolderId(), false,
+				serviceContext);
+		}
+		else {
+			_resourceLocalService.addModelResources(
+				objectEntryFolder.getCompanyId(),
+				objectEntryFolder.getGroupId(), objectEntryFolder.getUserId(),
+				ObjectEntryFolder.class.getName(),
+				objectEntryFolder.getObjectEntryFolderId(),
+				serviceContext.getModelPermissions());
+		}
+
+		return objectEntryFolder;
+	}
+
+	@Override
+	public ObjectEntryFolder deleteObjectEntryFolder(long objectEntryFolderId)
+		throws PortalException {
+
+		ObjectEntryFolder objectEntryFolder =
+			objectEntryFolderPersistence.findByPrimaryKey(objectEntryFolderId);
+
+		return objectEntryFolderLocalService.deleteObjectEntryFolder(
+			objectEntryFolder);
+	}
+
+	@Override
+	public ObjectEntryFolder deleteObjectEntryFolder(
+			ObjectEntryFolder objectEntryFolder)
+		throws PortalException {
+
+		// Object entries
+
+		ActionableDynamicQuery actionableDynamicQuery =
+			_objectEntryLocalService.getActionableDynamicQuery();
+
+		actionableDynamicQuery.setAddCriteriaMethod(
+			dynamicQuery -> {
+				dynamicQuery.add(
+					RestrictionsFactoryUtil.eq(
+						"groupId", objectEntryFolder.getGroupId()));
+				dynamicQuery.add(
+					RestrictionsFactoryUtil.eq(
+						"companyId", objectEntryFolder.getCompanyId()));
+				dynamicQuery.add(
+					RestrictionsFactoryUtil.like(
+						"treePath", objectEntryFolder.getTreePath() + "%"));
+			});
+		actionableDynamicQuery.setPerformActionMethod(
+			(ObjectEntry objectEntry) ->
+				_objectEntryLocalService.deleteObjectEntry(objectEntry));
+
+		actionableDynamicQuery.performActions();
+
+		// Object entry folders
+
+		actionableDynamicQuery =
+			objectEntryFolderLocalService.getActionableDynamicQuery();
+
+		actionableDynamicQuery.setAddCriteriaMethod(
+			dynamicQuery -> {
+				dynamicQuery.add(
+					RestrictionsFactoryUtil.eq(
+						"groupId", objectEntryFolder.getGroupId()));
+				dynamicQuery.add(
+					RestrictionsFactoryUtil.eq(
+						"companyId", objectEntryFolder.getCompanyId()));
+				dynamicQuery.add(
+					RestrictionsFactoryUtil.like(
+						"treePath", objectEntryFolder.getTreePath() + "%"));
+			});
+		actionableDynamicQuery.setPerformActionMethod(
+			(ObjectEntryFolder descendantObjectEntryFolder) ->
+				_resourceLocalService.deleteResource(
+					descendantObjectEntryFolder.getCompanyId(),
+					ObjectEntryFolder.class.getName(),
+					ResourceConstants.SCOPE_INDIVIDUAL,
+					descendantObjectEntryFolder.getObjectEntryFolderId()));
+
+		actionableDynamicQuery.performActions();
+
+		objectEntryFolderPersistence.removeByG_C_LikeT(
+			objectEntryFolder.getGroupId(), objectEntryFolder.getCompanyId(),
+			objectEntryFolder.getTreePath() + "%");
+
+		return objectEntryFolder;
+	}
+
+	@Override
+	public ObjectEntryFolder updateObjectEntryFolder(
+			long userId, long objectEntryFolderId,
+			long parentObjectEntryFolderId, Map<Locale, String> labelMap,
+			String name)
+		throws PortalException {
+
+		ObjectEntryFolder objectEntryFolder =
+			objectEntryFolderPersistence.findByPrimaryKey(objectEntryFolderId);
+
+		_validateParentObjectEntryFolderId(
+			objectEntryFolder.getGroupId(), parentObjectEntryFolderId);
+		_validateName(
+			objectEntryFolder.getGroupId(), objectEntryFolder.getCompanyId(),
+			objectEntryFolderId, parentObjectEntryFolderId, name);
+
+		objectEntryFolder.setParentObjectEntryFolderId(
+			parentObjectEntryFolderId);
+		objectEntryFolder.setLabelMap(_getLabelMap(labelMap, name));
+		objectEntryFolder.setName(name);
+		objectEntryFolder.setTreePath(objectEntryFolder.buildTreePath());
+
+		return objectEntryFolderPersistence.update(objectEntryFolder);
+	}
+
+	private Map<Locale, String> _getLabelMap(
+		Map<Locale, String> labelMap, String name) {
+
+		if (MapUtil.isEmpty(labelMap) ||
+			!labelMap.containsKey(LocaleUtil.getSiteDefault())) {
+
+			return HashMapBuilder.putAll(
+				labelMap
+			).put(
+				LocaleUtil.getSiteDefault(), name
+			).build();
+		}
+
+		return labelMap;
+	}
+
+	private void _validateExternalReferenceCode(
+		String externalReferenceCode, long groupId, long companyId) {
+
+		ObjectEntryFolder objectEntryFolder =
+			objectEntryFolderPersistence.fetchByERC_G_C(
+				externalReferenceCode, groupId, companyId);
+
+		if (objectEntryFolder != null) {
+			throw new DuplicateObjectEntryFolderExternalReferenceCodeException(
+				StringBundler.concat(
+					"Duplicate object entry folder with external reference ",
+					"code ", externalReferenceCode));
+		}
+	}
+
+	private void _validateName(
+			long groupId, long companyId, long objectEntryFolderId,
+			long parentObjectEntryFolderId, String name)
+		throws PortalException {
+
+		if (Validator.isNull(name)) {
+			throw new ObjectEntryFolderNameException.MustNotBeNull();
+		}
+
+		ObjectEntryFolder objectEntryFolder =
+			objectEntryFolderPersistence.fetchByG_C_P_N(
+				groupId, companyId, parentObjectEntryFolderId, name);
+
+		if ((objectEntryFolder != null) &&
+			(objectEntryFolder.getObjectEntryFolderId() !=
+				objectEntryFolderId)) {
+
+			throw new ObjectEntryFolderNameException.MustNotBeDuplicate(name);
+		}
+	}
+
+	private void _validateParentObjectEntryFolderId(
+			long groupId, long parentObjectEntryFolderId)
+		throws PortalException {
+
+		if (parentObjectEntryFolderId ==
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT) {
+
+			return;
+		}
+
+		ObjectEntryFolder objectEntryFolder =
+			objectEntryFolderPersistence.findByPrimaryKey(
+				parentObjectEntryFolderId);
+
+		if (objectEntryFolder.getGroupId() != groupId) {
+			throw new ObjectEntryFolderScopeException(
+				StringBundler.concat(
+					"Group ID ", groupId,
+					" does not match parent folder group ID ",
+					objectEntryFolder.getGroupId()));
+		}
+	}
+
+	@Reference
+	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Reference
+	private ResourceLocalService _resourceLocalService;
+
+	@Reference
+	private UserLocalService _userLocalService;
+
+}

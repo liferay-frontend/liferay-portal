@@ -812,10 +812,6 @@ SideNavigation.prototype = {
 		const instance = this;
 
 		import(
-
-			// eslint-disable-next-line lines-around-comment
-
-			/* webpackIgnore: true */
 			themeDisplay.getPathContext() +
 				'/o/frontend-js-web/__liferay__/index.js'
 		).then(({isReducedMotion}) => {

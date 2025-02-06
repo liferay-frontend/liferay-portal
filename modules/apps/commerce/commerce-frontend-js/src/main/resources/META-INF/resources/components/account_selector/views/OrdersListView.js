@@ -8,10 +8,7 @@ import ClayDropDown from '@clayui/drop-down';
 import React, {useMemo, useRef} from 'react';
 
 import ServiceProvider from '../../../ServiceProvider/index';
-import {OPEN_MODAL} from '../../../utilities/eventsDefinitions';
-import {liferayNavigate} from '../../../utilities/index';
-import {MEDIUM_MODAL_SIZE} from '../../../utilities/modals/constants';
-import Modal from '../../modal/Modal';
+import {createCommerceCart} from '../../../utilities/createCommerceCart';
 import OrdersTable from '../OrdersTable';
 import {VIEWS} from '../util/constants';
 import EmptyListView from './EmptyListView';
@@ -20,12 +17,14 @@ import ListView from './ListView';
 function OrdersListView({
 	commerceChannelId,
 	createOrderURL,
+	currencyCode,
 	currentAccount,
 	disabled,
-	namespace,
+	hasAddCommerceOrderPermission,
+	hasCommerceOpenOrderContentPortlet,
+	orderTypes,
 	selectOrderURL,
 	setCurrentView,
-	showOrderTypeModal,
 }) {
 	const CartResource = useMemo(
 		() => ServiceProvider.DeliveryCartAPI('v1'),
@@ -83,34 +82,32 @@ function OrdersListView({
 
 			<ClayDropDown.Divider />
 
-			<li>
-				<div ref={ordersListRef} />
-			</li>
+			<ClayDropDown.ItemList className="orders-list">
+				<ClayDropDown.Section>
+					<div ref={ordersListRef} />
+				</ClayDropDown.Section>
+			</ClayDropDown.ItemList>
 
 			<ClayDropDown.Section>
 				<ClayButton
-					className="m-auto w-100"
-					displayType="primary"
-					onClick={() =>
-						showOrderTypeModal
-							? Liferay.fire(OPEN_MODAL, {
-									id: `${namespace}add-order-modal`,
-									size: MEDIUM_MODAL_SIZE,
-								})
-							: liferayNavigate(createOrderURL)
-					}
+					block
+					disabled={!hasAddCommerceOrderPermission}
+					onClick={(event) => {
+						event.preventDefault();
+
+						createCommerceCart({
+							accountId: currentAccount.id,
+							commerceChannelId,
+							currencyCode,
+							hasCommerceOpenOrderContentPortlet,
+							orderDetailURL: createOrderURL,
+							orderTypes,
+						});
+					}}
 				>
 					{Liferay.Language.get('create-new-order')}
 				</ClayButton>
 			</ClayDropDown.Section>
-
-			{showOrderTypeModal ? (
-				<Modal
-					id={`${namespace}add-order-modal`}
-					refreshPageOnClose={true}
-					url={createOrderURL}
-				/>
-			) : null}
 		</ClayDropDown.ItemList>
 	);
 }

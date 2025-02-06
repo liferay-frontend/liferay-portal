@@ -7,15 +7,19 @@
 
 <%@ include file="/init.jsp" %>
 
-<%
-portletDisplay.setBeta(true);
-%>
-
 <div>
 	<react:component
 		module="{SystemDataSets} from frontend-data-set-admin-web"
 		props='<%=
 			HashMapBuilder.<String, Object>put(
+				"editDataSetURL", fdsAdminDisplayContext.getEditDataSetURL()
+			).put(
+				"getSystemDataSetsURL", fdsAdminDisplayContext.getSystemDataSetsURL()
+			).put(
+				"importSystemDataSetURL", fdsAdminDisplayContext.getImportSystemDataSetURL()
+			).put(
+				"namespace", liferayPortletResponse.getNamespace()
+			).put(
 				"systemDataSets", fdsAdminDisplayContext.getSystemFDSEntryJSONArray()
 			).build()
 		%>'

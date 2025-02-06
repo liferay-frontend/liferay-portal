@@ -170,6 +170,12 @@ public class FaroProjectIndexer extends BaseIndexer<FaroProject> {
 
 		document.addNumber(
 			"individualsLimit", faroSubscriptionDisplay.getIndividualsLimit());
+		document.addNumber(
+			"individualsUsage",
+			_getUsage(
+				faroSubscriptionDisplay.
+					getIndividualsCountSinceLastAnniversary(),
+				faroSubscriptionDisplay.getIndividualsLimit()));
 		document.addDate(
 			"lastAnniversaryDate",
 			faroSubscriptionDisplay.getLastAnniversaryDate());
@@ -201,6 +207,11 @@ public class FaroProjectIndexer extends BaseIndexer<FaroProject> {
 
 		document.addNumber(
 			"pageViewsLimit", faroSubscriptionDisplay.getPageViewsLimit());
+		document.addNumber(
+			"pageViewsUsage",
+			_getUsage(
+				faroSubscriptionDisplay.getPageViewsCountSinceLastAnniversary(),
+				faroSubscriptionDisplay.getPageViewsLimit()));
 		document.addKeyword(
 			"subscription",
 			JSONUtil.writeValueAsString(faroSubscriptionDisplay));
@@ -271,6 +282,16 @@ public class FaroProjectIndexer extends BaseIndexer<FaroProject> {
 				});
 
 		indexableActionableDynamicQuery.performActions();
+	}
+
+	private double _getUsage(long count, long limit) {
+		if ((count == 0) || (limit == 0)) {
+			return 0.0;
+		}
+
+		double usage = 100.0 * count / limit;
+
+		return Math.round(usage * 100) / 100.0;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

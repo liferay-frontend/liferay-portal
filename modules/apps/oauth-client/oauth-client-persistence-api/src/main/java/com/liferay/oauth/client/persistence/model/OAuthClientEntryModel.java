@@ -238,6 +238,20 @@ public interface OAuthClientEntryModel
 	public void setInfoJSON(String infoJSON);
 
 	/**
+	 * Returns the metadata cache time of this o auth client entry.
+	 *
+	 * @return the metadata cache time of this o auth client entry
+	 */
+	public long getMetadataCacheTime();
+
+	/**
+	 * Sets the metadata cache time of this o auth client entry.
+	 *
+	 * @param metadataCacheTime the metadata cache time of this o auth client entry
+	 */
+	public void setMetadataCacheTime(long metadataCacheTime);
+
+	/**
 	 * Returns the oidc user info mapper json of this o auth client entry.
 	 *
 	 * @return the oidc user info mapper json of this o auth client entry

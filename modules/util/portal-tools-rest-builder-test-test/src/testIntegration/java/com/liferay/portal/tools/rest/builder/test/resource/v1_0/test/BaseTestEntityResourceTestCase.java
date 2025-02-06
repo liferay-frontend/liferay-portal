@@ -103,9 +103,8 @@ public abstract class BaseTestEntityResourceTestCase {
 		com.liferay.portal.kernel.model.User testCompanyAdminUser =
 			UserTestUtil.getAdminUser(testCompany.getCompanyId());
 
-		TestEntityResource.Builder builder = TestEntityResource.builder();
-
-		testEntityResource = builder.authentication(
+		testEntityResource = TestEntityResource.builder(
+		).authentication(
 			testCompanyAdminUser.getEmailAddress(),
 			PropsValues.DEFAULT_ADMIN_PASSWORD
 		).endpoint(

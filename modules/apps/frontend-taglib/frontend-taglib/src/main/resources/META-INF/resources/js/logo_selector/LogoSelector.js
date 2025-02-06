@@ -18,6 +18,7 @@ export default function LogoSelector({
 	portletNamespace,
 	selectLogoURL,
 }) {
+	const [changingLogo, setChangingLogo] = useState(false);
 	const [values, setValues] = useState({
 		deleteLogo: false,
 		fileEntryId: '',
@@ -33,6 +34,7 @@ export default function LogoSelector({
 		Liferay.Util.openModal({
 			id: `${portletNamespace}changeLogo`,
 			iframeBodyCssClass: 'dialog-with-footer',
+			onClose: () => setChangingLogo(false),
 			size: 'full-screen',
 			title: sub(Liferay.Language.get('upload-x'), label),
 			url: selectLogoURL.replace(
@@ -40,6 +42,8 @@ export default function LogoSelector({
 				escape(logoURL)
 			),
 		});
+
+		setChangingLogo(true);
 	};
 
 	const onClearLogo = () => {
@@ -57,12 +61,16 @@ export default function LogoSelector({
 			previewURL,
 			tempImageFileName,
 		}) => {
-			setValues({
-				deleteLogo: false,
-				fileEntryId,
-				logoName: tempImageFileName,
-				logoURL: previewURL,
-			});
+			if (changingLogo) {
+				setValues({
+					deleteLogo: false,
+					fileEntryId,
+					logoName: tempImageFileName,
+					logoURL: previewURL,
+				});
+
+				setChangingLogo(false);
+			}
 		};
 
 		Liferay.on('changeLogo', handleChangeLogo);
@@ -70,7 +78,7 @@ export default function LogoSelector({
 		return () => {
 			Liferay.detach('changeLogo', handleChangeLogo);
 		};
-	}, []);
+	}, [changingLogo]);
 
 	const {deleteLogo, fileEntryId, logoName, logoURL} = values;
 

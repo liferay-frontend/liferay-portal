@@ -97,7 +97,7 @@ public class FTLWhitespaceCheck extends WhitespaceCheck {
 
 		content = sb.toString();
 
-		if (content.endsWith("\n")) {
+		if (content.endsWith("\n") && !fileName.endsWith("_js.ftl")) {
 			content = content.substring(0, content.length() - 1);
 		}
 

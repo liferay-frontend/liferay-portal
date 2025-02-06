@@ -13,6 +13,7 @@ import {loginTest} from '../../fixtures/loginTest';
 import {masterPagesPagesTest} from '../../fixtures/masterPagesPagesTest';
 import {pageEditorPagesTest} from '../../fixtures/pageEditorPagesTest';
 import {pageManagementSiteTest} from '../../fixtures/pageManagementSiteTest';
+import {productMenuPageTest} from '../../fixtures/productMenuPageTest';
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../utils/getRandomString';
 import {performLogout} from '../../utils/performLogin';
@@ -25,15 +26,17 @@ import getWidgetDefinition from './utils/getWidgetDefinition';
 const test = mergeTests(
 	apiHelpersTest,
 	featureFlagsTest({
-		'LPD-40533': true,
-		'LPD-40534': true,
-		'LPS-178052': true,
+		'LPD-11131': {enabled: true},
+		'LPD-40533': {enabled: true},
+		'LPD-40534': {enabled: true},
+		'LPS-178052': {enabled: true},
 	}),
 	isolatedSiteTest,
 	loginTest(),
 	masterPagesPagesTest,
 	pageEditorPagesTest,
-	pageManagementSiteTest
+	pageManagementSiteTest,
+	productMenuPageTest
 );
 
 test(
@@ -302,9 +305,9 @@ test.describe('Menu Display Widget', () => {
 });
 
 test(
-	'Check that the Sharing and Supported Clients features have the deprecation badge',
+	'Check that the Sharing, Supported Clients and Scope features have the deprecation badge',
 	{
-		tag: ['@LPD-41722', '@LPD-41723'],
+		tag: ['@LPD-41722', '@LPD-41723', '@LPD-45441'],
 	},
 	async ({apiHelpers, page, pageEditorPage, site}) => {
 
@@ -355,6 +358,10 @@ test(
 		await expect(
 			navigationItem.filter({hasText: 'Supported Clients'})
 		).toContainText(/Deprecated/);
+
+		await expect(navigationItem.filter({hasText: 'Scope'})).toContainText(
+			/Deprecated/
+		);
 	}
 );
 
@@ -442,6 +449,88 @@ test(
 					'You do not have the roles required to access this portlet.'
 				)
 				.first()
+		).toBeVisible();
+	}
+);
+
+test(
+	'Check that the scope dropdown in Product Menu have the deprecation badge and that the page is set as scope',
+	{
+		tag: ['@LPD-46225'],
+	},
+	async ({apiHelpers, page, pageEditorPage, productMenuPage, site}) => {
+
+		// Create a page with a Web Content Display Widget
+
+		const widgetId = getRandomString();
+
+		const widgetDefinition = getWidgetDefinition({
+			id: widgetId,
+			widgetName:
+				'com_liferay_journal_content_web_portlet_JournalContentPortlet',
+		});
+
+		const layoutTitle = getRandomString();
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([widgetDefinition]),
+			siteId: site.id,
+			title: layoutTitle,
+		});
+
+		// Access to the widget configuration
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.goToWidgetConfiguration(widgetId);
+
+		// Create a new scope and publish the page
+
+		const configurationIFrame = page.frameLocator(
+			'iframe[title="Configuration"]'
+		);
+
+		await configurationIFrame.getByRole('link', {name: 'Scope'}).click();
+
+		await configurationIFrame
+			.getByLabel('Scope', {exact: true})
+			.selectOption(layoutTitle + ' (Create New)');
+
+		await configurationIFrame.getByRole('button', {name: 'Save'}).click();
+
+		await page.getByLabel('close', {exact: true}).click();
+
+		await pageEditorPage.publishPage();
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
+
+		// Check the label in the dropdown at the Product Menu
+
+		await productMenuPage.openProductMenuButton.click();
+
+		await productMenuPage.contentAndDataButton.click();
+
+		// Open the dropdown to select the scope
+
+		const dropdownButton = page.getByLabel('Choose Scope');
+
+		const dropdownOption = page
+			.locator('.dropdown-menu')
+			.getByRole('menuitem', {name: layoutTitle});
+
+		await expect(async () => {
+			await dropdownButton.click();
+
+			await expect(dropdownOption).toBeVisible({timeout: 1000});
+			await expect(dropdownOption).toContainText('deprecated');
+
+			await dropdownOption.click();
+		}).toPass();
+
+		// Check that the page is set as scope
+
+		await expect(
+			page.getByText(`${layoutTitle} (Scope) deprecated`)
 		).toBeVisible();
 	}
 );

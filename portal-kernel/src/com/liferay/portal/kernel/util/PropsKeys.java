@@ -432,6 +432,9 @@ public interface PropsKeys {
 	public static final String COMBO_ALLOWED_FILE_EXTENSIONS =
 		"combo.allowed.file.extensions";
 
+	public static final String COMBO_ALLOWED_FILE_MAX_SIZE =
+		"combo.allowed.file.max.size";
+
 	public static final String COMBO_CHECK_TIMESTAMP = "combo.check.timestamp";
 
 	public static final String COMBO_CHECK_TIMESTAMP_INTERVAL =
@@ -1559,6 +1562,12 @@ public interface PropsKeys {
 	public static final String MAIL_THROWS_EXCEPTION_ON_FAILURE =
 		"mail.throws.exception.on.failure";
 
+	public static final String MARKETPLACE_CLIENT_ID = "marketplace.client.id";
+
+	public static final String MARKETPLACE_REDIRECT = "marketplace.redirect";
+
+	public static final String MARKETPLACE_URL = "marketplace.url";
+
 	public static final String MEMBERSHIP_POLICY_AUTO_VERIFY =
 		"membership.policy.auto.verify";
 
@@ -2563,10 +2572,6 @@ public interface PropsKeys {
 		"spring.beanfactory.strict.lifecycle.enabled";
 
 	public static final String SPRING_CONFIGS = "spring.configs";
-
-	public static final String
-		SPRING_HIBERNATE_CONFIGURATION_PROXY_FACTORY_PRELOAD_CLASSLOADER_CLASSES =
-			"spring.hibernate.configuration.proxy.factory.preload.classloader.classes";
 
 	public static final String SPRING_HIBERNATE_SESSION_DELEGATED =
 		"spring.hibernate.session.delegated";

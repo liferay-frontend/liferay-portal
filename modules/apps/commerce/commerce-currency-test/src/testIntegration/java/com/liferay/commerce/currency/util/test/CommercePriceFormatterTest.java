@@ -20,6 +20,8 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.math.BigDecimal;
 
+import java.util.Locale;
+
 import org.hamcrest.CustomMatcher;
 import org.hamcrest.Matcher;
 
@@ -140,27 +142,26 @@ public class CommercePriceFormatterTest {
 	public void testParsePriceBigDecimal() throws Exception {
 		_commerceCurrency.setFormatPattern("$###,##0.00", LocaleUtil.ITALY);
 
-		String expectedParsedPrice = "1234567.890";
+		String expectedParsedPrice = "1234567.89";
 
-		Assert.assertEquals(
-			expectedParsedPrice,
-			_commercePriceFormatter.parse(
-				null, "1,234,567.890", LocaleUtil.ITALY));
-		Assert.assertEquals(
-			expectedParsedPrice,
-			_commercePriceFormatter.parse(
-				null, "1.234.567,890", LocaleUtil.ITALY));
-		Assert.assertEquals(
-			expectedParsedPrice,
-			_commercePriceFormatter.parse(
-				null, "1234567,890", LocaleUtil.ITALY));
-		Assert.assertEquals(
-			expectedParsedPrice,
-			_commercePriceFormatter.parse(
-				null, "1234567.890", LocaleUtil.ITALY));
+		_assertPrice("1,234,567.89", expectedParsedPrice, LocaleUtil.ITALY);
+		_assertPrice("1.234.567,89", expectedParsedPrice, LocaleUtil.ITALY);
+		_assertPrice("1234567,89", expectedParsedPrice, LocaleUtil.ITALY);
+		_assertPrice("1234567.89", expectedParsedPrice, LocaleUtil.ITALY);
+
 		Assert.assertNotEquals(
 			expectedParsedPrice,
-			_commercePriceFormatter.parse(null, "1,234,0", LocaleUtil.ITALY));
+			_commercePriceFormatter.parse(
+				false, null, "1,234,0", LocaleUtil.ITALY));
+	}
+
+	private void _assertPrice(
+			String actualPrice, String expectedPrice, Locale locale)
+		throws Exception {
+
+		Assert.assertEquals(
+			expectedPrice,
+			_commercePriceFormatter.parse(false, null, actualPrice, locale));
 	}
 
 	private static final String _SYMBOLS = "€$¥£R$₹";

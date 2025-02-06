@@ -3,17 +3,22 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {
+	ObjectDefinitionApi,
+	ObjectField,
+} from '@liferay/object-admin-rest-client-js';
 import {Page, expect, mergeTests} from '@playwright/test';
 import {createReadStream} from 'fs';
 import path from 'path';
 
-import {apiHelpersTest} from '../../fixtures/apiHelpersTest';
+import {dataApiHelpersTest} from '../../fixtures/dataApiHelpersTest';
 import {displayPageTemplatesPagesTest} from '../../fixtures/displayPageTemplatesPagesTest';
 import {documentLibraryPagesTest} from '../../fixtures/documentLibraryPages.fixtures';
 import {featureFlagsTest} from '../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../fixtures/pageEditorPagesTest';
+import {pageManagementSiteTest} from '../../fixtures/pageManagementSiteTest';
 import {ApiHelpers} from '../../helpers/ApiHelpers';
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import {getRandomInt} from '../../utils/getRandomInt';
@@ -26,17 +31,18 @@ import {JournalEditArticlePage} from '../journal-web/pages/JournalEditArticlePag
 import {JournalPage} from '../journal-web/pages/JournalPage';
 
 const test = mergeTests(
-	apiHelpersTest,
 	blogsPagesTest,
+	dataApiHelpersTest,
 	displayPageTemplatesPagesTest,
 	documentLibraryPagesTest,
 	featureFlagsTest({
-		'LPS-178052': true,
+		'LPS-178052': {enabled: true},
 	}),
 	isolatedSiteTest,
 	journalPagesTest,
 	loginTest(),
-	pageEditorPagesTest
+	pageEditorPagesTest,
+	pageManagementSiteTest
 );
 
 async function addBasicJournalArticleWithSpecificDisplayPageTemplate(
@@ -673,6 +679,195 @@ test.describe('UI', () => {
 
 		await expect(
 			page.getByText(newDisplayPageTemplateName, {exact: true})
+		).toBeVisible();
+	});
+
+	test(
+		'Can add form container and remap it',
+		{
+			tag: '@LPS-192722',
+		},
+		async ({
+			displayPageTemplatesPage,
+			page,
+			pageEditorPage,
+			pageManagementSite,
+		}) => {
+
+			// Create a display page template for Object
+
+			await displayPageTemplatesPage.goto(
+				pageManagementSite.friendlyUrlPath
+			);
+
+			const displayPageTemplateName = getRandomString();
+
+			await displayPageTemplatesPage.createTemplate({
+				contentType: 'Lemon Basket',
+				name: displayPageTemplateName,
+			});
+
+			// Edit display page template
+
+			await displayPageTemplatesPage.editTemplate(
+				displayPageTemplateName
+			);
+
+			// Add and map form container
+
+			await pageEditorPage.addFragment(
+				'Content Display',
+				'Form Container'
+			);
+
+			await pageEditorPage.mapFormFragment(
+				await pageEditorPage.getFragmentId('Form Container'),
+				'Lemon Basket (Default)'
+			);
+
+			await pageEditorPage.addFragment('Basic Components', 'Heading');
+
+			await pageEditorPage.selectEditable(
+				await pageEditorPage.getFragmentId('Heading'),
+				'element-text'
+			);
+
+			await pageEditorPage.setMappingConfiguration({
+				mapping: {
+					field: 'Lemon Basket Color',
+				},
+				source: 'structure',
+			});
+
+			await displayPageTemplatesPage.publishTemplate();
+
+			// Change content type
+
+			await displayPageTemplatesPage.goto(
+				pageManagementSite.friendlyUrlPath
+			);
+
+			await displayPageTemplatesPage.clickMoreActions(
+				displayPageTemplateName,
+				'Change Content Type'
+			);
+
+			await page
+				.getByLabel('Content Type', {exact: true})
+				.selectOption('All Fields');
+
+			await page.getByRole('button', {name: 'Save'}).click();
+
+			// Assert that the form container is mapped to the new content type
+
+			await displayPageTemplatesPage.editTemplate(
+				displayPageTemplateName
+			);
+
+			await pageEditorPage.selectFragment(
+				await pageEditorPage.getFragmentId('Form Container')
+			);
+
+			await expect(
+				page
+					.getByLabel('Content Type', {exact: true})
+					.getByRole('option', {selected: true})
+			).toHaveText('All Fields (Default)');
+
+			await pageEditorPage.selectEditable(
+				await pageEditorPage.getFragmentId('Heading'),
+				'element-text'
+			);
+
+			expect(
+				await page
+					.getByRole('combobox', {name: 'Field'})
+					.evaluate(
+						(element: HTMLSelectElement) =>
+							element.selectedOptions[0].innerText
+					)
+			).toBe('-- Unmapped --');
+		}
+	);
+
+	test('Content type modal is displayed when mapped object definition does not exist anymore', async ({
+		apiHelpers,
+		displayPageTemplatesPage,
+		page,
+		site,
+	}) => {
+
+		// Create Object definition
+
+		const objectDefinitionAPIClient =
+			await apiHelpers.buildRestClient(ObjectDefinitionApi);
+
+		const {body: objectDefinition} =
+			await objectDefinitionAPIClient.postObjectDefinition({
+				active: true,
+				externalReferenceCode: 'stockERC',
+				label: {
+					en_US: 'stock',
+				},
+				name: 'Stock',
+				objectFields: [
+					{
+						DBType: ObjectField.DBTypeEnum.String,
+						businessType: ObjectField.BusinessTypeEnum.Text,
+						externalReferenceCode: 'nameERC',
+						indexed: true,
+						indexedAsKeyword: true,
+						label: {
+							en_US: 'name',
+						},
+						name: 'name',
+						required: true,
+					},
+				],
+				pluralLabel: {
+					en_US: 'stocks',
+				},
+				portlet: true,
+				scope: 'company',
+				status: {
+					code: 0,
+				},
+			});
+
+		// Create display page template for object
+
+		const className =
+			await apiHelpers.jsonWebServicesClassName.fetchClassName(
+				objectDefinition.className
+			);
+
+		const displayPageTemplateName = getRandomString();
+
+		await apiHelpers.jsonWebServicesLayoutPageTemplateEntry.addDisplayPageLayoutPageTemplateEntry(
+			{
+				classNameId: className.classNameId,
+				groupId: site.id,
+				name: displayPageTemplateName,
+			}
+		);
+
+		// Delete object definition
+
+		await objectDefinitionAPIClient.deleteObjectDefinition(
+			objectDefinition.id
+		);
+
+		// Check that content type modal is displayed when trying to edit display page template
+
+		await displayPageTemplatesPage.goto(site.friendlyUrlPath);
+
+		await displayPageTemplatesPage.clickMoreActions(
+			displayPageTemplateName,
+			'Edit'
+		);
+
+		await expect(
+			page.getByLabel('Select Content Type', {exact: true})
 		).toBeVisible();
 	});
 });

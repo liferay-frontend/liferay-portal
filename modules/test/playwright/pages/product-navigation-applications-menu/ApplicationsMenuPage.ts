@@ -17,6 +17,7 @@ export class ApplicationsMenuPage {
 	private readonly blueprintsItem: Locator;
 	private readonly clientExtensionsLink: Locator;
 	private readonly commerceChannelsMenuItem: Locator;
+	private readonly commerceCurrenciesMenuItem: Locator;
 	private readonly commerceDiscountsMenuItem: Locator;
 	private readonly commerceOrdersMenuItem: Locator;
 	private readonly commercePanelButton: Locator;
@@ -24,11 +25,14 @@ export class ApplicationsMenuPage {
 	private readonly commerceReturnsMenuItem: Locator;
 	private readonly commerceShipmentsMenuItem: Locator;
 	private readonly commerceSpecificationsMenuItem: Locator;
+	private readonly commerceTaxCategoriesMenuItem: Locator;
 	private readonly componentsMenuItem: Locator;
 	private readonly controlPanelButton: Locator;
 	private readonly countriesManagementItem: Locator;
 	private readonly customFieldsMenuItem: Locator;
 	private readonly dataMigrationCenterMenuItem: Locator;
+	private readonly exportMenuItem: Locator;
+	private readonly importMenuItem: Locator;
 	private readonly dataSetManagerMenuItem: Locator;
 	private readonly defaultPermissionsLink: Locator;
 	private readonly gogoShellItem: Locator;
@@ -91,6 +95,10 @@ export class ApplicationsMenuPage {
 			exact: true,
 			name: 'Channels',
 		});
+		this.commerceCurrenciesMenuItem = page.getByRole('menuitem', {
+			exact: true,
+			name: 'Currencies',
+		});
 		this.commerceDiscountsMenuItem = page.getByRole('menuitem', {
 			exact: true,
 			name: 'Discounts',
@@ -121,6 +129,10 @@ export class ApplicationsMenuPage {
 			exact: true,
 			name: 'Specifications',
 		});
+		this.commerceTaxCategoriesMenuItem = page.getByRole('menuitem', {
+			exact: true,
+			name: 'Tax Categories',
+		});
 		this.componentsMenuItem = page.getByRole('menuitem', {
 			exact: true,
 			name: 'Components',
@@ -144,6 +156,14 @@ export class ApplicationsMenuPage {
 		this.dataMigrationCenterMenuItem = page.getByRole('menuitem', {
 			exact: true,
 			name: 'Data Migration Center',
+		});
+		this.exportMenuItem = page.getByRole('menuitem', {
+			exact: true,
+			name: 'Export',
+		});
+		this.importMenuItem = page.getByRole('menuitem', {
+			exact: true,
+			name: 'Import',
 		});
 		this.dataSetManagerMenuItem = page.getByRole('menuitem', {
 			exact: true,
@@ -310,6 +330,16 @@ export class ApplicationsMenuPage {
 		await this.dataMigrationCenterMenuItem.click();
 	}
 
+	async goToExport() {
+		await this.goToApplicationsMenu();
+		await this.exportMenuItem.click();
+	}
+
+	async goToImport() {
+		await this.goToApplicationsMenu();
+		await this.importMenuItem.click();
+	}
+
 	async goToDefaultPermissions() {
 		await this.goToInstanceSettings();
 		await this.defaultPermissionsLink.click();
@@ -402,6 +432,11 @@ export class ApplicationsMenuPage {
 		await this.commerceChannelsMenuItem.click();
 	}
 
+	async goToCommerceCurrencies(checkTabVisibility = true) {
+		await this.goToCommercePanel(checkTabVisibility);
+		await this.commerceCurrenciesMenuItem.click();
+	}
+
 	async goToCommerceDiscounts() {
 		await this.goToCommercePanel();
 		await this.commerceDiscountsMenuItem.click();
@@ -435,6 +470,12 @@ export class ApplicationsMenuPage {
 	async goToCommerceSpecifications() {
 		await this.goToCommercePanel();
 		await this.commerceSpecificationsMenuItem.click();
+	}
+
+	async goToCommerceTaxCategories(checkTabVisibility = true) {
+		await this.goto();
+		await this.goToCommercePanel(checkTabVisibility);
+		await this.commerceTaxCategoriesMenuItem.click();
 	}
 
 	async goToPayments(checkTabVisibility = true) {
@@ -526,6 +567,12 @@ export class ApplicationsMenuPage {
 			await expect(this.applicationsMenuTabButton).toBeVisible();
 		}
 
+		await this.controlPanelButton.click();
+		await this.usersAndOrganizationsItem.click();
+	}
+
+	async goToUsersAndOrganizationsWithLimitedAccess() {
+		await this.homePage.openApplicationMenu();
 		await this.controlPanelButton.click();
 		await this.usersAndOrganizationsItem.click();
 	}

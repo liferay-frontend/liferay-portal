@@ -29,6 +29,11 @@ html#{$cadmin-selector} {
 				&.empty {
 					box-shadow: inset 0 0 0 1px $cadmin-primary-l2;
 				}
+
+				&.disabled {
+					opacity: 40%;
+					pointer-events: none;
+				}
 			}
 
 			&__message {
@@ -48,6 +53,18 @@ html#{$cadmin-selector} {
 				min-height: 80px;
 
 				&__title {
+					color: $cadmin-purple-d3;
+					font-size: 14px;
+					font-style: italic;
+					font-weight: 500;
+				}
+			}
+
+			&-item-old {
+				border: 1px solid fade_out($cadmin-purple, 0.9);
+				min-height: 80px;
+
+				.page-editor__collection-item__title {
 					color: $cadmin-purple;
 					font-size: 12px;
 					font-style: italic;
@@ -96,8 +113,15 @@ html#{$cadmin-selector} {
 
 		&__col,
 		&__row,
-		&__collection-item {
+		&__collection-item,
+		&__collection-item-old {
 			position: relative;
+
+			.page-editor__no-fragments-state {
+				background: fade_out($cadmin-purple-l4, 0.9);
+				border: $dashedBorderWidth dashed $cadmin-purple-l4;
+				padding: 4vh 12% 6vh;
+			}
 
 			&:before {
 				$spacingUnit: 12px;
@@ -138,7 +162,8 @@ html#{$cadmin-selector} {
 			justify-content: flex-start;
 		}
 
-		&__collection-item {
+		&__collection-item,
+		&__collection-item-old {
 			&:before {
 				left: 0;
 				width: 100%;
@@ -230,7 +255,7 @@ html#{$cadmin-selector} {
 		}
 
 		&__row
-			> .page-editor__col:not(.active):hover
+			> .page-editor__col.hovered:not(.active)
 			> .page-editor__col__border:after {
 			box-shadow: inset 0 0 0 2px $cadmin-primary-l1;
 			z-index: $portletTopperHoveredZIndex;
@@ -255,8 +280,6 @@ html#{$cadmin-selector} {
 			background: $cadmin-primary-l3;
 			border: $dashedBorderWidth dashed $cadmin-primary-l2;
 			border-radius: 8px;
-			// stylelint-disable-next-line property-no-unknown
-			container-type: inline-size;
 			justify-content: center;
 			padding: 15vh 12%;
 
@@ -277,28 +300,6 @@ html#{$cadmin-selector} {
 				margin: 0;
 			}
 
-			// stylelint-disable-next-line at-rule-no-unknown
-			@container (max-width: 100px) {
-				&__image {
-					display: none;
-				}
-
-				&__message {
-					overflow-wrap: anywhere;
-				}
-			}
-
-			// stylelint-disable-next-line at-rule-no-unknown
-			@container (max-height: 100px) {
-				&__image {
-					display: none;
-				}
-
-				&__message {
-					overflow-wrap: anywhere;
-				}
-			}
-
 			&__title {
 				color: $dark;
 				font-size: 16px;
@@ -317,7 +318,8 @@ html#{$cadmin-selector} {
 
 		&__container.flex-row,
 		&__collection .flex-row {
-			.page-editor__collection-item.empty {
+			.page-editor__collection-item.empty,
+			.page-editor__collection-item-old.empty {
 				min-width: $emptyCollectionItemMinWidth;
 			}
 
@@ -382,8 +384,6 @@ html#{$cadmin-selector} {
 	}
 
 	.custom-height .page-editor__no-fragments-state {
-		// stylelint-disable-next-line property-no-unknown
-		container-type: size;
 		padding: 0;
 	}
 }

@@ -21,6 +21,5 @@ patch {
 
 	fileNames "org/parboiled/transform/ParserClassNode.java"
 	fileNames "org/parboiled/transform/RuleMethod.java"
-
 	originalLibModuleName = "parboiled-java"
 }

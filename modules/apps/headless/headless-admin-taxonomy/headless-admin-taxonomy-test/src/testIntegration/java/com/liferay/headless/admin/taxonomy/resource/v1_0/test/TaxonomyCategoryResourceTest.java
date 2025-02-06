@@ -29,6 +29,7 @@ import com.liferay.headless.admin.taxonomy.client.resource.v1_0.TaxonomyCategory
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
@@ -128,19 +129,21 @@ public class TaxonomyCategoryResourceTest
 			return;
 		}
 
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
 		AssetCategory parentAssetCategory =
 			_assetCategoryLocalService.addCategory(
 				TestPropsValues.getUserId(), testGroup.getGroupId(),
 				RandomTestUtil.randomString(),
-				_assetVocabulary.getVocabularyId(),
-				ServiceContextTestUtil.getServiceContext());
+				_assetVocabulary.getVocabularyId(), serviceContext);
 
 		AssetCategory assetCategory1 = _addAssetCategory(
 			_assetVocabulary,
 			new Date(System.currentTimeMillis() - (2 * Time.MINUTE)),
-			parentAssetCategory);
+			parentAssetCategory, serviceContext);
 		AssetCategory assetCategory2 = _addAssetCategory(
-			_assetVocabulary, new Date(), parentAssetCategory);
+			_assetVocabulary, new Date(), parentAssetCategory, serviceContext);
 
 		for (EntityField entityField : entityFields) {
 			_assertTaxonomyCategoriesPageOrder(
@@ -381,15 +384,14 @@ public class TaxonomyCategoryResourceTest
 
 	private AssetCategory _addAssetCategory(
 			AssetVocabulary assetVocabulary, Date date,
-			AssetCategory parentAssetCategory)
+			AssetCategory parentAssetCategory, ServiceContext serviceContext)
 		throws Exception {
 
 		AssetCategory assetCategory = _assetCategoryLocalService.addCategory(
 			null, TestPropsValues.getUserId(), testGroup.getGroupId(),
 			parentAssetCategory.getCategoryId(),
 			RandomTestUtil.randomLocaleStringMap(), null,
-			assetVocabulary.getVocabularyId(), null,
-			ServiceContextTestUtil.getServiceContext());
+			assetVocabulary.getVocabularyId(), null, serviceContext);
 
 		assetCategory.setCreateDate(date);
 		assetCategory.setModifiedDate(date);
@@ -891,5 +893,8 @@ public class TaxonomyCategoryResourceTest
 	private AssetVocabulary _depotAssetVocabulary;
 	private AssetVocabulary _globalAssetVocabulary;
 	private AssetVocabulary _internalAssetVocabulary;
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
 
 }

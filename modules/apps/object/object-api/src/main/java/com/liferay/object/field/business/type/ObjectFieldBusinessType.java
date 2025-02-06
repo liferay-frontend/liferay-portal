@@ -6,6 +6,7 @@
 package com.liferay.object.field.business.type;
 
 import com.liferay.object.constants.ObjectFieldSettingConstants;
+import com.liferay.object.exception.ObjectEntryValuesException;
 import com.liferay.object.exception.ObjectFieldSettingNameException;
 import com.liferay.object.exception.ObjectFieldSettingValueException;
 import com.liferay.object.field.render.ObjectFieldRenderingContext;
@@ -16,6 +17,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.GuestOrUserUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -64,6 +66,24 @@ public interface ObjectFieldBusinessType {
 
 	public String getLabel(Locale locale);
 
+	public default Map<String, Object> getLocalizedValues(
+			ObjectField objectField, Long userId, Map<String, Object> values)
+		throws PortalException {
+
+		Object value = values.get(objectField.getI18nObjectFieldName());
+
+		if (value == null) {
+			return null;
+		}
+
+		if (!(value instanceof Map<?, ?>)) {
+			throw new ObjectEntryValuesException.InvalidValue(
+				objectField.getI18nObjectFieldName());
+		}
+
+		return (Map<String, Object>)value;
+	}
+
 	public String getName();
 
 	public default Map<String, Object> getProperties(
@@ -71,7 +91,9 @@ public interface ObjectFieldBusinessType {
 			ObjectFieldRenderingContext objectFieldRenderingContext)
 		throws PortalException {
 
-		return Collections.emptyMap();
+		return HashMapBuilder.<String, Object>put(
+			"localizedObjectField", objectField.isLocalized()
+		).build();
 	}
 
 	public PropertyDefinition.PropertyType getPropertyType();
@@ -94,12 +116,18 @@ public interface ObjectFieldBusinessType {
 			return values.get(objectField.getName());
 		}
 
-		Map<String, Object> localizedValues = (Map<String, Object>)values.get(
-			objectField.getI18nObjectFieldName());
+		Object value = values.get(objectField.getI18nObjectFieldName());
 
-		if (localizedValues == null) {
+		if (value == null) {
 			return values.get(objectField.getName());
 		}
+
+		if (!(value instanceof Map<?, ?>)) {
+			throw new ObjectEntryValuesException.InvalidValue(
+				objectField.getI18nObjectFieldName());
+		}
+
+		Map<String, Object> localizedValues = (Map<String, Object>)value;
 
 		Locale locale = LocaleThreadLocal.getThemeDisplayLocale();
 

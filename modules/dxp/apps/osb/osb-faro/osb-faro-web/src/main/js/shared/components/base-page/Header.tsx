@@ -1,5 +1,6 @@
 import Breadcrumbs from 'shared/components/Breadcrumbs';
 import classNames from 'classnames';
+import ClayBadge from '@clayui/badge';
 import ClayButton from '@clayui/button';
 import ClayDropDown, {Align} from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
@@ -17,6 +18,7 @@ import {IBreadcrumbArgs} from 'shared/util/breadcrumbs';
 import {pickBy} from 'lodash';
 
 type NavBarItem = {
+	deprecated?: boolean;
 	exact: boolean;
 	label: string;
 	route: string;
@@ -43,7 +45,7 @@ const NavBar: React.FC<INavBarProps> = ({
 	return (
 		<div className='row'>
 			<ClayNavigationBar triggerLabel={activeLabel}>
-				{items.map(({label, route}) => (
+				{items.map(({deprecated, label, route}) => (
 					<ClayNavigationBar.Item
 						active={matchedRoute === route}
 						key={label}
@@ -56,6 +58,17 @@ const NavBar: React.FC<INavBarProps> = ({
 							onClick={() => setActiveLabel(label)}
 						>
 							{label}
+
+							{deprecated && (
+								<ClayBadge
+									className='ml-1'
+									displayType='warning'
+									label={Liferay.Language.get(
+										'deprecated'
+									).toUpperCase()}
+									translucent
+								/>
+							)}
 						</ClayLink>
 					</ClayNavigationBar.Item>
 				))}
@@ -65,6 +78,7 @@ const NavBar: React.FC<INavBarProps> = ({
 };
 
 interface Action extends React.HTMLAttributes<HTMLElement> {
+	deprecated?: boolean;
 	disabled: boolean;
 	label: string;
 	href: string;
@@ -140,9 +154,20 @@ const PageActions: React.FC<IPageActionsProps> = ({
 					</ClayButton>
 				}
 			>
-				{actions.map(({label, ...props}) => (
+				{actions.map(({deprecated, label, ...props}) => (
 					<ClayDropDown.Item key={label} {...props}>
 						{label}
+
+						{deprecated && (
+							<ClayBadge
+								className='ml-1'
+								displayType='warning'
+								label={Liferay.Language.get(
+									'deprecated'
+								).toUpperCase()}
+								translucent
+							/>
+						)}
 					</ClayDropDown.Item>
 				))}
 			</ClayDropDown>

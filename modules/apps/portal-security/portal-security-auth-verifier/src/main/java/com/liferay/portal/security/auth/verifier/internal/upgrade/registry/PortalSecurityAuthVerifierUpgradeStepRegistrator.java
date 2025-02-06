@@ -26,32 +26,49 @@ public class PortalSecurityAuthVerifierUpgradeStepRegistrator
 
 	@Override
 	public void register(Registry registry) {
+		registry.registerInitialization();
+
 		registry.register(
-			"0.0.0", "1.0.0",
+			"0.0.1", "0.0.2",
 			_configurationUpgradeStepFactory.createUpgradeStep(
 				"com.liferay.portal.security.auth.verifier.basic.auth.header." +
 					"module.configuration." +
 						"BasicAuthHeaderAuthVerifierConfiguration",
-				BasicAuthHeaderAuthVerifierConfiguration.class.getName()),
+				BasicAuthHeaderAuthVerifierConfiguration.class.getName()));
+
+		registry.register(
+			"0.0.2", "0.0.3",
 			_configurationUpgradeStepFactory.createUpgradeStep(
 				"com.liferay.portal.security.auth.verifier.module." +
 					"configuration.BaseAuthVerifierConfiguration",
-				BaseAuthVerifierConfiguration.class.getName()),
+				BaseAuthVerifierConfiguration.class.getName()));
+
+		registry.register(
+			"0.0.3", "0.0.4",
 			_configurationUpgradeStepFactory.createUpgradeStep(
 				"com.liferay.portal.security.auth.verifier.digest." +
 					"authentication.module.configuration." +
 						"DigestAuthenticationAuthVerifierConfiguration",
-				DigestAuthenticationAuthVerifierConfiguration.class.getName()),
+				DigestAuthenticationAuthVerifierConfiguration.class.getName()));
+
+		registry.register(
+			"0.0.4", "0.0.5",
 			_configurationUpgradeStepFactory.createUpgradeStep(
 				"com.liferay.portal.security.auth.verifier.portal.session." +
 					"module.configuration." +
 						"PortalSessionAuthVerifierConfiguration",
-				PortalSessionAuthVerifierConfiguration.class.getName()),
+				PortalSessionAuthVerifierConfiguration.class.getName()));
+
+		registry.register(
+			"0.0.5", "0.0.6",
 			_configurationUpgradeStepFactory.createUpgradeStep(
 				"com.liferay.portal.security.auth.verifier.request.parameter." +
 					"module.configuration." +
 						"RequestParameterAuthVerifierConfiguration",
-				RequestParameterAuthVerifierConfiguration.class.getName()),
+				RequestParameterAuthVerifierConfiguration.class.getName()));
+
+		registry.register(
+			"0.0.6", "1.0.0",
 			_configurationUpgradeStepFactory.createUpgradeStep(
 				"com.liferay.portal.security.auth.verifier.tunnel.module." +
 					"configuration.TunnelAuthVerifierConfiguration",

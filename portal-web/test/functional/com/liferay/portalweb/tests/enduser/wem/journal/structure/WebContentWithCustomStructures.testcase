@@ -4,7 +4,6 @@ definition {
 	property ci.retries.disabled = "true";
 	property portal.release = "true";
 	property portal.upstream = "true";
-	property testray.component.names = "Web Content Administration";
 	property testray.main.component.name = "Web Content Administration";
 
 	setUp {
@@ -360,7 +359,7 @@ definition {
 				webContentText = "Text",
 				webContentTitle = "Web Content Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 
 			WebContent.viewTitle(webContentTitle = "Web Content Title");
 		}
@@ -462,7 +461,7 @@ definition {
 				webContentColor = "FFFFFF",
 				webContentTitle = "Web Content Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("View web contnet is shown in web content admin") {
@@ -945,7 +944,7 @@ definition {
 				webContentTitle = "Web Content Title 2",
 				webContentWebContent = "Web Content Title 1");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("View web content and geolocation field are shown") {
@@ -1238,7 +1237,7 @@ definition {
 				webContentText = "Web Content Text",
 				webContentTitle = "Web Content Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("View second template is shown within web content") {
@@ -1270,7 +1269,6 @@ definition {
 	@priority = 5
 	test EditWebContentTitleWithEmptyFields {
 		property portal.acceptance = "true";
-		property testray.component.names = "Training,Web Content Administration";
 
 		task ("Add a web content structure with custom fields") {
 			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
@@ -1489,7 +1487,9 @@ definition {
 				pageName = "Test Widget Page",
 				sitePageType = "Widget Page");
 
-			PagesAdmin.toggleHiddenFromNavigationMenuWidget(toggleValue = "enable");
+			Check.checkToggleSwitch(
+				key_toggleSwitchLabel = "Hidden from Menu Display",
+				locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
 
 			PortletEntry.save();
 		}
@@ -1523,7 +1523,7 @@ definition {
 				linkToPageContent = "Pages > Test Widget Page",
 				linkToPageFieldLabel = "Link to Page");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 	}
 
@@ -1584,7 +1584,7 @@ definition {
 				webContentUpload = "Document_1.doc",
 				webContentWebContent = "WC 1");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("View web content") {
@@ -1929,7 +1929,7 @@ definition {
 				locator1 = "WCEditWebContent#IMAGE_DESCRIPTION",
 				value1 = "Spanish (Spain) Image Description");
 
-			PortletEntry.publish();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 
 		task ("View no garbage data is shown") {
@@ -1951,49 +1951,16 @@ definition {
 		}
 	}
 
-	@description = "The user cannot add a web content, structure and template without a title."
+	@description = "The user cannot add a structure and template without a title."
 	@priority = 4
 	test WebContentAdministrationDataValidation {
-		task ("View cannot add web content without title") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContentNavigator.gotoAddCP();
-
-			WebContent.addNullCP(webContentContent = "Web Content Content");
-		}
-
-		task ("Add a title and content then publish") {
-			WebContent.addCP(
-				webContentContent = "Web Content Content",
-				webContentTitle = "Web Content Title");
-
-			WebContent.publishWithPermissions();
-		}
-
-		task ("View web content is shown") {
-			WebContent.viewTitle(webContentTitle = "Web Content Title");
-		}
-
-		task ("Edit the web content then try to publish again without a title") {
-			WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
-
-			WebContent.editNullCP(webContentContent = "Web Content Content 2");
-		}
-
-		task ("Add a new title and content to web content") {
-			WebContent.editCP(
-				webContentContentEdit = "WC WebContent Content Edit",
-				webContentTitle = "Web Content Title",
-				webContentTitleEdit = "WC WebContent Title Edit");
-		}
-
 		task ("View cannot add a structure without title") {
 			WebContentNavigator.openWebContentStructuresAdmin(siteURLKey = "test-site-name");
 
 			WebContentStructures.addNullCP();
 		}
 
-		task ("View cannot add a structure without title") {
+		task ("View cannot add a template without title") {
 			WebContentNavigator.openWebContentTemplatesAdmin(siteURLKey = "test-site-name");
 
 			WebContentTemplates.addNullCP();

@@ -8,28 +8,118 @@ import {createReadStream} from 'fs';
 import path from 'path';
 
 import {apiHelpersTest} from '../../fixtures/apiHelpersTest';
+import {applicationsMenuPageTest} from '../../fixtures/applicationsMenuPageTest';
 import {documentLibraryPagesTest} from '../../fixtures/documentLibraryPages.fixtures';
 import {featureFlagsTest} from '../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../fixtures/loginTest';
+import {pageEditorPagesTest} from '../../fixtures/pageEditorPagesTest';
+import {siteSettingsPagesTest} from '../../fixtures/siteSettingsPagesTest';
 import {createCategories} from '../../helpers/CreateCategories';
 import {DLFILE_STATUS} from '../../helpers/json-web-services/JSONWebServicesDocumentLibraryApiHelper';
+import {clickAndExpectToBeHidden} from '../../utils/clickAndExpectToBeHidden';
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../utils/getRandomString';
 import {performLogout} from '../../utils/performLogin';
 import getBasicWebContentStructureId from '../../utils/structured-content/getBasicWebContentStructureId';
 import {waitForAlert} from '../../utils/waitForAlert';
+import getFragmentDefinition from '../layout-content-page-editor-web/utils/getFragmentDefinition';
 import getPageDefinition from '../layout-content-page-editor-web/utils/getPageDefinition';
 import getWidgetDefinition from '../layout-content-page-editor-web/utils/getWidgetDefinition';
 
 const test = mergeTests(
 	apiHelpersTest,
+	applicationsMenuPageTest,
 	documentLibraryPagesTest,
 	featureFlagsTest({
-		'LPS-178052': true,
+		'LPD-36446': {enabled: true},
+		'LPS-178052': {enabled: true},
 	}),
 	isolatedSiteTest,
-	loginTest()
+	loginTest(),
+	pageEditorPagesTest,
+	siteSettingsPagesTest
+);
+
+test(
+	'Check View Usage in Action Menu',
+	{
+		tag: '@LPD-43391',
+	},
+	async ({apiHelpers, documentLibraryPage, page, pageEditorPage, site}) => {
+		const documentTest = await apiHelpers.headlessDelivery.postDocument(
+			site.id,
+			createReadStream(path.join(__dirname, '/dependencies/image1.jpeg')),
+			{
+				description: getRandomString(),
+				fileName: getRandomString(),
+				title: getRandomString(),
+			}
+		);
+		await documentLibraryPage.goto(site.friendlyUrlPath);
+		await clickAndExpectToBeVisible({
+			autoClick: false,
+			target: page.getByRole('menuitem', {name: 'View Usages'}),
+			trigger: page.getByLabel('Actions', {exact: true}),
+		});
+		await expect(
+			page.getByRole('menuitem', {name: 'View Usages'})
+		).toHaveClass(/disabled/);
+
+		const imageId = getRandomString();
+		const imageFragment = getFragmentDefinition({
+			id: imageId,
+			key: 'BASIC_COMPONENT-image',
+		});
+
+		const layoutTitle = getRandomString();
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([imageFragment]),
+			siteId: site.id,
+			title: layoutTitle,
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.selectEditable(imageId, 'image-square');
+
+		await page.getByTitle('Select Image').click();
+
+		const imageCard = page
+			.frameLocator('iframe[title="Select"]')
+			.getByText(documentTest.title);
+
+		await clickAndExpectToBeHidden({
+			target: page.locator('.modal-dialog'),
+			trigger: imageCard,
+		});
+
+		await pageEditorPage.waitForChangesSaved();
+
+		await documentLibraryPage.goto(site.friendlyUrlPath);
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {name: 'View Usages'}),
+			trigger: page.getByLabel('Actions', {exact: true}),
+		});
+		await expect(page.getByRole('menubar')).toContainText('Pages (1)');
+		await expect(
+			page.getByRole('cell', {name: `${layoutTitle} (Draft)`})
+		).toBeVisible();
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {name: 'View in Page'}),
+			trigger: page
+				.getByRole('row', {name: `${layoutTitle} (Draft) Page Image`})
+				.getByLabel('Show Actions'),
+		});
+
+		await expect(
+			page.getByRole('heading', {name: layoutTitle})
+		).toBeVisible();
+	}
 );
 
 test(
@@ -114,7 +204,7 @@ test(
 		const scheduleDate = `01/01/${new Date().getFullYear() + 1}`;
 		const title = getRandomString();
 
-		await documentLibraryEditFilePage.publishNewFileWithScheduleDate(
+		await documentLibraryEditFilePage.goToPublishNewFileWithScheduleDate(
 			scheduleDate,
 			title,
 			site.friendlyUrlPath
@@ -269,6 +359,80 @@ test(
 );
 
 test(
+	'Only one well formatted success message on scheduling file from widget page',
+	{
+		tag: ['@LPD-45614', '@LPD-45658'],
+	},
+	async ({
+		apiHelpers,
+		documentLibraryEditFilePage,
+		documentLibraryPage,
+		page,
+		site,
+	}) => {
+		const portletId = getRandomString();
+		const widgetDefinition = getWidgetDefinition({
+			id: portletId,
+			widgetName: 'com_liferay_document_library_web_portlet_DLPortlet',
+		});
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([widgetDefinition]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await page.goto(`/web/${site.name}${layout.friendlyUrlPath}`);
+
+		await documentLibraryPage.goToCreateNewFile();
+
+		const scheduleDate = `01/01/${new Date().getFullYear() + 1}`;
+		const title = getRandomString();
+
+		await documentLibraryEditFilePage.publishNewFileWithScheduleDate(
+			scheduleDate,
+			title
+		);
+
+		await expect(page.getByRole('link', {name: title})).toBeVisible();
+
+		const toastAlertContainer = page.locator('[id="ToastAlertContainer"]');
+
+		await expect(toastAlertContainer).not.toContainText(`<strong>`);
+		await expect(toastAlertContainer).toContainText(`Success:${title}`);
+
+		await expect(toastAlertContainer).toContainText(
+			new Intl.DateTimeFormat('en-US', {
+				day: 'numeric',
+				month: 'numeric',
+				year: '2-digit',
+			}).format(new Date(scheduleDate))
+		);
+
+		let firstAlertAppear = false;
+		let moreAlertsAppear = false;
+
+		await expect(async () => {
+			const toastAlertContainers = await page
+				.locator('.alert-success', {
+					hasText: `Success:${title}`,
+				})
+				.all();
+
+			if (toastAlertContainers.length >= 1) {
+				firstAlertAppear = true;
+			}
+
+			if (toastAlertContainers.length > 1) {
+				moreAlertsAppear = true;
+			}
+
+			expect(firstAlertAppear).toBe(true);
+			expect(moreAlertsAppear).toBe(false);
+		}).toPass();
+	}
+);
+
+test(
 	'Search in DL portlet does not show results in card view',
 	{tag: ['@LPD-31694', '@LPD-202909']},
 	async ({
@@ -338,7 +502,7 @@ test(
 				{name: 'Pets'},
 				{name: 'Furniture'},
 			],
-			site,
+			siteId: site.id,
 			vocabularyName,
 		});
 
@@ -401,7 +565,12 @@ test(
 		tag: '@LPD-42737',
 	},
 
-	async ({apiHelpers, documentLibraryPage, site}) => {
+	async ({
+		apiHelpers,
+		documentLibraryPage,
+		documentLibraryViewFileEntryPage,
+		site,
+	}) => {
 		const documentTitle = 'Title' + getRandomString();
 
 		const documentId =
@@ -428,7 +597,7 @@ test(
 				const categories = await createCategories({
 					apiHelpers,
 					categoryNames: [{name: 'Category' + getRandomString()}],
-					site,
+					siteId: site.id,
 					vocabularyName: getRandomString(),
 				});
 
@@ -501,12 +670,99 @@ test(
 		await test.step('Check that category, related asset and tag are visible in document view page', async () => {
 			await documentLibraryPage.goto(site.friendlyUrlPath);
 			await documentLibraryPage.goToViewFileEntry(documentTitle);
-			await documentLibraryPage.openInfoPanel(documentTitle, 'Details');
-			await documentLibraryPage.assertInfoPanelCategories([categoryName]);
-			await documentLibraryPage.assertInfoPanelRelatedAssets([
-				structuredContentTitle,
+			await documentLibraryViewFileEntryPage.openInfoPanel(
+				documentTitle,
+				'Details'
+			);
+			await documentLibraryViewFileEntryPage.assertInfoPanelCategories([
+				categoryName,
 			]);
-			await documentLibraryPage.assertInfoPanelTags([keyword]);
+			await documentLibraryViewFileEntryPage.assertInfoPanelRelatedAssets(
+				[structuredContentTitle]
+			);
+			await documentLibraryViewFileEntryPage.assertInfoPanelTags([
+				keyword,
+			]);
 		});
+	}
+);
+
+test(
+	'Back button works when viewing file entry history',
+	{
+		tag: '@LPD-44784',
+	},
+	async ({documentLibraryEditFilePage, documentLibraryPage, page, site}) => {
+		const title = getRandomString();
+		await documentLibraryEditFilePage.publishNewBasicFileEntry(
+			title,
+			site.friendlyUrlPath
+		);
+
+		await documentLibraryPage.goToViewHistoryFileEntry(title);
+
+		await page.getByRole('link', {name: 'Back'}).click();
+
+		await expect(
+			page.getByRole('button', {name: 'Versions'})
+		).not.toBeVisible();
+	}
+);
+
+test(
+	'A non-localizable field in a Document Type cannot be entered if accessed from a site that does not use the global site language',
+	{
+		tag: '@LPP-53324',
+	},
+
+	async ({
+		apiHelpers,
+		applicationsMenuPage,
+		documentLibraryEditDocumentTypesPage,
+		documentLibraryEditFilePage,
+		documentLibraryPage,
+		page,
+		site,
+		siteSettingsLocalizationPage,
+	}) => {
+		const dTypeTitle = getRandomString();
+
+		await documentLibraryEditDocumentTypesPage.createNewDLTypeWithTextFieldRequiredNonLocalizable(
+			dTypeTitle,
+			'/global'
+		);
+
+		await siteSettingsLocalizationPage.setCustomDefaultLanguage(
+			'Spanish (Spain)',
+			site.friendlyUrlPath
+		);
+
+		await siteSettingsLocalizationPage.disableAllLanguagesExceptSp(
+			site.friendlyUrlPath
+		);
+
+		await documentLibraryEditFilePage.goToNewFileDifferentType(
+			dTypeTitle,
+			site.friendlyUrlPath
+		);
+
+		await page.getByLabel('Title Required').fill(getRandomString());
+		await page.getByLabel('Text').fill(getRandomString());
+
+		await documentLibraryEditFilePage.publishButton.click();
+
+		await waitForAlert(
+			page,
+			'Success:Your request completed successfully.'
+		);
+
+		await apiHelpers.headlessSite.deleteSite(site.id);
+		await applicationsMenuPage.goToGlobalSite();
+		await documentLibraryPage.deleteDocumentType(dTypeTitle);
+
+		await waitForAlert(
+			page,
+			'Success:Your request completed successfully.'
+		);
 	}
 );

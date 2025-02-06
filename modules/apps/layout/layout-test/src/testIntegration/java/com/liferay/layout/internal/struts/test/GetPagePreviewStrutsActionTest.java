@@ -15,7 +15,6 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
-import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -23,7 +22,6 @@ import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
-import com.liferay.portal.kernel.service.ThemeLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.test.TestInfo;
@@ -35,7 +33,6 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
@@ -104,6 +101,7 @@ public class GetPagePreviewStrutsActionTest {
 	}
 
 	@Test
+	@TestInfo({"LPD-25388", "LPD-45279"})
 	public void testGetPagePreviewContentPageLayoutSetNoDefaultTheme()
 		throws Exception {
 
@@ -111,27 +109,37 @@ public class GetPagePreviewStrutsActionTest {
 
 		_addLayout(group, false, LayoutConstants.TYPE_CONTENT);
 
-		Theme theme = null;
+		_layoutSetLocalService.updateLookAndFeel(
+			group.getGroupId(), false, "minium_WAR_miniumtheme", null, null);
 
-		for (Theme curTheme :
-				ThemeLocalServiceUtil.getThemes(
-					TestPropsValues.getCompanyId())) {
-
-			if (!ArrayUtil.contains(
-					_DEFAULT_THEME_IDS, curTheme.getThemeId())) {
-
-				theme = curTheme;
-
-				break;
-			}
-		}
-
-		Assert.assertNotNull(theme);
+		_assertContainsContent("minium_WAR_miniumtheme");
 
 		_layoutSetLocalService.updateLookAndFeel(
-			group.getGroupId(), false, theme.getThemeId(), null, null);
+			group.getGroupId(), false, "speedwell_WAR_speedwelltheme", null,
+			null);
 
-		_assertContainsContent(theme.getThemeId());
+		_assertContainsContent("speedwell_WAR_speedwelltheme");
+	}
+
+	@Test
+	@TestInfo("LPD-45260")
+	public void testGetPagePreviewContentPageWithSpecificTheme()
+		throws Exception {
+
+		Group group = GroupTestUtil.addGroup();
+
+		Layout layout = _addLayout(group, false, LayoutConstants.TYPE_CONTENT);
+
+		_layoutSetLocalService.updateLookAndFeel(
+			group.getGroupId(), false, "dialect_WAR_dialecttheme", null, null);
+
+		_assertContainsContent("dialect_WAR_dialecttheme");
+
+		_layoutLocalService.updateLookAndFeel(
+			group.getGroupId(), layout.isPrivateLayout(), layout.getLayoutId(),
+			"classic_WAR_classictheme", "01", null);
+
+		_assertContainsContent("classic_WAR_classictheme");
 	}
 
 	@Test
@@ -169,7 +177,7 @@ public class GetPagePreviewStrutsActionTest {
 			mockHttpServletResponse.getStatus());
 	}
 
-	private void _addLayout(Group group, boolean privateLayout, String type)
+	private Layout _addLayout(Group group, boolean privateLayout, String type)
 		throws Exception {
 
 		ServiceContext serviceContext =
@@ -190,6 +198,8 @@ public class GetPagePreviewStrutsActionTest {
 			null, layout,
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
 				layout.getPlid()));
+
+		return layout;
 	}
 
 	private void _assertContainsContent() throws Exception {
@@ -259,14 +269,6 @@ public class GetPagePreviewStrutsActionTest {
 		_themeDisplay.setSiteGroupId(_group.getGroupId());
 		_themeDisplay.setUser(TestPropsValues.getUser());
 	}
-
-	private static final String[] _DEFAULT_THEME_IDS = {
-		PropsValues.CONTROL_PANEL_LAYOUT_REGULAR_THEME_ID,
-		PropsValues.DEFAULT_REGULAR_THEME_ID,
-		PropsValues.DEFAULT_GUEST_PUBLIC_LAYOUT_REGULAR_THEME_ID,
-		PropsValues.DEFAULT_USER_PRIVATE_LAYOUT_REGULAR_THEME_ID,
-		PropsValues.DEFAULT_USER_PUBLIC_LAYOUT_REGULAR_THEME_ID
-	};
 
 	@Inject
 	private CompanyLocalService _companyLocalService;

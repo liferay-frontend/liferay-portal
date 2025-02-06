@@ -10,6 +10,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -401,15 +402,24 @@ public class HtmlUtil {
 
 		link = StringUtil.trim(link);
 
-		if (link.indexOf(StringPool.COLON) == 10) {
-			String protocol = StringUtil.toLowerCase(link.substring(0, 10));
+		int index = link.indexOf(StringPool.COLON);
 
-			if (protocol.equals("javascript")) {
-				link = StringUtil.replaceFirst(link, CharPool.COLON, "%3a");
-			}
+		if (index < 10) {
+			return link;
 		}
 
-		return link;
+		String protocol = StringUtil.toLowerCase(
+			link.substring(index - 10, index));
+
+		if (!Objects.equals(protocol, "javascript")) {
+			return link;
+		}
+
+		String part1 = link.substring(0, index);
+		String part2 = StringUtil.replaceFirst(
+			link.substring(index), CharPool.COLON, "%3a");
+
+		return part1 + part2;
 	}
 
 	/**

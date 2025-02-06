@@ -3,7 +3,6 @@ definition {
 
 	property portal.release = "true";
 	property portal.upstream = "true";
-	property testray.component.names = "User Interface";
 	property testray.main.component.name = "User Interface";
 
 	setUp {
@@ -85,15 +84,6 @@ definition {
 				portletOption = "Configuration");
 
 			IFrame.selectConfigurationFrame();
-		}
-
-		task ("Then configuration iframe is present") {
-			AssertTextEquals(
-				key_navItem = "Sharing",
-				locator1 = "NavBar#NAV_ITEM_LINK",
-				value1 = "Sharing");
-
-			IFrame.closeFrame();
 		}
 
 		task ("When viewing the Look and Feel configuration") {

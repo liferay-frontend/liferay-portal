@@ -91,18 +91,17 @@ public class JUnitBatchBuildTestrayCaseResult
 			return "Failed prior to running test";
 		}
 
-		if (_isTestClassResultsSkipped()) {
-			return "Failed prior to running test";
-		}
-
-		if (!_isTestClassResultsFailing()) {
+		if (!_isTestClassResultsFailing() && !_isTestClassResultsSkipped()) {
 			return null;
 		}
 
 		Map<String, String> errorMessages = new HashMap<>();
+		List<String> skippedTestNames = new ArrayList<>();
 
 		for (TestResult testResult : getTestResults()) {
-			if ((testResult == null) || !testResult.isFailing()) {
+			if ((testResult == null) ||
+				(!testResult.isFailing() && !testResult.isSkipped())) {
+
 				continue;
 			}
 
@@ -129,21 +128,48 @@ public class JUnitBatchBuildTestrayCaseResult
 
 			String testName = testResult.getTestName();
 
-			errorMessages.put(
-				testName,
-				JenkinsResultsParserUtil.combine(testName, ": ", errorMessage));
+			if (testResult.isSkipped()) {
+				skippedTestNames.add(testName);
+			}
+			else {
+				errorMessages.put(
+					testName,
+					JenkinsResultsParserUtil.combine(
+						testName, ": ", errorMessage));
+			}
 		}
 
-		if (errorMessages.size() > 1) {
-			return JenkinsResultsParserUtil.combine(
-				String.valueOf(errorMessages.size()), " Failed tests: ",
+		StringBuilder sb = new StringBuilder();
+
+		if (!skippedTestNames.isEmpty()) {
+			sb.append(skippedTestNames.size());
+			sb.append(" Skipped ");
+			sb.append(
+				JenkinsResultsParserUtil.getNounForm(
+					skippedTestNames.size(), "tests", "test"));
+			sb.append("\n    ");
+			sb.append(
+				JenkinsResultsParserUtil.join("\n    ", skippedTestNames));
+		}
+
+		if (!errorMessages.isEmpty()) {
+			if (sb.length() > 0) {
+				sb.append("\n\n");
+			}
+
+			sb.append(errorMessages.size());
+			sb.append(" Failed ");
+			sb.append(
+				JenkinsResultsParserUtil.getNounForm(
+					errorMessages.size(), "tests", "test"));
+			sb.append("\n    ");
+			sb.append(
 				JenkinsResultsParserUtil.join(
-					", ", new ArrayList<>(errorMessages.keySet())));
+					"\n     ", new ArrayList<>(errorMessages.keySet())));
 		}
-		else if (errorMessages.size() == 1) {
-			List<String> values = new ArrayList<>(errorMessages.values());
 
-			return values.get(0);
+		if (sb.length() > 0) {
+			return sb.toString();
 		}
 
 		return "Failed for unknown reason";
@@ -180,6 +206,10 @@ public class JUnitBatchBuildTestrayCaseResult
 			}
 
 			return Status.FAILED;
+		}
+
+		if (_isTestClassResultsSkipped() && _isTestClassResultsFailing()) {
+			return Status.INCOMPLETE;
 		}
 
 		if (_isTestClassResultsSkipped()) {

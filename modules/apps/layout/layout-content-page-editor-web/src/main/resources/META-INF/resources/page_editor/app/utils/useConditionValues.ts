@@ -4,9 +4,12 @@
  */
 
 import {
-	CONDITION_ITEMS,
 	CONDITION_TYPE_ITEMS,
 	Condition,
+	FORM_FRAGMENT_CONDITION_ITEMS,
+	TYPE_VALUES,
+	USER_CONDITION_ITEMS,
+	convertOptionsToConditionValue,
 } from '../../plugins/page_rules/components/Condition';
 import {ConditionType} from '../../plugins/page_rules/components/RuleBuilderSection';
 import {config} from '../config/index';
@@ -18,12 +21,19 @@ type Role = {name: string; roleId: string};
 type User = {screenName: string; userId: string};
 type Segment = {name: string};
 
+type Item = {label: string; value: string};
+
 type Props = {
 	conditionType?: ConditionType;
 	conditions: Condition[];
+	items: Item[];
 };
 
-export default function useConditionValues({conditionType, conditions}: Props) {
+export default function useConditionValues({
+	conditionType,
+	conditions,
+	items,
+}: Props) {
 	const roles = useCache({
 		fetcher: () => RulesService.getRoles(),
 		key: [CACHE_KEYS.roles],
@@ -37,16 +47,10 @@ export default function useConditionValues({conditionType, conditions}: Props) {
 	const segments = config.availableSegmentsEntries;
 
 	return conditions.map((_condition, index) => {
-		const condition = getCondition(_condition.type, _condition.condition);
+		const condition = getCondition(_condition);
 		const prefix = getPrefix(index, conditionType);
-		const type = getType(_condition.type);
-		const value = getValue(
-			roles,
-			segments,
-			users,
-			_condition.condition,
-			_condition.value
-		);
+		const type = getType(_condition, items);
+		const value = getValue(roles, segments, users, _condition);
 
 		const description = getDescription(condition, prefix, type, value);
 
@@ -61,24 +65,31 @@ export default function useConditionValues({conditionType, conditions}: Props) {
 	});
 }
 
-function getCondition(
-	type?: Condition['type'],
-	condition?: Condition['condition']
-) {
-	if (!type || !condition) {
+function getCondition(condition: Condition) {
+	if (!condition.type || !condition.field) {
 		return '';
 	}
 
-	return CONDITION_ITEMS[type].find(({value}) => value === condition)?.label;
+	const conditionValue = convertOptionsToConditionValue(condition);
+
+	return condition.type === TYPE_VALUES.user
+		? USER_CONDITION_ITEMS.find(({value}) => value === conditionValue)
+				?.label
+		: FORM_FRAGMENT_CONDITION_ITEMS.find(
+				({value}) => value === condition.options?.type
+			)?.label;
 }
 
 function getDescription(
 	condition?: string,
 	prefix?: string,
 	type?: string,
-	value?: string
+	value?: string,
+	item?: string
 ) {
-	return [prefix, type, condition, value].filter((item) => item).join(' ');
+	return [prefix, type, condition, value, item]
+		.filter((item) => item)
+		.join(' ');
 }
 
 function getPrefix(index: number, conditionType?: ConditionType) {
@@ -95,26 +106,34 @@ function getPrefix(index: number, conditionType?: ConditionType) {
 		: Liferay.Language.get('or');
 }
 
-function getType(type: Condition['type']) {
-	if (!type) {
+function getType(condition: Condition, items: Item[]) {
+	if (!condition.type) {
 		return '';
 	}
 
-	return CONDITION_TYPE_ITEMS.find(({value}) => value === type)?.label;
+	return condition.type === TYPE_VALUES.user
+		? CONDITION_TYPE_ITEMS.find(({value}) => value === condition.type)
+				?.label
+		: items.find(({value}) => value === condition.field)?.label;
 }
 
 function getValue(
 	roles: Role[] | null,
 	segments: Record<string, Segment>,
 	users: User[] | null,
-	condition?: Condition['condition'],
-	value?: Condition['value']
+	condition?: Condition
 ) {
+	const value = condition?.options?.value;
+
 	if (!value) {
 		return '';
 	}
 
-	switch (condition) {
+	if (condition?.type === TYPE_VALUES.formFragment) {
+		return value;
+	}
+
+	switch (condition?.field) {
 		case 'role':
 			return roles?.find(({roleId}) => roleId === value)?.name;
 		case 'segment':

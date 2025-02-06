@@ -1455,17 +1455,27 @@ jdbc.default.connectionProperties=oracle.jdbc.ReadTimeout=0;oracle.net.CONNECT_T
 							srcFile="${tstamp.value}-dir/fixpack_documentation.json"
 						/>
 
-						<script language="javascript">
-							var json = project.getProperty("json.content");
+						<beanshell>
+							<![CDATA[
+								import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 
-							var fixpackDocumentation = JSON.parse(json);
+								import java.io.File;
 
-							var patchRequirements = fixpackDocumentation["patch"]["requirements"];
+								import org.json.JSONObject;
 
-							if (patchRequirements != null) {
-								project.setProperty("patch.requirements", patchRequirements);
-							}
-						</script>
+								JSONObject fixPackDocumentationJSONObject = new JSONObject(project.getProperty("json.content"));
+
+								JSONObject patchJSONObject = fixPackDocumentationJSONObject.getJSONObject("patch");
+
+								if (patchJSONObject != null) {
+									String patchRequirements = patchJSONObject.getString("requirements");
+
+									if (!JenkinsResultsParserUtil.isNullOrEmpty(patchRequirements)) {
+										project.setProperty("patch.requirements", patchRequirements);
+									}
+								}
+							]]>
+						</beanshell>
 
 						<antelope:stringutil property="patch.requirements" string="${patch.requirements}">
 							<antelope:replace regex="!" replacement="" />
@@ -1484,25 +1494,33 @@ jdbc.default.connectionProperties=oracle.jdbc.ReadTimeout=0;oracle.net.CONNECT_T
 							srcFile="${tstamp.value}-dir/hotfix.json"
 						/>
 
-						<script language="javascript">
-							var json = project.getProperty("json.content");
+						<beanshell>
+							<![CDATA[
+								import java.io.File;
 
-							var hotfix = JSON.parse(json);
+								import org.json.JSONObject;
 
-							var patchingToolVersion = hotfix["requirement"]["patching-tool-version"];
+								JSONObject hotfixJSONObject = new JSONObject(project.getProperty("json.content"));
 
-							if (patchingToolVersion != null) {
-								project.setProperty("patching.tool.version", patchingToolVersion);
-							}
+								JSONObject requirementJSONObject = hotfixJSONObject.getJSONObject("requirement");
 
-							var patchProductVersion = hotfix["requirement"]["product-version"];
+								if (requirementJSONObject != null){
+									String patchingToolVersion = requirementJSONObject.getString("patching-tool-version");
 
-							if (patchProductVersion != null) {
-								project.setProperty("patch.product.version", patchProductVersion);
-							}
+									if (!JenkinsResultsParserUtil.isNullOrEmpty(patchingToolVersion)) {
+										project.setProperty("patching.tool.version", patchingToolVersion);
+									}
 
-							project.setProperty("patch.requirements", "");
-						</script>
+									String patchProductVersion = requirementJSONObject.getString("product-version");
+
+									if (!JenkinsResultsParserUtil.isNullOrEmpty(patchProductVersion)) {
+										project.setProperty("patch.product.version", patchProductVersion);
+									}
+								}
+
+								project.setProperty("patch.requirements", "");
+							]]>
+						</beanshell>
 					</then>
 				</elseif>
 			</if>
@@ -2258,7 +2276,7 @@ war.path=${app.server.portal.dir}/</echo>
 				<then>
 					<local name="poshi.java.jdk.opts" />
 
-					<get-java-jdk-home version="8" />
+					<get-java-jdk-home version="17" />
 
 					<get-poshi-java-jdk-opts />
 
@@ -6911,7 +6929,7 @@ log.sanitizer.enabled=false</echo>
 					</then>
 				</elseif>
 				<else>
-					<var name="app.server.tomcat.version" value="9.0.97" />
+					<var name="app.server.tomcat.version" value="9.0.98" />
 				</else>
 			</if>
 
@@ -6983,8 +7001,6 @@ log.sanitizer.enabled=false</echo>
 
 	<macrodef name="set-up-search-engine">
 		<sequential>
-			<propertycopy from="search.engine[${env.CI_TEST_SUITE}]" name="suite.search.engine" silent="true" />
-
 			<if>
 				<not>
 					<isset property="app.server.name" />
@@ -6997,32 +7013,65 @@ log.sanitizer.enabled=false</echo>
 			<get-testcase-property property.name="remote.elasticsearch.enabled" />
 			<get-testcase-property property.name="solr.enabled" />
 
-			<propertycopy from="search.engine[${env.CI_TEST_SUITE}]" name="suite.search.engine" silent="true" />
+			<condition else="${env.TEST_BATCH_NAME}" property="test.batch.name" value="${test.batch.name}">
+				<isset property="test.batch.name" />
+			</condition>
 
 			<if>
 				<or>
-					<equals arg1="${solr.enabled}" arg2="true" />
-					<equals arg1="${suite.search.engine}" arg2="solr" />
+					<contains string="${test.batch.name}" substring="opensearch2" />
+					<contains string="${test.batch.name}" substring="remote-elasticsearch" />
+					<contains string="${test.batch.name}" substring="solr" />
 				</or>
 				<then>
-					<ant antfile="build-test-solr.xml" target="start-solr" />
+					<if>
+						<equals arg1="${test.batch.name}" arg2="solr" />
+						<then>
+							<ant antfile="build-test-solr.xml" target="start-solr" />
+						</then>
+						<elseif>
+							<contains string="${test.batch.name}" substring="opensearch2" />
+							<then>
+								<ant antfile="build-test-opensearch2.xml" target="start-opensearch" />
+							</then>
+						</elseif>
+						<elseif>
+							<contains string="${test.batch.name}" substring="remote-elasticsearch" />
+							<then>
+								<ant antfile="build-test-elasticsearch7.xml" target="start-elasticsearch" />
+							</then>
+						</elseif>
+					</if>
 				</then>
-				<elseif>
-					<contains string="${suite.search.engine}" substring="opensearch2" />
-					<then>
-						<ant antfile="build-test-opensearch2.xml" target="start-opensearch" />
-					</then>
-				</elseif>
-				<elseif>
-					<or>
-						<contains string="${suite.search.engine}" substring="remote-elasticsearch" />
-						<equals arg1="${app.server.type}" arg2="websphere" />
-						<istrue value="${remote.elasticsearch.enabled}" />
-					</or>
-					<then>
-						<ant antfile="build-test-elasticsearch7.xml" target="start-elasticsearch" />
-					</then>
-				</elseif>
+				<else>
+					<propertycopy from="search.engine[${env.CI_TEST_SUITE}]" name="suite.search.engine" silent="true" />
+
+					<if>
+						<or>
+							<equals arg1="${solr.enabled}" arg2="true" />
+							<equals arg1="${suite.search.engine}" arg2="solr" />
+						</or>
+						<then>
+							<ant antfile="build-test-solr.xml" target="start-solr" />
+						</then>
+						<elseif>
+							<contains string="${suite.search.engine}" substring="opensearch2" />
+							<then>
+								<ant antfile="build-test-opensearch2.xml" target="start-opensearch" />
+							</then>
+						</elseif>
+						<elseif>
+							<or>
+								<contains string="${suite.search.engine}" substring="remote-elasticsearch" />
+								<equals arg1="${app.server.type}" arg2="websphere" />
+								<istrue value="${remote.elasticsearch.enabled}" />
+							</or>
+							<then>
+								<ant antfile="build-test-elasticsearch7.xml" target="start-elasticsearch" />
+							</then>
+						</elseif>
+					</if>
+				</else>
 			</if>
 
 			<get-testcase-property property.name="delete.sidecar.bundle" />
@@ -7369,9 +7418,8 @@ org.apache.catalina.startup.ClassLoaderFactory.level=INFO]]>
 						/>
 					</delete>
 
-					<get-java-jdk-bundle-version test.batch.name="${test.batch.name}" />
-
 					<get-java-jdk-bundle-type test.batch.name="${test.batch.name}" />
+					<get-java-jdk-bundle-version test.batch.name="${test.batch.name}" />
 
 					<get-java-jdk-home type="${java.jdk.bundle.type}" version="${java.jdk.bundle.version}" />
 					<get-java-jdk-opts type="${java.jdk.bundle.type}" version="${java.jdk.bundle.version}" />
@@ -7526,6 +7574,8 @@ org.apache.catalina.startup.ClassLoaderFactory.level=INFO]]>
 		<text name="run.options" optional="true" />
 
 		<sequential>
+			<lstopwatch action="start" name="start.docker.container.@{name}" />
+
 			<local name="docker.network.run.option" />
 			<local name="docker.start.script" />
 
@@ -7537,8 +7587,11 @@ org.apache.catalina.startup.ClassLoaderFactory.level=INFO]]>
 
 			<if>
 				<or>
-					<contains string="@{name}" substring="orcllinux" />
+					<contains string="@{name}" substring="amazonlinux2022" />
 					<contains string="@{name}" substring="debian" />
+					<contains string="@{name}" substring="orcllinux" />
+					<contains string="@{name}" substring="redhat" />
+					<contains string="@{name}" substring="rockylinux" />
 				</or>
 				<then>
 					<echo file="${docker.start.script}">
@@ -7620,6 +7673,8 @@ ${docker.start.error}</fail>
 			<echo>${docker.start.output}</echo>
 
 			<delete file="${docker.start.script}" />
+
+			<lstopwatch action="total" name="start.docker.container.@{name}" />
 		</sequential>
 	</macrodef>
 
@@ -7813,9 +7868,83 @@ ${docker.start.error}</fail>
 
 			<get-host-git-dir />
 
+			<get-java-jdk-bundle-type test.batch.name="${test.batch.name}" />
+			<get-java-jdk-bundle-version test.batch.name="${test.batch.name}" />
+
+			<get-java-jdk-home type="${java.jdk.bundle.type}" version="${java.jdk.bundle.version}" />
+
+			<if>
+				<isset property="java.jdk.home" />
+				<then>
+					<exec executable="docker">
+						<arg line="pull ${operating.system.docker.image}" />
+					</exec>
+
+					<exec executable="docker" outputproperty="docker.inspect.output">
+						<arg line="inspect ${operating.system.docker.image}" />
+					</exec>
+
+					<beanshell>
+						<![CDATA[
+							import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
+
+							import org.json.JSONArray;
+							import org.json.JSONObject;
+
+							String dockerInspectOutput = project.getProperty("docker.inspect.output");
+
+							JSONArray dockerInspectOutputJSONArray = new JSONArray(dockerInspectOutput);
+
+							JSONObject dockerInspectOutputJSONObject = dockerInspectOutputJSONArray.getJSONObject(0);
+
+							if (dockerInspectOutputJSONObject.has("Config")) {
+								JSONObject configJSONObject = dockerInspectOutputJSONObject.getJSONObject("Config");
+
+								if (configJSONObject.has("Env")) {
+									JSONArray envJSONArray = configJSONObject.getJSONArray("Env");
+
+									String javaHome = null;
+									String path = null;
+
+									for (int i = 0; i < envJSONArray.length(); i++) {
+										String env = envJSONArray.getString(i);
+
+										if (env.contains("JAVA_HOME")) {
+											javaHome = env.replace("JAVA_HOME=", "");
+
+											continue;
+										}
+
+										if (env.contains("PATH")) {
+											path = env.replace("PATH=", "");
+										}
+									}
+
+									String javaJDKHome = project.getProperty("java.jdk.home");
+
+									if (!JenkinsResultsParserUtil.isNullOrEmpty(javaJDKHome) &&
+										!JenkinsResultsParserUtil.isNullOrEmpty(path) &&
+										!javaHome.equals(javaJDKHome)) {
+
+										path = javaJDKHome + "/bin:" + path;
+
+										project.setProperty(
+											"docker.java.run.options",
+											" -e PATH=" + path + " -e JAVA_HOME=" + javaJDKHome);
+									}
+								}
+							}
+						]]>
+					</beanshell>
+				</then>
+			</if>
+
+			<property name="docker.java.run.options" value="" />
+
 			<start-docker-container image="${operating.system.docker.image}" name="${operating.system.host}" options="${operating.system.docker.os.options}">\
 				--mount type=bind,source=${host.git.dir}/${portal.dir.name},target=${portal.dir} \
 				--network-alias=${operating.system.host.alias} \
+				${docker.java.run.options} \
 				${operating.system.docker.run.options} \
 			</start-docker-container>
 		</sequential>
@@ -7957,9 +8086,8 @@ ${docker.start.error}</fail>
 				app.server.bundle.index="@{app.server.bundle.index}"
 			/>
 
-			<get-java-jdk-bundle-version test.batch.name="${test.batch.name}" />
-
 			<get-java-jdk-bundle-type test.batch.name="${test.batch.name}" />
+			<get-java-jdk-bundle-version test.batch.name="${test.batch.name}" />
 
 			<get-java-jdk-home type="${java.jdk.bundle.type}" version="${java.jdk.bundle.version}" />
 
@@ -10244,9 +10372,11 @@ org.apache.catalina.tribes.level = FINE]]>
 			</else>
 		</if>
 
-		<execute dir="${module.base.dir}">
-			mvn clean package ${build.profiles}
-		</execute>
+		<exec dir="${module.base.dir}" executable="/bin/bash" failonerror="true" logError="true">
+			<env key="MAVEN_OPTS" value="-XX:+IgnoreUnrecognizedVMOptions --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED" />
+			<arg value="-c" />
+			<arg value="mvn clean package ${build.profiles}" />
+		</exec>
 
 		<copy
 			flatten="true"
@@ -10617,6 +10747,21 @@ org.apache.catalina.tribes.level = FINE]]>
 				</unzip>
 			</then>
 		</if>
+	</target>
+
+	<target name="enable-glowroot-for-tomcat">
+		<sequential>
+			<if>
+				<equals arg1="${app.server.type}" arg2="tomcat" />
+				<then>
+					<echo append="true" file="${app.server.tomcat.dir}/bin/setenv.sh">
+GLOWROOT_OPTS="-javaagent:${CATALINA_HOME}/../glowroot/glowroot.jar -Dglowroot.enabled=true"
+
+CATALINA_OPTS="${CATALINA_OPTS} ${GLOWROOT_OPTS}"
+					</echo>
+				</then>
+			</if>
+		</sequential>
 	</target>
 
 	<target name="execute-command-from-gogo-shell">
@@ -16557,9 +16702,8 @@ CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote -Dcom.sun.managemen
 	</target>
 
 	<target name="start-app-server-tomcat-simple">
-		<get-java-jdk-bundle-version test.batch.name="${test.batch.name}" />
-
 		<get-java-jdk-bundle-type test.batch.name="${test.batch.name}" />
+		<get-java-jdk-bundle-version test.batch.name="${test.batch.name}" />
 
 		<get-java-jdk-home type="${java.jdk.bundle.type}" version="${java.jdk.bundle.version}" />
 
@@ -16577,6 +16721,8 @@ CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote -Dcom.sun.managemen
 	</target>
 
 	<target name="start-docker-containers">
+		<lstopwatch action="start" name="start.docker.containers" />
+
 		<get-database-property property.name="database.docker.image" />
 
 		<if>
@@ -16609,6 +16755,8 @@ CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote -Dcom.sun.managemen
 				<start-docker-browser />
 			</then>
 		</if>
+
+		<lstopwatch action="total" name="start.docker.containers" />
 	</target>
 
 	<target name="start-docker-database">
@@ -16758,9 +16906,8 @@ CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote -Dcom.sun.managemen
 
 		<prepare-database-upgrade-properties />
 
-		<get-java-jdk-bundle-version test.batch.name="${test.batch.name}" />
-
 		<get-java-jdk-bundle-type test.batch.name="${test.batch.name}" />
+		<get-java-jdk-bundle-version test.batch.name="${test.batch.name}" />
 
 		<get-java-jdk-home type="${java.jdk.bundle.type}" version="${java.jdk.bundle.version}" />
 

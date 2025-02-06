@@ -494,6 +494,18 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
+	public void testLocalVariableTypeInferences() throws Exception {
+		test(
+			SourceProcessorTestParameters.create(
+				"LocalVariableTypeInferences.testjava"
+			).addExpectedMessage(
+				"Avoid using \"var\" to declare variable", 17
+			).addExpectedMessage(
+				"Avoid using \"var\" to declare variable", 25
+			));
+	}
+
+	@Test
 	public void testLogLevels() throws Exception {
 		test(
 			SourceProcessorTestParameters.create(

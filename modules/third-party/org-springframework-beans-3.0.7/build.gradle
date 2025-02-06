@@ -20,6 +20,5 @@ patch {
 	}
 
 	fileNames "org/springframework/beans/CachedIntrospectionResults.java"
-
 	originalLibModuleName = "spring-beans"
 }

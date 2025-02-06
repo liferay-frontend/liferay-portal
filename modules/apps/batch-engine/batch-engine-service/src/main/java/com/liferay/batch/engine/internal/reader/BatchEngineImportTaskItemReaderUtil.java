@@ -17,7 +17,6 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.liferay.batch.engine.action.ItemReaderPostAction;
 import com.liferay.batch.engine.model.BatchEngineImportTask;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -66,13 +65,13 @@ public class BatchEngineImportTaskItemReaderUtil {
 			keepCreatorInfo = true;
 		}
 
-		Set<String> restrictedFieldNames = _getRestrictedFieldNames(
+		Set<String> batchRestrictFields = _getBatchRestrictFields(
 			batchEngineImportTask);
 
 		for (Map.Entry<String, Object> entry : fieldNameValueMap.entrySet()) {
 			String name = entry.getKey();
 
-			if (restrictedFieldNames.contains(name)) {
+			if (batchRestrictFields.contains(name)) {
 				continue;
 			}
 
@@ -223,6 +222,26 @@ public class BatchEngineImportTaskItemReaderUtil {
 
 	}
 
+	private static Set<String> _getBatchRestrictFields(
+		BatchEngineImportTask batchEngineImportTask) {
+
+		Map<String, Serializable> parameters =
+			batchEngineImportTask.getParameters();
+
+		if (parameters == null) {
+			return new HashSet<>();
+		}
+
+		String batchRestrictFields = MapUtil.getString(
+			parameters, "batchRestrictFields");
+
+		if (Validator.isBlank(batchRestrictFields)) {
+			return new HashSet<>();
+		}
+
+		return SetUtil.fromArray(StringUtil.split(batchRestrictFields));
+	}
+
 	private static ObjectMapper _getObjectMapper(
 			Field field, boolean keepCreatorInfo)
 		throws IllegalAccessException, InstantiationException {
@@ -263,30 +282,6 @@ public class BatchEngineImportTaskItemReaderUtil {
 				registerModule(simpleModule);
 			}
 		};
-	}
-
-	private static Set<String> _getRestrictedFieldNames(
-		BatchEngineImportTask batchEngineImportTask) {
-
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-29367")) {
-			return new HashSet<>();
-		}
-
-		Map<String, Serializable> parameters =
-			batchEngineImportTask.getParameters();
-
-		if (parameters == null) {
-			return new HashSet<>();
-		}
-
-		String restrictedFieldNames = MapUtil.getString(
-			parameters, "restrictedFieldNames");
-
-		if (Validator.isBlank(restrictedFieldNames)) {
-			return new HashSet<>();
-		}
-
-		return SetUtil.fromArray(StringUtil.split(restrictedFieldNames));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

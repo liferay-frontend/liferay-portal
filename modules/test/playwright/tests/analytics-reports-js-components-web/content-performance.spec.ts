@@ -5,7 +5,6 @@
 
 import {Page, expect, mergeTests} from '@playwright/test';
 
-import {featureFlagsTest} from '../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../fixtures/isolatedSiteTest';
 import {loginAnalyticsCloudTest} from '../../fixtures/loginAnalyticsCloudTest';
 import {loginTest} from '../../fixtures/loginTest';
@@ -20,7 +19,7 @@ import {
 import {blogsPagesTest} from '../blogs-web/fixtures/blogsPagesTest';
 import {contentDashboardPagesTest} from '../content-dashboard-web/fixtures/contentDashboardPagesTest';
 import {journalPagesTest} from '../journal-web/fixtures/journalPagesTest';
-import {JournalPage} from '../journal-web/pages/JournalPage';
+import {JournalEditArticlePage} from '../journal-web/pages/JournalEditArticlePage';
 import {createDataSource} from '../osb-faro-web/utils/data-source';
 import {acceptsCookiesBanner} from '../osb-faro-web/utils/portal';
 
@@ -55,12 +54,12 @@ async function createAssetLibrary({name, page}: {name: string; page: Page}) {
 async function createWebContentIntoAssetLibrary({
 	articleTitle,
 	assetLibraryName,
-	journalPage,
+	journalEditArticlePage,
 	page,
 }: {
 	articleTitle: string;
 	assetLibraryName: string;
-	journalPage: JournalPage;
+	journalEditArticlePage: JournalEditArticlePage;
 	page: Page;
 }) {
 	await page.getByRole('link', {name: assetLibraryName}).click();
@@ -71,18 +70,7 @@ async function createWebContentIntoAssetLibrary({
 
 	await page.getByRole('menuitem', {name: 'Basic Web Content'}).click();
 
-	await journalPage.fillArticleData(articleTitle, getRandomString());
-
-	await page.evaluate((articleTitle) => {
-		const element = document.querySelector(
-			'[data-field-name=titleMapAsXML]'
-		);
-		if (element) {
-			element.setAttribute('value', articleTitle);
-		}
-	}, articleTitle);
-
-	await journalPage.publishArticle();
+	await journalEditArticlePage.createAndPublishBasicArticle(articleTitle);
 
 	await expect(
 		page.locator(`dd[data-title="${articleTitle}"]`)
@@ -113,9 +101,6 @@ async function goToAssetLibraries(page: Page) {
 export const test = mergeTests(
 	blogsPagesTest,
 	contentDashboardPagesTest,
-	featureFlagsTest({
-		'LPD-28830': true,
-	}),
 	isolatedSiteTest,
 	journalPagesTest,
 	loginAnalyticsCloudTest(),
@@ -162,7 +147,7 @@ test('Displays empty state when Analytics Cloud is not connected', async ({
 
 test('Displays empty state when asset belongs to an asset library with no site connected', async ({
 	contentDashboardPage,
-	journalPage,
+	journalEditArticlePage,
 	page,
 	site,
 }) => {
@@ -180,7 +165,7 @@ test('Displays empty state when asset belongs to an asset library with no site c
 	await createWebContentIntoAssetLibrary({
 		articleTitle,
 		assetLibraryName,
-		journalPage,
+		journalEditArticlePage,
 		page,
 	});
 

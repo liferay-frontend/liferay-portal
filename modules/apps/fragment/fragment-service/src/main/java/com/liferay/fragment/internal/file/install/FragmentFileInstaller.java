@@ -78,7 +78,15 @@ public class FragmentFileInstaller implements FileInstaller {
 	@Override
 	public URL transformURL(File file) throws Exception {
 		try {
+			if (_log.isInfoEnabled()) {
+				_log.info("Deploying " + file.getName());
+			}
+
 			_deploy(file);
+
+			if (_log.isInfoEnabled()) {
+				_log.info("Deployed " + file.getName() + " successfully");
+			}
 		}
 		finally {
 			file.delete();

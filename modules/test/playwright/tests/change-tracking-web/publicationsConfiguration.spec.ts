@@ -10,14 +10,12 @@ import {changeTrackingPagesTest} from '../../fixtures/changeTrackingPagesTest';
 import {isolatedSiteTest} from '../../fixtures/isolatedSiteTest';
 import getRandomString from '../../utils/getRandomString';
 import performLogin, {performLogout} from '../../utils/performLogin';
-import {waitForAlert} from '../../utils/waitForAlert';
-import {journalPagesTest} from '../journal-web/fixtures/journalPagesTest';
+import getBasicWebContentStructureId from '../../utils/structured-content/getBasicWebContentStructureId';
 
 export const test = mergeTests(
 	changeTrackingPagesTest,
 	apiHelpersTest,
-	isolatedSiteTest,
-	journalPagesTest
+	isolatedSiteTest
 );
 
 const dataFields = [
@@ -74,17 +72,15 @@ test.afterEach(async ({changeTrackingPage}) => {
 	await changeTrackingPage.toggleShowAllDataConfiguration(false);
 });
 
-test.beforeEach(async ({journalEditArticlePage, page, site}) => {
-	await journalEditArticlePage.goto({siteUrl: site.friendlyUrlPath});
+test.beforeEach(async ({apiHelpers, site}) => {
+	const basicWebContentStructureId =
+		await getBasicWebContentStructureId(apiHelpers);
 
-	await journalEditArticlePage.fillTitle(journalArticleTitle);
-
-	await page.getByRole('button', {name: 'Publish'}).click();
-
-	await waitForAlert(
-		page,
-		`Success:${journalArticleTitle} was created successfully.`
-	);
+	await apiHelpers.jsonWebServicesJournal.addWebContent({
+		ddmStructureId: basicWebContentStructureId,
+		groupId: site.id,
+		titleMap: {en_US: journalArticleTitle},
+	});
 });
 
 test('LPD-29282 Assert administrator can not see the hidden fields if show all data configuration is disabled', async ({
@@ -94,7 +90,7 @@ test('LPD-29282 Assert administrator can not see the hidden fields if show all d
 }) => {
 	await changeTrackingPage.toggleShowAllDataConfiguration(false);
 
-	await changeTrackingPage.goToReviewChanges(ctCollection.name);
+	await changeTrackingPage.goToReviewChanges(ctCollection.body.name);
 
 	await changeTrackingPage.reviewChange(journalArticleTitle);
 
@@ -116,7 +112,7 @@ test('LPD-29282 Assert administrator can see the hidden fields if show all data 
 }) => {
 	await changeTrackingPage.toggleShowAllDataConfiguration(true);
 
-	await changeTrackingPage.goToReviewChanges(ctCollection.name);
+	await changeTrackingPage.goToReviewChanges(ctCollection.body.name);
 
 	await changeTrackingPage.reviewChange(journalArticleTitle);
 
@@ -142,7 +138,7 @@ test('LPD-29282 Assert publications user can not see the hidden fields if show a
 	const user = await changeTrackingPage.addUserWithPublicationsUserRole();
 
 	await changeTrackingPage.addUserToPublication(
-		ctCollection.name,
+		ctCollection.body.name,
 		'Viewer',
 		user
 	);
@@ -151,7 +147,7 @@ test('LPD-29282 Assert publications user can not see the hidden fields if show a
 
 	await performLogin(page, user.alternateName);
 
-	await changeTrackingPage.goToReviewChanges(ctCollection.name);
+	await changeTrackingPage.goToReviewChanges(ctCollection.body.name);
 
 	await changeTrackingPage.reviewChange(journalArticleTitle);
 

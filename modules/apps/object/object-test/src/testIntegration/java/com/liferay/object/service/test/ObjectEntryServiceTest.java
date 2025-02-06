@@ -95,7 +95,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Marco Leo
  */
-@FeatureFlags("LPS-187142")
+@FeatureFlags("LPD-34594")
 @RunWith(Arquillian.class)
 public class ObjectEntryServiceTest {
 
@@ -408,7 +408,7 @@ public class ObjectEntryServiceTest {
 
 		Node objectDefinitionRootNode = _tree.getRootNode();
 
-		Tree objectEntryTree = TreeTestUtil.createObjectEntryTree(
+		Tree tree = TreeTestUtil.createObjectEntryTree(
 			"1", _objectDefinitionLocalService, _objectEntryLocalService,
 			_objectFieldLocalService, _objectRelationshipLocalService,
 			objectDefinitionRootNode.getPrimaryKey());
@@ -426,7 +426,7 @@ public class ObjectEntryServiceTest {
 			ActionKeys.DELETE);
 
 		TreeTestUtil.forEachNodeObjectEntry(
-			objectEntryTree.iterator(TreeConstants.ITERATOR_TYPE_POST_ORDER),
+			tree.iterator(TreeConstants.ITERATOR_TYPE_POST_ORDER),
 			_objectEntryLocalService,
 			objectEntry -> Assert.assertNotNull(
 				_objectEntryService.deleteObjectEntry(
@@ -441,12 +441,12 @@ public class ObjectEntryServiceTest {
 
 		// Root individual permissions must be inherited
 
-		objectEntryTree = TreeTestUtil.createObjectEntryTree(
+		tree = TreeTestUtil.createObjectEntryTree(
 			"1", _objectDefinitionLocalService, _objectEntryLocalService,
 			_objectFieldLocalService, _objectRelationshipLocalService,
 			objectDefinitionRootNode.getPrimaryKey());
 
-		Node objectEntryRootNode = objectEntryTree.getRootNode();
+		Node objectEntryRootNode = tree.getRootNode();
 
 		_resourcePermissionLocalService.setResourcePermissions(
 			TestPropsValues.getCompanyId(),
@@ -456,7 +456,7 @@ public class ObjectEntryServiceTest {
 			role.getRoleId(), new String[] {ActionKeys.DELETE});
 
 		TreeTestUtil.forEachNodeObjectEntry(
-			objectEntryTree.iterator(TreeConstants.ITERATOR_TYPE_POST_ORDER),
+			tree.iterator(TreeConstants.ITERATOR_TYPE_POST_ORDER),
 			_objectEntryLocalService,
 			objectEntry -> Assert.assertNotNull(
 				_objectEntryService.deleteObjectEntry(
@@ -467,12 +467,12 @@ public class ObjectEntryServiceTest {
 
 		_setUser(_adminUser);
 
-		objectEntryTree = TreeTestUtil.createObjectEntryTree(
+		tree = TreeTestUtil.createObjectEntryTree(
 			"1", _objectDefinitionLocalService, _objectEntryLocalService,
 			_objectFieldLocalService, _objectRelationshipLocalService,
 			_rootObjectDefinition.getRootObjectDefinitionId());
 
-		objectEntryRootNode = objectEntryTree.getRootNode();
+		objectEntryRootNode = tree.getRootNode();
 
 		_resourcePermissionLocalService.setResourcePermissions(
 			TestPropsValues.getCompanyId(),
@@ -484,7 +484,7 @@ public class ObjectEntryServiceTest {
 		_setUser(_user);
 
 		TreeTestUtil.forEachNodeObjectEntry(
-			objectEntryTree.iterator(TreeConstants.ITERATOR_TYPE_POST_ORDER),
+			tree.iterator(TreeConstants.ITERATOR_TYPE_POST_ORDER),
 			_objectEntryLocalService,
 			objectEntry -> {
 				if (objectEntry.getRootObjectEntryId() ==
@@ -581,7 +581,7 @@ public class ObjectEntryServiceTest {
 
 		Node objectDefinitionRootNode = _tree.getRootNode();
 
-		Tree objectEntryTree = TreeTestUtil.createObjectEntryTree(
+		Tree tree = TreeTestUtil.createObjectEntryTree(
 			"1", _objectDefinitionLocalService, _objectEntryLocalService,
 			_objectFieldLocalService, _objectRelationshipLocalService,
 			objectDefinitionRootNode.getPrimaryKey());
@@ -599,7 +599,7 @@ public class ObjectEntryServiceTest {
 			ActionKeys.VIEW);
 
 		TreeTestUtil.forEachNodeObjectEntry(
-			objectEntryTree.iterator(), _objectEntryLocalService,
+			tree.iterator(), _objectEntryLocalService,
 			objectEntry -> Assert.assertNotNull(
 				_objectEntryService.getObjectEntry(
 					objectEntry.getObjectEntryId())));
@@ -613,7 +613,7 @@ public class ObjectEntryServiceTest {
 
 		// Root individual permissions must be inherited
 
-		Node objectEntryRootNode = objectEntryTree.getRootNode();
+		Node objectEntryRootNode = tree.getRootNode();
 
 		_resourcePermissionLocalService.setResourcePermissions(
 			TestPropsValues.getCompanyId(),
@@ -623,7 +623,7 @@ public class ObjectEntryServiceTest {
 			role.getRoleId(), new String[] {ActionKeys.VIEW});
 
 		TreeTestUtil.forEachNodeObjectEntry(
-			objectEntryTree.iterator(), _objectEntryLocalService,
+			tree.iterator(), _objectEntryLocalService,
 			objectEntry -> Assert.assertNotNull(
 				_objectEntryService.getObjectEntry(
 					objectEntry.getObjectEntryId())));
@@ -643,7 +643,7 @@ public class ObjectEntryServiceTest {
 		_setUser(_user);
 
 		TreeTestUtil.forEachNodeObjectEntry(
-			objectEntryTree.iterator(), _objectEntryLocalService,
+			tree.iterator(), _objectEntryLocalService,
 			objectEntry -> {
 				if (objectEntry.getRootObjectEntryId() ==
 						objectEntry.getObjectEntryId()) {

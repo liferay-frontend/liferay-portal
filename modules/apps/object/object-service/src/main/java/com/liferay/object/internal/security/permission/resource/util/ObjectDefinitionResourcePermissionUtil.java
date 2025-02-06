@@ -11,6 +11,7 @@ import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.model.ObjectAction;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectActionLocalService;
+import com.liferay.object.service.persistence.ObjectActionPersistence;
 import com.liferay.object.service.persistence.ObjectDefinitionPersistence;
 import com.liferay.object.tree.Node;
 import com.liferay.object.tree.ObjectDefinitionTreeFactory;
@@ -18,14 +19,19 @@ import com.liferay.object.tree.Tree;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.ResourceActions;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -39,16 +45,22 @@ public class ObjectDefinitionResourcePermissionUtil {
 			ObjectDefinitionPersistence objectDefinitionPersistence,
 			ObjectDefinitionTreeFactory objectDefinitionTreeFactory,
 			PortletLocalService portletLocalService,
-			ResourceActions resourceActions)
+			ResourceActions resourceActions,
+			List<ObjectAction> standaloneObjectActions)
 		throws Exception {
 
 		if (objectDefinition.isRootDescendantNode()) {
 			return;
 		}
 
+		List<String> rootDescendantNodeObjectDefinitionClassNames =
+			new ArrayList<>();
+
 		Document document = _readDocument(
 			objectActionLocalService, objectDefinition,
-			objectDefinitionPersistence, objectDefinitionTreeFactory);
+			objectDefinitionPersistence, objectDefinitionTreeFactory,
+			rootDescendantNodeObjectDefinitionClassNames,
+			standaloneObjectActions);
 
 		resourceActions.populateModelResources(document);
 
@@ -62,8 +74,67 @@ public class ObjectDefinitionResourcePermissionUtil {
 				document);
 		}
 
+		for (String rootDescendantNodeObjectDefinitionClassName :
+				rootDescendantNodeObjectDefinitionClassNames) {
+
+			resourceActions.removeModelResource(
+				rootDescendantNodeObjectDefinitionClassName,
+				ActionKeys.PERMISSIONS);
+		}
+
 		_objectDefinitionResourceActionDocumentsMap.put(
 			objectDefinition, document);
+	}
+
+	public static void populateRootDescendantNodeModelResources(
+			ObjectActionPersistence objectActionPersistence,
+			ObjectDefinitionPersistence objectDefinitionPersistence,
+			ResourceActions resourceActions,
+			ObjectDefinition rootDescendantNodeObjectDefinition,
+			long rootObjectDefinitionId)
+		throws Exception {
+
+		if (!rootDescendantNodeObjectDefinition.isApproved() ||
+			!rootDescendantNodeObjectDefinition.isRootDescendantNode()) {
+
+			return;
+		}
+
+		String objectActionPermissionKeys = _getObjectActionPermissionKeys(
+			null, rootDescendantNodeObjectDefinition.getObjectDefinitionId(),
+			objectActionPersistence.findByO_A_OATK(
+				rootDescendantNodeObjectDefinition.getObjectDefinitionId(),
+				true, ObjectActionTriggerConstants.KEY_STANDALONE));
+
+		if (Validator.isNull(objectActionPermissionKeys)) {
+			return;
+		}
+
+		ObjectDefinition rootObjectDefinition =
+			objectDefinitionPersistence.findByPrimaryKey(
+				rootObjectDefinitionId);
+
+		resourceActions.populateModelResources(
+			SAXReaderUtil.read(
+				StringUtil.replace(
+					StringUtil.read(
+						ObjectDefinitionResourcePermissionUtil.class.
+							getClassLoader(),
+						"resource-actions/resource-actions-root-descendant-" +
+							"node.xml.tpl"),
+					new String[] {
+						"[$MODEL_NAME$]", "[$PERMISSIONS_GUEST_UNSUPPORTED$]",
+						"[$PERMISSIONS_SUPPORTS$]", "[$PORTLET_NAME$]"
+					},
+					new String[] {
+						rootDescendantNodeObjectDefinition.getClassName(),
+						objectActionPermissionKeys, objectActionPermissionKeys,
+						rootObjectDefinition.getPortletId()
+					})));
+
+		resourceActions.removeModelResource(
+			rootDescendantNodeObjectDefinition.getClassName(),
+			ActionKeys.PERMISSIONS);
 	}
 
 	public static void removeResourceActions(
@@ -80,7 +151,8 @@ public class ObjectDefinitionResourcePermissionUtil {
 		if (document == null) {
 			document = _readDocument(
 				objectActionLocalService, objectDefinition,
-				objectDefinitionPersistence, objectDefinitionTreeFactory);
+				objectDefinitionPersistence, objectDefinitionTreeFactory,
+				new ArrayList<>(), null);
 		}
 
 		resourceActions.removeModelResources(document);
@@ -88,17 +160,56 @@ public class ObjectDefinitionResourcePermissionUtil {
 		resourceActions.removePortletResources(document);
 	}
 
+	public static void removeRootDescendantNodeModelResources(
+			ObjectDefinitionPersistence objectDefinitionPersistence,
+			ResourceActions resourceActions,
+			ObjectDefinition rootDescendantNodeObjectDefinition,
+			long rootObjectDefinitionId)
+		throws Exception {
+
+		if (!rootDescendantNodeObjectDefinition.isApproved()) {
+			return;
+		}
+
+		ObjectDefinition rootObjectDefinition =
+			objectDefinitionPersistence.findByPrimaryKey(
+				rootObjectDefinitionId);
+
+		if (Objects.equals(
+				rootDescendantNodeObjectDefinition.getObjectDefinitionId(),
+				rootObjectDefinition.getObjectDefinitionId())) {
+
+			return;
+		}
+
+		resourceActions.removeModelResources(
+			SAXReaderUtil.read(
+				StringUtil.replace(
+					StringUtil.read(
+						ObjectDefinitionResourcePermissionUtil.class.
+							getClassLoader(),
+						"resource-actions/resource-actions-root-descendant-" +
+							"node.xml.tpl"),
+					new String[] {"[$MODEL_NAME$]", "[$PORTLET_NAME$]"},
+					new String[] {
+						rootDescendantNodeObjectDefinition.getClassName(),
+						rootObjectDefinition.getPortletId()
+					})));
+	}
+
 	private static String _getObjectActionPermissionKeys(
 		ObjectActionLocalService objectActionLocalService,
-		long objectDefinitionId) {
+		long objectDefinitionId, List<ObjectAction> standaloneObjectActions) {
 
 		String objectActionPermissionKeys = StringPool.BLANK;
 
-		for (ObjectAction objectAction :
-				objectActionLocalService.getObjectActions(
-					objectDefinitionId,
-					ObjectActionTriggerConstants.KEY_STANDALONE)) {
+		if (standaloneObjectActions == null) {
+			standaloneObjectActions = objectActionLocalService.getObjectActions(
+				objectDefinitionId,
+				ObjectActionTriggerConstants.KEY_STANDALONE);
+		}
 
+		for (ObjectAction objectAction : standaloneObjectActions) {
 			objectActionPermissionKeys = StringBundler.concat(
 				objectActionPermissionKeys, "<action-key>",
 				objectAction.getName(), "</action-key>");
@@ -143,7 +254,9 @@ public class ObjectDefinitionResourcePermissionUtil {
 			ObjectActionLocalService objectActionLocalService,
 			ObjectDefinitionPersistence objectDefinitionPersistence,
 			ObjectDefinitionTreeFactory objectDefinitionTreeFactory,
-			ObjectDefinition rootNodeObjectDefinition)
+			List<String> rootDescendantNodeObjectDefinitionClassNames,
+			ObjectDefinition rootNodeObjectDefinition,
+			List<ObjectAction> standaloneObjectActions)
 		throws Exception {
 
 		int weight = _INITIAL_WEIGHT;
@@ -162,12 +275,20 @@ public class ObjectDefinitionResourcePermissionUtil {
 				continue;
 			}
 
-			String objectActionPermissionKeys = _getObjectActionPermissionKeys(
-				objectActionLocalService, node.getPrimaryKey());
-
 			ObjectDefinition rootDescendantNodeObjectDefinition =
 				objectDefinitionPersistence.findByPrimaryKey(
 					node.getPrimaryKey());
+
+			rootDescendantNodeObjectDefinitionClassNames.add(
+				rootDescendantNodeObjectDefinition.getClassName());
+
+			String objectActionPermissionKeys = _getObjectActionPermissionKeys(
+				objectActionLocalService, node.getPrimaryKey(),
+				standaloneObjectActions);
+
+			if (Validator.isNull(objectActionPermissionKeys)) {
+				continue;
+			}
 
 			modelResources = StringBundler.concat(
 				modelResources, "<model-resource><model-name>",
@@ -190,11 +311,14 @@ public class ObjectDefinitionResourcePermissionUtil {
 			ObjectActionLocalService objectActionLocalService,
 			ObjectDefinition objectDefinition,
 			ObjectDefinitionPersistence objectDefinitionPersistence,
-			ObjectDefinitionTreeFactory objectDefinitionTreeFactory)
+			ObjectDefinitionTreeFactory objectDefinitionTreeFactory,
+			List<String> rootDescendantNodeObjectDefinitionClassNames,
+			List<ObjectAction> standaloneObjectActions)
 		throws Exception {
 
 		String objectActionPermissionKeys = _getObjectActionPermissionKeys(
-			objectActionLocalService, objectDefinition.getObjectDefinitionId());
+			objectActionLocalService, objectDefinition.getObjectDefinitionId(),
+			standaloneObjectActions);
 
 		String resourceActionsFileName =
 			"resource-actions/resource-actions.xml.tpl";
@@ -231,7 +355,9 @@ public class ObjectDefinitionResourcePermissionUtil {
 					objectDefinition.getResourceName(),
 					_getRootDescendantNodeObjectDefinitionsModelResources(
 						objectActionLocalService, objectDefinitionPersistence,
-						objectDefinitionTreeFactory, objectDefinition)
+						objectDefinitionTreeFactory,
+						rootDescendantNodeObjectDefinitionClassNames,
+						objectDefinition, standaloneObjectActions)
 				}));
 	}
 

@@ -31,21 +31,29 @@ public class ReportsServiceUpgradeStepRegistrator
 				"reports-portlet", _releaseLocalService));
 
 		registry.register(
-			"0.0.1", "1.0.0",
+			"0.0.1", "0.0.2",
 			new com.liferay.portal.reports.engine.console.internal.upgrade.
-				v1_0_0.ReportDefinitionUpgradeProcess(),
+				v1_0_0.ReportDefinitionUpgradeProcess());
+
+		registry.register(
+			"0.0.2", "1.0.0",
 			new com.liferay.portal.reports.engine.console.internal.upgrade.
 				v1_0_0.ReportEntryUpgradeProcess());
 
 		registry.register(
-			"1.0.0", "1.0.1",
+			"1.0.0", "1.0.0.step-1",
 			UpgradeProcessFactory.alterColumnType(
 				"Reports_Definition", "reportParameters", "TEXT null"),
 			UpgradeProcessFactory.alterColumnType(
 				"Reports_Entry", "reportParameters", "TEXT null"),
 			UpgradeProcessFactory.alterColumnType(
-				"Reports_Entry", "errorMessage", "STRING null"),
-			new UpgradeKernelPackage(), new UpgradeLastPublishDate());
+				"Reports_Entry", "errorMessage", "STRING null"));
+
+		registry.register(
+			"1.0.0.step-1", "1.0.0.step-2", new UpgradeKernelPackage());
+
+		registry.register(
+			"1.0.0.step-2", "1.0.1", new UpgradeLastPublishDate());
 	}
 
 	@Reference

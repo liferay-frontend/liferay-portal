@@ -33,6 +33,7 @@ type ObjectFieldBusinessTypes =
 	| 'autoIncrement'
 	| 'boolean'
 	| 'date'
+	| 'dateTime'
 	| 'decimal'
 	| 'encrypted'
 	| 'integer'
@@ -70,6 +71,11 @@ const objectFieldbusinessTypeInfo: {
 		DBType: ObjectField.DBTypeEnum.Date,
 		businessType: ObjectField.BusinessTypeEnum.Date,
 		type: ObjectField.TypeEnum.Date,
+	},
+	dateTime: {
+		DBType: ObjectField.DBTypeEnum.DateTime,
+		businessType: ObjectField.BusinessTypeEnum.DateTime,
+		type: ObjectField.TypeEnum.DateTime,
 	},
 	decimal: {
 		DBType: ObjectField.DBTypeEnum.Double,
@@ -123,15 +129,30 @@ const objectFieldbusinessTypeInfo: {
 	},
 };
 
-export function createObjectField(
+function isLocalizable(businessType: ObjectFieldBusinessTypes) {
+	const localizableBusinessTypes: ObjectFieldBusinessTypes[] = [
+		'boolean',
+		'date',
+		'dateTime',
+		'decimal',
+		'integer',
+		'longInteger',
+		'precisionDecimal',
+	];
+
+	return localizableBusinessTypes.includes(businessType);
+}
+
+export function createObjectFields(
 	businessType: keyof ObjectFieldBusinessTypesLabelName,
-	objectFieldBusinessTypeLabelName: LabelNameObject,
-	additionalSettings: Partial<ObjectField> = {}
-): Partial<ObjectField> {
+	objectFieldsBusinessTypeLabelName: LabelNameObject[],
+	additionalSettings: Partial<ObjectField> = {},
+	localizeAllLocalizable: boolean = false
+): Partial<ObjectField>[] {
 	const baseObjectField: ObjectField = {
 		indexedAsKeyword: false,
 		indexedLanguageId: '',
-		localized: false,
+		localized: !!(isLocalizable(businessType) && localizeAllLocalizable),
 		readOnly: ObjectField.ReadOnlyEnum.False,
 		readOnlyConditionExpression: '',
 		required: false,
@@ -140,17 +161,17 @@ export function createObjectField(
 		unique: false,
 	};
 
-	return {
+	return objectFieldsBusinessTypeLabelName.map(({label, name}) => ({
 		DBType: objectFieldbusinessTypeInfo[businessType].DBType,
 		businessType: objectFieldbusinessTypeInfo[businessType].businessType,
 		label: {
-			en_US: objectFieldBusinessTypeLabelName.label,
+			en_US: label,
 		},
-		name: objectFieldBusinessTypeLabelName.name,
+		name,
 		type: objectFieldbusinessTypeInfo[businessType].type,
 		...additionalSettings,
 		...baseObjectField,
-	};
+	}));
 }
 
 function getFormatDate(format: 'API' | 'UI'): string {
@@ -201,11 +222,13 @@ function getRandomObjectFieldEntryValue(
 
 export async function mockObjectFields({
 	apiHelpers,
+	localizeAllLocalizable,
 	objectEntryReturn,
 	objectFieldBusinessTypes,
 	titleObjectFieldName,
 }: {
 	apiHelpers: ApiHelpers;
+	localizeAllLocalizable?: boolean;
 	objectEntryReturn?: {format: 'API' | 'UI'};
 	objectFieldBusinessTypes: ObjectFieldBusinessTypes[];
 	titleObjectFieldName?: ObjectFieldBusinessTypes;
@@ -238,7 +261,10 @@ export async function mockObjectFields({
 	function setLabelName(businessType: string, {label, name}) {
 		objectFieldBusinessTypesLabelName = {
 			...objectFieldBusinessTypesLabelName,
-			[businessType]: {label, name},
+			[businessType]: [
+				...(objectFieldBusinessTypesLabelName[businessType] || []),
+				{label, name},
+			],
 		};
 	}
 
@@ -249,9 +275,6 @@ export async function mockObjectFields({
 		});
 	}
 
-	let objectEntry = {} as ObjectEntry;
-
-	const objectFields: Partial<ObjectField>[] = [];
 	function setObjectFieldsAdditionalSettings(
 		objectFieldBusinessType: ObjectFieldBusinessTypes
 	): Partial<ObjectField> | undefined {
@@ -282,6 +305,15 @@ export async function mockObjectFields({
 						} as any,
 					],
 				};
+			case 'dateTime':
+				return {
+					objectFieldSettings: [
+						{
+							name: 'timeStorage',
+							value: 'convertToUTC',
+						} as any,
+					],
+				};
 			case 'longText':
 				return {
 					objectFieldSettings: [
@@ -307,14 +339,19 @@ export async function mockObjectFields({
 		}
 	}
 
+	const objectEntry = {} as ObjectEntry;
+
+	let objectFields: Partial<ObjectField>[] = [];
+
 	for (const objectFieldBusinessType in objectFieldBusinessTypesLabelName) {
-		objectFields.push(
-			createObjectField(
+		objectFields = objectFields.concat(
+			createObjectFields(
 				objectFieldBusinessType as ObjectFieldBusinessTypes,
 				objectFieldBusinessTypesLabelName[objectFieldBusinessType],
 				setObjectFieldsAdditionalSettings(
 					objectFieldBusinessType as ObjectFieldBusinessTypes
-				)
+				),
+				localizeAllLocalizable
 			)
 		);
 
@@ -323,15 +360,15 @@ export async function mockObjectFields({
 			objectFieldBusinessType !== 'autoIncrement' &&
 			objectEntryReturn
 		) {
-			objectEntry = {
-				...objectEntry,
-				[objectFieldBusinessTypesLabelName[objectFieldBusinessType]
-					.name]: getRandomObjectFieldEntryValue(
+			for (const field of objectFieldBusinessTypesLabelName[
+				objectFieldBusinessType
+			]) {
+				objectEntry[field.name] = getRandomObjectFieldEntryValue(
 					objectEntryReturn.format,
 					listTypeDefinitionItems,
 					objectFieldBusinessType as ObjectFieldBusinessTypes
-				),
-			};
+				);
+			}
 		}
 	}
 
@@ -340,7 +377,7 @@ export async function mockObjectFields({
 		objectEntry: objectEntryReturn ? objectEntry : undefined,
 		objectFields,
 		titleObjectFieldName: titleObjectFieldName
-			? objectFieldBusinessTypesLabelName[titleObjectFieldName].name
+			? objectFieldBusinessTypesLabelName[titleObjectFieldName][0].name
 			: undefined,
 	};
 }

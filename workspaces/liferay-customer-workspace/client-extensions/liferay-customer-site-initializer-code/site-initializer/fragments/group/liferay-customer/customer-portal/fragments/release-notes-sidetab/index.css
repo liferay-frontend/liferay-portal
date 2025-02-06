@@ -8,12 +8,17 @@
 	width: 31.875rem;
 	z-index: 9999;
 
-	a.link-container:hover,
-	a.link-container.hover {
+	& a.link-container:hover,
+	& a.link-container.hover {
 		background-color: var(--color-action-primary-hover-10, #edf3fe);
 		border: 0.0625rem solid var(--link-hover-color, #0053f0);
 		color: var(--link-hover-color, #0053f0);
 		text-decoration: none;
+	}
+
+	& img {
+		height: auto;
+		max-width: 100%;
 	}
 
 	.close:hover {

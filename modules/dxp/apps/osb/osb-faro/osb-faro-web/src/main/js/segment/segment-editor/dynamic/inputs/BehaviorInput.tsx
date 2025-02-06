@@ -42,10 +42,10 @@ export const AssetItem: React.FC<{
 			<div
 				data-tooltip
 				data-tooltip-align='top'
-				title={dataSourceAssetPK}
+				title={decodeURIComponent(dataSourceAssetPK)}
 			>
 				<div className='asset-url text-secondary text-truncate'>
-					{dataSourceAssetPK}
+					{decodeURIComponent(dataSourceAssetPK)}
 				</div>
 			</div>
 		)}

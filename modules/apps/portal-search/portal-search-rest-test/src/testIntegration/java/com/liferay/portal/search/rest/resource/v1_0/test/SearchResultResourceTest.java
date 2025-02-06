@@ -22,12 +22,9 @@ import com.liferay.journal.service.JournalFolderLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
-import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
-import com.liferay.object.model.ObjectField;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManager;
-import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.function.UnsafeTriConsumer;
@@ -1005,19 +1002,39 @@ public class SearchResultResourceTest extends BaseSearchResultResourceTestCase {
 			return;
 		}
 
-		ObjectField objectField = ObjectFieldUtil.createObjectField(
-			"Text", "String", true, true, null,
-			StringUtil.toLowerCase(RandomTestUtil.randomString()), "test",
-			false);
-
-		objectField.setExternalReferenceCode(RandomTestUtil.randomString());
+		DTOConverterContext dtoConverterContext =
+			new DefaultDTOConverterContext(
+				false, Collections.emptyMap(), _dtoConverterRegistry, null,
+				LocaleUtil.getDefault(), null, TestPropsValues.getUser());
 
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionTestUtil.publishObjectDefinition(
-				Collections.singletonList(objectField));
+				true,
+				Collections.singletonList(
+					new TextObjectFieldBuilder(
+					).labelMap(
+						LocalizedMapUtil.getLocalizedMap(
+							RandomTestUtil.randomString())
+					).indexed(
+						true
+					).indexedAsKeyword(
+						true
+					).name(
+						"testField"
+					).localized(
+						true
+					).build()));
 
-		ObjectEntryTestUtil.addObjectEntry(
-			objectDefinition, "test", RandomTestUtil.randomString());
+		ObjectEntry objectEntry = _objectEntryManager.addObjectEntry(
+			dtoConverterContext, objectDefinition,
+			new ObjectEntry() {
+				{
+					properties = HashMapBuilder.<String, Object>put(
+						"testField", RandomTestUtil.randomString()
+					).build();
+				}
+			},
+			ObjectDefinitionConstants.SCOPE_COMPANY);
 
 		SearchPage<SearchResult> searchPage = _postSearchPage(
 			objectDefinition.getClassName(), null,
@@ -1031,6 +1048,13 @@ public class SearchResultResourceTest extends BaseSearchResultResourceTestCase {
 		for (SearchResult searchResult : searchResults) {
 			Assert.assertNotNull(searchResult.getEmbedded());
 		}
+
+		_objectEntryManager.deleteObjectEntry(
+			testCompany.getCompanyId(), dtoConverterContext,
+			objectEntry.getExternalReferenceCode(), objectDefinition, "0");
+
+		_objectDefinitionLocalService.deleteObjectDefinition(
+			objectDefinition.getObjectDefinitionId());
 	}
 
 	private void _testPostSearchPageWithEmptyScope() throws Exception {
@@ -1156,15 +1180,15 @@ public class SearchResultResourceTest extends BaseSearchResultResourceTestCase {
 	private void _testPostSearchPageWithLocalizedTextObjectField()
 		throws Exception {
 
+		DTOConverterContext dtoConverterContext =
+			new DefaultDTOConverterContext(
+				false, Collections.emptyMap(), _dtoConverterRegistry, null,
+				LocaleUtil.getDefault(), null, TestPropsValues.getUser());
+
 		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.addCustomObjectDefinition(
-				_user.getUserId(), 0, null, false, true, true, false,
-				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-				ObjectDefinitionTestUtil.getRandomName(), null, null,
-				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-				true, ObjectDefinitionConstants.SCOPE_COMPANY,
-				ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT,
-				Arrays.asList(
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				true,
+				Collections.singletonList(
 					new TextObjectFieldBuilder(
 					).labelMap(
 						LocalizedMapUtil.getLocalizedMap(
@@ -1177,25 +1201,31 @@ public class SearchResultResourceTest extends BaseSearchResultResourceTestCase {
 						true
 					).build()));
 
-		objectDefinition =
-			_objectDefinitionLocalService.publishCustomObjectDefinition(
-				_user.getUserId(), objectDefinition.getObjectDefinitionId());
-
-		DTOConverterContext dtoConverterContext =
-			new DefaultDTOConverterContext(
-				false, Collections.emptyMap(), _dtoConverterRegistry, null,
-				LocaleUtil.getDefault(), null, TestPropsValues.getUser());
-
-		_objectEntryManager.addObjectEntry(
+		ObjectEntry objectEntry1 = _objectEntryManager.addObjectEntry(
 			dtoConverterContext, objectDefinition,
 			new ObjectEntry() {
 				{
 					properties = HashMapBuilder.<String, Object>put(
 						"localizedTextObjectFieldName_i18n",
 						HashMapBuilder.put(
-							"en_US", "en_US localizedTextObjectFieldValue"
+							"en_US", "Paul"
 						).put(
-							"pt_BR", "pt_BR localizedTextObjectFieldValue"
+							"pt_BR", "Paulo"
+						).build()
+					).build();
+				}
+			},
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+		ObjectEntry objectEntry2 = _objectEntryManager.addObjectEntry(
+			dtoConverterContext, objectDefinition,
+			new ObjectEntry() {
+				{
+					properties = HashMapBuilder.<String, Object>put(
+						"localizedTextObjectFieldName_i18n",
+						HashMapBuilder.put(
+							"en_US", "Peter"
+						).put(
+							"pt_BR", "Pedro"
 						).build()
 					).build();
 				}
@@ -1203,17 +1233,26 @@ public class SearchResultResourceTest extends BaseSearchResultResourceTestCase {
 			ObjectDefinitionConstants.SCOPE_COMPANY);
 
 		SearchPage<SearchResult> searchPage = _postSearchPage(
-			objectDefinition.getClassName(), null, "pt_BR", "embedded", "0",
+			objectDefinition.getClassName(), null, "Paulo", "embedded", "0",
 			new SearchRequestBody());
 
 		List<SearchResult> searchResults = ListUtil.fromCollection(
 			searchPage.getItems());
 
-		Assert.assertTrue(
-			searchResults.toString(
-			).contains(
-				"en_US localizedTextObjectFieldValue"
-			));
+		String searchResultsString = searchResults.toString();
+
+		Assert.assertEquals(searchResultsString, 1, searchResults.size());
+		Assert.assertTrue(searchResultsString.contains("Paul"));
+		Assert.assertFalse(searchResultsString.contains("Peter"));
+
+		_objectEntryManager.deleteObjectEntry(
+			testCompany.getCompanyId(), dtoConverterContext,
+			objectEntry1.getExternalReferenceCode(), objectDefinition, "0");
+		_objectEntryManager.deleteObjectEntry(
+			testCompany.getCompanyId(), dtoConverterContext,
+			objectEntry2.getExternalReferenceCode(), objectDefinition, "0");
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
 
 	private void _testPostSearchPageWithMultipleGroupIdsScope()

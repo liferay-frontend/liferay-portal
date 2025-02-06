@@ -109,6 +109,13 @@ declare module Liferay {
 		export function registerStatic(portletId: any): void;
 	}
 
+	namespace PortletKeys {
+		export const DOCUMENT_LIBRARY: string;
+		export const DYNAMIC_DATA_MAPPING: string;
+		export const INSTANCE_SETTINGS: string;
+		export const ITEM_SELECTOR: string;
+	}
+
 	namespace PropsValues {
 		export const UPLOAD_SERVLET_REQUEST_IMPL_MAX_SIZE: number;
 	}
@@ -241,6 +248,7 @@ declare module Liferay {
 		export function getPathThemeImages(): string;
 		export function getPathThemeSpritemap(): string;
 		export function getPortalURL(): string;
+		export function getTimeZone(): string;
 		export function getSiteGroupId(): number;
 		export function isControlPanel(): boolean;
 	}

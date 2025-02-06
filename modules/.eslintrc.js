@@ -12,9 +12,6 @@ const CONFIG_FILES = [
 	'**/.stylelintrc.js',
 	'**/gulpfile.js',
 	'**/liferay-npm-bundler.config.js',
-	'**/npmscripts.config.js',
-	'**/webpack.config.dev.js',
-	'**/webpack.config.js',
 	'**/node-scripts.config.js',
 ];
 
@@ -63,7 +60,6 @@ const config = {
 		'@liferay/no-extraneous-dependencies': [
 			'error',
 			[
-				'@liferay/npm-scripts',
 				'@testing-library/dom',
 				'@testing-library/jest-dom',
 				'@testing-library/react-hooks',
@@ -74,7 +70,6 @@ const config = {
 				'fs',
 				'path',
 				'process',
-				'webpack',
 				'~',
 			],
 		],

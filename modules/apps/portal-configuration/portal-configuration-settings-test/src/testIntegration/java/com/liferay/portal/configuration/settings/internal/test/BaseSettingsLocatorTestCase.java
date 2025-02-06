@@ -10,7 +10,6 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
-import com.liferay.portal.configuration.settings.internal.constants.SettingsLocatorTestConstants;
 import com.liferay.portal.configuration.settings.internal.samples.TestConfiguration;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.model.PortletPreferences;
@@ -25,7 +24,6 @@ import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
-import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -34,8 +32,10 @@ import java.io.IOException;
 import java.io.Serializable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.After;
@@ -85,11 +85,11 @@ public abstract class BaseSettingsLocatorTestCase {
 
 		_configurationPids.clear();
 
-		for (String configurationPid : _factoryConfigurationPids) {
+		for (Map.Entry<String, String> entry :
+				_factoryConfigurationPids.entrySet()) {
+
 			ConfigurationTestUtil.deleteFactoryConfiguration(
-				configurationPid,
-				SettingsLocatorTestConstants.TEST_CONFIGURATION_PID +
-					".scoped");
+				entry.getKey(), entry.getValue());
 		}
 
 		_factoryConfigurationPids.clear();
@@ -109,30 +109,24 @@ public abstract class BaseSettingsLocatorTestCase {
 		}
 	}
 
-	protected String getSettingsValue() throws Exception {
+	protected String getSettingsValue(String key) throws Exception {
 		if (settingsLocator == null) {
 			return null;
 		}
 
 		Settings settings = settingsLocator.getSettings();
 
-		return settings.getValue(SettingsLocatorTestConstants.TEST_KEY, null);
+		return settings.getValue(key, null);
 	}
 
-	protected String saveConfiguration() throws Exception {
-		return saveConfiguration(
-			SettingsLocatorTestConstants.TEST_CONFIGURATION_PID);
-	}
-
-	protected String saveConfiguration(String configurationPid)
+	protected String saveConfiguration(
+			String configurationPid, String key, String value)
 		throws Exception {
-
-		String value = RandomTestUtil.randomString();
 
 		ConfigurationTestUtil.saveConfiguration(
 			configurationPid,
 			HashMapDictionaryBuilder.<String, Object>put(
-				SettingsLocatorTestConstants.TEST_KEY, value
+				key, value
 			).build());
 
 		_configurationPids.add(configurationPid);
@@ -142,24 +136,16 @@ public abstract class BaseSettingsLocatorTestCase {
 
 	protected String saveFactoryConfiguration(
 			String factoryPid, ExtendedObjectClassDefinition.Scope scope,
-			Serializable scopePK)
-		throws Exception {
-
-		return saveFactoryConfiguration(factoryPid, scope, scopePK, null, null);
-	}
-
-	protected String saveFactoryConfiguration(
-			String factoryPid, ExtendedObjectClassDefinition.Scope scope,
 			Serializable scopePK, String propertyKey,
-			Serializable propertyValue)
+			Serializable propertyValue, String key, String value)
 		throws Exception {
-
-		String value = RandomTestUtil.randomString();
 
 		String pid = ConfigurationTestUtil.createFactoryConfiguration(
 			factoryPid + ".scoped",
 			HashMapDictionaryBuilder.<String, Object>put(
 				scope.getPropertyKey(), scopePK
+			).put(
+				key, value
 			).put(
 				propertyKey,
 				() -> {
@@ -171,45 +157,27 @@ public abstract class BaseSettingsLocatorTestCase {
 
 					return null;
 				}
-			).put(
-				SettingsLocatorTestConstants.TEST_KEY, value
 			).build());
 
-		_factoryConfigurationPids.add(pid);
+		_factoryConfigurationPids.put(pid, factoryPid + ".scoped");
 
 		return value;
 	}
 
-	protected String savePortletPreferences(long ownerId, int ownerType)
-		throws Exception {
-
-		return savePortletPreferences(
-			ownerId, ownerType, portletId, PortletKeys.PREFS_PLID_SHARED);
-	}
-
 	protected String savePortletPreferences(
-			long ownerId, int ownerType, String portletId, long plid)
+			long ownerId, int ownerType, String portletId, long plid,
+			String key, String value)
 		throws Exception {
-
-		String value = RandomTestUtil.randomString();
 
 		_portletPreferencesList.add(
 			_portletPreferencesLocalService.addPortletPreferences(
 				companyId, ownerId, ownerType, plid, portletId, null,
-				String.format(
-					SettingsLocatorTestConstants.PORTLET_PREFERENCES_FORMAT,
-					SettingsLocatorTestConstants.TEST_KEY, value)));
+				StringBundler.concat(
+					"<portlet-preferences><preference><name>", key,
+					"</name><value>", value, "</value></preference>",
+					"</portlet-preferences>")));
 
 		return value;
-	}
-
-	protected String saveScopedConfiguration(
-			ExtendedObjectClassDefinition.Scope scope, Serializable scopePK)
-		throws Exception {
-
-		return saveFactoryConfiguration(
-			SettingsLocatorTestConstants.TEST_CONFIGURATION_PID, scope,
-			scopePK);
 	}
 
 	protected static long companyId;
@@ -259,8 +227,8 @@ public abstract class BaseSettingsLocatorTestCase {
 	}
 
 	private static final Set<String> _configurationPids = new HashSet<>();
-	private static final Set<String> _factoryConfigurationPids =
-		new HashSet<>();
+	private static final Map<String, String> _factoryConfigurationPids =
+		new HashMap<>();
 
 	@Inject
 	private static PortletPreferencesLocalService

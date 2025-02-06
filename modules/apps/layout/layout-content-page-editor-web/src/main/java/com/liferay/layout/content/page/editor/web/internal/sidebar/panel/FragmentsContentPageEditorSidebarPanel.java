@@ -39,7 +39,7 @@ public class FragmentsContentPageEditorSidebarPanel
 
 	@Override
 	public String getLabel(Locale locale) {
-		return _language.get(locale, "fragments-and-widgets");
+		return _language.get(locale, "components");
 	}
 
 	@Override
@@ -47,13 +47,8 @@ public class FragmentsContentPageEditorSidebarPanel
 		PermissionChecker permissionChecker, long plid, int layoutType) {
 
 		try {
-			if (_layoutPermission.containsLayoutRestrictedUpdatePermission(
-					permissionChecker, plid)) {
-
-				return true;
-			}
-
-			return false;
+			return _layoutPermission.containsLayoutRestrictedUpdatePermission(
+				permissionChecker, plid);
 		}
 		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {

@@ -298,11 +298,7 @@ public class ConfigurableScopeCheckerFeature implements Feature {
 			Predicate<String> methodPatternPredicate =
 				checkPattern.getMethodPatternPredicate();
 
-			if (!methodPatternPredicate.test(request.getMethod())) {
-				return false;
-			}
-
-			return true;
+			return methodPatternPredicate.test(request.getMethod());
 		}
 
 		protected boolean requiresNoScope(String[] scopes) {

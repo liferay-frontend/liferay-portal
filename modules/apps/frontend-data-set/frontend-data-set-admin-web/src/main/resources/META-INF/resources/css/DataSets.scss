@@ -22,10 +22,25 @@ html#{$cadmin-selector} .cadmin {
 			border-radius: 4px;
 			margin-bottom: 12px;
 
+			&.disabled {
+				background-color: #f7f7f7;
+
+				.list-group-text,
+				.list-group-title,
+				.sticker {
+					background-color: #f7f7f7;
+					color: #757575;
+				}
+			}
+
 			&.selected {
 				background-color: #f0f5ff;
 				border-color: #80acff;
 				box-shadow: 0 2px 4px rgba(39, 40, 51, 0.12);
+			}
+
+			.created-label {
+				margin: 0.5rem 0;
 			}
 
 			.selection-control {

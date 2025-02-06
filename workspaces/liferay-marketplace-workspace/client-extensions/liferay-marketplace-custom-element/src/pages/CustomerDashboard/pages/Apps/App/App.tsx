@@ -10,7 +10,10 @@ import {useOutletContext, useParams} from 'react-router-dom';
 import {DetailedCard} from '../../../../../components/DetailedCard/DetailedCard';
 import i18n from '../../../../../i18n';
 import formatLocaleCurrency from '../../../../../utils/formatLocaleCurrency';
-import {isCloudProduct} from '../../../../../utils/productUtils';
+import {
+	getSpecificationByKey,
+	isCloudProduct,
+} from '../../../../../utils/productUtils';
 import {safeJSONParse} from '../../../../../utils/util';
 import getProductPriceModel from '../../../../GetApp/utils/getProductPriceModel';
 import {formatDate} from '../../../../PublisherDashboard/PublisherDashboardPageUtil';
@@ -20,6 +23,8 @@ import './App.scss';
 const App = () => {
 	const {orderId} = useParams();
 	const {placedOrder, product} = useOutletContext<any>();
+
+	const licenseType = getSpecificationByKey('license-type', product);
 
 	const projectNameField =
 		Object.values(placedOrder.customFields).find((field) =>
@@ -75,6 +80,12 @@ const App = () => {
 							{placedOrder.purchaseOrderNumber || '-'}
 						</p>
 					</div>
+					<div className="row">
+						<div className="col-6 h5">
+							{i18n.translate('license-type')}
+						</div>
+						<p className="col">{licenseType?.value || '-'}</p>
+					</div>
 				</DetailedCard>
 
 				<DetailedCard
@@ -103,7 +114,7 @@ const App = () => {
 						<div className="col-8">
 							{placedOrder.placedOrderItems.map(
 								(order: PlacedOrderItems) => {
-									const optionName = safeJSONParse(
+									const optionName = safeJSONParse<any>(
 										order.options,
 										[]
 									);

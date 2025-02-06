@@ -17,13 +17,13 @@ import {objectPagesTest} from '../../fixtures/objectPagesTest';
 import {getRandomInt} from '../../utils/getRandomInt';
 import getRandomString from '../../utils/getRandomString';
 import {waitForAlert} from '../../utils/waitForAlert';
-import {createObjectField, mockObjectFields} from './utils/mockObjectFields';
+import {createObjectFields, mockObjectFields} from './utils/mockObjectFields';
 
 export const test = mergeTests(
 	apiHelpersTest,
 	editObjectDefinitionPagesTest,
 	featureFlagsTest({
-		'LPS-135430': true,
+		'LPS-135430': {enabled: true},
 	}),
 	loginTest(),
 	objectPagesTest
@@ -51,10 +51,12 @@ test.afterEach(async ({apiHelpers}) => {
 });
 
 test.beforeEach(async ({apiHelpers}) => {
-	const objectField = createObjectField('text', {
-		label: 'Name',
-		name: 'name',
-	});
+	const objectFields = createObjectFields('text', [
+		{
+			label: 'Name',
+			name: 'name',
+		},
+	]);
 
 	const objectDefinitionAPIClient =
 		await apiHelpers.buildRestClient(ObjectDefinitionApi);
@@ -67,7 +69,7 @@ test.beforeEach(async ({apiHelpers}) => {
 				en_US: 'Employee',
 			},
 			name: 'Employee',
-			objectFields: [objectField],
+			objectFields,
 			objectFolderExternalReferenceCode: 'default',
 			panelCategoryKey: 'control_panel.object',
 			pluralLabel: {

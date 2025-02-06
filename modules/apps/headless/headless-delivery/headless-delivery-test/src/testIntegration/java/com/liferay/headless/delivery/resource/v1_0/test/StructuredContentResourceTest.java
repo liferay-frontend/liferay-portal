@@ -54,8 +54,8 @@ import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.journal.util.JournalConverter;
-import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
+import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -164,6 +164,8 @@ public class StructuredContentResourceTest
 		_layout = LayoutTestUtil.addTypeContentLayout(testGroup);
 		_localizedDDMStructure = _addDDMStructure(
 			testGroup, "test-localized-ddm-structure.json");
+		_unlocalizedDDMStructure = _addDDMStructure(
+			testGroup, "test-unlocalized-ddm-structure.json");
 	}
 
 	@After
@@ -329,7 +331,8 @@ public class StructuredContentResourceTest
 
 		super.testGetContentStructureStructuredContentsPage();
 
-		_testGetContentStructureStructuredContentsPageWithFilter();
+		_testGetContentStructureStructuredContentsPageLocalizedWithFilter();
+		_testGetContentStructureStructuredContentsPageUnlocalizedWithFilter();
 	}
 
 	@Override
@@ -619,14 +622,11 @@ public class StructuredContentResourceTest
 
 		super.testPostStructuredContentFolderStructuredContent();
 
-		_layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
-			null, testGroup.getCreatorUserId(), testGroup.getGroupId(), 0,
+		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+			testGroup.getGroupId(),
 			_portal.getClassNameId(JournalArticle.class.getName()),
-			_localizedDDMStructure.getStructureId(),
-			RandomTestUtil.randomString(),
-			LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, 0, true, 0, 0, 0,
-			WorkflowConstants.STATUS_APPROVED,
-			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
+			_localizedDDMStructure.getStructureId(), true,
+			WorkflowConstants.STATUS_APPROVED);
 
 		Locale locale = LocaleUtil.getDefault();
 
@@ -1496,7 +1496,7 @@ public class StructuredContentResourceTest
 		return StringUtil.read(inputStream);
 	}
 
-	private void _testGetContentStructureStructuredContentsPageWithFilter()
+	private void _testGetContentStructureStructuredContentsPageLocalizedWithFilter()
 		throws Exception {
 
 		Long contentStructureId =
@@ -1548,6 +1548,51 @@ public class StructuredContentResourceTest
 
 		assertEqualsIgnoringOrder(
 			Arrays.asList(structuredContent1, structuredContent2), items);
+	}
+
+	private void _testGetContentStructureStructuredContentsPageUnlocalizedWithFilter()
+		throws Exception {
+
+		Long contentStructureId = _unlocalizedDDMStructure.getStructureId();
+
+		StructuredContent structuredContent1 = _randomStructuredContent(
+			"first second");
+
+		structuredContent1.setContentStructureId(contentStructureId);
+
+		StructuredContent structuredContent2 = _randomStructuredContent(
+			"second");
+
+		structuredContent2.setContentStructureId(contentStructureId);
+
+		testGetContentStructureStructuredContentsPage_addStructuredContent(
+			contentStructureId, structuredContent1);
+		testGetContentStructureStructuredContentsPage_addStructuredContent(
+			contentStructureId, structuredContent2);
+
+		Page<StructuredContent> page =
+			structuredContentResource.getContentStructureStructuredContentsPage(
+				contentStructureId, null, null, "contentFields/Foo eq 'second'",
+				Pagination.of(1, 10), null);
+
+		Assert.assertEquals(1, page.getTotalCount());
+
+		List<StructuredContent> items =
+			(List<StructuredContent>)page.getItems();
+
+		assertEquals(structuredContent2, items.get(0));
+
+		page =
+			structuredContentResource.getContentStructureStructuredContentsPage(
+				contentStructureId, null, null,
+				"contains(contentFields/Foo,'first')", Pagination.of(1, 10),
+				null);
+
+		Assert.assertEquals(1, page.getTotalCount());
+
+		items = (List<StructuredContent>)page.getItems();
+
+		assertEquals(structuredContent1, items.get(0));
 	}
 
 	private void _testGetSiteStructuredContentsPageByDefaultPriority()
@@ -2418,6 +2463,7 @@ public class StructuredContentResourceTest
 	@Inject
 	private RoleLocalService _roleLocalService;
 
+	private DDMStructure _unlocalizedDDMStructure;
 	private boolean _useDepotDDMStructureStructureId;
 
 	@Inject

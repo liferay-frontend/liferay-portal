@@ -8,37 +8,30 @@ import {createAssetPublisherAndConfigure} from './createAssetPublisherAndConfigu
 import {createDPTandMarkAsDefault} from './createDPTandMarkAsDefault';
 
 import type {ApiHelpers} from '../../../helpers/ApiHelpers';
-import type {PageEditorPage} from '../../../pages/layout-content-page-editor-web/PageEditorPage';
-import type {DisplayPageTemplatesPage} from '../../../pages/layout-page-template-admin-web/DisplayPageTemplatesPage';
 
 export async function blogsCategorizedFriendlyUrlSetup({
 	apiHelpers,
-	displayPageTemplatesPage,
 	friendlyUrlCategories,
 	page,
-	pageEditorPage,
 	site,
 	vocabularyName,
 }: {
 	apiHelpers: ApiHelpers;
-	displayPageTemplatesPage: DisplayPageTemplatesPage;
 	friendlyUrlCategories: TCategory[];
 	page;
-	pageEditorPage: PageEditorPage;
 	site: Site;
 	vocabularyName: string;
 }) {
 	const categories = await createCategories({
 		apiHelpers,
 		categoryNames: friendlyUrlCategories,
-		site,
+		siteId: site.id,
 		vocabularyName,
 	});
-	await createDPTandMarkAsDefault({displayPageTemplatesPage, site});
+	await createDPTandMarkAsDefault({page, site});
 	await createAssetPublisherAndConfigure({
 		apiHelpers,
 		page,
-		pageEditorPage,
 		site,
 	});
 

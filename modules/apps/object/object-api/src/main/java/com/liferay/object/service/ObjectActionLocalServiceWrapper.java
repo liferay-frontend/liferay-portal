@@ -414,6 +414,16 @@ public class ObjectActionLocalServiceWrapper
 		return _objectActionLocalService.getObjectActionsCount();
 	}
 
+	@Override
+	public java.util.Map
+		<Long, java.util.List<com.liferay.object.model.ObjectAction>>
+			getObjectActionsMap(
+				long companyId, boolean active, String objectActionTriggerKey) {
+
+		return _objectActionLocalService.getObjectActionsMap(
+			companyId, active, objectActionTriggerKey);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *

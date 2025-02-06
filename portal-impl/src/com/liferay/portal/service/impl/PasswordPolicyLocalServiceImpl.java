@@ -224,10 +224,6 @@ public class PasswordPolicyLocalServiceImpl
 	public PasswordPolicy getDefaultPasswordPolicy(long companyId)
 		throws PortalException {
 
-		if (LDAPSettingsUtil.isPasswordPolicyEnabled(companyId)) {
-			return null;
-		}
-
 		return passwordPolicyPersistence.findByC_DP(companyId, true);
 	}
 
@@ -243,10 +239,6 @@ public class PasswordPolicyLocalServiceImpl
 	public PasswordPolicy getPasswordPolicy(
 			long companyId, long[] organizationIds)
 		throws PortalException {
-
-		if (LDAPSettingsUtil.isPasswordPolicyEnabled(companyId)) {
-			return null;
-		}
 
 		if (ArrayUtil.isEmpty(organizationIds)) {
 			return getDefaultPasswordPolicy(companyId);
@@ -274,7 +266,9 @@ public class PasswordPolicyLocalServiceImpl
 	public PasswordPolicy getPasswordPolicyByUser(User user)
 		throws PortalException {
 
-		if (LDAPSettingsUtil.isPasswordPolicyEnabled(user.getCompanyId())) {
+		if (LDAPSettingsUtil.isPasswordPolicyEnabled(
+				user.getLdapServerId(), user.getCompanyId())) {
+
 			return null;
 		}
 

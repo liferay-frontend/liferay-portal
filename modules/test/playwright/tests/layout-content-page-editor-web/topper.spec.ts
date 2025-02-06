@@ -13,8 +13,6 @@ import {loginTest} from '../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../fixtures/pageEditorPagesTest';
 import {pageManagementSiteTest} from '../../fixtures/pageManagementSiteTest';
 import getRandomString from '../../utils/getRandomString';
-import {ANIMALS_COLLECTION_NAME} from '../setup/page-management-site/constants/animals';
-import getCollectionDefinition from './utils/getCollectionDefinition';
 import getFragmentDefinition from './utils/getFragmentDefinition';
 import getPageDefinition from './utils/getPageDefinition';
 
@@ -22,8 +20,8 @@ const test = mergeTests(
 	apiHelpersTest,
 	collectionsPagesTest,
 	featureFlagsTest({
-		'LPD-18221': true,
-		'LPS-178052': true,
+		'LPD-18221': {enabled: true},
+		'LPS-178052': {enabled: true},
 	}),
 	isolatedSiteTest,
 	loginTest(),
@@ -85,79 +83,47 @@ test(
 );
 
 test(
-	'Shows not allowed cursor when trying to multiple select two equal collection items',
-	{tag: ['@LPD-33717']},
-	async ({
-		apiHelpers,
-		collectionsPage,
-		page,
-		pageEditorPage,
-		pageManagementSite,
-	}) => {
+	'Check that the fragment topper changes its top when it reaches the toolbar',
+	{tag: ['@LPS-104629']},
+	async ({apiHelpers, page, pageEditorPage, site}) => {
+		const getTopValue = async () =>
+			await page
+				.locator('.page-editor__topper__bar')
+				.evaluate((element) =>
+					parseFloat(window.getComputedStyle(element).top)
+				);
 
-		// Create definition for a heading fragment
+		// Create a content page with a Card fragment
 
-		const headingId = getRandomString();
+		const cardId = getRandomString();
 
-		const headingDefinition = getFragmentDefinition({
-			id: headingId,
-			key: 'BASIC_COMPONENT-heading',
+		const cardDefinition = getFragmentDefinition({
+			id: cardId,
+			key: 'BASIC_COMPONENT-card',
 		});
-
-		// Create definition for a collection mapped to Animals collection
-
-		const animalsClassPK = await collectionsPage.getCollectionClassPK(
-			ANIMALS_COLLECTION_NAME,
-			pageManagementSite.friendlyUrlPath
-		);
-
-		const collectionDefinition = getCollectionDefinition({
-			classPK: animalsClassPK,
-			id: getRandomString(),
-			pageElements: [headingDefinition],
-			provider: 'Recent Content',
-		});
-
-		// Create a page with the collection
 
 		const layout = await apiHelpers.headlessDelivery.createSitePage({
-			pageDefinition: getPageDefinition([collectionDefinition]),
-			siteId: pageManagementSite.id,
+			pageDefinition: getPageDefinition([cardDefinition]),
+			siteId: site.id,
 			title: getRandomString(),
 		});
 
-		await pageEditorPage.goto(layout, pageManagementSite.friendlyUrlPath);
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
 
-		// Click on the heading fragment
+		// Check the topper top when it reaches the toolbar
 
-		await pageEditorPage.selectFragment(headingId);
+		await pageEditorPage.selectFragment(cardId);
 
-		// Check not allowed cursor is present when standard multiple selection
+		const topValue = await getTopValue();
 
-		await page.keyboard.down('Control');
+		// Hover over the Card before scrolling
 
-		await expect(
-			page.locator('.page-editor__topper.not-allowed').first()
-		).toBeVisible();
+		await page.locator('[data-name="Card"]').hover();
 
-		await page.keyboard.up('Control');
+		await page.mouse.wheel(0, 50);
 
-		await expect(
-			page.locator('.page-editor__topper.not-allowed').first()
-		).not.toBeVisible();
+		const nextTopValue = await getTopValue();
 
-		// Check not allowed cursor is present when range multiple selection
-
-		await page.keyboard.down('Shift');
-
-		await expect(
-			page.locator('.page-editor__topper.not-allowed').first()
-		).toBeVisible();
-
-		await page.keyboard.up('Shift');
-
-		await expect(
-			page.locator('.page-editor__topper.not-allowed').first()
-		).not.toBeVisible();
+		expect(nextTopValue).toBe(topValue + 26);
 	}
 );

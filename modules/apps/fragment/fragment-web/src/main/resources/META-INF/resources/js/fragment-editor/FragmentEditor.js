@@ -7,17 +7,11 @@ import ClayForm from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayTabs from '@clayui/tabs';
 import {useIsMounted, usePrevious} from '@liferay/frontend-js-react-web';
-import {
-	cancelDebounce,
-	debounce,
-	fetch,
-	navigate,
-	openToast,
-	sub,
-} from 'frontend-js-web';
+import {debounce, fetch, navigate, openToast, sub} from 'frontend-js-web';
 import React, {useCallback, useEffect, useState} from 'react';
 
 import CodeMirrorEditor from './CodeMirrorEditor';
+import EmbeddedWidgetsModal from './EmbeddedWidgetsModal';
 import {FieldTypeSelector} from './FieldTypeSelector';
 import FragmentPreview from './FragmentPreview';
 import createFile from './createFile';
@@ -47,6 +41,7 @@ const FragmentEditor = ({
 		initialFieldTypes,
 		initialHTML,
 		initialJS,
+		learnMessageHTML,
 		name,
 		propagationEnabled,
 		readOnly,
@@ -99,6 +94,21 @@ const FragmentEditor = ({
 		js,
 	]);
 
+	const widgetRegex = new RegExp('<lfr-widget(?:-[^>]+)?>', 'g');
+
+	const handlePublishClick = () => {
+		if (
+			Liferay.FeatureFlags['LPD-40535'] &&
+			(widgetRegex.test(html) ||
+				html.includes('[@liferay_portlet["runtime"]'))
+		) {
+			EmbeddedWidgetsModal({learnMessageHTML, onPublish: publish});
+		}
+		else {
+			publish();
+		}
+	};
+
 	const publish = () => {
 		const formData = new FormData();
 
@@ -138,85 +148,41 @@ const FragmentEditor = ({
 			});
 	};
 
-	/* eslint-disable-next-line react-hooks/exhaustive-deps */
-	const saveDraft = useCallback(
-		debounce(() => {
-			setChangesStatus(CHANGES_STATUS.saving);
-
-			const formData = new FormData();
-
-			formData.append(`${namespace}configurationContent`, configuration);
-			formData.append(
-				`${namespace}cssContent`,
-				createFile('cssContent', css)
-			);
-			formData.append(`${namespace}fieldTypes`, fieldTypes);
-			formData.append(
-				`${namespace}fragmentCollectionId`,
-				fragmentCollectionId
-			);
-			formData.append(`${namespace}fragmentEntryId`, fragmentEntryId);
-			formData.append(
-				`${namespace}htmlContent`,
-				createFile('htmlContent', html)
-			);
-			formData.append(
-				`${namespace}jsContent`,
-				createFile('jsContent', js)
-			);
-			formData.append(`${namespace}name`, name);
-			formData.append(`${namespace}status`, allowedStatus.draft);
-
-			fetch(urls.edit, {
-				body: formData,
-				method: 'POST',
-			})
-				.then((response) => response.json())
-				.then((response) => {
-					if (response.error) {
-						throw response.error;
-					}
-
-					return response;
-				})
-				.then(() => {
-					setPreviewData({configuration, css, html, js});
-
-					setChangesStatus(CHANGES_STATUS.saved);
-				})
-				.catch((error) => {
-					if (isMounted()) {
-						setChangesStatus(CHANGES_STATUS.unsaved);
-					}
-
-					const message =
-						typeof error === 'string'
-							? error
-							: Liferay.Language.get('error');
-
-					openToast({
-						message,
-						type: 'danger',
-					});
-				});
-		}, 500),
-		[configuration, css, fieldTypes, html, js]
-	);
-
-	const previousSaveDraft = usePrevious(saveDraft);
-
-	useEffect(() => {
-		if (previousSaveDraft && previousSaveDraft !== saveDraft) {
-			cancelDebounce(previousSaveDraft);
-		}
-	}, [previousSaveDraft, saveDraft]);
-
 	useEffect(() => {
 		if (contentHasChanged()) {
 			setChangesStatus(CHANGES_STATUS.unsaved);
-			saveDraft();
+			debouncedSaveDraft({
+				allowedStatusDraft: allowedStatus.draft,
+				configuration,
+				css,
+				editUrl: urls.edit,
+				fieldTypes,
+				fragmentCollectionId,
+				fragmentEntryId,
+				html,
+				isMounted,
+				js,
+				name,
+				namespace,
+				setChangesStatus,
+				setPreviewData,
+			});
 		}
-	}, [contentHasChanged, saveDraft]);
+	}, [
+		allowedStatus.draft,
+		configuration,
+		contentHasChanged,
+		css,
+		fieldTypes,
+		fragmentCollectionId,
+		fragmentEntryId,
+		html,
+		isMounted,
+		js,
+		name,
+		namespace,
+		urls.edit,
+	]);
 
 	return (
 		<div className="fragment-editor-container">
@@ -296,7 +262,7 @@ const FragmentEditor = ({
 												changesStatus ===
 												CHANGES_STATUS.saving
 											}
-											onClick={publish}
+											onClick={handlePublishClick}
 											type="button"
 										>
 											<span className="lfr-btn-label">
@@ -424,5 +390,81 @@ const FragmentEditor = ({
 		</div>
 	);
 };
+
+const debouncedSaveDraft = debounce(
+	({
+		allowedStatusDraft,
+		configuration,
+		css,
+		editUrl,
+		fieldTypes,
+		fragmentCollectionId,
+		fragmentEntryId,
+		html,
+		isMounted,
+		js,
+		name,
+		namespace,
+		setChangesStatus,
+		setPreviewData,
+	}) => {
+		setChangesStatus(CHANGES_STATUS.saving);
+
+		const formData = new FormData();
+
+		formData.append(`${namespace}configurationContent`, configuration);
+		formData.append(
+			`${namespace}cssContent`,
+			createFile('cssContent', css)
+		);
+		formData.append(`${namespace}fieldTypes`, fieldTypes);
+		formData.append(
+			`${namespace}fragmentCollectionId`,
+			fragmentCollectionId
+		);
+		formData.append(`${namespace}fragmentEntryId`, fragmentEntryId);
+		formData.append(
+			`${namespace}htmlContent`,
+			createFile('htmlContent', html)
+		);
+		formData.append(`${namespace}jsContent`, createFile('jsContent', js));
+		formData.append(`${namespace}name`, name);
+		formData.append(`${namespace}status`, allowedStatusDraft);
+
+		fetch(editUrl, {
+			body: formData,
+			method: 'POST',
+		})
+			.then((response) => response.json())
+			.then((response) => {
+				if (response.error) {
+					throw response.error;
+				}
+
+				return response;
+			})
+			.then(() => {
+				setPreviewData({configuration, css, html, js});
+
+				setChangesStatus(CHANGES_STATUS.saved);
+			})
+			.catch((error) => {
+				if (isMounted()) {
+					setChangesStatus(CHANGES_STATUS.unsaved);
+				}
+
+				const message =
+					typeof error === 'string'
+						? error
+						: Liferay.Language.get('error');
+
+				openToast({
+					message,
+					type: 'danger',
+				});
+			});
+	},
+	500
+);
 
 export default FragmentEditor;

@@ -364,7 +364,7 @@ closeTemplate()
 			<![CDATA[
 				#!/bin/sh
 
-				export JDK_JAVA_OPTIONS="$JDK_JAVA_OPTIONS ${app.server.weblogic.jdk.java.options}"
+				export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} ${app.server.weblogic.jdk.java.options}"
 				export MW_HOME="${app.server.weblogic.dir}"
 				export USER_MEM_ARGS="${app.server.weblogic.jvm.mem}"
 				export WL_HOME="${app.server.weblogic.wlserver.dir}"
@@ -497,7 +497,7 @@ release was successful.</echo>
 	<target name="generate-tomcat-setenv">
 		<echo file="tools/servers/tomcat/bin/setenv.sh">CATALINA_OPTS="$CATALINA_OPTS ${app.server.tomcat.jvm.args} ${app.server.tomcat.jvm.mem}"
 
-JDK_JAVA_OPTIONS="$JDK_JAVA_OPTIONS ${app.server.tomcat.jdk.java.options}"</echo>
+JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} ${app.server.tomcat.jdk.java.options}"</echo>
 
 		<chmod
 			file="tools/servers/tomcat/bin/setenv.sh"
@@ -934,7 +934,7 @@ this task.
 		<echo append="true" file="${app.server.jboss.bin.dir}/standalone.conf">
 			<![CDATA[${line.separator}JAVA_OPTS="$JAVA_OPTS ${app.server.jboss.jvm.args} ${app.server.jboss.jvm.mem}"
 
-JDK_JAVA_OPTIONS="$JDK_JAVA_OPTIONS ${app.server.jboss.jdk.java.options}"
+JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} ${app.server.jboss.jdk.java.options}"
 export JDK_JAVA_OPTIONS]]>
 		</echo>
 
@@ -1011,6 +1011,20 @@ export JDK_JAVA_OPTIONS]]>
 tomcat.util.scan.StandardJarScanFilter.jarsToSkip=*
 tomcat.util.scan.StandardJarScanFilter.jarsToScan=]]>
 		</echo>
+
+		<fixcrlf eof="asis" eol="lf" file="${app.server.tomcat.dir}/conf/context.xml" />
+
+		<replace
+			file="${app.server.tomcat.dir}/conf/context.xml"
+		>
+			<replacetoken><![CDATA[    <!-- Uncomment this to enable session persistence across Tomcat restarts -->
+    <!--
+    <Manager pathname="SESSIONS.ser" />
+    -->]]></replacetoken>
+			<replacevalue><![CDATA[    <Manager pathname="SESSIONS.ser" />]]></replacevalue>
+		</replace>
+
+		<fixcrlf eof="asis" eol="crlf" file="${app.server.tomcat.dir}/conf/context.xml" />
 
 		<echo append="true" file="${app.server.tomcat.dir}/conf/logging.properties">
 			<![CDATA[
@@ -1442,7 +1456,7 @@ closeTemplate()
 						<echo file="${tstamp.value}/create-weblogic-domain.sh">
 							#!/bin/sh
 
-							export JDK_JAVA_OPTIONS="%JDK_JAVA_OPTIONS ${app.server.weblogic.jdk.java.options}"
+							export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} ${app.server.weblogic.jdk.java.options}"
 							export MW_HOME="${app.server.weblogic.dir}"
 							export USER_MEM_ARGS="${app.server.weblogic.jvm.mem}"
 							export WL_HOME="${app.server.weblogic.wlserver.dir}"
@@ -1458,7 +1472,7 @@ closeTemplate()
 						<echo file="${tstamp.value}/create-weblogic-domain.sh">
 							#!/bin/sh
 
-							export JDK_JAVA_OPTIONS="%JDK_JAVA_OPTIONS ${app.server.weblogic.jdk.java.options}"
+							export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} ${app.server.weblogic.jdk.java.options}"
 							export MW_HOME="${app.server.weblogic.dir}"
 							export USER_MEM_ARGS="${app.server.weblogic.jvm.mem}"
 							export WL_HOME="${app.server.weblogic.wlserver.dir}"
@@ -1490,7 +1504,7 @@ closeTemplate()
 							# Any changes to this script may be lost when adding extensions to this configuration.
 
 							export DERBY_FLAG="false"
-							export JDK_JAVA_OPTIONS="%JDK_JAVA_OPTIONS ${app.server.weblogic.jdk.java.options}"
+							export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} ${app.server.weblogic.jdk.java.options}"
 							export JAVA_OPTIONS="${JAVA_OPTIONS} ${app.server.weblogic.jvm.args} -da:org.apache.lucene... -da:org.aspectj... "
 							export MW_HOME="${app.server.weblogic.dir}"
 							export USER_MEM_ARGS="${app.server.weblogic.jvm.mem}"
@@ -1678,7 +1692,7 @@ closeTemplate()
 				<![CDATA[
 					# Any changes to this script may be lost when adding extensions to this configuration.
 					export DERBY_FLAG="false"
-					export JDK_JAVA_OPTIONS="%JDK_JAVA_OPTIONS ${app.server.weblogic.jdk.java.options}"
+					export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} ${app.server.weblogic.jdk.java.options}"
 					export JAVA_OPTIONS="${JAVA_OPTIONS} ${app.server.weblogic.jvm.args} -da:org.apache.lucene... -da:org.aspectj... "
 					export MW_HOME="${app.server.weblogic.dir}"
 					export USER_MEM_ARGS="${app.server.weblogic.jvm.mem}"
@@ -2505,7 +2519,7 @@ this task.
 		<echo append="true" file="${app.server.wildfly.bin.dir}/standalone.conf">
 			<![CDATA[${line.separator}JAVA_OPTS="$JAVA_OPTS ${app.server.wildfly.jvm.args} ${app.server.wildfly.jvm.mem}"
 
-JDK_JAVA_OPTIONS="$JDK_JAVA_OPTIONS ${app.server.wildfly.jdk.java.options}"
+JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} ${app.server.wildfly.jdk.java.options}"
 export JDK_JAVA_OPTIONS]]>
 		</echo>
 

@@ -164,7 +164,7 @@
 		<finder name="Mx" return-type="Company">
 			<finder-column name="mx" />
 		</finder>
-		<finder name="LogoId" return-type="Company">
+		<finder name="LogoId" return-type="Collection">
 			<finder-column name="logoId" />
 		</finder>
 	</entity>
@@ -645,7 +645,7 @@
 		<finder name="ParentPlid" return-type="Collection" where="system = [$FALSE$]">
 			<finder-column name="parentPlid" />
 		</finder>
-		<finder name="IconImageId" return-type="Layout">
+		<finder name="IconImageId" return-type="Collection">
 			<finder-column name="iconImageId" />
 		</finder>
 		<finder name="LayoutPrototypeUuid" return-type="Collection" where="system = [$FALSE$]">
@@ -698,7 +698,7 @@
 			<finder-column name="privateLayout" />
 			<finder-column name="friendlyURL" />
 		</finder>
-		<finder name="G_P_SPLU" return-type="Layout">
+		<finder name="G_P_SPLU" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column name="privateLayout" />
 			<finder-column name="sourcePrototypeLayoutUuid" />
@@ -953,11 +953,6 @@
 		<finder name="L_P_P" return-type="Collection">
 			<finder-column name="layoutSetBranchId" />
 			<finder-column name="parentLayoutRevisionId" />
-			<finder-column name="plid" />
-		</finder>
-		<finder name="L_H_P" return-type="LayoutRevision">
-			<finder-column name="layoutSetBranchId" />
-			<finder-column name="head" />
 			<finder-column name="plid" />
 		</finder>
 		<finder name="L_H_P_Collection" return-type="Collection">
@@ -3117,7 +3112,7 @@
 			<finder-column name="primary" />
 		</finder>
 	</entity>
-	<entity change-tracking-enabled="true" local-service="true" name="WorkflowDefinitionLink" remote-service="true" uad-application-name="Portal Workflow" uad-dir-path="../modules/apps/portal-workflow/portal-workflow-uad/src/main/java" uad-package-path="com.liferay.portal.workflow">
+	<entity change-tracking-enabled="true" external-reference-code="group" local-service="true" name="WorkflowDefinitionLink" remote-service="true" uad-application-name="Portal Workflow" uad-dir-path="../modules/apps/portal-workflow/portal-workflow-uad/src/main/java" uad-package-path="com.liferay.portal.workflow" uuid="true">
 
 		<!-- PK fields -->
 
@@ -3268,12 +3263,14 @@
 		<exception>LayoutBranchName</exception>
 		<exception>LayoutFriendlyURL</exception>
 		<exception>LayoutFriendlyURLs</exception>
+		<exception>LayoutJavaScript</exception>
 		<exception>LayoutName</exception>
 		<exception>LayoutParentLayoutId</exception>
 		<exception>LayoutPermission</exception>
 		<exception>LayoutPrototype</exception>
 		<exception>LayoutRevisionMajor</exception>
 		<exception>LayoutSetBranchName</exception>
+		<exception>LayoutSetJavaScript</exception>
 		<exception>LayoutSetVirtualHost</exception>
 		<exception>LayoutType</exception>
 		<exception>LockedLayout</exception>

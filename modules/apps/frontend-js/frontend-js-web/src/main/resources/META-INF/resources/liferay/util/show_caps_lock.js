@@ -7,9 +7,11 @@ export default function showCapsLock(event, elementId) {
 	const element = document.getElementById(elementId);
 
 	if (element) {
+		element.classList.add('hide');
 		element.style.display = 'none';
 
 		if (event.getModifierState('CapsLock')) {
+			element.classList.remove('hide');
 			element.style.display = '';
 		}
 	}

@@ -66,14 +66,22 @@ public class CommercePriceListServiceUpgradeStepRegistrator
 				CommerceTierPriceEntryModelImpl.TABLE_NAME, "groupId"));
 
 		registry.register(
-			"2.0.0", "2.1.0",
+			"2.0.0", "2.0.1",
 			new com.liferay.commerce.price.list.internal.upgrade.v2_1_0.
-				CommercePriceEntryUpgradeProcess(),
+				CommercePriceEntryUpgradeProcess());
+
+		registry.register(
+			"2.0.1", "2.0.2",
 			new com.liferay.commerce.price.list.internal.upgrade.v2_1_0.
-				CommercePriceListUpgradeProcess(),
+				CommercePriceListUpgradeProcess());
+
+		registry.register(
+			"2.0.2", "2.0.3",
 			new com.liferay.commerce.price.list.internal.upgrade.v2_1_0.
-				CommerceTierPriceEntryUpgradeProcess(),
-			CommercePriceListChannelRelTable.create(),
+				CommerceTierPriceEntryUpgradeProcess());
+
+		registry.register(
+			"2.0.3", "2.1.0", CommercePriceListChannelRelTable.create(),
 			CommercePriceListDiscountRelTable.create());
 
 		registry.register(
@@ -175,6 +183,8 @@ public class CommercePriceListServiceUpgradeStepRegistrator
 					"CommercePriceList.commerceCurrencyId)")),
 			UpgradeProcessFactory.dropColumns(
 				CommercePriceListModelImpl.TABLE_NAME, "commerceCurrencyId"));
+
+		registry.register("3.0.0", "4.0.0", new DummyUpgradeStep());
 
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce price list upgrade step registrator finished");

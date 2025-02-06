@@ -5,13 +5,18 @@
 
 package com.liferay.portal.configuration.settings.internal.test;
 
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.configuration.settings.internal.constants.SettingsLocatorTestConstants;
+import com.liferay.portal.configuration.settings.internal.samples.TestRequiredConfiguration;
 import com.liferay.portal.kernel.settings.Settings;
 import com.liferay.portal.kernel.settings.SettingsLocatorHelper;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.test.rule.Inject;
+
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -47,8 +52,11 @@ public class SettingsLocatorHelperTest extends BaseSettingsLocatorTestCase {
 				SettingsLocatorTestConstants.TEST_KEY,
 				SettingsLocatorTestConstants.TEST_DEFAULT_VALUE));
 
-		String companyValue = saveScopedConfiguration(
-			ExtendedObjectClassDefinition.Scope.COMPANY, companyId);
+		String companyValue = saveFactoryConfiguration(
+			SettingsLocatorTestConstants.TEST_CONFIGURATION_PID,
+			ExtendedObjectClassDefinition.Scope.COMPANY, companyId, null, null,
+			SettingsLocatorTestConstants.TEST_KEY,
+			RandomTestUtil.randomString());
 
 		companySettings =
 			_settingsLocatorHelper.getCompanyConfigurationBeanSettings(
@@ -77,12 +85,16 @@ public class SettingsLocatorHelperTest extends BaseSettingsLocatorTestCase {
 		saveFactoryConfiguration(
 			SettingsLocatorTestConstants.TEST_CONFIGURATION_PID,
 			ExtendedObjectClassDefinition.Scope.COMPANY,
-			TestPropsValues.getCompanyId(), testKey, testValue1);
+			TestPropsValues.getCompanyId(), testKey, testValue1,
+			SettingsLocatorTestConstants.TEST_KEY,
+			RandomTestUtil.randomString());
 
 		saveFactoryConfiguration(
 			SettingsLocatorTestConstants.TEST_CONFIGURATION_PID,
 			ExtendedObjectClassDefinition.Scope.COMPANY,
-			TestPropsValues.getCompanyId(), testKey, testValue2);
+			TestPropsValues.getCompanyId(), testKey, testValue2,
+			SettingsLocatorTestConstants.TEST_KEY,
+			RandomTestUtil.randomString());
 
 		Settings companySettings =
 			_settingsLocatorHelper.getCompanyConfigurationBeanSettings(
@@ -138,8 +150,11 @@ public class SettingsLocatorHelperTest extends BaseSettingsLocatorTestCase {
 				SettingsLocatorTestConstants.TEST_KEY,
 				SettingsLocatorTestConstants.TEST_DEFAULT_VALUE));
 
-		String groupValue = saveScopedConfiguration(
-			ExtendedObjectClassDefinition.Scope.GROUP, groupId);
+		String groupValue = saveFactoryConfiguration(
+			SettingsLocatorTestConstants.TEST_CONFIGURATION_PID,
+			ExtendedObjectClassDefinition.Scope.GROUP, groupId, null, null,
+			SettingsLocatorTestConstants.TEST_KEY,
+			RandomTestUtil.randomString());
 
 		groupSettings =
 			_settingsLocatorHelper.getGroupConfigurationBeanSettings(
@@ -187,9 +202,12 @@ public class SettingsLocatorHelperTest extends BaseSettingsLocatorTestCase {
 				SettingsLocatorTestConstants.TEST_KEY,
 				SettingsLocatorTestConstants.TEST_DEFAULT_VALUE));
 
-		String portletInstanceValue = saveScopedConfiguration(
+		String portletInstanceValue = saveFactoryConfiguration(
+			SettingsLocatorTestConstants.TEST_CONFIGURATION_PID,
 			ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE,
-			portletInstanceKey);
+			portletInstanceKey, null, null,
+			SettingsLocatorTestConstants.TEST_KEY,
+			RandomTestUtil.randomString());
 
 		portletInstanceSettings =
 			_settingsLocatorHelper.getPortletInstanceConfigurationBeanSettings(
@@ -217,7 +235,10 @@ public class SettingsLocatorHelperTest extends BaseSettingsLocatorTestCase {
 				SettingsLocatorTestConstants.TEST_KEY,
 				SettingsLocatorTestConstants.TEST_DEFAULT_VALUE));
 
-		String systemValue = saveConfiguration();
+		String systemValue = saveConfiguration(
+			SettingsLocatorTestConstants.TEST_CONFIGURATION_PID,
+			SettingsLocatorTestConstants.TEST_KEY,
+			RandomTestUtil.randomString());
 
 		settings = _settingsLocatorHelper.getConfigurationBeanSettings(
 			SettingsLocatorTestConstants.TEST_CONFIGURATION_PID);
@@ -227,6 +248,100 @@ public class SettingsLocatorHelperTest extends BaseSettingsLocatorTestCase {
 			settings.getValue(
 				SettingsLocatorTestConstants.TEST_KEY,
 				SettingsLocatorTestConstants.TEST_DEFAULT_VALUE));
+	}
+
+	@Test
+	public void testRegisterConfigurationBeanClassWithRequiredConfiguration()
+		throws Exception {
+
+		Map<String, Settings> configurationBeanSettings =
+			ReflectionTestUtil.getFieldValue(
+				_settingsLocatorHelper, "_configurationBeanSettings");
+
+		Assert.assertNull(
+			configurationBeanSettings.get(
+				SettingsLocatorTestConstants.TEST_REQUIRED_CONFIGURATION_PID));
+
+		try (SafeCloseable safeCloseable = ReflectionTestUtil.invoke(
+				_settingsLocatorHelper, "_registerConfigurationBeanClass",
+				new Class<?>[] {Class.class},
+				TestRequiredConfiguration.class)) {
+
+			// Configuration with key
+
+			Assert.assertNull(
+				configurationBeanSettings.get(
+					SettingsLocatorTestConstants.
+						TEST_REQUIRED_CONFIGURATION_PID));
+
+			saveConfiguration(
+				SettingsLocatorTestConstants.TEST_REQUIRED_CONFIGURATION_PID,
+				SettingsLocatorTestConstants.TEST_KEY,
+				RandomTestUtil.randomString());
+
+			Assert.assertNull(
+				configurationBeanSettings.get(
+					SettingsLocatorTestConstants.
+						TEST_REQUIRED_CONFIGURATION_PID));
+
+			// Configuration with required key
+
+			String systemValue = saveConfiguration(
+				SettingsLocatorTestConstants.TEST_REQUIRED_CONFIGURATION_PID,
+				SettingsLocatorTestConstants.TEST_REQUIRED_KEY,
+				RandomTestUtil.randomString());
+
+			Settings settings = configurationBeanSettings.get(
+				SettingsLocatorTestConstants.TEST_REQUIRED_CONFIGURATION_PID);
+
+			Assert.assertEquals(
+				SettingsLocatorTestConstants.TEST_DEFAULT_VALUE,
+				settings.getValue(SettingsLocatorTestConstants.TEST_KEY, null));
+			Assert.assertEquals(
+				systemValue,
+				settings.getValue(
+					SettingsLocatorTestConstants.TEST_REQUIRED_KEY, null));
+
+			// Existing configuration with key
+
+			saveConfiguration(
+				SettingsLocatorTestConstants.TEST_REQUIRED_CONFIGURATION_PID,
+				SettingsLocatorTestConstants.TEST_KEY,
+				RandomTestUtil.randomString());
+
+			settings = configurationBeanSettings.get(
+				SettingsLocatorTestConstants.TEST_REQUIRED_CONFIGURATION_PID);
+
+			Assert.assertEquals(
+				SettingsLocatorTestConstants.TEST_DEFAULT_VALUE,
+				settings.getValue(SettingsLocatorTestConstants.TEST_KEY, null));
+			Assert.assertEquals(
+				systemValue,
+				settings.getValue(
+					SettingsLocatorTestConstants.TEST_REQUIRED_KEY, null));
+
+			// Existing configuration with required key
+
+			systemValue = saveConfiguration(
+				SettingsLocatorTestConstants.TEST_REQUIRED_CONFIGURATION_PID,
+				SettingsLocatorTestConstants.TEST_REQUIRED_KEY,
+				RandomTestUtil.randomString());
+
+			settings = configurationBeanSettings.get(
+				SettingsLocatorTestConstants.TEST_REQUIRED_CONFIGURATION_PID);
+
+			Assert.assertEquals(
+				SettingsLocatorTestConstants.TEST_DEFAULT_VALUE,
+				settings.getValue(SettingsLocatorTestConstants.TEST_KEY, null));
+			Assert.assertEquals(
+				systemValue,
+				settings.getValue(
+					SettingsLocatorTestConstants.TEST_REQUIRED_KEY, null));
+		}
+
+		Assert.assertNull(
+			configurationBeanSettings.get(
+				SettingsLocatorTestConstants.TEST_REQUIRED_CONFIGURATION_PID));
 	}
 
 	@Inject

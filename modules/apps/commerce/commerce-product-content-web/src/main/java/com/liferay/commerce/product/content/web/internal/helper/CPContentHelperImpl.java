@@ -5,6 +5,7 @@
 
 package com.liferay.commerce.product.content.web.internal.helper;
 
+import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.adaptive.media.image.html.AMImageHTMLTagFactory;
 import com.liferay.commerce.constants.CPDefinitionInventoryConstants;
@@ -17,6 +18,7 @@ import com.liferay.commerce.media.CommerceCatalogDefaultImage;
 import com.liferay.commerce.media.CommerceMediaProvider;
 import com.liferay.commerce.media.CommerceMediaResolver;
 import com.liferay.commerce.model.CPDefinitionInventory;
+import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.product.catalog.CPCatalogEntry;
 import com.liferay.commerce.product.catalog.CPSku;
 import com.liferay.commerce.product.constants.CPAttachmentFileEntryConstants;
@@ -509,13 +511,21 @@ public class CPContentHelperImpl implements CPContentHelper {
 			(CommerceContext)httpServletRequest.getAttribute(
 				CommerceWebKeys.COMMERCE_CONTEXT);
 
+		long commerceOrderTypeId = 0;
+
+		CommerceOrder commerceOrder = commerceContext.getCommerceOrder();
+
+		if (commerceOrder != null) {
+			commerceOrderTypeId = commerceOrder.getCommerceOrderTypeId();
+		}
+
 		AccountEntry accountEntry = commerceContext.getAccountEntry();
 
 		CPInstance firstAvailableReplacementCPInstance =
 			_cpInstanceHelper.fetchFirstAvailableReplacementCPInstance(
 				accountEntry.getAccountEntryId(),
 				commerceContext.getCommerceChannelGroupId(),
-				cpSku.getCPInstanceId());
+				commerceOrderTypeId, cpSku.getCPInstanceId());
 
 		if (firstAvailableReplacementCPInstance == null) {
 			return StringPool.BLANK;
@@ -673,13 +683,26 @@ public class CPContentHelperImpl implements CPContentHelper {
 			(CommerceContext)httpServletRequest.getAttribute(
 				CommerceWebKeys.COMMERCE_CONTEXT);
 
+		long commerceAccountId = AccountConstants.ACCOUNT_ENTRY_ID_GUEST;
+
 		AccountEntry accountEntry = commerceContext.getAccountEntry();
+
+		if (accountEntry != null) {
+			commerceAccountId = accountEntry.getAccountEntryId();
+		}
+
+		long commerceOrderTypeId = 0;
+
+		CommerceOrder commerceOrder = commerceContext.getCommerceOrder();
+
+		if (commerceOrder != null) {
+			commerceOrderTypeId = commerceOrder.getCommerceOrderTypeId();
+		}
 
 		CPInstance firstAvailableReplacementCPInstance =
 			_cpInstanceHelper.fetchFirstAvailableReplacementCPInstance(
-				accountEntry.getAccountEntryId(),
-				commerceContext.getCommerceChannelGroupId(),
-				cpSku.getCPInstanceId());
+				commerceAccountId, commerceContext.getCommerceChannelGroupId(),
+				commerceOrderTypeId, cpSku.getCPInstanceId());
 
 		if (firstAvailableReplacementCPInstance != null) {
 			return true;
@@ -707,11 +730,7 @@ public class CPContentHelperImpl implements CPContentHelper {
 			cpInstance.getCPInstanceUuid(), cpDefinition.getCProductId(),
 			WorkflowConstants.STATUS_APPROVED);
 
-		if (!cpInstances.isEmpty()) {
-			return true;
-		}
-
-		return false;
+		return !cpInstances.isEmpty();
 	}
 
 	@Override
@@ -722,7 +741,7 @@ public class CPContentHelperImpl implements CPContentHelper {
 
 		CommerceWishList commerceWishList =
 			_commerceWishListService.getDefaultCommerceWishList(
-				themeDisplay.getScopeGroupId(), themeDisplay.getUserId());
+				themeDisplay.getScopeGroupId());
 
 		if (commerceWishList != null) {
 			long commerceWishListId = commerceWishList.getCommerceWishListId();

@@ -82,7 +82,7 @@ definition {
 			entryContent = "Blog Entry Content New",
 			entryTitle = "Blog Entry Title New");
 
-		Panel.expandPanel(panel = "Configuration");
+		Blogs.expandPanel(panel = "Friendly URL");
 
 		BlogsEntry.addCustomURL(customURL = "my-custom-url");
 
@@ -194,8 +194,6 @@ definition {
 	@priority = 4
 	@refactordone
 	test CanRemoveSmallImage {
-		property testray.component.names = "WYSIWYG";
-
 		BlogsNavigator.openToAddEntry(
 			layoutName = "Blogs Page",
 			siteURLKey = "guest");

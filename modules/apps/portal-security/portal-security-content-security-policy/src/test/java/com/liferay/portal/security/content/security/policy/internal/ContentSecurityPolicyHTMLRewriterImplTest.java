@@ -32,7 +32,7 @@ public class ContentSecurityPolicyHTMLRewriterImplTest {
 
 	@Test
 	public void testRewriteInlineEventHandlers() {
-		String html = _rewriteInlineEventHandlers(
+		String html = _rewriteInlineAttributes(
 			"<div onclick=\"alert(1);\" onchange=\"alert(2);\">Yo!</div>",
 			"TEST_NONCE", false);
 
@@ -52,6 +52,23 @@ public class ContentSecurityPolicyHTMLRewriterImplTest {
 	}
 
 	@Test
+	public void testRewriteInlineEventHandlersAndInlineStyles() {
+		String html = _rewriteInlineAttributes(
+			"<div id=\"TEST_ID\" onclick=\"alert(1);\" style=" +
+				"\"display: none;\">Yo!</div>",
+			"TEST_NONCE", false);
+
+		Assert.assertTrue(
+			_matches(html, ".*document\\.getElementById\\('TEST_ID'\\).*"));
+		Assert.assertTrue(
+			_matches(
+				html,
+				".*<style nonce=\"TEST_NONCE\">#TEST_ID\\{display: none;}" +
+					"</style>.*"));
+		Assert.assertTrue(_matches(html, ".*<div id=\"TEST_ID\">.*</div>.*"));
+	}
+
+	@Test
 	public void testRewriteInlineEventHandlersRecursive() {
 		String html =
 			"<body onload=\"alert(1);\"><div onclick=\"alert(2);\">Yo!</div>" +
@@ -59,19 +76,19 @@ public class ContentSecurityPolicyHTMLRewriterImplTest {
 
 		Assert.assertFalse(
 			_matches(
-				_rewriteInlineEventHandlers(html, "TEST_NONCE", false),
+				_rewriteInlineAttributes(html, "TEST_NONCE", false),
 				".*<script nonce=\"TEST_NONCE\">.*onclick.*alert\\(2\\);.*" +
 					"</script>.*"));
 		Assert.assertTrue(
 			_matches(
-				_rewriteInlineEventHandlers(html, "TEST_NONCE", true),
+				_rewriteInlineAttributes(html, "TEST_NONCE", true),
 				".*<script nonce=\"TEST_NONCE\">.*onclick.*alert\\(2\\);.*" +
 					"</script>.*"));
 	}
 
 	@Test
 	public void testRewriteInlineEventHandlersWithBody() {
-		String html = _rewriteInlineEventHandlers(
+		String html = _rewriteInlineAttributes(
 			"<BODY onclick=\"alert(1);\">Yo!</BODY>", "TEST_NONCE", false);
 
 		Assert.assertTrue(_matches(html, ".*</body>"));
@@ -84,7 +101,7 @@ public class ContentSecurityPolicyHTMLRewriterImplTest {
 					"\\{alert\\(1\\);}.*"));
 		Assert.assertTrue(_matches(html, "<body>.*"));
 
-		html = _rewriteInlineEventHandlers(
+		html = _rewriteInlineAttributes(
 			"<body onclick=\"alert(1);\" onchange=\"alert(2);\">Yo!</body>",
 			"TEST_NONCE", false);
 
@@ -106,7 +123,7 @@ public class ContentSecurityPolicyHTMLRewriterImplTest {
 
 	@Test
 	public void testRewriteInlineEventHandlersWithId() {
-		String html = _rewriteInlineEventHandlers(
+		String html = _rewriteInlineAttributes(
 			"<div id=\"TEST_ID\" onclick=\"alert(1);\">Yo!</div>", "TEST_NONCE",
 			false);
 
@@ -117,7 +134,7 @@ public class ContentSecurityPolicyHTMLRewriterImplTest {
 
 	@Test
 	public void testRewriteInlineEventHandlersWithMultipleTopNodes() {
-		String html = _rewriteInlineEventHandlers(
+		String html = _rewriteInlineAttributes(
 			"<div onclick=\"alert(1);\">Yo!</div><div onclick=\"alert(2);\">" +
 				"Yo!</div>",
 			"TEST_NONCE", false);
@@ -135,7 +152,21 @@ public class ContentSecurityPolicyHTMLRewriterImplTest {
 			"<div onclick=\"alert(1);\" onchange=\"alert(2);\">Yo!</div>";
 
 		Assert.assertEquals(
-			html, _rewriteInlineEventHandlers(html, StringPool.BLANK, false));
+			html, _rewriteInlineAttributes(html, StringPool.BLANK, false));
+	}
+
+	@Test
+	public void testRewriteInlineStyles() {
+		String html = _rewriteInlineAttributes(
+			"<div id=\"TEST_ID\" style=\"display: none;\">Yo!</div>",
+			"TEST_NONCE", false);
+
+		Assert.assertTrue(
+			_matches(
+				html,
+				"<style nonce=\"TEST_NONCE\">#TEST_ID\\{display: none;}" +
+					"</style>.*"));
+		Assert.assertTrue(_matches(html, ".*<div id=\"TEST_ID\">.*</div>"));
 	}
 
 	private boolean _matches(String html, String regexp) {
@@ -146,7 +177,7 @@ public class ContentSecurityPolicyHTMLRewriterImplTest {
 		return matcher.matches();
 	}
 
-	private String _rewriteInlineEventHandlers(
+	private String _rewriteInlineAttributes(
 		String html, String nonce, boolean recursive) {
 
 		ContentSecurityPolicyHTMLRewriterImpl
@@ -167,7 +198,7 @@ public class ContentSecurityPolicyHTMLRewriterImplTest {
 			"_contentSecurityPolicyNonceProvider",
 			contentSecurityPolicyNonceProvider);
 
-		return contentSecurityPolicyHTMLRewriterImpl.rewriteInlineEventHandlers(
+		return contentSecurityPolicyHTMLRewriterImpl.rewriteInlineAttributes(
 			html, null, recursive);
 	}
 

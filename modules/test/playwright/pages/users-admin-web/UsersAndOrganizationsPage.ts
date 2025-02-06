@@ -38,6 +38,7 @@ export const searchTableRowByValue = async function (
 
 export class UsersAndOrganizationsPage {
 	readonly activateButton: Locator;
+	readonly activateUserMenuItem: Locator;
 	readonly applicationsMenuPage: ApplicationsMenuPage;
 	readonly assignUsersIFrame: FrameLocator;
 	readonly assignUsersMenuItem: Locator;
@@ -51,6 +52,8 @@ export class UsersAndOrganizationsPage {
 	readonly assignUsersDoneButton: Locator;
 	readonly clearButton: Locator;
 	readonly deactivateButton: Locator;
+	readonly deactivateUserMenuItem: Locator;
+	readonly deleteButton: Locator;
 	readonly deletePersonalDataMenuItem: Locator;
 	readonly exportImportOptionsMenuItem: Locator;
 	readonly exportPersonalDataItem: Locator;
@@ -101,8 +104,15 @@ export class UsersAndOrganizationsPage {
 		value: string,
 		strictEqual?: boolean
 	) => Promise<{column: Locator; row: Locator}>;
+	readonly organizationUsersTableRowActions: (
+		screenName: string
+	) => Promise<Locator>;
 	readonly organizationUsersTableRowLink: (
 		screenName: string
+	) => Promise<Locator>;
+	readonly organizationUsersTableRowStatusLink: (
+		screenName: string,
+		status: string
 	) => Promise<Locator>;
 	readonly page: Page;
 	readonly pageTitle: Locator;
@@ -124,9 +134,13 @@ export class UsersAndOrganizationsPage {
 	readonly usersLink: Locator;
 	readonly userPersonalMenuButton: Locator;
 	readonly usersTable: Locator;
+	readonly usersTableCell: (userName: string) => Locator;
 
 	constructor(page: Page) {
 		this.activateButton = page.getByRole('button', {name: 'Activate'});
+		this.activateUserMenuItem = page.getByRole('menuitem', {
+			name: 'Activate',
+		});
 		this.applicationsMenuPage = new ApplicationsMenuPage(page);
 		this.assignUsersIFrame = page.frameLocator('iframe[id="modalIframe"]');
 		this.assignUsersMenuItem = page.getByRole('menuitem', {
@@ -152,6 +166,10 @@ export class UsersAndOrganizationsPage {
 		});
 		this.clearButton = page.getByRole('button', {name: 'Clear'});
 		this.deactivateButton = page.getByRole('button', {name: 'Deactivate'});
+		this.deactivateUserMenuItem = page.getByRole('menuitem', {
+			name: 'Deactivate',
+		});
+		this.deleteButton = page.getByRole('button', {name: 'Delete'});
 		this.deletePersonalDataMenuItem = page.getByRole('menuitem', {
 			name: 'Delete Personal Data',
 		});
@@ -297,17 +315,16 @@ export class UsersAndOrganizationsPage {
 				strictEqual
 			);
 		};
-		this.assignUsersCheckbox = async (userName: string) => {
-			const assignUsersTableRow = await this.assignUsersTableRow(
-				1,
-				userName
-			);
+		this.organizationUsersTableRowActions = async (name: string) => {
+			const organizationUsersTableRow =
+				await this.organizationUsersTableRow(1, name, true);
 
-			if (assignUsersTableRow && assignUsersTableRow.row) {
-				return assignUsersTableRow.row.getByRole('checkbox');
+			if (organizationUsersTableRow && organizationUsersTableRow.column) {
+				return organizationUsersTableRow.row.getByLabel('Show Actions');
 			}
+
+			throw new Error(`Cannot locate user row with screenName ${name}`);
 		};
-		this.assignUsersDoneButton = page.getByRole('button', {name: 'Done'});
 		this.organizationUsersTableRowLink = async (screenName: string) => {
 			const organizationUsersTableRow =
 				await this.organizationUsersTableRow(1, screenName, true);
@@ -322,6 +339,32 @@ export class UsersAndOrganizationsPage {
 				`Cannot locate user row with screenName ${screenName}`
 			);
 		};
+		this.organizationUsersTableRowStatusLink = async (
+			name: string,
+			status: string
+		) => {
+			const organizationUsersTableRow =
+				await this.organizationUsersTableRow(1, name, true);
+
+			if (organizationUsersTableRow && organizationUsersTableRow.row) {
+				return organizationUsersTableRow.row.getByRole('link', {
+					name: `${status}`,
+				});
+			}
+
+			throw new Error(`Cannot locate user row with screenName ${name}`);
+		};
+		this.assignUsersCheckbox = async (userName: string) => {
+			const assignUsersTableRow = await this.assignUsersTableRow(
+				1,
+				userName
+			);
+
+			if (assignUsersTableRow && assignUsersTableRow.row) {
+				return assignUsersTableRow.row.getByRole('checkbox');
+			}
+		};
+		this.assignUsersDoneButton = page.getByRole('button', {name: 'Done'});
 		this.organizationsTableRow = async (
 			colPosition: number,
 			value: string,
@@ -429,6 +472,12 @@ export class UsersAndOrganizationsPage {
 		this.usersTable = page.locator(
 			'#_com_liferay_users_admin_web_portlet_UsersAdminPortlet_usersSearchContainer'
 		);
+		this.usersTableCell = (userName: string) => {
+			return this.page.getByRole('cell', {
+				exact: true,
+				name: userName,
+			});
+		};
 	}
 
 	async activateUsers(userNames: string[]) {
@@ -443,9 +492,18 @@ export class UsersAndOrganizationsPage {
 		for (const user of userNames) {
 			await (await this.usersCheckbox(user)).check();
 		}
-		this.page.on('dialog', async (dialog) => await dialog.accept());
 
 		await this.deactivateButton.click();
+
+		await waitForAlert(this.page);
+	}
+
+	async deleteUsers(userNames: string[]) {
+		for (const userName of userNames) {
+			await (await this.usersCheckbox(userName)).check();
+		}
+
+		await this.deleteButton.click();
 
 		await waitForAlert(this.page);
 	}
@@ -456,6 +514,20 @@ export class UsersAndOrganizationsPage {
 
 	async goToOrganizations(forceReload?: boolean) {
 		await this.goto(forceReload);
+		await Promise.all([
+			this.organizationsLink.click(),
+			this.page.waitForResponse(
+				(resp) =>
+					resp.status() === 200 &&
+					resp
+						.url()
+						.includes('screenNavigationCategoryKey=organizations')
+			),
+		]);
+	}
+
+	async goToOrganizationsWithLimitedAccess() {
+		await this.applicationsMenuPage.goToUsersAndOrganizationsWithLimitedAccess();
 		await Promise.all([
 			this.organizationsLink.click(),
 			this.page.waitForResponse(

@@ -99,15 +99,9 @@ public class CPOptionValueDisplayContext {
 	public boolean isCPOptionSelectDateType() throws PortalException {
 		CPOption cpOption = _cpOptionValue.getCPOption();
 
-		boolean cpOptionSelectDateType = Objects.equals(
+		return Objects.equals(
 			CPConstants.PRODUCT_OPTION_SELECT_DATE_KEY,
 			cpOption.getCommerceOptionTypeKey());
-
-		if (cpOptionSelectDateType) {
-			return true;
-		}
-
-		return false;
 	}
 
 	private String _getTimeZone(String[] splits) {

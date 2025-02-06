@@ -55,14 +55,13 @@ public class KeywordDTOConverter implements DTOConverter<AssetTag, Keyword> {
 				setAssetLibraryKey(() -> GroupUtil.getAssetLibraryKey(group));
 				setCreator(
 					() -> {
-						if (assetTag.getUserId() != 0) {
-							return CreatorUtil.toCreator(
-								_portal,
-								_userLocalService.fetchUser(
-									assetTag.getUserId()));
+						if (assetTag.getUserId() == 0) {
+							return null;
 						}
 
-						return null;
+						return CreatorUtil.toCreator(
+							_portal,
+							_userLocalService.fetchUser(assetTag.getUserId()));
 					});
 				setDateCreated(assetTag::getCreateDate);
 				setDateModified(assetTag::getModifiedDate);
@@ -85,6 +84,8 @@ public class KeywordDTOConverter implements DTOConverter<AssetTag, Keyword> {
 						return hits.getLength();
 					});
 				setName(assetTag::getName);
+				setSiteExternalReferenceCode(
+					() -> GroupUtil.getSiteExternalReferenceCode(group));
 				setSiteId(() -> GroupUtil.getSiteId(group));
 				setSubscribed(
 					() -> _subscriptionLocalService.isSubscribed(

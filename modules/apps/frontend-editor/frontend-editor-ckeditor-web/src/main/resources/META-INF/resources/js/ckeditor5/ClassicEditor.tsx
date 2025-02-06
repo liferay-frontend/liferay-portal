@@ -5,26 +5,62 @@
 
 import {CKEditor} from '@ckeditor/ckeditor5-react';
 import {
+	Alignment,
+	BlockQuote,
 	Bold,
 	ClassicEditor as BaseClassicEditor,
 	EditorConfig,
 	Essentials,
+	Font,
 	GeneralHtmlSupport,
+	Heading,
+	HorizontalLine,
+	Indent,
 	Italic,
+	Link,
+	List,
+	MediaEmbed,
 	Paragraph,
+	RemoveFormat,
+	SourceEditing,
+	Strikethrough,
+	Style,
+	Table,
+	TableCaption,
+	TableProperties,
+	TableToolbar,
 	Underline,
 } from 'ckeditor5';
 import React from 'react';
 
+import '../../css/ckeditor5/editor.scss';
+
 const ClassicEditor = ({config}: {config?: EditorConfig}) => {
 	const defaultConfig: EditorConfig = {
 		plugins: [
+			Alignment,
+			BlockQuote,
 			Bold,
 			Essentials,
+			Font,
 			GeneralHtmlSupport,
+			Heading,
+			HorizontalLine,
+			Indent,
 			Italic,
-			Underline,
+			Link,
+			List,
+			MediaEmbed,
 			Paragraph,
+			RemoveFormat,
+			SourceEditing,
+			Strikethrough,
+			Style,
+			Table,
+			TableCaption,
+			TableProperties,
+			TableToolbar,
+			Underline,
 		],
 		toolbar: ['undo', 'redo', '|', 'bold', 'italic', 'underline'],
 	};

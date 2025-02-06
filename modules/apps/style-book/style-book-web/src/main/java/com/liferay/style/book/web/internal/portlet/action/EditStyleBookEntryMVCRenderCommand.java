@@ -5,11 +5,14 @@
 
 package com.liferay.style.book.web.internal.portlet.action;
 
+import com.liferay.client.extension.type.manager.CETManager;
+import com.liferay.fragment.contributor.FragmentCollectionContributorRegistry;
 import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
-import com.liferay.site.provider.GroupURLProvider;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.style.book.constants.StyleBookPortletKeys;
+import com.liferay.style.book.web.internal.display.context.EditStyleBookEntryDisplayContext;
 
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
@@ -34,22 +37,30 @@ public class EditStyleBookEntryMVCRenderCommand implements MVCRenderCommand {
 		RenderRequest renderRequest, RenderResponse renderResponse) {
 
 		renderRequest.setAttribute(
-			FrontendTokenDefinitionRegistry.class.getName(),
-			_frontendTokenDefinitionRegistry);
-		renderRequest.setAttribute(ItemSelector.class.getName(), _itemSelector);
-		renderRequest.setAttribute(
-			GroupURLProvider.class.getName(), _groupURLProvider);
+			EditStyleBookEntryDisplayContext.class.getName(),
+			new EditStyleBookEntryDisplayContext(
+				_cetManager, _fragmentCollectionContributorRegistry,
+				_frontendTokenDefinitionRegistry,
+				_portal.getHttpServletRequest(renderRequest), _itemSelector,
+				renderResponse));
 
 		return "/edit_style_book_entry.jsp";
 	}
 
 	@Reference
+	private CETManager _cetManager;
+
+	@Reference
+	private FragmentCollectionContributorRegistry
+		_fragmentCollectionContributorRegistry;
+
+	@Reference
 	private FrontendTokenDefinitionRegistry _frontendTokenDefinitionRegistry;
 
 	@Reference
-	private GroupURLProvider _groupURLProvider;
+	private ItemSelector _itemSelector;
 
 	@Reference
-	private ItemSelector _itemSelector;
+	private Portal _portal;
 
 }

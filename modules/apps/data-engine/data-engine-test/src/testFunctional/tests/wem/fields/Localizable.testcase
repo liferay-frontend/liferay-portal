@@ -1,4 +1,4 @@
-@component-name = "data-engine"
+@component-name = "portal-bpm"
 definition {
 
 	property portal.release = "true";
@@ -61,7 +61,7 @@ definition {
 			webContentTextFieldLabel = "Text",
 			webContentTitle = "Web Content Title - pt-BR");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		NavItem.gotoStructures();
 
@@ -130,7 +130,7 @@ definition {
 			webContentTextFieldLabel = "Text",
 			webContentTitle = "Web Content Title - pt-BR edited");
 
-		PortletEntry.publish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		WebContent.viewWithStructureCP(
 			webContentText = "This is a Text field",
@@ -434,7 +434,7 @@ definition {
 			webContentText = "This is a Text field - ca-ES",
 			webContentTitle = "Web Content Title - ca-ES");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContent.viewWithStructureCP(
 			webContentDate = "04/01/2021",

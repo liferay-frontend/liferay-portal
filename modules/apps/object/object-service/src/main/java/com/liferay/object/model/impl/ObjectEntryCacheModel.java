@@ -68,7 +68,7 @@ public class ObjectEntryCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(35);
+		StringBundler sb = new StringBundler(39);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -92,8 +92,12 @@ public class ObjectEntryCacheModel
 		sb.append(modifiedDate);
 		sb.append(", objectDefinitionId=");
 		sb.append(objectDefinitionId);
+		sb.append(", objectEntryFolderId=");
+		sb.append(objectEntryFolderId);
 		sb.append(", rootObjectEntryId=");
 		sb.append(rootObjectEntryId);
+		sb.append(", treePath=");
+		sb.append(treePath);
 		sb.append(", lastPublishDate=");
 		sb.append(lastPublishDate);
 		sb.append(", status=");
@@ -156,7 +160,15 @@ public class ObjectEntryCacheModel
 		}
 
 		objectEntryImpl.setObjectDefinitionId(objectDefinitionId);
+		objectEntryImpl.setObjectEntryFolderId(objectEntryFolderId);
 		objectEntryImpl.setRootObjectEntryId(rootObjectEntryId);
+
+		if (treePath == null) {
+			objectEntryImpl.setTreePath("");
+		}
+		else {
+			objectEntryImpl.setTreePath(treePath);
+		}
 
 		if (lastPublishDate == Long.MIN_VALUE) {
 			objectEntryImpl.setLastPublishDate(null);
@@ -206,7 +218,10 @@ public class ObjectEntryCacheModel
 
 		objectDefinitionId = objectInput.readLong();
 
+		objectEntryFolderId = objectInput.readLong();
+
 		rootObjectEntryId = objectInput.readLong();
+		treePath = objectInput.readUTF();
 		lastPublishDate = objectInput.readLong();
 
 		status = objectInput.readInt();
@@ -254,7 +269,17 @@ public class ObjectEntryCacheModel
 
 		objectOutput.writeLong(objectDefinitionId);
 
+		objectOutput.writeLong(objectEntryFolderId);
+
 		objectOutput.writeLong(rootObjectEntryId);
+
+		if (treePath == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(treePath);
+		}
+
 		objectOutput.writeLong(lastPublishDate);
 
 		objectOutput.writeInt(status);
@@ -282,7 +307,9 @@ public class ObjectEntryCacheModel
 	public long createDate;
 	public long modifiedDate;
 	public long objectDefinitionId;
+	public long objectEntryFolderId;
 	public long rootObjectEntryId;
+	public String treePath;
 	public long lastPublishDate;
 	public int status;
 	public long statusByUserId;

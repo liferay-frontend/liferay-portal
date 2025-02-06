@@ -33,11 +33,12 @@ import {ServiceProviderConnectionsPage} from '../../pages/saml-web/ServiceProvid
 import {SiteSettingsPage} from '../../pages/site-admin-web/SiteSettingsPage';
 import {EditUserPage} from '../../pages/users-admin-web/EditUserPage';
 import {UsersAndOrganizationsPage} from '../../pages/users-admin-web/UsersAndOrganizationsPage';
+import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import {getRandomInt} from '../../utils/getRandomInt';
 import getRandomString from '../../utils/getRandomString';
 import performLogin, {performLogout} from '../../utils/performLogin';
-import {reloadUntilVisible} from '../../utils/reloadUntilVisible';
 import {waitForAlert} from '../../utils/waitForAlert';
+import {waitForLoading} from '../osb-faro-web/utils/loading';
 import {
 	TIdentityProvider,
 	configureIdentityProvider,
@@ -70,6 +71,8 @@ import {
 	createIdentityProviderVirtualInstance,
 	createServiceProviderVirtualInstance,
 	createUser,
+	deleteAfterTestProviderConnections,
+	deleteAfterTestVirtualInstances,
 	deleteVirtualInstance,
 	performSamlSafeLogin,
 	resetSamlConfiguration,
@@ -88,8 +91,7 @@ export const test = mergeTests(
 	virtualInstancesPagesTest
 );
 
-export const deleteAfterTestProviderConnections = new Set<string>();
-export const deleteAfterTestVirtualInstances = new Set<string>();
+const resetAfterTestGeneralPage = new Set<string>();
 
 test.afterAll(async ({browser}) => {
 
@@ -116,6 +118,28 @@ test.afterAll(async ({browser}) => {
 
 test.afterEach(async ({browser}) => {
 	const defaultBaseUrl = liferayConfig.environment.baseUrl;
+
+	for (const instanceName of resetAfterTestGeneralPage) {
+		liferayConfig.environment.baseUrl = `http://${instanceName}:8080`;
+
+		// Reset general tab
+
+		const newPage = await performSamlSafeLogin(browser, instanceName);
+
+		const instanceSettingsPage = new InstanceSettingsPage(newPage);
+
+		await instanceSettingsPage.goToInstanceSetting(
+			'Instance Configuration',
+			'General',
+			false
+		);
+
+		const generalPage = new GeneralPage(instanceSettingsPage.page);
+
+		await generalPage.resetNavigationFields();
+
+		await newPage.close();
+	}
 
 	for (const instanceName of deleteAfterTestProviderConnections) {
 		liferayConfig.environment.baseUrl = `http://${instanceName}:8080`;
@@ -799,6 +823,8 @@ test('LPD-32189 AC1 TC1: Verify IdP initiated SLO redirects user to c/portal/sam
 
 	await generalPage.editDefaultLogoutPage(idpNewPagePath);
 
+	resetAfterTestGeneralPage.add(DEFAULT_IDP_NAME);
+
 	// Create IdP User
 
 	const userAccount = await createUser(idpAdminPage, DEFAULT_IDP_NAME);
@@ -1022,6 +1048,640 @@ test('LPD-32208 AC1 TC4: Verify SP initiated SSO with RelayState redirects user 
 	await expect(
 		await spInstancePage.getByTitle('User Profile Menu')
 	).toBeVisible();
+});
+
+test('LPD-32210 AC1 TC1: Verify IdP initiated SSO with same-site page redirect parameter redirects the user to designated page.', async ({
+	browser,
+}) => {
+	const idpAdminPage = await configureVirtualInstanceForSaml(
+		browser,
+		DEFAULT_IDP_NAME,
+		'Identity Provider'
+	);
+
+	const spAdminPage = await configureVirtualInstanceForSaml(
+		browser,
+		DEFAULT_SP_NAME,
+		'Service Provider'
+	);
+
+	await connectSpAndIdp(
+		idpAdminPage,
+		DEFAULT_IDP_NAME,
+		spAdminPage,
+		DEFAULT_SP_NAME
+	);
+
+	// Create a new page on the IdP Instance
+
+	const pagesAdminPage = new PagesAdminPage(idpAdminPage);
+
+	await pagesAdminPage.goto();
+
+	const pageTitle = getRandomString();
+
+	await pagesAdminPage.createNewPage({
+		name: pageTitle,
+	});
+
+	// Create new user in IdP instance
+
+	const userAccount = await createUser(idpAdminPage, DEFAULT_IDP_NAME);
+
+	// Execute IdP initiated SSO with redirect parameter
+
+	const pagePath = '/web/guest/' + pageTitle;
+
+	const newPage = await performSamlSafeLogin(
+		browser,
+		DEFAULT_IDP_NAME,
+		'?p_p_id=com_liferay_login_web_portlet_LoginPortlet&' +
+			'p_p_state=maximized&' +
+			'_com_liferay_login_web_portlet_LoginPortlet_redirect=' +
+			pagePath.replace('/', '%2F'),
+		'@liferay.com',
+		undefined,
+		userAccount.alternateName
+	);
+
+	// Verify we have been redirected and logged in
+
+	expect(await newPage.url()).toContain(DEFAULT_IDP_URL + pagePath);
+
+	await expect(await newPage.getByTitle('User Profile Menu')).toBeVisible();
+});
+
+test('LPD-32210 AC1 TC2: Verify IdP initiated SSO with different instance redirect parameter redirects the user to designated instance.', async ({
+	browser,
+}) => {
+	const idpAdminPage = await configureVirtualInstanceForSaml(
+		browser,
+		DEFAULT_IDP_NAME,
+		'Identity Provider'
+	);
+
+	const spAdminPage = await configureVirtualInstanceForSaml(
+		browser,
+		DEFAULT_SP_NAME,
+		'Service Provider'
+	);
+
+	await connectSpAndIdp(
+		idpAdminPage,
+		DEFAULT_IDP_NAME,
+		spAdminPage,
+		DEFAULT_SP_NAME
+	);
+
+	// Create new user in IdP instance
+
+	const userAccount = await createUser(idpAdminPage, DEFAULT_IDP_NAME);
+
+	// Execute IdP initiated SSO with redirect parameter
+
+	const newPage = await browser.newPage();
+
+	const escapedSpUrl = DEFAULT_SP_URL.replace('/', '%2F').replace(':', '%3A');
+
+	await newPage.goto(
+		DEFAULT_IDP_URL +
+			'?p_p_id=com_liferay_login_web_portlet_LoginPortlet&' +
+			'p_p_state=maximized&' +
+			'_com_liferay_login_web_portlet_LoginPortlet_redirect=' +
+			escapedSpUrl
+	);
+
+	await newPage.getByLabel('Email Address').fill(userAccount.emailAddress);
+	await newPage.getByLabel('Password').fill('test');
+	await newPage.getByRole('button', {name: 'Sign In'}).click();
+	await newPage.waitForTimeout(5000);
+
+	// Verify we have been redirected to SP instance
+
+	expect(await newPage.url()).toContain(DEFAULT_SP_URL);
+});
+
+test('LPD-32210 AC1 TC3: Verify IdP initiated SSO with a configured Default Landing Page redirects user properly.', async ({
+	browser,
+}) => {
+	const idpAdminPage = await configureVirtualInstanceForSaml(
+		browser,
+		DEFAULT_IDP_NAME,
+		'Identity Provider'
+	);
+
+	const spAdminPage = await configureVirtualInstanceForSaml(
+		browser,
+		DEFAULT_SP_NAME,
+		'Service Provider'
+	);
+
+	await connectSpAndIdp(
+		idpAdminPage,
+		DEFAULT_IDP_NAME,
+		spAdminPage,
+		DEFAULT_SP_NAME
+	);
+
+	// Create new page on IdP Instance
+
+	const pagesAdminPage = new PagesAdminPage(idpAdminPage);
+
+	await pagesAdminPage.goto();
+
+	const pageTitle = getRandomString();
+
+	await pagesAdminPage.createNewPage({
+		name: pageTitle,
+	});
+
+	const idpNewPagePath = '/web/guest/' + pageTitle;
+
+	// Configure new page as the Default Landing Page
+
+	const instanceSettingsPage = new InstanceSettingsPage(idpAdminPage);
+
+	await instanceSettingsPage.goToInstanceSetting(
+		'Instance Configuration',
+		'General',
+		false
+	);
+
+	const generalPage = new GeneralPage(instanceSettingsPage.page);
+
+	await generalPage.editDefaultLandingPage(idpNewPagePath);
+
+	resetAfterTestGeneralPage.add(DEFAULT_IDP_NAME);
+
+	// Create IdP User
+
+	const userAccount = await createUser(idpAdminPage, DEFAULT_IDP_NAME);
+
+	// IdP initiated SSO
+
+	const newPage = await browser.newPage();
+
+	await performLogin(newPage, userAccount.alternateName, DEFAULT_IDP_URL);
+
+	await newPage.getByTitle('User Profile Menu').waitFor({timeout: 30 * 1000});
+
+	// Expect to be redirected back to Default Landing Page configuration value
+
+	await newPage.waitForTimeout(5000);
+
+	expect(await newPage.url()).toContain(DEFAULT_IDP_URL + idpNewPagePath);
+});
+
+test('LPD-32210 AC1 TC4: Verify IdP initiated SSO with no redirection params/configs applied redirects user to the page they initiated SSO from.', async ({
+	browser,
+}) => {
+	const idpAdminPage = await configureVirtualInstanceForSaml(
+		browser,
+		DEFAULT_IDP_NAME,
+		'Identity Provider'
+	);
+
+	const spAdminPage = await configureVirtualInstanceForSaml(
+		browser,
+		DEFAULT_SP_NAME,
+		'Service Provider'
+	);
+
+	await connectSpAndIdp(
+		idpAdminPage,
+		DEFAULT_IDP_NAME,
+		spAdminPage,
+		DEFAULT_SP_NAME
+	);
+
+	// Create new page on IdP Instance
+
+	const pagesAdminPage = new PagesAdminPage(idpAdminPage);
+
+	await pagesAdminPage.goto();
+
+	const pageTitle = getRandomString();
+
+	await pagesAdminPage.createNewPage({
+		name: pageTitle,
+	});
+
+	const idpNewPageUrl = DEFAULT_IDP_URL + '/web/guest/' + pageTitle;
+
+	// Create IdP User
+
+	const userAccount = await createUser(idpAdminPage, DEFAULT_IDP_NAME);
+
+	// IdP initiated SSO from new page
+
+	const newPage = await browser.newPage();
+
+	await performLogin(newPage, userAccount.alternateName, idpNewPageUrl);
+
+	await newPage.waitForTimeout(5000);
+
+	// Verify user is logged in
+
+	expect(await newPage.getByTitle('User Profile Menu')).toBeVisible();
+
+	// Expect to be redirected back to page SSO was initiated from
+
+	expect(await newPage.url()).toContain(idpNewPageUrl);
+});
+
+test('LPD-32210 AC1 TC5: Verify unsuccessful IdP initiated SSO with any redirection params/configs applied redirects user to current login page.', async ({
+	browser,
+}) => {
+	const idpAdminPage = await configureVirtualInstanceForSaml(
+		browser,
+		DEFAULT_IDP_NAME,
+		'Identity Provider'
+	);
+
+	const spAdminPage = await configureVirtualInstanceForSaml(
+		browser,
+		DEFAULT_SP_NAME,
+		'Service Provider'
+	);
+
+	await connectSpAndIdp(
+		idpAdminPage,
+		DEFAULT_IDP_NAME,
+		spAdminPage,
+		DEFAULT_SP_NAME
+	);
+
+	// Create new page on IdP Instance
+
+	const pagesAdminPage = new PagesAdminPage(idpAdminPage);
+
+	await pagesAdminPage.goto();
+
+	const pageTitle = getRandomString();
+
+	await pagesAdminPage.createNewPage({
+		name: pageTitle,
+	});
+
+	const idpNewPagePath = '/web/guest/' + pageTitle;
+
+	// Configure new page as the Default Landing Page
+
+	const instanceSettingsPage = new InstanceSettingsPage(idpAdminPage);
+
+	await instanceSettingsPage.goToInstanceSetting(
+		'Instance Configuration',
+		'General',
+		false
+	);
+
+	const generalPage = new GeneralPage(instanceSettingsPage.page);
+
+	await generalPage.editDefaultLandingPage(idpNewPagePath);
+
+	resetAfterTestGeneralPage.add(DEFAULT_IDP_NAME);
+
+	// Dynamically retrieve home URL
+
+	const newPage = await browser.newPage();
+
+	await newPage.goto(DEFAULT_IDP_URL + '/c/portal/layout');
+
+	const homeUrl = await newPage.url();
+
+	// Set new page as login redirect parameter
+
+	const loginPageParams =
+		'?p_p_id=com_liferay_login_web_portlet_LoginPortlet&' +
+		'p_p_state=maximized&' +
+		'_com_liferay_login_web_portlet_LoginPortlet_redirect=%2F' +
+		pageTitle;
+
+	// Execute unsuccessful IdP initiated SSO
+
+	await newPage.goto(homeUrl + loginPageParams);
+
+	await newPage.getByLabel('Email Address').fill('invalid@liferay.com');
+	await newPage.getByLabel('Password').fill('invalid');
+	await newPage.getByRole('button', {name: 'Sign In'}).click();
+	await newPage.waitForTimeout(5000);
+
+	// Verify unsuccessful authentication
+
+	await expect(await newPage.getByText('Error:')).toBeVisible();
+
+	// Verify user is not logged in and still on login portlet page
+
+	await expect(await newPage.getByLabel('Email Address')).toBeVisible();
+
+	await expect(await newPage.url()).toContain(homeUrl);
+});
+
+test('LPD-32213 AC1 TC1 and TC5: Verify SP initiated SSO from a restricted resource with prompt enabled redirects user back to resource after authentication.', async ({
+	browser,
+}) => {
+	const idpAdminPage = await configureVirtualInstanceForSaml(
+		browser,
+		DEFAULT_IDP_NAME,
+		'Identity Provider'
+	);
+
+	const spAdminPage = await configureVirtualInstanceForSaml(
+		browser,
+		DEFAULT_SP_NAME,
+		'Service Provider'
+	);
+
+	await connectSpAndIdp(
+		idpAdminPage,
+		DEFAULT_IDP_NAME,
+		spAdminPage,
+		DEFAULT_SP_NAME
+	);
+
+	// Create a user on the IdP instance
+
+	const userAccount = await createUser(idpAdminPage, DEFAULT_IDP_NAME);
+
+	// Create a new page on the SP Instance
+
+	const pagesAdminPage = new PagesAdminPage(spAdminPage);
+
+	await pagesAdminPage.goto();
+
+	const pageTitle = getRandomString();
+
+	await pagesAdminPage.createNewPage({
+		name: pageTitle,
+	});
+
+	// Remove guest view permission from new page
+
+	await pagesAdminPage.goto();
+
+	await pagesAdminPage.changePagesPermissions(
+		[pageTitle],
+		['guest_ACTION_VIEW']
+	);
+
+	const spNewPageUrl = DEFAULT_SP_URL + '/web/guest/' + pageTitle;
+
+	// Enable Prompt Enabled option
+
+	const siteSettingsPage = new SiteSettingsPage(spAdminPage);
+
+	await siteSettingsPage.goToSiteSetting('Login', 'Login');
+
+	await waitForLoading(siteSettingsPage.page);
+
+	await siteSettingsPage.page.getByLabel('Prompt Enabled').setChecked(true);
+
+	if (
+		await siteSettingsPage.page
+			.getByRole('button', {name: 'Save'})
+			.isVisible()
+	) {
+		await siteSettingsPage.page.getByRole('button', {name: 'Save'}).click();
+	}
+	else {
+		await siteSettingsPage.page
+			.getByRole('button', {name: 'Update'})
+			.click();
+	}
+
+	await waitForAlert(siteSettingsPage.page);
+
+	// Attempt to access resource as unauthenticated user
+
+	const newPage = await browser.newPage({
+		baseURL: DEFAULT_SP_URL,
+	});
+
+	await newPage.goto(spNewPageUrl);
+
+	// Verify redirected to IdP for authentication
+
+	await expect(await newPage.getByLabel('Email Address')).toBeVisible();
+
+	expect(await newPage.url()).toContain(DEFAULT_IDP_URL);
+
+	// Provide invalid credentials to test LPD-32213 TC4
+
+	await newPage.getByLabel('Email Address').fill(userAccount.emailAddress);
+	await newPage.getByLabel('Password').fill('invalid');
+	await newPage.getByRole('button', {name: 'Sign In'}).click();
+	await newPage.waitForTimeout(2000);
+
+	// Expect to remain unauthenticated on IdP
+
+	await expect(await newPage.getByLabel('Email Address')).toBeVisible();
+
+	expect(await newPage.url()).toContain(DEFAULT_IDP_URL);
+
+	// End TC4.  Successfully authenticate on IdP to finish SSO
+
+	await newPage.getByLabel('Email Address').fill(userAccount.emailAddress);
+	await newPage.getByLabel('Password').fill('test');
+	await newPage.getByRole('button', {name: 'Sign In'}).click();
+
+	// Verify user is logged in
+
+	await newPage.getByTitle('User Profile Menu').waitFor({timeout: 30 * 1000});
+
+	// Verify user is redirected back to restricted resource
+
+	expect(await newPage.url()).toContain(spNewPageUrl);
+
+	// Clear Prompt Enabled
+
+	await clickAndExpectToBeVisible({
+		autoClick: true,
+		target: siteSettingsPage.page.getByRole('link', {
+			name: 'Reset Default Values',
+		}),
+		trigger: siteSettingsPage.page.getByRole('button', {
+			name: 'Actions',
+		}),
+	});
+
+	await waitForAlert(siteSettingsPage.page);
+});
+
+test('LPD-32213 AC1 TC2: Verify after successful SP initiated SSO with auth.forward.by.last.path=true, the user is redirected to the page SSO was initiated from, regardless of Default Landing Page or Home Url.', async ({
+	browser,
+}) => {
+	const idpAdminPage = await configureVirtualInstanceForSaml(
+		browser,
+		DEFAULT_IDP_NAME,
+		'Identity Provider'
+	);
+
+	const spAdminPage = await configureVirtualInstanceForSaml(
+		browser,
+		DEFAULT_SP_NAME,
+		'Service Provider'
+	);
+
+	await connectSpAndIdp(
+		idpAdminPage,
+		DEFAULT_IDP_NAME,
+		spAdminPage,
+		DEFAULT_SP_NAME
+	);
+
+	// Create a user on the IdP instance
+
+	const userAccount = await createUser(idpAdminPage, DEFAULT_IDP_NAME);
+
+	// Create a new page on the SP Instance to initiate SSO from
+
+	const pagesAdminPage = new PagesAdminPage(spAdminPage);
+
+	await pagesAdminPage.goto();
+
+	const pageTitle = getRandomString();
+
+	await pagesAdminPage.createNewPage({
+		name: pageTitle,
+	});
+
+	const spSsoPageUrl = DEFAULT_SP_URL + '/web/guest/' + pageTitle;
+
+	// Configure Default Landing Page on SP instance
+
+	await pagesAdminPage.goto();
+
+	const defaultLandingPageTitle = getRandomString();
+
+	await pagesAdminPage.createNewPage({
+		name: defaultLandingPageTitle,
+	});
+
+	const defaultLandingPagePath = '/web/guest/' + defaultLandingPageTitle;
+
+	// Configure Home Url on SP instance
+
+	await pagesAdminPage.goto();
+
+	const homeUrlPageTitle = getRandomString();
+
+	await pagesAdminPage.createNewPage({
+		name: homeUrlPageTitle,
+	});
+
+	const homeUrlPagePath = '/web/guest/' + homeUrlPageTitle;
+
+	// Configure Default Landing Page and Home Url
+
+	const instanceSettingsPage = new InstanceSettingsPage(spAdminPage);
+
+	await instanceSettingsPage.goToInstanceSetting(
+		'Instance Configuration',
+		'General',
+		false
+	);
+
+	const generalPage = new GeneralPage(instanceSettingsPage.page);
+
+	await generalPage.editDefaultLandingPage(defaultLandingPagePath);
+	await generalPage.editHomeUrl(homeUrlPagePath);
+
+	resetAfterTestGeneralPage.add(DEFAULT_SP_NAME);
+
+	// SP initiated SSO from specified page
+
+	const newPage = await performSpInitiatedSSO(
+		browser,
+		userAccount.emailAddress,
+		spSsoPageUrl
+	);
+
+	// Expect to be redirected back to page SSO was initiated from
+
+	expect(await newPage.url()).toContain(spSsoPageUrl);
+});
+
+test('LPD-32214 AC1 TC1: Verify SP initiated SLO logs user out of IdP and SP, then redirects back to Default Logout Page configuration value of SP.', async ({
+	browser,
+}) => {
+	const idpAdminPage = await configureVirtualInstanceForSaml(
+		browser,
+		DEFAULT_IDP_NAME,
+		'Identity Provider'
+	);
+
+	const spAdminPage = await configureVirtualInstanceForSaml(
+		browser,
+		DEFAULT_SP_NAME,
+		'Service Provider'
+	);
+
+	await connectSpAndIdp(
+		idpAdminPage,
+		DEFAULT_IDP_NAME,
+		spAdminPage,
+		DEFAULT_SP_NAME
+	);
+
+	// Create new page on SP Instance
+
+	const pagesAdminPage = new PagesAdminPage(spAdminPage);
+
+	await pagesAdminPage.goto();
+
+	const pageTitle = getRandomString();
+
+	await pagesAdminPage.createNewPage({
+		name: pageTitle,
+	});
+
+	const defaultLogoutPagePath = '/web/guest/' + pageTitle;
+
+	// Configure new page as the Default Logout Page
+
+	const instanceSettingsPage = new InstanceSettingsPage(spAdminPage);
+
+	await instanceSettingsPage.goToInstanceSetting(
+		'Instance Configuration',
+		'General',
+		false
+	);
+
+	const generalPage = new GeneralPage(instanceSettingsPage.page);
+
+	await generalPage.editDefaultLogoutPage(defaultLogoutPagePath);
+
+	resetAfterTestGeneralPage.add(DEFAULT_IDP_NAME);
+
+	// Create IdP User
+
+	const userAccount = await createUser(idpAdminPage, DEFAULT_IDP_NAME);
+
+	// SP initiated SSO
+
+	const newPage = await performSpInitiatedSSO(
+		browser,
+		userAccount.emailAddress,
+		DEFAULT_SP_URL
+	);
+
+	// SP initiated SLO
+
+	await performLogout(newPage);
+
+	// Expect to be redirected back to Default Logout Page configuration value
+
+	await newPage.waitForTimeout(5000);
+
+	expect(await newPage.url()).toContain(
+		DEFAULT_SP_URL + defaultLogoutPagePath
+	);
+
+	// Verify the IdP was also logged out
+
+	await newPage.goto(DEFAULT_IDP_URL);
+
+	expect(await newPage.getByRole('button', {name: 'Sign In'})).toBeVisible();
 });
 
 test('SAML connection cannot be saved if a custom field value is used more than once', async ({
@@ -1573,6 +2233,7 @@ test('Verify IdP initiated SLO also logs out of authenticated SP when Require Au
 	const newPage = await performSamlSafeLogin(
 		browser,
 		DEFAULT_IDP_NAME,
+		undefined,
 		'@liferay.com',
 		false,
 		userAccount.alternateName
@@ -1602,11 +2263,6 @@ test('Verify IdP initiated SLO also logs out of authenticated SP when Require Au
 
 	const signInButton = await newPage.getByRole('button', {
 		name: 'Sign In',
-	});
-
-	await reloadUntilVisible({
-		myLocator: signInButton,
-		page: newPage,
 	});
 
 	expect(await signInButton).toBeVisible();
@@ -1696,11 +2352,6 @@ test('Verify IdP initiated SLO logs out of multiple authenticated SPs.  See LPS-
 
 		const signInButton = await spIntancePage.getByRole('button', {
 			name: 'Sign In',
-		});
-
-		await reloadUntilVisible({
-			myLocator: signInButton,
-			page: spIntancePage,
 		});
 
 		expect(await signInButton).toBeVisible();

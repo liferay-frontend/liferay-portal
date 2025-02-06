@@ -41,6 +41,32 @@ public class WorkflowDefinitionLinkServiceImpl
 	}
 
 	@Override
+	public WorkflowDefinitionLink
+			fetchWorkflowDefinitionLinkByExternalReferenceCode(
+				String externalReferenceCode, long groupId)
+		throws PortalException {
+
+		WorkflowDefinitionLink workflowDefinitionLink =
+			workflowDefinitionLinkLocalService.
+				fetchWorkflowDefinitionLinkByExternalReferenceCode(
+					externalReferenceCode, groupId);
+
+		if (workflowDefinitionLink != null) {
+			ModelResourcePermission<WorkflowDefinitionLink>
+				modelResourcePermission =
+					ModelResourcePermissionRegistryUtil.
+						getModelResourcePermission(
+							"com.liferay.portal.workflow.kaleo.model." +
+								"KaleoDefinition");
+
+			modelResourcePermission.check(
+				getPermissionChecker(), null, ActionKeys.VIEW);
+		}
+
+		return workflowDefinitionLink;
+	}
+
+	@Override
 	public List<WorkflowDefinitionLink> getWorkflowDefinitionLinks(
 			long companyId, String workflowDefinitionName,
 			int workflowDefinitionVersion)
@@ -56,6 +82,26 @@ public class WorkflowDefinitionLinkServiceImpl
 
 		return workflowDefinitionLinkLocalService.getWorkflowDefinitionLinks(
 			companyId, workflowDefinitionName, workflowDefinitionVersion);
+	}
+
+	@Override
+	public WorkflowDefinitionLink updateWorkflowDefinitionLink(
+			String externalReferenceCode, long userId, long companyId,
+			long groupId, String className, long classPK, long typePK,
+			String workflowDefinitionName, int workflowDefinitionVersion)
+		throws PortalException {
+
+		ModelResourcePermission<WorkflowDefinitionLink>
+			modelResourcePermission =
+				ModelResourcePermissionRegistryUtil.getModelResourcePermission(
+					"com.liferay.portal.workflow.kaleo.model.KaleoDefinition");
+
+		modelResourcePermission.check(
+			getPermissionChecker(), null, ActionKeys.UPDATE);
+
+		return workflowDefinitionLinkLocalService.updateWorkflowDefinitionLink(
+			externalReferenceCode, userId, companyId, groupId, className,
+			classPK, typePK, workflowDefinitionName, workflowDefinitionVersion);
 	}
 
 }

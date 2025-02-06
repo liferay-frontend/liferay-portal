@@ -56,13 +56,18 @@
 	<td></td>
 </tr>
 <tr>
+	<td>MESSAGE_MORE_INFO_INFORMATION</td>
+	<td>//p[contains(text(), '${value}')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>SELECT_ITEM_FROM_LIST</td>
-	<td>//div[contains(@class,'table-list-title')]/a[contains(.,'${key_itemName}')]//following::div//a[contains(.,'Select')]</td>
+	<td>//div[contains(@class,'table-list-title')]/a[contains(.,'${key_itemName}')]//following::td//a[contains(.,'Select')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>VIEW_ITEM_FROM_LIST</td>
-	<td>//div[contains(@class,'table-list-title')]/a[contains(.,'${key_itemName}')]//following::div//a[contains(.,'View')]</td>
+	<td>//div[contains(@class,'table-list-title')]/a[contains(.,'${key_itemName}')]//following::td//a[contains(.,'View')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -282,7 +287,7 @@
 </tr>
 <tr>
 	<td>ASSERT_NOTIFICATION_QUEUE</td>
-	<td>//div[contains(@class,'dnd-tr')]//div[contains(text(),'${key_name}')][${key_order}]</td>
+	<td>//tr//td[contains(text(),'${key_name}')][${key_order}]</td>
 	<td></td>
 </tr>
 <tr>
@@ -367,7 +372,7 @@
 </tr>
 <tr>
 	<td>OVERRIDE_DEFAULT_DISPLAY_PAGE</td>
-	<td>//div[contains(@class,'h4') and contains(.,'Override Default')]//..//div[contains(@class,'dnd-tr')][contains(.,'${key_entryName}') and contains(.,'${key_layout}')]</td>
+	<td>//div[contains(@class,'h4') and contains(.,'Override Default')]//..//tr[contains(.,'${key_entryName}') and contains(.,'${key_layout}')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -447,7 +452,7 @@
 </tr>
 <tr>
 	<td>PRODUCT_SKU_CONFIGURATION_AVAILABLE_QUANTITY</td>
-	<td>//div[contains(@class,'dnd-table fixed table-style-stacked')]//descendant::div[17][contains(text(),'${key_productQuantity}')]</td>
+	<td>//table//td[contains(@data-id, 'availableQuantity')][contains(text(), '${key_productQuantity}')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -542,7 +547,7 @@
 </tr>
 <tr>
 	<td>SKU_STATUS_PRODUCT_ADMIN_PAGE</td>
-	<td>//*[contains(@class, 'table-list-title')]/a[text()='${key_entryTitle}']/../../../div//span[text()='${key_label}']</td>
+	<td>//*[contains(@class, 'table-list-title')]/a[text()='${key_entryTitle}']/../../../td//span[text()='${key_label}']</td>
 	<td></td>
 </tr>
 <tr>
@@ -592,7 +597,7 @@
 </tr>
 <tr>
 	<td>FIX_ISSUE_BUTTON</td>
-	<td>//tr/td[contains(.,'${key_fixIssueButtonName}')]/..//td[contains(@class,'entry-action-column')]/* | //div[text()='${key_fixIssueButtonName}']/following-sibling::div/a[text()='Fix Issue']</td>
+	<td>//tr/td[contains(.,'${key_fixIssueButtonName}')]/..//td[contains(@class,'entry-action-column') or contains(@class,'cell-item-actions')]/* | //div[text()='${key_fixIssueButtonName}']/following-sibling::div/a[text()='Fix Issue']</td>
 	<td></td>
 </tr>
 <tr>
@@ -722,7 +727,7 @@
 </tr>
 <tr>
 	<td>BODY_VERTICAL_ELLIPSIS_ACCOUNT</td>
-	<td>//div[@class='data-set-wrapper' or @class='searchcontainer-content']//*[text()='${key_name}']/../../..//*[*[name()='svg'][contains(@class,'icon-ellipsis')]]</td>
+	<td>//div[contains(@class, 'data-set-wrapper') or @class='searchcontainer-content']//*[text()='${key_name}']/../../..//*[*[name()='svg'][contains(@class,'icon-ellipsis')]]</td>
 	<td></td>
 </tr>
 <tr>
@@ -737,12 +742,12 @@
 </tr>
 <tr>
 	<td>CHANNELS_GENERAL_ACTIVE_STATUS</td>
-	<td>//div[contains(text(),'${key_entryName}')]/following-sibling::div/span[contains(@class,'label-success')]</td>
+	<td>//td[contains(text(),'${key_entryName}')]/following-sibling::td/span[contains(@class,'label-success')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>CHANNELS_GENERAL_TAB_EDITS</td>
-	<td>//div[contains(text(),'${key_entryName}')]/following-sibling::div[contains(@class,'item-actions')]//*</td>
+	<td>//div//td[contains(text(),'${key_entryName}')]/following-sibling::td[contains(@class,'item-actions')]//*</td>
 	<td></td>
 </tr>
 <tr>
@@ -807,7 +812,7 @@
 </tr>
 <tr>
 	<td>MODAL_DATASET_ROW_ITEM</td>
-	<td>//div[contains(@class,'modal-iframe-content')]//div[@class='dnd-tbody']//div[@class='dnd-tr' and contains(.,'${key_entry}')]/div[${key_index}]</td>
+	<td>//div[contains(@class,'modal-iframe-content')]//tbody//tr[contains(.,'${key_entry}')]/div[${key_index}]</td>
 	<td></td>
 </tr>
 <tr>
@@ -817,12 +822,12 @@
 </tr>
 <tr>
 	<td>ENTRY_NAME_BODY_VERTICAL_ELLIPSIS</td>
-	<td>//div[@class='data-set-wrapper' or @class='searchcontainer-content']//*[text()='${key_entryName}']/../../following-sibling::div//button</td>
+	<td>//div[contains(@class, 'data-set-wrapper') or @class='searchcontainer-content']//*[text()='${key_entryName}']/../../following-sibling::td//button</td>
 	<td></td>
 </tr>
 <tr>
 	<td>ENTRY_NAME_BODY_VERTICAL_ELLIPSIS_2</td>
-	<td>//div[@class='data-set-wrapper' or @class='searchcontainer-content']//*[text()='${key_entryName}']//..//..//div[contains(@class,'dropdown')]/a</td>
+	<td>//div[contains(@class, 'data-set-wrapper') or @class='searchcontainer-content']//*[text()='${key_entryName}']//..//..//div[contains(@class,'dropdown')]/a</td>
 	<td></td>
 </tr>
 <tr>
@@ -837,7 +842,7 @@
 </tr>
 <tr>
 	<td>TABLE_ENTRY_DESCRIPTION</td>
-	<td>//div[contains(@class,'h4') and contains(.,'${key_table}')]//..//div/a[contains(.,'${key_entryName}')]/parent::div/parent::div/parent::div//div[contains(@class,'dnd-td')][2][contains(.,'${key_entryDescription}')]</td>
+	<td>//div[contains(@class,'h4') and contains(.,'${key_table}')]//..//div/a[contains(.,'${key_entryName}')]//..//..//..//td[2][contains(.,'${key_entryDescription}')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -867,32 +872,32 @@
 </tr>
 <tr>
 	<td>TABLE_ENTRY_ROW_NUMBER</td>
-	<td>//div[@class='dnd-tbody']/div[contains(@class,'dnd-tr')][${key_rowNumber}]//a</td>
+	<td>//tbody/tr[${key_rowNumber}]//a</td>
 	<td></td>
 </tr>
 <tr>
 	<td>TABLE_ENTRY_ROW_FIELD_GENERIC</td>
-	<td>//div[contains(@class,'dnd-tr')][${key_rowIndex}]//div[contains(@class,'dnd-td')][${key_columnIndex}]</td>
+	<td>//tr[contains(.,'${key_cellContent}')][${key_rowIndex}]//td[${key_columnIndex}]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>TABLE_ENTRY_ROW_NESTED_FIELD_GENERIC</td>
-	<td>//div[contains(@class, 'dnd-tr nested')][${key_rowIndex}]//div[contains(@class,'dnd-td')][${key_columnIndex}]</td>
+	<td>//tr[contains(@class, 'nested')][${key_rowIndex}]//td[${key_columnIndex}]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>TABLE_ENTRY_LABEL_FIELD</td>
-	<td>//*[contains(@class, 'table-list-title')]/a[text()='${key_entryTitle}']/../../../div[${key_index}]//span[text()='${key_label}']</td>
+	<td>//*[contains(@class, 'table-list-title')]/a[text()='${key_entryTitle}']/../../../td[${key_index}]//span[text()='${key_label}']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>TABLE_ENTRY_FIELD_VALUE</td>
-	<td>//*[contains(@class, 'table-list-title')]/a[text()='${key_entryTitle}']/../../../div[${key_index}][text()='${key_value}']</td>
+	<td>//*[contains(@class, 'table-list-title')]/a[text()='${key_entryTitle}']/../../../td[${key_index}][normalize-space()='${key_value}']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>TABLE_ENTRY_STATUS</td>
-	<td>//div[contains(@class,'h4') and contains(.,'${key_table}')]//..//div/a[contains(.,'${key_entryName}')]/parent::div/parent::div/parent::div//*[contains(@class,'dnd-td')]/span[contains(@class,'label')][contains(.,'${key_entryStatus}')]</td>
+	<td>//div[contains(@class,'h4') and contains(.,'${key_table}')]//..//div/a[contains(.,'${key_entryName}')]/../../../../tr//td/span[contains(@class,'label')][contains(.,'${key_entryStatus}')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -902,32 +907,37 @@
 </tr>
 <tr>
 	<td>TABLE_ELIGIBILITY_ACCOUNT_GROUPS</td>
-	<td>//*[contains(@class,'dnd-td') and contains(text(),'${key_entryName}')]</td>
+	<td>//td[contains(text(),'${key_entryName}')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>TABLE_ELIGIBILITY_ENTRY</td>
-	<td>//div[contains(@class,'h4') and contains(.,'${key_table}')]//..//div[contains(@class,'dnd-td')][contains(.,'${key_entryName}')]</td>
+	<td>//div[contains(@class,'h4') and contains(.,'${key_table}')]//..//td[contains(.,'${key_entryName}')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>TABLE_CELL_BY_COLUMN_ORDER</td>
-	<td>//div[contains(@class,'title')]//*[text()='${key_entryName}']/../../../div[contains(@class,'dnd-td')][${key_columnNumber}]</td>
+	<td>//div[contains(@class,'title')]//*[text()='${key_entryName}']/../../../td[${key_columnNumber}]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>TABLE_CELL_BY_COLUMN_ORDER_NO_TITLE</td>
-	<td>//*[contains(@class,"dnd-td") and contains(string(), '${key_cellName1}')]//..//*[contains(@class,"dnd-td") and contains(string(), '${key_cellName2}')]//..//*[contains(@class,"dnd-td")][${key_columnNumber}]</td>
+	<td>//td[contains(string(), '${key_cellName1}')]//..//td[contains(string(), '${key_cellName2}')]//..//td[${key_columnNumber}]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TABLE_CELL_BY_P</td>
+	<td>//td[contains(string(), '${key_cellName1}')]//..//td[contains(string(), '${key_cellName2}')]//..//td[${key_columnNumber}]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>TABLE_ENTRY_DELETE_BUTTON</td>
-	<td>//div[contains(@class,'h4') and contains(.,'${key_table}')]//..//div/a[contains(.,'${key_entryName}')]//..//..//../div/*[contains(.,'Delete')] | //div[contains(.,'${key_table}')]//div[@class='dnd-tr'][contains(.,'${key_entryName}')]//*[contains(text(),'Delete')]</td>
+	<td>//div[contains(@class,'h4') and contains(.,'${key_table}')]//..//div/a[contains(.,'${key_entryName}')]//..//..//../div/*[contains(.,'Delete')] | //div[contains(.,'${key_table}')]//tr[contains(.,'${key_entryName}')]//*[contains(text(),'Delete')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>TABLE_ENTRY_EDIT_BUTTON</td>
-	<td>//div[contains(@class,'h4') and contains(.,'${key_table}')]//..//div/a[text()='${key_entryName}']//..//..//../div/*[contains(.,'Edit')] | //div[contains(.,'${key_table}')]//div[@class='dnd-tr']//*[text()='${key_entryName}']/..//*[contains(text(),'Edit')]</td>
+	<td>//div[contains(@class,'h4') and contains(.,'${key_table}')]//..//div/a[text()='${key_entryName}']//..//..//../div/*[contains(.,'Edit')] | //div[contains(.,'${key_table}')]//tr//*[text()='${key_entryName}']/..//*[contains(text(),'Edit')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -937,22 +947,22 @@
 </tr>
 <tr>
 	<td>TABLE_ASSERT_TWO_COLUMNS_EDIT_BUTTON</td>
-	<td>//div[contains(@id,'${key_table}')]//*[contains(@class,'dnd-td') and text() = '${key_firstColumnValue}']/../*[contains(@class,'dnd-td') and contains (.,'${key_secondColumnValue}')]/../div[contains(.,'Edit')]</td>
+	<td>//div[contains(@id,'${key_table}')]//td[text() = '${key_firstColumnValue}']/../td[contains (.,'${key_secondColumnValue}')]/../td[contains(.,'Edit')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>TABLE_ASSERT_TWO_COLUMNS_ELLIPSIS</td>
-	<td>//div[contains(@id,'${key_table}')]//*[contains(@class,'dnd-td') and text() = '${key_firstColumnValue}']/following::div[contains(@class,'dnd-td') and contains (., '${key_secondColumnValue}') ]//following::div[@class='dropdown']</td>
+	<td>//div[contains(@id,'${key_table}')]//td[text() = '${key_firstColumnValue}']/following::td[contains(., '${key_secondColumnValue}')]//following::div[@class='dropdown']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>TABLE_ASSERT_SPECIFIC_ROW_ANY_COLUMN_VALUE</td>
-	<td>//div[@class='dnd-tbody']/div[${key_row}]//div//a[text()='${key_entryName}']/../../../div[${key_column}]</td>
+	<td>//tbody/tr[${key_row}]//div//a[text()='${key_entryName}']/../../../td[${key_column}]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>GENERIC_TABLE_ROW_VALUE</td>
-	<td>//div[contains(@class,'dnd-th') and contains(string(), '${key_firstRowValue}')]/..//div[contains(@class,'dnd-td') and contains(string(), '${key_secondRowValue}')]</td>
+	<td>//th[contains(string(), '${key_firstRowValue}')]/../../..//td[contains(string(), '${key_secondRowValue}')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -1134,7 +1144,7 @@
 </tr>
 <tr>
 	<td>OPTION_TABLE_CHECK</td>
-	<td>//div[(text() = '${key_table}')]//..//..//..//a[(text() = "${key_entryName}")]</td>
+	<td>//td[(text() = '${key_table}')]//..//..//..//a[(text() = "${key_entryName}")]</td>
 	<td></td>
 </tr>
 
@@ -1365,7 +1375,7 @@
 </tr>
 <tr>
 	<td>PRODUCT_GROUPS_COLUMN_VALUE</td>
-	<td>//div[contains(@class,'table-list-title')]//a[contains(text(),'${key_name}')]//..//../following-sibling::div[1]</td>
+	<td>//div[contains(@class,'table-list-title')]//a[contains(text(),'${key_name}')]//..//../following-sibling::td[1]</td>
 	<td></td>
 </tr>
 <tr>
@@ -1390,7 +1400,7 @@
 </tr>
 <tr>
 	<td>PRODUCT_STATUS_BASED_ON_PRODUCT_NAME</td>
-	<td>//a[text()='${key_productName}']/../../../div/span[contains(@class,'workflow-status')]//strong[contains(.,'${key_status}')]</td>
+	<td>//a[text()='${key_productName}']/../../../td/span[contains(@class,'workflow-status')]//strong[contains(.,'${key_status}')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -1503,7 +1513,7 @@
 </tr>
 <tr>
 	<td>ON_ORDER_QUANTITY</td>
-	<td>//div[@class="dnd-tr"]//*[text()='${key_reference}']//..//..//..//div[contains(@class,"dnd-td") and (text()='${key_orderQuantity}')]</td>
+	<td>//tr//*[text()='${key_reference}']//..//..//..//td[(text()='${key_orderQuantity}')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -1513,7 +1523,7 @@
 </tr>
 <tr>
 	<td>TABLE_SEARCH_BY_NAME_AND_COLUMN_CONTENT</td>
-	<td>//*[contains(@class,'dnd-td') and contains(.,'${key_productName}')]/following-sibling::div[${key_columnNumber}][contains(text(),'${key_value}')]</td>
+	<td>//td[contains(.,'${key_productName}')]/following-sibling::td[${key_columnNumber}][contains(text(),'${key_value}')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -1523,17 +1533,17 @@
 </tr>
 <tr>
 	<td>TABLE_SEARCH_BY_NAME_AND_CONTENT</td>
-	<td>//div[contains(@class,'dnd-td') and contains(.,'${key_productName}')]/following-sibling::div[contains(text(),'${key_value}')]</td>
+	<td>//td[contains(.,'${key_productName}')]/following-sibling::td[contains(text(),'${key_value}')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>VALUE_PRODUCT_RELATIONS</td>
-	<td>//a[contains(text(),'${key_productName}')]/../../..//div[contains(@class,'dnd-td') and (text()='${key_value}')]</td>
+	<td>//a[contains(text(),'${key_productName}')]/../../..//td[(text()='${key_value}')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>VALUE_PRODUCT_STATUS</td>
-	<td>//a[contains(text(),'${key_productName}')]/../../..//div[contains(@class,'dnd-td') and (text()='${key_productRelation}')]/..//*[contains(text(),'${key_productStatus}')]</td>
+	<td>//a[contains(text(),'${key_productName}')]/../../..//td[(text()='${key_productRelation}')]/..//*[contains(text(),'${key_productStatus}')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -1553,12 +1563,12 @@
 </tr>
 <tr>
 	<td>INVENTORY_BY_WAREHOUSE_AVAILABLE_LABEL</td>
-	<td>//div[contains(@class,'dnd-tbody')]//div[contains(@class,'dnd-td')][3]</td>
+	<td>//tbody//td[3]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>QUANTITY_IN_SHIPMENT_BY_WAREHOUSE</td>
-	<td>//div[contains(@class,'dnd-tbody')]//div[contains(text(),'${key_warehouseName}')]/..//div[6]</td>
+	<td>//tbody//div[contains(text(),'${key_warehouseName}')]/..//div[6]</td>
 	<td></td>
 </tr>
 
@@ -1571,7 +1581,7 @@
 </tr>
 <tr>
 	<td>PRICE_ENTRY_WITH_UOM</td>
-	<td>//div[contains(@class,'dnd-tr')]//a[contains(.,"${key_pricing}")]/../../..//div[contains(.,"${key_uomkey}")]/..//a</td>
+	<td>//tr//a[contains(.,"${key_pricing}")]/../../..//td[contains(.,"${key_uomkey}")]/..//a</td>
 	<td></td>
 </tr>
 
@@ -1589,12 +1599,12 @@
 </tr>
 <tr>
 	<td>INVENTORY_BY_WAREHOUSE_NAME</td>
-	<td>//div[contains(@class,'dnd-tbody')]//div[contains(@class,'dnd-td')][1]</td>
+	<td>//tbody//td[1]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>INVENTORY_COLUMN</td>
-	<td>//div[contains(@class,'dnd-tbody')]//div[contains(@class,'dnd-td')][${key_columnNumber}]</td>
+	<td>//tbody//td[${key_columnNumber}]</td>
 	<td></td>
 </tr>
 <tr>
@@ -1609,7 +1619,7 @@
 </tr>
 <tr>
 	<td>WAREHOUSE_ACTIVE_STATUS</td>
-	<td>//div/a[contains(.,'${key_warehouseName}')]//..//..//..//div[contains(@class,'dnd-td') and contains (.,'${key_activeStatus}')]</td>
+	<td>//div/a[contains(.,'${key_warehouseName}')]//..//..//..//td[contains (.,'${key_activeStatus}')]</td>
 	<td></td>
 </tr>
 

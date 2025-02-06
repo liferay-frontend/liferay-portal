@@ -100,15 +100,19 @@ describe('Event Analysis Edit', () => {
 	afterEach(cleanup);
 
 	it('should render', async () => {
-		const {container} = render(<WrappedComponent />);
+		const {container, getByText} = render(<WrappedComponent />);
 
 		await waitForLoadingToBeRemoved(container);
+
+		expect(getByText('Download Reports')).toBeTruthy();
 
 		expect(container).toMatchSnapshot();
 	});
 
 	it('should render event analysis with data', async () => {
-		const {container, getByText} = render(<WrappedComponent />);
+		const {container, getAllByText, getByText} = render(
+			<WrappedComponent />
+		);
 
 		jest.runAllTimers();
 
@@ -136,6 +140,7 @@ describe('Event Analysis Edit', () => {
 			container.querySelector('.compare-to-previous-checkbox input')
 				.checked
 		).toBeTruthy();
+		expect(getAllByText('displayName-0')).toBeTruthy();
 	});
 
 	it('should check if search autocomplete is working properly', async () => {

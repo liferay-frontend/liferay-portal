@@ -164,6 +164,12 @@ public interface PortletDataHandler {
 	public PortletDataHandlerControl[] getImportMetadataControls()
 		throws PortletDataException;
 
+	public default String getName() {
+		Class<? extends PortletDataHandler> clazz = getClass();
+
+		return clazz.getName();
+	}
+
 	public default String getNamespace() {
 		return StringPool.BLANK;
 	}
@@ -259,6 +265,10 @@ public interface PortletDataHandler {
 			PortletDataContext portletDataContext, String portletId,
 			PortletPreferences portletPreferences, String data)
 		throws PortletDataException;
+
+	public default boolean isCompany() {
+		return false;
+	}
 
 	public default boolean isConfigurationEnabled() {
 		return true;

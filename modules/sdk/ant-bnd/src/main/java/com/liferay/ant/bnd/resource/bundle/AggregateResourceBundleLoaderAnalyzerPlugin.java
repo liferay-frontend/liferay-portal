@@ -34,16 +34,19 @@ public class AggregateResourceBundleLoaderAnalyzerPlugin
 			return false;
 		}
 
+		String headerName = ResourceBundleLoaderAnalyzerPlugin.getHeaderName(
+			analyzer);
 		Set<String> aggregateResourceBundles = parameters.keySet();
 
-		addProvideCapabilities(analyzer, aggregateResourceBundles);
-		addRequireCapabilities(analyzer, aggregateResourceBundles);
+		addProvideCapabilities(analyzer, headerName, aggregateResourceBundles);
+		addRequireCapabilities(analyzer, headerName, aggregateResourceBundles);
 
 		return true;
 	}
 
 	protected void addProvideCapabilities(
-		Analyzer analyzer, Set<String> aggregateResourceBundles) {
+		Analyzer analyzer, String headerName,
+		Set<String> aggregateResourceBundles) {
 
 		Parameters provideCapabilityHeaders = new SortedParameters(
 			analyzer.getProperty(Constants.PROVIDE_CAPABILITY));
@@ -52,6 +55,13 @@ public class AggregateResourceBundleLoaderAnalyzerPlugin
 
 		attrs.put("aggregate", "true");
 		attrs.put("bundle.symbolic.name", analyzer.getBsn());
+
+		if (headerName.equals(
+				ResourceBundleLoaderAnalyzerPlugin.
+					HEADER_NAME_LIFERAY_LANGUAGE_RESOURCES)) {
+
+			attrs.put("module.only", "true");
+		}
 
 		StringBuilder resourceBundleAggregate = new StringBuilder();
 
@@ -94,8 +104,7 @@ public class AggregateResourceBundleLoaderAnalyzerPlugin
 
 		Parameters parameters = new Parameters();
 
-		parameters.add(
-			ResourceBundleLoaderAnalyzerPlugin.LIFERAY_RESOURCE_BUNDLE, attrs);
+		parameters.add(headerName, attrs);
 
 		provideCapabilityHeaders.mergeWith(parameters, false);
 
@@ -104,7 +113,8 @@ public class AggregateResourceBundleLoaderAnalyzerPlugin
 	}
 
 	protected void addRequireCapabilities(
-		Analyzer analyzer, Set<String> aggregateResourceBundles) {
+		Analyzer analyzer, String headerName,
+		Set<String> aggregateResourceBundles) {
 
 		Parameters requireCapabilityHeaders = new SortedParameters(
 			analyzer.getProperty(Constants.REQUIRE_CAPABILITY));
@@ -119,9 +129,7 @@ public class AggregateResourceBundleLoaderAnalyzerPlugin
 
 			attrs.put("filter:", filter.toString());
 
-			parameters.add(
-				ResourceBundleLoaderAnalyzerPlugin.LIFERAY_RESOURCE_BUNDLE,
-				attrs);
+			parameters.add(headerName, attrs);
 		}
 
 		requireCapabilityHeaders.mergeWith(parameters, false);

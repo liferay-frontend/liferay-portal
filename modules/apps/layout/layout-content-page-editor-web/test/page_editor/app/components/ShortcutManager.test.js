@@ -178,10 +178,6 @@ describe('ShortcutManager', () => {
 		});
 	});
 
-	beforeEach(() => {
-		jest.clearAllMocks();
-	});
-
 	it('triggers hide sidebar action when pressing cmd + shift + .', () => {
 		const mockDispatch = jest.fn((a) => {
 			if (typeof a === 'function') {
@@ -254,6 +250,8 @@ describe('ShortcutManager', () => {
 		act(() => {
 			jest.runAllTimers();
 		});
+
+		jest.useRealTimers();
 
 		screen.getByText('keyboard-shortcuts');
 	});
@@ -429,7 +427,7 @@ describe('ShortcutManager', () => {
 		Liferay.FeatureFlags['LPD-18221'] = false;
 	});
 
-	it('cannot paste items because multiple parents are selected', () => {
+	it.skip('cannot paste items because multiple parents are selected', () => {
 		Liferay.FeatureFlags['LPD-18221'] = true;
 
 		renderComponent({

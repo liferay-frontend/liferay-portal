@@ -11,7 +11,7 @@
 	<liferay-ui:message key="dynamic-data-lists-is-deprecated-and-will-be-removed-in-2024" />
 
 	<liferay-learn:message
-		key="to-avoid-data-loss-you-must-migrate-your-data-to-liferay-objects"
+		key="migrate"
 		resource="dynamic-data-lists-web"
 	/>
 </clay:alert>

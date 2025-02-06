@@ -11,6 +11,7 @@ import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -46,7 +47,8 @@ public class ObjectDefinitionTestUtil {
 			List<ObjectField> objectFields)
 		throws Exception {
 
-		return addCustomObjectDefinition(false, objectFields);
+		return addCustomObjectDefinition(
+			FeatureFlagManagerUtil.isEnabled("LPD-32050"), objectFields);
 	}
 
 	public static ObjectDefinition addCustomObjectDefinition(
@@ -54,7 +56,8 @@ public class ObjectDefinitionTestUtil {
 		throws Exception {
 
 		return addCustomObjectDefinition(
-			objectFolderId, false, getRandomName(), Collections.emptyList());
+			objectFolderId, FeatureFlagManagerUtil.isEnabled("LPD-32050"),
+			getRandomName(), Collections.emptyList());
 	}
 
 	public static ObjectDefinition addCustomObjectDefinition(
@@ -73,8 +76,8 @@ public class ObjectDefinitionTestUtil {
 		throws Exception {
 
 		return ObjectDefinitionLocalServiceUtil.addCustomObjectDefinition(
-			userId, objectFolderId, null, false, true, enableLocalization,
-			false,
+			userId, objectFolderId, null, false, false, true,
+			enableLocalization, false,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			name, null, null,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
@@ -93,7 +96,7 @@ public class ObjectDefinitionTestUtil {
 		throws Exception {
 
 		return addCustomObjectDefinition(
-			0, false, name,
+			0, FeatureFlagManagerUtil.isEnabled("LPD-32050"), name,
 			Arrays.asList(
 				new TextObjectFieldBuilder(
 				).userId(
@@ -116,11 +119,11 @@ public class ObjectDefinitionTestUtil {
 		throws Exception {
 
 		return ObjectDefinitionLocalServiceUtil.addSystemObjectDefinition(
-			null, userId, 0, null, dbTableName, false, true, enableLocalization,
-			labelMap, true, name, null, null, pkObjectFieldDBColumnName,
-			pkObjectFieldName, pluralLabelMap, false, scope,
-			titleObjectFieldName, version, WorkflowConstants.STATUS_DRAFT,
-			objectFields);
+			null, userId, 0, null, dbTableName, false, false, true,
+			enableLocalization, labelMap, true, name, null, null,
+			pkObjectFieldDBColumnName, pkObjectFieldName, pluralLabelMap, false,
+			scope, titleObjectFieldName, version,
+			WorkflowConstants.STATUS_DRAFT, objectFields);
 	}
 
 	public static ObjectDefinition addUnmodifiableSystemObjectDefinition(
@@ -134,7 +137,7 @@ public class ObjectDefinitionTestUtil {
 
 		return ObjectDefinitionLocalServiceUtil.addSystemObjectDefinition(
 			externalReferenceCode, userId, 0, className, dbTableName, false,
-			true, false, labelMap, false, name, null, null,
+			false, true, false, labelMap, false, name, null, null,
 			pkObjectFieldDBColumnName, pkObjectFieldName, pluralLabelMap, false,
 			scope, titleObjectFieldName, version,
 			WorkflowConstants.STATUS_APPROVED, objectFields);
@@ -145,7 +148,9 @@ public class ObjectDefinitionTestUtil {
 	}
 
 	public static ObjectDefinition publishObjectDefinition() throws Exception {
-		return publishObjectDefinition(false, Collections.emptyList());
+		return publishObjectDefinition(
+			FeatureFlagManagerUtil.isEnabled("LPD-32050"),
+			Collections.emptyList());
 	}
 
 	public static ObjectDefinition publishObjectDefinition(
@@ -185,7 +190,7 @@ public class ObjectDefinitionTestUtil {
 
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionLocalServiceUtil.addCustomObjectDefinition(
-				userId, 0, null, false, true, localized, false,
+				userId, 0, null, false, false, true, localized, false,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				name, null, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
@@ -235,7 +240,8 @@ public class ObjectDefinitionTestUtil {
 		throws Exception {
 
 		return publishObjectDefinition(
-			false, name, objectFields, scope, userId);
+			FeatureFlagManagerUtil.isEnabled("LPD-32050"), name, objectFields,
+			scope, userId);
 	}
 
 }

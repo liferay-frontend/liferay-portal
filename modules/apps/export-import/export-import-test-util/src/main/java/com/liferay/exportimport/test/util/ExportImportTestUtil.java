@@ -7,6 +7,7 @@ package com.liferay.exportimport.test.util;
 
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataContextFactoryUtil;
+import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
@@ -15,6 +16,7 @@ import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Máté Thurzó
@@ -126,6 +128,30 @@ public class ExportImportTestUtil {
 
 		return getImportPortletDataContext(
 			companyId, groupId, new HashMap<String, String[]>());
+	}
+
+	public static void retryAssert(
+			long pause, TimeUnit pauseTimeUnit, long timeout,
+			TimeUnit timeoutTimeUnit, UnsafeRunnable<Exception> unsafeRunnable)
+		throws Exception {
+
+		long deadline =
+			System.currentTimeMillis() + timeoutTimeUnit.toMillis(timeout);
+
+		while (true) {
+			try {
+				unsafeRunnable.run();
+
+				return;
+			}
+			catch (AssertionError assertionError) {
+				if (System.currentTimeMillis() > deadline) {
+					throw assertionError;
+				}
+			}
+
+			Thread.sleep(pauseTimeUnit.toMillis(pause));
+		}
 	}
 
 }

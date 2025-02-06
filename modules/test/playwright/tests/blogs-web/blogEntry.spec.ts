@@ -4,12 +4,13 @@
  */
 
 import {expect, mergeTests} from '@playwright/test';
+import {createReadStream} from 'fs';
+import path from 'path';
 
 import {apiHelpersTest} from '../../fixtures/apiHelpersTest';
 import {featureFlagsTest} from '../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../fixtures/loginTest';
-import {pageEditorPagesTest} from '../../fixtures/pageEditorPagesTest';
 import getRandomString from '../../utils/getRandomString';
 import {blogsPagesTest} from './fixtures/blogsPagesTest';
 import {blogsCategorizedFriendlyUrlSetup} from './utils/blogsCategorizedFriendlyUrlSetup';
@@ -20,12 +21,10 @@ const test = mergeTests(
 	apiHelpersTest,
 	isolatedSiteTest,
 	blogsPagesTest,
-	pageEditorPagesTest,
 	loginTest(),
 	featureFlagsTest({
-		'LPD-11147': true,
-		'LPD-39304': true,
-		'LPS-178052': true,
+		'LPD-39304': {enabled: true},
+		'LPS-178052': {enabled: true},
 	})
 );
 
@@ -72,14 +71,7 @@ test(
 	{
 		tag: '@LPD-26752',
 	},
-	async ({
-		apiHelpers,
-		blogsEditBlogEntryPage,
-		displayPageTemplatesPage,
-		page,
-		pageEditorPage,
-		site,
-	}) => {
+	async ({apiHelpers, blogsEditBlogEntryPage, page, site}) => {
 		const vocabularyName = getRandomString();
 		const friendlyUrlCategories = [
 			{name: 'category-1'},
@@ -89,10 +81,8 @@ test(
 
 		await blogsCategorizedFriendlyUrlSetup({
 			apiHelpers,
-			displayPageTemplatesPage,
 			friendlyUrlCategories,
 			page,
-			pageEditorPage,
 			site,
 			vocabularyName,
 		});
@@ -142,14 +132,7 @@ test(
 	{
 		tag: '@LPD-24858',
 	},
-	async ({
-		apiHelpers,
-		blogsEditBlogEntryPage,
-		displayPageTemplatesPage,
-		page,
-		pageEditorPage,
-		site,
-	}) => {
+	async ({apiHelpers, blogsEditBlogEntryPage, page, site}) => {
 		const vocabularyName = getRandomString();
 		const friendlyUrlCategories = [
 			{name: 'category 1'},
@@ -159,10 +142,8 @@ test(
 
 		await blogsCategorizedFriendlyUrlSetup({
 			apiHelpers,
-			displayPageTemplatesPage,
 			friendlyUrlCategories,
 			page,
-			pageEditorPage,
 			site,
 			vocabularyName,
 		});
@@ -198,14 +179,7 @@ test(
 	{
 		tag: '@LPD-26753',
 	},
-	async ({
-		apiHelpers,
-		blogsEditBlogEntryPage,
-		displayPageTemplatesPage,
-		page,
-		pageEditorPage,
-		site,
-	}) => {
+	async ({apiHelpers, blogsEditBlogEntryPage, page, site}) => {
 		const vocabularyName = getRandomString();
 		const friendlyUrlCategories = [
 			{name: 'category-1'},
@@ -215,10 +189,8 @@ test(
 
 		const {categories} = await blogsCategorizedFriendlyUrlSetup({
 			apiHelpers,
-			displayPageTemplatesPage,
 			friendlyUrlCategories,
 			page,
-			pageEditorPage,
 			site,
 			vocabularyName,
 		});
@@ -271,14 +243,7 @@ test(
 	{
 		tag: '@LPS-26755',
 	},
-	async ({
-		apiHelpers,
-		blogsEditBlogEntryPage,
-		displayPageTemplatesPage,
-		page,
-		pageEditorPage,
-		site,
-	}) => {
+	async ({apiHelpers, blogsEditBlogEntryPage, page, site}) => {
 		const vocabularyName = getRandomString();
 		const friendlyUrlCategories = [
 			{name: 'lifestyle', name_i18n: {['ES-es']: 'estilo-de-vida'}},
@@ -288,10 +253,8 @@ test(
 
 		await blogsCategorizedFriendlyUrlSetup({
 			apiHelpers,
-			displayPageTemplatesPage,
 			friendlyUrlCategories,
 			page,
-			pageEditorPage,
 			site,
 			vocabularyName,
 		});
@@ -330,14 +293,7 @@ test(
 	{
 		tag: '@LPD-26659',
 	},
-	async ({
-		apiHelpers,
-		blogsEditBlogEntryPage,
-		displayPageTemplatesPage,
-		page,
-		pageEditorPage,
-		site,
-	}) => {
+	async ({apiHelpers, blogsEditBlogEntryPage, page, site}) => {
 		const vocabularyName = getRandomString();
 		const friendlyUrlCategories = [
 			{name: 'category-1'},
@@ -347,10 +303,8 @@ test(
 
 		await blogsCategorizedFriendlyUrlSetup({
 			apiHelpers,
-			displayPageTemplatesPage,
 			friendlyUrlCategories,
 			page,
-			pageEditorPage,
 			site,
 			vocabularyName,
 		});
@@ -402,14 +356,7 @@ test(
 	{
 		tag: '@LPD-26659',
 	},
-	async ({
-		apiHelpers,
-		blogsEditBlogEntryPage,
-		displayPageTemplatesPage,
-		page,
-		pageEditorPage,
-		site,
-	}) => {
+	async ({apiHelpers, blogsEditBlogEntryPage, page, site}) => {
 		const vocabularyName = getRandomString();
 		const friendlyUrlCategories = [
 			{name: 'category-1'},
@@ -419,10 +366,8 @@ test(
 
 		await blogsCategorizedFriendlyUrlSetup({
 			apiHelpers,
-			displayPageTemplatesPage,
 			friendlyUrlCategories,
 			page,
-			pageEditorPage,
 			site,
 			vocabularyName,
 		});
@@ -466,5 +411,59 @@ test(
 				`/web${site.friendlyUrlPath}/b/${expectedCategoriesPartialURL}/${title}`
 			);
 		});
+	}
+);
+
+test(
+	'Updates the cover image position correctly after a drag',
+	{
+		tag: '@LPD-45514',
+	},
+	async ({apiHelpers, blogsEditBlogEntryPage, page, site}) => {
+		const coverImageTitle = 'image1.jpeg';
+
+		await apiHelpers.headlessDelivery.postDocument(
+			site.id,
+			createReadStream(path.join(__dirname, '/dependencies/image1.jpeg')),
+			{
+				description: getRandomString(),
+				fileName: getRandomString(),
+				title: coverImageTitle,
+			}
+		);
+
+		await blogsEditBlogEntryPage.goto(site.friendlyUrlPath);
+
+		await blogsEditBlogEntryPage.editBlogEntry({
+			content: getRandomString(),
+			publish: false,
+			title: getRandomString(),
+		});
+
+		await blogsEditBlogEntryPage.selectCoverImage(coverImageTitle);
+
+		// Simulate mouse movement to drag the image
+
+		const coverImageWrapper = await page.locator('.image-wrapper');
+
+		const coverImageSize = await coverImageWrapper.boundingBox();
+
+		await coverImageWrapper.hover();
+		await page.mouse.down();
+		await page.mouse.move(
+			coverImageSize.x + coverImageSize.width / 2,
+			coverImageSize.y + coverImageSize.height / 2 - 30
+		);
+		await page.mouse.up();
+
+		const coverImageCropRegionValue = await page
+			.locator(
+				'#_com_liferay_blogs_web_portlet_BlogsAdminPortlet_coverImageFileEntryCropRegion'
+			)
+			.inputValue();
+
+		const topValue = JSON.parse(coverImageCropRegionValue).y;
+
+		expect(topValue).toBeGreaterThan(20);
 	}
 );

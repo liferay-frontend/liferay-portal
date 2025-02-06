@@ -65,6 +65,9 @@ boolean shippable = BeanParamUtil.getBoolean(cpDefinition, request, "shippable",
 				<div class="row">
 					<aui:model-context bean="<%= cpDefinitionInventory %>" model="<%= CPDefinitionInventory.class %>" />
 
+					<liferay-ui:error exception="<%= CPConfigurationEntryQuantityException.class %>" message="please-enter-a-valid-quantity" />
+					<liferay-ui:error exception="<%= CPDefinitionInventoryQuantityException.class %>" message="please-enter-a-valid-quantity" />
+
 					<div class="col-6">
 						<aui:select label="inventory-engine" name="CPDefinitionInventoryEngine">
 
@@ -213,6 +216,14 @@ boolean shippable = BeanParamUtil.getBoolean(cpDefinition, request, "shippable",
 		</div>
 
 		<div class="col-4">
+			<c:if test='<%= FeatureFlagManagerUtil.isEnabled(cpDefinition.getCompanyId(), "LPD-10889") %>'>
+				<commerce-ui:panel
+					title='<%= LanguageUtil.get(request, "base-settings") %>'
+				>
+					<aui:input checked="<%= cpDefinitionConfigurationDisplayContext.isPurchasable() %>" data-qa-id="purchasableInput" inlineField="<%= true %>" name="purchasable" type="toggle-switch" />
+				</commerce-ui:panel>
+			</c:if>
+
 			<commerce-ui:panel
 				title='<%= LanguageUtil.get(request, "shipping") %>'
 			>
@@ -223,7 +234,7 @@ boolean shippable = BeanParamUtil.getBoolean(cpDefinition, request, "shippable",
 				<div class="<%= shippable ? StringPool.BLANK : "hide" %>" id="<portlet:namespace />shippableOptions">
 					<aui:input checked='<%= BeanParamUtil.getBoolean(cpDefinition, request, "freeShipping", false) %>' inlineField="<%= true %>" name="freeShipping" type="toggle-switch" />
 
-					<aui:input checked='<%= BeanParamUtil.getBoolean(cpDefinition, request, "shipSeparately", false) %>' inlineField="<%= true %>" label="always-ship-separately" name="shipSeparately" type="toggle-switch" />
+					<aui:input checked='<%= BeanParamUtil.getBoolean(cpDefinition, request, "shipSeparately", false) %>' inlineField="<%= true %>" label="ship-separately" name="shipSeparately" type="toggle-switch" />
 
 					<aui:input name="shippingExtraPrice" suffix="<%= HtmlUtil.escape(cpDefinitionConfigurationDisplayContext.getCommerceCurrencyCode()) %>" />
 

@@ -32,7 +32,6 @@ import java.lang.reflect.Parameter;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -85,7 +84,7 @@ public class NestedFieldsWriterInterceptor implements WriterInterceptor {
 			NestedFieldsContextThreadLocal.getNestedFieldsContext();
 
 		if ((nestedFieldsContext == null) ||
-			ListUtil.isEmpty(nestedFieldsContext.getFieldNames())) {
+			ListUtil.isEmpty(nestedFieldsContext.getNestedFields())) {
 
 			writerInterceptorContext.proceed();
 
@@ -95,7 +94,7 @@ public class NestedFieldsWriterInterceptor implements WriterInterceptor {
 		try {
 			_setFieldValues(
 				writerInterceptorContext.getEntity(),
-				nestedFieldsContext.getFieldNames(), nestedFieldsContext);
+				nestedFieldsContext.getNestedFields(), nestedFieldsContext);
 		}
 		catch (Exception exception) {
 			_log.error(exception);
@@ -584,21 +583,18 @@ public class NestedFieldsWriterInterceptor implements WriterInterceptor {
 	}
 
 	private Field _getField(Class<?> entityClass, String fieldName) {
-		List<Field> fields = new ArrayList<>(
-			Arrays.asList(entityClass.getDeclaredFields()));
+		Class<?> clazz = entityClass;
 
-		Class<?> superClass = entityClass.getSuperclass();
+		while ((clazz != null) && (clazz != Object.class)) {
+			for (Field field : clazz.getDeclaredFields()) {
+				if (Objects.equals(field.getName(), fieldName) ||
+					Objects.equals(field.getName(), "_" + fieldName)) {
 
-		if (superClass != null) {
-			Collections.addAll(fields, superClass.getDeclaredFields());
-		}
-
-		for (Field field : fields) {
-			if (Objects.equals(field.getName(), fieldName) ||
-				Objects.equals(field.getName(), "_" + fieldName)) {
-
-				return field;
+					return field;
+				}
 			}
+
+			clazz = clazz.getSuperclass();
 		}
 
 		return null;
@@ -630,9 +626,15 @@ public class NestedFieldsWriterInterceptor implements WriterInterceptor {
 			String fieldName, Class<?> itemClass,
 			NestedFieldsContext nestedFieldsContext) {
 
-		Class<?>[] parentClasses = new Class<?>[] {
-			Void.class, itemClass, itemClass.getSuperclass()
-		};
+		List<Class<?>> parentClasses = ListUtil.fromArray(Void.class);
+
+		Class<?> clazz = itemClass;
+
+		while ((clazz != null) && (clazz != Object.class)) {
+			parentClasses.add(clazz);
+
+			clazz = clazz.getSuperclass();
+		}
 
 		for (Class<?> parentClass : parentClasses) {
 			FactoryKey factoryKey = new FactoryKey(
@@ -659,27 +661,27 @@ public class NestedFieldsWriterInterceptor implements WriterInterceptor {
 	}
 
 	private void _setFieldValues(
-			Object entity, List<String> fieldNames,
+			Object entity, List<String> nestedFields,
 			NestedFieldsContext nestedFieldsContext)
 		throws Exception {
 
 		List<Object> items = _getItems(entity);
 
-		for (String fieldName : fieldNames) {
-			String nestedField = null;
+		for (String nestedField : nestedFields) {
+			String childNestedField = null;
 
-			int index = fieldName.indexOf(".");
+			int index = nestedField.indexOf(".");
 
 			if (index != -1) {
-				nestedField = fieldName.substring(index + 1);
+				childNestedField = nestedField.substring(index + 1);
 
-				fieldName = fieldName.substring(0, index);
+				nestedField = nestedField.substring(0, index);
 			}
 
 			for (Object item : items) {
 				Class<?> itemClass = item.getClass();
 
-				Field field = _getField(itemClass, fieldName);
+				Field field = _getField(itemClass, nestedField);
 
 				if (field == null) {
 					continue;
@@ -689,7 +691,7 @@ public class NestedFieldsWriterInterceptor implements WriterInterceptor {
 
 				UnsafeTriFunction<String, Object, NestedFieldsContext, Object>
 					unsafeTriFunction = _getUnsafeTriFunction(
-						fieldName, itemClass, nestedFieldsContext);
+						nestedField, itemClass, nestedFieldsContext);
 
 				if (unsafeTriFunction == null) {
 					continue;
@@ -698,13 +700,13 @@ public class NestedFieldsWriterInterceptor implements WriterInterceptor {
 				Object value = _adaptToFieldType(
 					field.getType(),
 					unsafeTriFunction.apply(
-						fieldName, item, nestedFieldsContext));
+						nestedField, item, nestedFieldsContext));
 
 				field.set(item, value);
 
-				if (nestedField != null) {
+				if (childNestedField != null) {
 					_setFieldValues(
-						value, Collections.singletonList(nestedField),
+						value, Collections.singletonList(childNestedField),
 						nestedFieldsContext);
 				}
 			}

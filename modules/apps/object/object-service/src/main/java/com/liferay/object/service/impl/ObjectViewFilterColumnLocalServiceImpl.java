@@ -20,6 +20,10 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -97,6 +101,28 @@ public class ObjectViewFilterColumnLocalServiceImpl
 		return objectViewFilterColumnPersistence.update(objectViewFilterColumn);
 	}
 
+	private boolean _isEmpty(ObjectViewFilterColumn objectViewFilterColumn)
+		throws PortalException {
+
+		JSONObject jsonObject = _jsonFactory.createJSONObject(
+			objectViewFilterColumn.getJSON());
+
+		JSONArray jsonArray = jsonObject.getJSONArray(
+			objectViewFilterColumn.getFilterType());
+
+		if (JSONUtil.isEmpty(jsonArray)) {
+			return true;
+		}
+
+		for (int i = 0; i < jsonArray.length(); i++) {
+			if (Validator.isNotNull(jsonArray.getString(i))) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	private void _validate(
 			long objectDefinitionId,
 			List<ObjectViewFilterColumn> objectViewFilterColumns)
@@ -135,7 +161,8 @@ public class ObjectViewFilterColumnLocalServiceImpl
 			if ((Validator.isNull(objectViewFilterColumn.getFilterType()) &&
 				 Validator.isNotNull(objectViewFilterColumn.getJSON())) ||
 				(Validator.isNotNull(objectViewFilterColumn.getFilterType()) &&
-				 Validator.isNull(objectViewFilterColumn.getJSON()))) {
+				 Validator.isNull(objectViewFilterColumn.getJSON())) ||
+				_isEmpty(objectViewFilterColumn)) {
 
 				throw new ObjectViewFilterColumnException(
 					StringBundler.concat(
@@ -148,7 +175,7 @@ public class ObjectViewFilterColumnLocalServiceImpl
 				_objectFieldFilterContributorRegistry.
 					getObjectFieldFilterContributor(
 						new ObjectFieldFilterContext(
-							null, objectField.getObjectDefinitionId(),
+							0, null, objectField.getObjectDefinitionId(),
 							objectViewFilterColumn));
 
 			objectFieldFilterContributor.validate();
@@ -164,6 +191,9 @@ public class ObjectViewFilterColumnLocalServiceImpl
 	private static final Set<String> _filterableObjectFieldNames =
 		Collections.unmodifiableSet(
 			SetUtil.fromArray("status", "createDate", "modifiedDate"));
+
+	@Reference
+	private JSONFactory _jsonFactory;
 
 	@Reference
 	private ObjectFieldFilterContributorRegistry

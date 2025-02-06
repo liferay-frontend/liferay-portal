@@ -2,9 +2,9 @@
 	"dependencies": {
 		"@clayui/alert": "3.111.0",
 		"@clayui/button": "3.116.0",
-		"@clayui/core": "3.123.0",
+		"@clayui/core": "3.127.0",
 		"@clayui/data-provider": "3.119.0",
-		"@clayui/drop-down": "3.123.1",
+		"@clayui/drop-down": "3.127.0",
 		"@clayui/empty-state": "3.116.0",
 		"@clayui/icon": "3.111.0",
 		"@clayui/link": "3.111.0",
@@ -14,7 +14,6 @@
 		"classnames": "2.3.1",
 		"d3": "5.9.3",
 		"frontend-js-web": "*",
-		"moment": "2.29.4",
 		"react": "18.2.0",
 		"recharts": "^2.8.0"
 	},
@@ -33,7 +32,7 @@
 		"build": "node-scripts build",
 		"checkFormat": "node-scripts format --check",
 		"format": "node-scripts format",
-		"test": "node-scripts test"
+		"test": "USE_REACT_16=true node-scripts test"
 	},
-	"version": "1.0.6"
+	"version": "1.0.7"
 }

@@ -812,7 +812,6 @@ definition {
 		property portal.acceptance = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
-		property testray.component.names = "Page Administration,Training,Web Content Administration";
 
 		task ("Given: User import home page from LAR file on staging site") {
 			LAR.importSiteCP(
@@ -944,6 +943,14 @@ definition {
 			WebContent.publishExistingWCArticleWithPermissions();
 
 			Navigator.openStagingSiteURL(siteName = "Site Name");
+
+			var count = 0;
+
+			while ((${count} != 3) && (IsTextNotEqual(locator1 = "Portlet#HEADER", value1 = "Staging Test Page"))) {
+				Navigator.openStagingSiteURL(siteName = "Site Name");
+
+				var count = ${count} + 1;
+			}
 
 			Staging.gotoPublishToLive();
 
@@ -1203,7 +1210,6 @@ definition {
 	@priority = 4
 	test PublishPortlet {
 		property portal.acceptance = "true";
-		property testray.component.names = "Training";
 
 		task ("When: User add a new WC on the staging site") {
 			WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name-staging");
@@ -1723,6 +1729,10 @@ definition {
 	@description = "This is a use case for LPS-82028."
 	@priority = 3
 	test SingleAssetPublishLayoutScopedContent {
+		task ("Enable Scope Configuration") {
+			Portlet.enableScopeConfiguration();
+		}
+
 		task ("Given: User add a Blog portlet to the staging site") {
 			JSONLayout.addWidgetToPublicLayout(
 				column = 1,
@@ -2224,7 +2234,6 @@ definition {
 		property portal.acceptance = "quarantine";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
-		property testray.component.names = "Training";
 
 		task ("Given: User add a new file to the staging site") {
 			JSONDocument.addFileWithUploadedFile(

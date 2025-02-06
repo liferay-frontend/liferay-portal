@@ -8,6 +8,7 @@ package com.liferay.commerce.pricing.web.internal.portlet.action;
 import com.liferay.commerce.currency.util.CommercePriceFormatter;
 import com.liferay.commerce.price.list.exception.CommerceTierPriceEntryMinQuantityException;
 import com.liferay.commerce.price.list.exception.CommerceTierPriceEntryPriceException;
+import com.liferay.commerce.price.list.exception.CommerceTierPriceEntryQuantityException;
 import com.liferay.commerce.price.list.exception.DuplicateCommerceTierPriceEntryException;
 import com.liferay.commerce.price.list.exception.DuplicateCommerceTierPriceEntryExternalReferenceCodeException;
 import com.liferay.commerce.price.list.exception.NoSuchTierPriceEntryException;
@@ -116,6 +117,7 @@ public class EditCommerceTierPriceEntryMVCActionCommand
 			if (exception instanceof
 					CommerceTierPriceEntryMinQuantityException ||
 				exception instanceof CommerceTierPriceEntryPriceException ||
+				exception instanceof CommerceTierPriceEntryQuantityException ||
 				exception instanceof DuplicateCommerceTierPriceEntryException) {
 
 				hideDefaultErrorMessage(actionRequest);
@@ -214,22 +216,24 @@ public class EditCommerceTierPriceEntryMVCActionCommand
 				commercePriceEntryId);
 
 		BigDecimal price = _commercePriceFormatter.parse(
-			actionRequest, CommerceTierPriceEntry.class.getName(), "price");
+			actionRequest, false, CommerceTierPriceEntry.class.getName(),
+			"price");
 		BigDecimal minQuantity = _commerceOrderItemQuantityFormatter.parse(
-			actionRequest, "minQuantity");
+			actionRequest, CommerceTierPriceEntry.class.getName(),
+			"minQuantity");
 		boolean overrideDiscount = ParamUtil.getBoolean(
 			actionRequest, "overrideDiscount");
 		BigDecimal discountLevel1 = _commercePriceFormatter.parse(
-			actionRequest, CommerceTierPriceEntry.class.getName(),
+			actionRequest, false, CommerceTierPriceEntry.class.getName(),
 			"discountLevel1");
 		BigDecimal discountLevel2 = _commercePriceFormatter.parse(
-			actionRequest, CommerceTierPriceEntry.class.getName(),
+			actionRequest, false, CommerceTierPriceEntry.class.getName(),
 			"discountLevel2");
 		BigDecimal discountLevel3 = _commercePriceFormatter.parse(
-			actionRequest, CommerceTierPriceEntry.class.getName(),
+			actionRequest, false, CommerceTierPriceEntry.class.getName(),
 			"discountLevel3");
 		BigDecimal discountLevel4 = _commercePriceFormatter.parse(
-			actionRequest, CommerceTierPriceEntry.class.getName(),
+			actionRequest, false, CommerceTierPriceEntry.class.getName(),
 			"discountLevel4");
 
 		Date date = new Date();

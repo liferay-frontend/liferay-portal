@@ -5,8 +5,8 @@
 
 package com.liferay.customer;
 
-import com.liferay.client.extension.util.spring.boot.BaseRestController;
-import com.liferay.client.extension.util.spring.boot.LiferayOAuth2AccessTokenManager;
+import com.liferay.client.extension.util.spring.boot3.BaseRestController;
+import com.liferay.client.extension.util.spring.boot3.LiferayOAuth2AccessTokenManager;
 import com.liferay.osb.spring.boot.client.zendesk.model.ZendeskTicket;
 import com.liferay.osb.spring.boot.client.zendesk.search.SearchHits;
 import com.liferay.osb.spring.boot.client.zendesk.search.ZendeskTicketQuery;
@@ -113,8 +113,7 @@ public class CustomerCommandLineRunner
 
 	private String _getAuthorization() {
 		return _liferayOAuth2AccessTokenManager.getAuthorization(
-			"liferay-customer-etc-spring-boot-oauth-application-headless-" +
-				"server");
+			"liferay-customer-etc-cron-oahs");
 	}
 
 	private static final Log _log = LogFactory.getLog(

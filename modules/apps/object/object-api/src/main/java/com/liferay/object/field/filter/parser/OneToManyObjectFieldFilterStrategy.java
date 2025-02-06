@@ -44,7 +44,7 @@ public class OneToManyObjectFieldFilterStrategy
 	extends BaseObjectFieldFilterStrategy {
 
 	public OneToManyObjectFieldFilterStrategy(
-		Locale locale, ObjectDefinition objectDefinition1,
+		long groupId, Locale locale, ObjectDefinition objectDefinition1,
 		ObjectDefinitionLocalService objectDefinitionLocalService,
 		ObjectEntryLocalService objectEntryLocalService,
 		ObjectField objectField,
@@ -56,6 +56,7 @@ public class OneToManyObjectFieldFilterStrategy
 
 		super(locale, objectViewFilterColumn);
 
+		_groupId = groupId;
 		_objectDefinition1 = objectDefinition1;
 		_objectDefinitionLocalService = objectDefinitionLocalService;
 		_objectEntryLocalService = objectEntryLocalService;
@@ -106,6 +107,11 @@ public class OneToManyObjectFieldFilterStrategy
 			restContextPath = "/o" + objectDefinition1.getRESTContextPath();
 		}
 
+		if (_groupId != 0) {
+			restContextPath = StringBundler.concat(
+				restContextPath, "/scopes/", _groupId);
+		}
+
 		return new OneToManySelectionFDSFilter(
 			parse(), restContextPath, titleObjectField.getLabel(locale),
 			_objectField.getName(), titleObjectField.getName());
@@ -119,6 +125,10 @@ public class OneToManyObjectFieldFilterStrategy
 			new ArrayList<>();
 
 		JSONArray jsonArray = getJSONArray();
+
+		if (jsonArray == null) {
+			return selectionFDSFilterItems;
+		}
 
 		if (_objectDefinition1.isUnmodifiableSystemObject()) {
 			for (int i = 0; i < jsonArray.length(); i++) {
@@ -200,6 +210,7 @@ public class OneToManyObjectFieldFilterStrategy
 		}
 	}
 
+	private final long _groupId;
 	private final ObjectDefinition _objectDefinition1;
 	private final ObjectDefinitionLocalService _objectDefinitionLocalService;
 	private final ObjectEntryLocalService _objectEntryLocalService;

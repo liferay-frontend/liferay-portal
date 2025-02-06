@@ -26,7 +26,6 @@
 /development/dtddoc.jar
 /development/dtdparser.jar
 /development/dumbster.jar
-/development/error-prone-ant.jar
 /development/freemarker.jar
 /development/guava.jar
 /development/hamcrest-core.jar
@@ -104,7 +103,6 @@
 /portal/isoparser.jar
 /portal/istack-commons-runtime.jar
 /portal/jabsorb.jar
-/portal/javassist.jar
 /portal/jaxb-api.jar
 /portal/jaxb-runtime.jar
 /portal/jaxen.jar

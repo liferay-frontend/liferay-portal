@@ -13,7 +13,7 @@ const Step: React.FC<
 > = ({onChangeStep}) => (
 	<Connect
 		onConnect={() => onChangeStep(ESteps.Property)}
-		title={Liferay.Language.get('connect-analytics-cloud')}
+		title={Liferay.Language.get('connect-to-analytics-cloud')}
 	/>
 );
 

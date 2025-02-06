@@ -1,0 +1,13 @@
+.onboarding {
+	& header {
+		& h2,
+		.h2 {
+			line-height: 1.25;
+		}
+
+		& h6,
+		.h6 {
+			font-size: var(--h6-font-size);
+		}
+	}
+}

@@ -1,6 +1,6 @@
 dependencies {
-	compileInclude group: "com.fasterxml.jackson.dataformat", name: "jackson-dataformat-yaml", version: "2.14.2"
-	compileInclude group: "com.fasterxml.jackson.datatype", name: "jackson-datatype-jsr310", version: "2.13.2"
+	compileInclude group: "com.fasterxml.jackson.dataformat", name: "jackson-dataformat-yaml", version: "2.18.2"
+	compileInclude group: "com.fasterxml.jackson.datatype", name: "jackson-datatype-jsr310", version: "2.18.2"
 	compileInclude group: "com.github.mifmif", name: "generex", version: "1.0.2"
 	compileInclude group: "com.squareup.okhttp3", name: "logging-interceptor", version: "4.12.0"
 	compileInclude group: "com.squareup.okhttp3", name: "okhttp", version: "4.12.0"
@@ -30,10 +30,9 @@ dependencies {
 	compileInclude group: "io.fabric8", name: "zjsonpatch", version: "0.3.0"
 	compileInclude group: "org.jetbrains.kotlin", name: "kotlin-stdlib", version: "1.8.0"
 	compileInclude group: "org.yaml", name: "snakeyaml", version: "2.3"
-
-	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.16.1"
-	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.16.1"
-	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.16.1"
+	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.2"
+	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.2"
+	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.2"
 	compileOnly group: "com.liferay", name: "org.apache.felix.configurator", version: "1.0.14.LIFERAY-PATCHED-4"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"

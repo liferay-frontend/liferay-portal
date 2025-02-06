@@ -22,10 +22,10 @@ import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.layout.display.page.LayoutDisplayPageProvider;
 import com.liferay.layout.display.page.constants.LayoutDisplayPageWebKeys;
-import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.info.item.provider.DisplayPageInfoItemFieldSetProvider;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
+import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.string.StringBundler;
@@ -52,7 +52,6 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -103,12 +102,10 @@ public class DisplayPageInfoItemFieldSetProviderTest {
 		_classNameId = _portal.getClassNameId(JournalArticle.class.getName());
 
 		_layoutPageTemplateEntry =
-			_layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
-				null, _group.getCreatorUserId(), _group.getGroupId(), 0,
-				_classNameId, _journalArticle.getDDMStructureId(),
-				RandomTestUtil.randomString(),
-				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, 0, true, 0,
-				0, 0, 0, serviceContext);
+			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+				_group.getGroupId(), _classNameId,
+				_journalArticle.getDDMStructureId(), true,
+				WorkflowConstants.STATUS_APPROVED);
 
 		AssetDisplayPageEntry assetDisplayPageEntry =
 			_assetDisplayPageEntryLocalService.addAssetDisplayPageEntry(
@@ -134,7 +131,6 @@ public class DisplayPageInfoItemFieldSetProviderTest {
 			FriendlyURLResolverConstants.URL_SEPARATOR_X_CUSTOM_ASSET);
 	}
 
-	@FeatureFlags("LPD-11147")
 	@Test
 	public void testGetInfoFieldValuesWithConfiguredURLSeparator()
 		throws Exception {
@@ -176,13 +172,11 @@ public class DisplayPageInfoItemFieldSetProviderTest {
 	public void testGetInfoFieldValuesWithDraftLayoutPageTemplateEntry()
 		throws Exception {
 
-		_layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
-			null, TestPropsValues.getUserId(), _group.getGroupId(), 0,
-			_portal.getClassNameId(JournalArticle.class),
-			_journalArticle.getDDMStructureId(), RandomTestUtil.randomString(),
-			LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, 0,
-			WorkflowConstants.STATUS_DRAFT,
-			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+			_group.getGroupId(),
+			_portal.getClassNameId(JournalArticle.class.getName()),
+			_journalArticle.getDDMStructureId(), false,
+			WorkflowConstants.STATUS_DRAFT);
 
 		InfoItemReference infoItemReference = new InfoItemReference(
 			JournalArticle.class.getName(),

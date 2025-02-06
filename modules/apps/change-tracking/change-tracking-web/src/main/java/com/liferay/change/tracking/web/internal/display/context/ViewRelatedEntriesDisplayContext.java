@@ -9,6 +9,7 @@ import com.liferay.change.tracking.model.CTCollection;
 import com.liferay.change.tracking.model.CTEntry;
 import com.liferay.change.tracking.model.CTEntryTable;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
+import com.liferay.change.tracking.service.CTEntryLocalService;
 import com.liferay.change.tracking.spi.display.CTDisplayRendererRegistry;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.SelectOption;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -19,20 +20,26 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.UserTable;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
@@ -48,17 +55,21 @@ public class ViewRelatedEntriesDisplayContext {
 	public ViewRelatedEntriesDisplayContext(
 		CTCollectionLocalService ctCollectionLocalService,
 		CTDisplayRendererRegistry ctDisplayRendererRegistry,
+		CTEntryLocalService ctEntryLocalService,
 		HttpServletRequest httpServletRequest, RenderRequest renderRequest,
 		RenderResponse renderResponse, UserLocalService userLocalService) {
 
 		_ctCollectionLocalService = ctCollectionLocalService;
 		_ctDisplayRendererRegistry = ctDisplayRendererRegistry;
+		_ctEntryLocalService = ctEntryLocalService;
 		_httpServletRequest = httpServletRequest;
 		_renderRequest = renderRequest;
 		_renderResponse = renderResponse;
 		_userLocalService = userLocalService;
 
 		_ctCollectionId = ParamUtil.getLong(renderRequest, "ctCollectionId");
+		_ctEntryIds = StringUtil.split(
+			ParamUtil.getString(httpServletRequest, "id"), 0L);
 		_modelClassNameId = ParamUtil.getLong(
 			renderRequest, "modelClassNameId");
 		_modelClassPK = ParamUtil.getLong(renderRequest, "modelClassPK");
@@ -70,12 +81,40 @@ public class ViewRelatedEntriesDisplayContext {
 		return _ctCollectionId;
 	}
 
-	public Map<String, Object> getReactData() throws Exception {
-		Map<Long, List<CTEntry>> relatedCTEntriesMap =
-			_ctCollectionLocalService.getRelatedCTEntriesMap(
-				_ctCollectionId, _modelClassNameId, _modelClassPK);
+	public <T extends BaseModel<T>> Map<String, Object> getReactData()
+		throws Exception {
 
-		List<CTEntry> ctEntries = new ArrayList<>();
+		Map<Long, List<CTEntry>> relatedCTEntriesMap = new HashMap<>();
+
+		if ((_modelClassNameId > 0) && (_modelClassPK > 0)) {
+			relatedCTEntriesMap.putAll(
+				_ctCollectionLocalService.getRelatedCTEntriesMap(
+					_ctCollectionId, _modelClassNameId, _modelClassPK));
+		}
+
+		for (long ctEntryId : _ctEntryIds) {
+			CTEntry ctEntry = _ctEntryLocalService.fetchCTEntry(ctEntryId);
+
+			T model = _ctDisplayRendererRegistry.fetchCTModel(
+				ctEntry.getModelClassNameId(), ctEntry.getModelClassPK());
+
+			if (!_ctDisplayRendererRegistry.isMovable(
+					model, ctEntry.getModelClassNameId())) {
+
+				continue;
+			}
+
+			Map<Long, List<CTEntry>> currentRelatedCTEntriesMap =
+				_ctCollectionLocalService.getRelatedCTEntriesMap(
+					_ctCollectionId, ctEntry.getModelClassNameId(),
+					ctEntry.getModelClassPK());
+
+			currentRelatedCTEntriesMap.forEach(
+				(key, value) -> relatedCTEntriesMap.merge(
+					key, value, (v1, v2) -> ListUtil.concat(v1, v2)));
+		}
+
+		Set<CTEntry> ctEntries = new HashSet<>();
 
 		for (List<CTEntry> value : relatedCTEntriesMap.values()) {
 			ctEntries.addAll(value);
@@ -132,7 +171,7 @@ public class ViewRelatedEntriesDisplayContext {
 			DisplayContextUtil.getUserInfoJSONObject(
 				CTEntryTable.INSTANCE.userId.eq(UserTable.INSTANCE.userId),
 				CTEntryTable.INSTANCE, _themeDisplay, _userLocalService,
-				_getPredicate(ctEntries))
+				_getPredicate(new ArrayList<>(ctEntries)))
 		).build();
 	}
 
@@ -187,6 +226,8 @@ public class ViewRelatedEntriesDisplayContext {
 		).setParameter(
 			"ctCollectionId", _ctCollectionId
 		).setParameter(
+			"ctEntryIds", StringUtil.merge(_ctEntryIds)
+		).setParameter(
 			"modelClassNameId", _modelClassNameId
 		).setParameter(
 			"modelClassPK", _modelClassPK
@@ -202,6 +243,8 @@ public class ViewRelatedEntriesDisplayContext {
 			getRedirectURL()
 		).setParameter(
 			"ctCollectionId", _ctCollectionId
+		).setParameter(
+			"ctEntryIds", StringUtil.merge(_ctEntryIds)
 		).setParameter(
 			"modelClassNameId", _modelClassNameId
 		).setParameter(
@@ -231,6 +274,8 @@ public class ViewRelatedEntriesDisplayContext {
 	private final long _ctCollectionId;
 	private final CTCollectionLocalService _ctCollectionLocalService;
 	private final CTDisplayRendererRegistry _ctDisplayRendererRegistry;
+	private final long[] _ctEntryIds;
+	private final CTEntryLocalService _ctEntryLocalService;
 	private final HttpServletRequest _httpServletRequest;
 	private final long _modelClassNameId;
 	private final long _modelClassPK;

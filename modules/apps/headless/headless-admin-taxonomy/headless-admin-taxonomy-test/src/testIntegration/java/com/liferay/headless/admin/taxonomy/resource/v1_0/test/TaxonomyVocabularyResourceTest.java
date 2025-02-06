@@ -17,10 +17,16 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.util.PropsValues;
 
 import java.util.Arrays;
@@ -269,56 +275,8 @@ public class TaxonomyVocabularyResourceTest
 	public void testGetTaxonomyVocabulary() throws Exception {
 		super.testGetTaxonomyVocabulary();
 
-		TaxonomyVocabulary postTaxonomyVocabulary =
-			testGetTaxonomyVocabulary_addTaxonomyVocabulary();
-
-		TaxonomyVocabulary getTaxonomyVocabulary =
-			taxonomyVocabularyResource.getTaxonomyVocabulary(
-				postTaxonomyVocabulary.getId());
-
-		assertValid(
-			getTaxonomyVocabulary.getActions(),
-			HashMapBuilder.<String, Map<String, String>>put(
-				"delete",
-				HashMapBuilder.put(
-					"href",
-					"http://localhost:8080/o/headless-admin-taxonomy/v1.0" +
-						"/taxonomy-vocabularies/" +
-							getTaxonomyVocabulary.getId()
-				).put(
-					"method", "DELETE"
-				).build()
-			).put(
-				"get",
-				HashMapBuilder.put(
-					"href",
-					"http://localhost:8080/o/headless-admin-taxonomy/v1.0" +
-						"/taxonomy-vocabularies/" +
-							getTaxonomyVocabulary.getId()
-				).put(
-					"method", "GET"
-				).build()
-			).put(
-				"replace",
-				HashMapBuilder.put(
-					"href",
-					"http://localhost:8080/o/headless-admin-taxonomy/v1.0" +
-						"/taxonomy-vocabularies/" +
-							getTaxonomyVocabulary.getId()
-				).put(
-					"method", "PUT"
-				).build()
-			).put(
-				"update",
-				HashMapBuilder.put(
-					"href",
-					"http://localhost:8080/o/headless-admin-taxonomy/v1.0" +
-						"/taxonomy-vocabularies/" +
-							getTaxonomyVocabulary.getId()
-				).put(
-					"method", "PATCH"
-				).build()
-			).build());
+		_testGetTaxonomyVocabularyActions();
+		_testGetTaxonomyVocabularyWithoutPermissionsAction();
 	}
 
 	@Override
@@ -407,22 +365,7 @@ public class TaxonomyVocabularyResourceTest
 
 		super.testPutAssetLibraryTaxonomyVocabularyByExternalReferenceCode();
 
-		String externalReferenceCode = StringUtil.toLowerCase(
-			RandomTestUtil.randomString());
-
-		TaxonomyVocabulary taxonomyVocabulary =
-			testPutAssetLibraryTaxonomyVocabularyByExternalReferenceCode_createTaxonomyVocabulary();
-
-		TaxonomyVocabulary putTaxonomyVocabulary =
-			taxonomyVocabularyResource.
-				putAssetLibraryTaxonomyVocabularyByExternalReferenceCode(
-					testPutAssetLibraryTaxonomyVocabularyByExternalReferenceCode_getAssetLibraryId(),
-					externalReferenceCode, taxonomyVocabulary);
-
-		Assert.assertEquals(
-			externalReferenceCode,
-			putTaxonomyVocabulary.getExternalReferenceCode());
-		assertValid(putTaxonomyVocabulary);
+		_testPutAssetLibraryTaxonomyVocabularyByExternalReferenceCodeWithExternalReferenceCode();
 	}
 
 	@Override
@@ -514,5 +457,123 @@ public class TaxonomyVocabularyResourceTest
 
 		return testDepotEntry.getDepotEntryId();
 	}
+
+	private void _testGetTaxonomyVocabularyActions() throws Exception {
+		TaxonomyVocabulary postTaxonomyVocabulary =
+			testGetTaxonomyVocabulary_addTaxonomyVocabulary();
+
+		TaxonomyVocabulary getTaxonomyVocabulary =
+			taxonomyVocabularyResource.getTaxonomyVocabulary(
+				postTaxonomyVocabulary.getId());
+
+		assertValid(
+			getTaxonomyVocabulary.getActions(),
+			HashMapBuilder.<String, Map<String, String>>put(
+				"delete",
+				HashMapBuilder.put(
+					"href",
+					"http://localhost:8080/o/headless-admin-taxonomy/v1.0" +
+						"/taxonomy-vocabularies/" +
+							getTaxonomyVocabulary.getId()
+				).put(
+					"method", "DELETE"
+				).build()
+			).put(
+				"get",
+				HashMapBuilder.put(
+					"href",
+					"http://localhost:8080/o/headless-admin-taxonomy/v1.0" +
+						"/taxonomy-vocabularies/" +
+							getTaxonomyVocabulary.getId()
+				).put(
+					"method", "GET"
+				).build()
+			).put(
+				"replace",
+				HashMapBuilder.put(
+					"href",
+					"http://localhost:8080/o/headless-admin-taxonomy/v1.0" +
+						"/taxonomy-vocabularies/" +
+							getTaxonomyVocabulary.getId()
+				).put(
+					"method", "PUT"
+				).build()
+			).put(
+				"update",
+				HashMapBuilder.put(
+					"href",
+					"http://localhost:8080/o/headless-admin-taxonomy/v1.0" +
+						"/taxonomy-vocabularies/" +
+							getTaxonomyVocabulary.getId()
+				).put(
+					"method", "PATCH"
+				).build()
+			).build());
+	}
+
+	private void _testGetTaxonomyVocabularyWithoutPermissionsAction()
+		throws Exception {
+
+		TaxonomyVocabulary randomTaxonomyVocabulary =
+			randomTaxonomyVocabulary();
+
+		randomTaxonomyVocabulary.setViewableBy(
+			TaxonomyVocabulary.ViewableBy.MEMBERS);
+
+		TaxonomyVocabulary postTaxonomyVocabulary =
+			taxonomyVocabularyResource.postSiteTaxonomyVocabulary(
+				testGroup.getGroupId(), randomTaxonomyVocabulary);
+
+		User siteMemberUser = UserTestUtil.addGroupUser(
+			testGroup, RoleConstants.SITE_MEMBER);
+
+		String password = RandomTestUtil.randomString();
+
+		_userLocalService.updatePassword(
+			siteMemberUser.getUserId(), password, password, false, true);
+
+		TaxonomyVocabularyResource siteMemberTaxonomyVocabularyResource =
+			TaxonomyVocabularyResource.builder(
+			).authentication(
+				siteMemberUser.getEmailAddress(), password
+			).endpoint(
+				testCompany.getVirtualHostname(), 8080, "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
+
+		TaxonomyVocabulary getTaxonomyVocabulary =
+			siteMemberTaxonomyVocabularyResource.getTaxonomyVocabulary(
+				postTaxonomyVocabulary.getId());
+
+		Assert.assertNull(getTaxonomyVocabulary.getPermissions());
+	}
+
+	private void _testPutAssetLibraryTaxonomyVocabularyByExternalReferenceCodeWithExternalReferenceCode()
+		throws Exception {
+
+		String externalReferenceCode = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
+
+		TaxonomyVocabulary taxonomyVocabulary =
+			testPutAssetLibraryTaxonomyVocabularyByExternalReferenceCode_addTaxonomyVocabulary();
+
+		TaxonomyVocabulary putTaxonomyVocabulary =
+			taxonomyVocabularyResource.
+				putAssetLibraryTaxonomyVocabularyByExternalReferenceCode(
+					testPutAssetLibraryTaxonomyVocabularyByExternalReferenceCode_getAssetLibraryId(),
+					externalReferenceCode, taxonomyVocabulary);
+
+		Assert.assertEquals(
+			externalReferenceCode,
+			putTaxonomyVocabulary.getExternalReferenceCode());
+		assertValid(putTaxonomyVocabulary);
+	}
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }

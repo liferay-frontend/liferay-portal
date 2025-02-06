@@ -1012,7 +1012,7 @@ definition {
 				webContentText = "Apple",
 				webContentTitle = "Fruit 1");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 
 			WebContentNavigator.gotoAddWithStructureCP(structureName = "Test Structure");
 
@@ -1021,7 +1021,7 @@ definition {
 				webContentText = "Banana",
 				webContentTitle = "Fruit 2");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Add a basic web content article") {
@@ -1184,7 +1184,9 @@ definition {
 			portletName = "Search Bar",
 			scope = "Master");
 
-		SearchPage.configureSearchBarWidget(destinationPage = "search");
+		SearchPage.configureSearchBarWidget(
+			destinationPage = "search",
+			isFragment = "true");
 
 		MastersPageTemplates.publishMaster();
 
@@ -1216,7 +1218,9 @@ definition {
 
 		MastersPageTemplatesAdmin.gotoMasters(masterLayoutName = "Custom Master Page Template");
 
-		SearchPage.configureSearchBarWidget(destinationPage = "Test Page Name");
+		SearchPage.configureSearchBarWidget(
+			destinationPage = "Test Page Name",
+			isFragment = "true");
 
 		MastersPageTemplates.propagateChange();
 
@@ -1856,6 +1860,10 @@ definition {
 
 	@priority = 4
 	test SearchBlogsScopedToPage {
+		task ("Enable Scope Configuration") {
+			Portlet.enableScopeConfiguration();
+		}
+
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
 			layoutName = "Blogs Page");
@@ -2963,10 +2971,6 @@ definition {
 	@description = "This is a use case for LPS-141138."
 	@priority = 4
 	test ViewObjectsSearchResultDetailsDisplayPageTemplate {
-		task ("Enable featured content fragment set") {
-			FragmentsAdmin.enableFeaturedContent();
-		}
-
 		ObjectAdmin.addObjectViaAPI(
 			labelName = "Custom Object",
 			objectName = "CustomObject",
@@ -3029,9 +3033,8 @@ definition {
 		Button.clickSave();
 
 		PageEditor.addFragment(
-			collectionName = "Featured Content",
-			composition = "true",
-			fragmentName = "Banner Center");
+			collectionName = "Basic Components",
+			fragmentName = "Heading");
 
 		PageEditorMapping.mapEditableTextToField(
 			field = "title",

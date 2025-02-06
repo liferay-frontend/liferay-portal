@@ -199,6 +199,7 @@ import java.util.SortedMap;
 import java.util.Stack;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
@@ -2177,10 +2178,15 @@ public class GraphQLServletExtender {
 			GraphQLFieldDefinition graphQLFieldDefinition =
 				dataFetchingEnvironment.getFieldDefinition();
 
+			GraphQLFieldDefinition fieldGraphQLFieldDefinition = _addField(
+				graphQLFieldDefinition.getType(), fieldName);
+
 			DataFetcher<?> dataFetcher = graphQLCodeRegistry.getDataFetcher(
-				(GraphQLFieldsContainer)graphQLNamedTypes.get(
-					GraphQLConstants.NAMESPACE_QUERY),
-				_addField(graphQLFieldDefinition.getType(), fieldName));
+				FieldCoordinates.coordinates(
+					(GraphQLFieldsContainer)graphQLNamedTypes.get(
+						GraphQLConstants.NAMESPACE_QUERY),
+					fieldGraphQLFieldDefinition),
+				fieldGraphQLFieldDefinition);
 
 			DataFetchingEnvironmentImpl.Builder dataFetchingEnvironmentBuilder =
 				DataFetchingEnvironmentImpl.newDataFetchingEnvironment(
@@ -2566,15 +2572,19 @@ public class GraphQLServletExtender {
 
 			GraphQLFieldDefinition graphQLFieldDefinition =
 				dataFetchingEnvironment.getFieldDefinition();
-
 			String fieldName = _getFieldName(
 				dataFetchingEnvironment, graphQLSchema);
 
+			GraphQLFieldDefinition fieldGraphQLFieldDefinition = _addField(
+				graphQLFieldDefinition.getType(), fieldName,
+				graphQLFieldDefinition.getArgument("id"));
+
 			DataFetcher<?> dataFetcher = graphQLCodeRegistry.getDataFetcher(
-				(GraphQLFieldsContainer)dataFetchingEnvironment.getParentType(),
-				_addField(
-					graphQLFieldDefinition.getType(), fieldName,
-					graphQLFieldDefinition.getArgument("id")));
+				FieldCoordinates.coordinates(
+					(GraphQLFieldsContainer)
+						dataFetchingEnvironment.getParentType(),
+					fieldGraphQLFieldDefinition),
+				fieldGraphQLFieldDefinition);
 
 			DataFetchingEnvironmentImpl.Builder dataFetchingEnvironmentBuilder =
 				DataFetchingEnvironmentImpl.newDataFetchingEnvironment(
@@ -2633,6 +2643,15 @@ public class GraphQLServletExtender {
 		implements DataFetcherExceptionHandler {
 
 		@Override
+		public CompletableFuture<DataFetcherExceptionHandlerResult>
+			handleException(
+				DataFetcherExceptionHandlerParameters
+					dataFetcherExceptionHandlerParameters) {
+
+			return CompletableFuture.completedFuture(
+				onException(dataFetcherExceptionHandlerParameters));
+		}
+
 		public DataFetcherExceptionHandlerResult onException(
 			DataFetcherExceptionHandlerParameters
 				dataFetcherExceptionHandlerParameters) {

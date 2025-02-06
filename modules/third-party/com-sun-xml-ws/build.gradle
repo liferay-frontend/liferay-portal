@@ -9,10 +9,9 @@ dependencies {
 }
 
 jar {
-	setActions([])
-
 	dependsOn jarPatched
 	finalizedBy jarManifest
+	setActions([])
 }
 
 jarManifest {
@@ -25,9 +24,7 @@ jarPatched {
 	archiveFileName = jar.archiveFileName
 	destinationDirectory = jar.destinationDirectory
 	duplicatesStrategy = "exclude"
-
 	exclude "META-INF/services/javax.xml.ws.spi.Provider"
-
 	from sourceSets.main.output
 
 	from {

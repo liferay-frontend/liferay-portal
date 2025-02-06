@@ -40,27 +40,16 @@ public class LayoutTypeSettingsInspectorUtil {
 		String typeSettingsPropertiesString =
 			typeSettingsUnicodeProperties.toString();
 
-		if (typeSettingsPropertiesString.contains(
-				PortletKeys.NESTED_PORTLETS)) {
-
-			return true;
-		}
-
-		return false;
+		return typeSettingsPropertiesString.contains(
+			PortletKeys.NESTED_PORTLETS);
 	}
 
 	public static boolean isCustomizableLayout(
 		UnicodeProperties typeSettingsUnicodeProperties) {
 
-		boolean customizableLayout = GetterUtil.getBoolean(
+		return GetterUtil.getBoolean(
 			typeSettingsUnicodeProperties.getProperty(
 				LayoutConstants.CUSTOMIZABLE_LAYOUT));
-
-		if (customizableLayout) {
-			return true;
-		}
-
-		return false;
 	}
 
 }

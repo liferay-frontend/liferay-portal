@@ -4,70 +4,23 @@
 			"fields": [
 				{
 					"dataType": "string",
-					"defaultValue": "solid",
-					"label": "type",
-					"name": "type",
-					"type": "select",
-					"typeOptions": {
-						"validValues": [
-							{
-								"label": "solid",
-								"value": "solid"
-							},
-							{
-								"label": "ghost",
-								"value": "ghost"
-							},
-							{
-								"label": "borderless",
-								"value": "borderless"
-							},
-							{
-								"label": "rounded",
-								"value": "rounded"
-							}
-						]
-					}
-				},
-				{
-					"dataType": "string",
-					"defaultValue": "primary",
-					"label": "style",
-					"name": "style",
-					"type": "select",
-					"typeOptions": {
-						"validValues": [
-							{
-								"value": "primary"
-							},
-							{
-								"value": "secondary"
-							},
-							{
-								"value": "neutral"
-							}
-						]
-					}
-				},
-				{
-					"dataType": "string",
 					"defaultValue": "",
-					"label": "size",
+					"label": "Button Size",
 					"name": "buttonSize",
 					"type": "select",
 					"typeOptions": {
 						"validValues": [
 							{
-								"label": "small",
-								"value": "btn-sm"
+								"label": "Small",
+								"value": "small"
 							},
 							{
-								"label": "medium",
-								"value": ""
+								"label": "Medium",
+								"value": "medium"
 							},
 							{
-								"label": "large",
-								"value": "btn-lg"
+								"label": "Large",
+								"value": "large"
 							}
 						]
 					}
@@ -75,14 +28,64 @@
 				{
 					"dataType": "string",
 					"defaultValue": false,
-					"label": "inverted",
+					"label": "Inverted",
 					"name": "inverted",
 					"type": "checkbox"
 				},
 				{
 					"dataType": "string",
+					"defaultValue": "primary",
+					"label": "Style",
+					"name": "style",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"label": "Netral",
+								"value": "neutral"
+							},
+							{
+								"label": "Primary",
+								"value": "primary"
+							},
+							{
+								"label": "Secondary",
+								"value": "secondary"
+							}
+						]
+					}
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "solid",
+					"label": "Type",
+					"name": "type",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"label": "Borderless",
+								"value": "borderless"
+							},
+							{
+								"label": "Ghost",
+								"value": "ghost"
+							},
+							{
+								"label": "Rounded",
+								"value": "rounded"
+							},
+							{
+								"label": "Solid",
+								"value": "solid"
+							}
+						]
+					}
+				},
+				{
+					"dataType": "string",
 					"defaultValue": false,
-					"label": "uppercase",
+					"label": "Uppercase",
 					"name": "uppercase",
 					"type": "checkbox"
 				}

@@ -41,7 +41,7 @@ export class PagesAdminPage {
 		});
 		this.newButton = page
 			.locator('.management-bar')
-			.getByRole('button', {name: 'New'});
+			.getByText('New', {exact: true});
 		this.pageEditorPage = new PageEditorPage(this.page);
 		this.pageTitleBox = addPageIFrame.locator(
 			'input[id="_com_liferay_layout_admin_web_portlet_GroupPagesPortlet_name"]'
@@ -132,61 +132,6 @@ export class PagesAdminPage {
 		await this.configurationSaveButton.click();
 	}
 
-	async addCollectionPage({
-		collectionName,
-		draft = false,
-		name,
-		parent,
-	}: {
-		collectionName: string;
-		draft?: boolean;
-		name: string;
-		parent?: string;
-	}) {
-
-		// If no parent specified, just create from toolbar
-
-		if (!parent) {
-			await this.newButton.click();
-
-			await this.page
-				.getByRole('menuitem')
-				.getByText('Collection Page', {exact: true})
-				.click();
-		}
-
-		// If parent is specified, create child page
-
-		else {
-			await clickAndExpectToBeVisible({
-				autoClick: true,
-				target: this.page.getByRole('menuitem', {
-					name: 'Add Collection Page',
-				}),
-				trigger: this.page
-					.locator('li', {has: this.page.getByText(parent)})
-					.getByTitle('Add Child Page'),
-			});
-		}
-
-		await this.page
-			.getByRole('button')
-			.filter({hasText: collectionName})
-			.click();
-
-		// Select template and fill name
-
-		await this.addPage({
-			name,
-		});
-
-		// Publish is draft param is false
-
-		if (!draft) {
-			await this.pageEditorPage.publishPage();
-		}
-	}
-
 	async addPage({
 		name,
 		template = 'Blank',
@@ -238,15 +183,8 @@ export class PagesAdminPage {
 		await this.configurationSaveButton.click();
 	}
 
-	async addWidgetPage({
-		addButtonLabel = 'Page',
-		name,
-	}: {
-		addButtonLabel?: string;
-		name: string;
-	}) {
+	async addWidgetPage({name}: {name: string}) {
 		await this.createNewPage({
-			addButtonLabel,
 			draft: true,
 			name,
 			template: 'Widget Page',
@@ -356,13 +294,11 @@ export class PagesAdminPage {
 	}
 
 	async createNewPage({
-		addButtonLabel = 'Page',
 		draft = false,
 		name,
 		parent,
 		template,
 	}: {
-		addButtonLabel?: string;
 		draft?: boolean;
 		name: string;
 		parent?: string;
@@ -373,23 +309,15 @@ export class PagesAdminPage {
 
 		if (!parent) {
 			await this.newButton.click();
-
-			await this.page
-				.getByRole('menuitem')
-				.getByText(addButtonLabel, {exact: true})
-				.click();
 		}
 
 		// If parent is specified, create child page
 
 		else {
-			await clickAndExpectToBeVisible({
-				autoClick: true,
-				target: this.page.getByRole('menuitem', {name: 'Add Page'}),
-				trigger: this.page
-					.locator('li', {has: this.page.getByText(parent)})
-					.getByTitle('Add Child Page'),
-			});
+			this.page
+				.locator('li', {has: this.page.getByText(parent)})
+				.getByTitle('Add Child Page')
+				.click();
 		}
 
 		// Select template and fill name
@@ -447,11 +375,6 @@ export class PagesAdminPage {
 
 	async gotoSelectTemplates(templateSetName: string) {
 		await this.newButton.click();
-
-		await this.page
-			.getByRole('menuitem')
-			.getByText('Page', {exact: true})
-			.click();
 
 		await this.page
 			.getByRole('menuitem')

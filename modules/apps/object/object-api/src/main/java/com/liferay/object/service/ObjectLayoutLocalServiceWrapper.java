@@ -385,6 +385,14 @@ public class ObjectLayoutLocalServiceWrapper
 			objectDefinitionId);
 	}
 
+	@Override
+	public java.util.Map
+		<Long, java.util.List<com.liferay.object.model.ObjectLayout>>
+			getObjectLayoutsMap(long companyId) {
+
+		return _objectLayoutLocalService.getObjectLayoutsMap(companyId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *

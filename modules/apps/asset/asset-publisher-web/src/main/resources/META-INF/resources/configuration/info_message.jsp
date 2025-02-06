@@ -15,7 +15,7 @@ String portletResource = ParamUtil.getString(request, "portletResource");
 	<liferay-ui:message key="this-widget-has-been-updated-to-a-new-version" />
 
 	<liferay-learn:message
-		key="read-more-about-asset-publisher-changes"
+		key="asset-publisher-changes"
 		resource="asset-publisher-web"
 	/>
 

@@ -35,9 +35,13 @@ import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.odata.filter.ExpressionConvert;
 import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.odata.sort.SortParserProvider;
+import com.liferay.portal.vulcan.fields.NestedFieldsContext;
+import com.liferay.portal.vulcan.fields.NestedFieldsContextThreadLocal;
+import com.liferay.portal.vulcan.util.NestedFieldsContextUtil;
 
 import java.io.Serializable;
 
@@ -132,10 +136,23 @@ public class BatchEngineExportTaskExecutorImpl
 		Map<String, Serializable> parameters = _getParameters(
 			batchEngineExportTask);
 
+		NestedFieldsContext oldNestedFieldsContext = null;
+
 		try (BatchEngineExportTaskItemWriter batchEngineExportTaskItemWriter =
 				_getBatchEngineExportTaskItemWriter(
 					batchEngineExportTask, parameters,
 					unsyncByteArrayOutputStream)) {
+
+			oldNestedFieldsContext =
+				NestedFieldsContextThreadLocal.getNestedFieldsContext();
+
+			NestedFieldsContextThreadLocal.setNestedFieldsContext(
+				new NestedFieldsContext(
+					NestedFieldsContextUtil.limitDepth(
+						GetterUtil.getInteger(
+							parameters.get("batchNestedFieldsDepth"))),
+					NestedFieldsContextUtil.toList(
+						MapUtil.getString(parameters, "batchNestedFields"))));
 
 			int exportBatchSize = _getExportBatchSize(
 				batchEngineExportTask.getCompanyId());
@@ -183,6 +200,10 @@ public class BatchEngineExportTaskExecutorImpl
 
 				items = page.getItems();
 			}
+		}
+		finally {
+			NestedFieldsContextThreadLocal.setNestedFieldsContext(
+				oldNestedFieldsContext);
 		}
 
 		byte[] content = unsyncByteArrayOutputStream.toByteArray();

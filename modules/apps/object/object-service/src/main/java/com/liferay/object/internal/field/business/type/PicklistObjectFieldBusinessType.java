@@ -21,7 +21,6 @@ import com.liferay.object.model.ObjectFieldSetting;
 import com.liferay.object.model.ObjectState;
 import com.liferay.object.model.ObjectStateFlow;
 import com.liferay.object.rest.dto.v1_0.ListEntry;
-import com.liferay.object.service.ObjectFieldSettingLocalService;
 import com.liferay.object.service.ObjectStateFlowLocalService;
 import com.liferay.object.service.ObjectStateLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -35,6 +34,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.vulcan.extension.PropertyDefinition;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -82,6 +82,29 @@ public class PicklistObjectFieldBusinessType
 	}
 
 	@Override
+	public Map<String, Object> getLocalizedValues(
+			ObjectField objectField, Long userId, Map<String, Object> values)
+		throws PortalException {
+
+		Map<String, Object> localizedValues =
+			ObjectFieldBusinessType.super.getLocalizedValues(
+				objectField, userId, values);
+
+		if (localizedValues == null) {
+			return null;
+		}
+
+		for (Map.Entry<String, Object> entry : localizedValues.entrySet()) {
+			localizedValues.put(
+				entry.getKey(),
+				_getValue(
+					objectField.getName(), entry.getValue(), new HashMap<>()));
+		}
+
+		return localizedValues;
+	}
+
+	@Override
 	public String getName() {
 		return ObjectFieldConstants.BUSINESS_TYPE_PICKLIST;
 	}
@@ -103,9 +126,9 @@ public class PicklistObjectFieldBusinessType
 
 				localizedValue.addString(
 					objectFieldRenderingContext.getLocale(),
-					ObjectFieldSettingUtil.getDefaultValueAsString(
-						null, objectField, _objectFieldSettingLocalService,
-						null));
+					String.valueOf(
+						ObjectFieldSettingUtil.getDefaultValue(
+							null, objectField, null)));
 
 				return localizedValue;
 			}
@@ -135,21 +158,15 @@ public class PicklistObjectFieldBusinessType
 			ObjectField objectField, long userId, Map<String, Object> values)
 		throws PortalException {
 
-		Object value = values.get(objectField.getName());
+		return _getValue(
+			objectField.getName(),
+			ObjectFieldBusinessType.super.getValue(objectField, userId, values),
+			values);
+	}
 
-		if (value instanceof ListEntry) {
-			ListEntry listEntry = (ListEntry)value;
-
-			values.put(objectField.getName(), listEntry.getKey());
-		}
-		else if (value instanceof Map) {
-			values.put(
-				objectField.getName(),
-				MapUtil.getString((Map<String, String>)value, "key"));
-		}
-
-		return ObjectFieldBusinessType.super.getValue(
-			objectField, userId, values);
+	@Override
+	public boolean isLocalizable() {
+		return true;
 	}
 
 	@Override
@@ -277,8 +294,8 @@ public class PicklistObjectFieldBusinessType
 				objectField.getListTypeDefinitionId());
 		}
 
-		String listEntryKey = ObjectFieldSettingUtil.getDefaultValueAsString(
-			null, objectField, _objectFieldSettingLocalService, null);
+		String listEntryKey = String.valueOf(
+			ObjectFieldSettingUtil.getDefaultValue(null, objectField, null));
 
 		if (MapUtil.isNotEmpty(objectFieldRenderingContext.getProperties())) {
 			ListEntry listEntry =
@@ -323,14 +340,32 @@ public class PicklistObjectFieldBusinessType
 		return listTypeEntries;
 	}
 
+	private Object _getValue(
+		String objectFieldName, Object value, Map<String, Object> values) {
+
+		if (value instanceof ListEntry) {
+			ListEntry listEntry = (ListEntry)value;
+
+			values.put(objectFieldName, listEntry.getKey());
+
+			return listEntry.getKey();
+		}
+		else if (value instanceof Map) {
+			String key = MapUtil.getString((Map<String, String>)value, "key");
+
+			values.put(objectFieldName, key);
+
+			return key;
+		}
+
+		return value;
+	}
+
 	@Reference
 	private Language _language;
 
 	@Reference
 	private ListTypeEntryLocalService _listTypeEntryLocalService;
-
-	@Reference
-	private ObjectFieldSettingLocalService _objectFieldSettingLocalService;
 
 	@Reference
 	private ObjectStateFlowLocalService _objectStateFlowLocalService;

@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.messaging.Message;
-import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.scheduler.SchedulerEngine;
 import com.liferay.portal.kernel.scheduler.StorageType;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
@@ -40,8 +39,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -100,17 +98,13 @@ public class DBPartitionUtilTest extends BaseDBPartitionTestCase {
 	public void testAccessDefaultCompanyByCompanyThreadLocal()
 		throws SQLException {
 
-		long currentCompanyId = CompanyThreadLocal.getCompanyId();
-
-		CompanyThreadLocal.setCompanyId(portal.getDefaultCompanyId());
-
-		try (Connection connection = DataAccess.getConnection();
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					portal.getDefaultCompanyId());
+			Connection connection = DataAccess.getConnection();
 			Statement statement = connection.createStatement()) {
 
 			statement.execute("select 1 from CompanyInfo");
-		}
-		finally {
-			CompanyThreadLocal.setCompanyId(currentCompanyId);
 		}
 	}
 
@@ -375,30 +369,25 @@ public class DBPartitionUtilTest extends BaseDBPartitionTestCase {
 
 	@Test
 	public void testForEachCompanyId() throws Exception {
+		boolean originalDatabasePartitionThreadPoolEnabled =
+			ReflectionTestUtil.getFieldValue(
+				DBPartitionUtil.class,
+				"_DATABASE_PARTITION_THREAD_POOL_ENABLED");
+
 		try {
 			addDBPartitions();
 
 			insertPartitionRequiredData();
 
-			Set<Long> companyIds = new ConcurrentSkipListSet<>();
-
-			CompanyThreadLocal.setCompanyId(CompanyConstants.SYSTEM);
-
-			DBPartitionUtil.forEachCompanyId(
-				companyId -> {
-					Assert.assertEquals(
-						companyId, CompanyThreadLocal.getCompanyId());
-
-					Assert.assertTrue(CompanyThreadLocal.isLocked());
-
-					companyIds.add(companyId);
-				});
-
-			Assert.assertEquals(
-				companyIds.toString(), _getDefaultSchemaCount("Company"),
-				companyIds.size());
+			_testForEachCompanyId(false);
+			_testForEachCompanyId(true);
 		}
 		finally {
+			ReflectionTestUtil.setFieldValue(
+				DBPartitionUtil.class,
+				"_DATABASE_PARTITION_THREAD_POOL_ENABLED",
+				originalDatabasePartitionThreadPoolEnabled);
+
 			deletePartitionRequiredData();
 			removeDBPartitions();
 		}
@@ -606,6 +595,35 @@ public class DBPartitionUtilTest extends BaseDBPartitionTestCase {
 		_schedulerEngine.schedule(
 			trigger, StringPool.BLANK, _JOB_GROUP_NAME, message,
 			StorageType.PERSISTED);
+	}
+
+	private void _testForEachCompanyId(
+			boolean databasePartitionThreadPoolEnabled)
+		throws Exception {
+
+		ReflectionTestUtil.setFieldValue(
+			DBPartitionUtil.class, "_DATABASE_PARTITION_THREAD_POOL_ENABLED",
+			databasePartitionThreadPoolEnabled);
+
+		List<Long> companyIds = new CopyOnWriteArrayList<>();
+
+		DBPartitionUtil.forEachCompanyId(
+			companyId -> {
+				Assert.assertEquals(
+					companyId, CompanyThreadLocal.getCompanyId());
+
+				Assert.assertTrue(CompanyThreadLocal.isLocked());
+
+				companyIds.add(companyId);
+			});
+
+		Assert.assertEquals(
+			companyIds.toString(), _getDefaultSchemaCount("Company"),
+			companyIds.size());
+
+		Assert.assertEquals(
+			companyIds.toString(),
+			(Long)PortalInstancePool.getDefaultCompanyId(), companyIds.get(0));
 	}
 
 	private static final String _JOB_GROUP_NAME = "liferay/test";

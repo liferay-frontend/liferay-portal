@@ -3,10 +3,18 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {
+	ObjectActionApi,
+	ObjectDefinitionApi,
+	ObjectField,
+} from '@liferay/object-admin-rest-client-js';
 import {expect, mergeTests} from '@playwright/test';
 
-import {apiHelpersTest} from '../../fixtures/apiHelpersTest';
+import {applicationsMenuPageTest} from '../../fixtures/applicationsMenuPageTest';
+import {dataApiHelpersTest} from '../../fixtures/dataApiHelpersTest';
 import {displayPageTemplatesPagesTest} from '../../fixtures/displayPageTemplatesPagesTest';
+import {featureFlagsTest} from '../../fixtures/featureFlagsTest';
+import {isolatedSiteTest} from '../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../fixtures/pageEditorPagesTest';
 import {pageManagementSiteTest} from '../../fixtures/pageManagementSiteTest';
@@ -14,18 +22,26 @@ import {ApiHelpers} from '../../helpers/ApiHelpers';
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../utils/getRandomString';
 import {getWebContentStructureId} from '../../utils/structured-content/getBasicWebContentStructureId';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {pagesPagesTest} from '../layout-admin-web/fixtures/pagesPagesTest';
 import {
 	ANIMAL_01_FRIENDLY_URL,
 	ANIMAL_DDM_STRUCTURE_KEY,
 } from '../setup/page-management-site/constants/animals';
+import {getObjectERC} from '../setup/page-management-site/utils/getObjectERC';
+import {goToObjectEntity} from '../setup/page-management-site/utils/goToObjectEntity';
 
 const test = mergeTests(
-	apiHelpersTest,
+	applicationsMenuPageTest,
+	dataApiHelpersTest,
 	displayPageTemplatesPagesTest,
+	featureFlagsTest({
+		'LPD-18221': {enabled: true},
+	}),
 	pageEditorPagesTest,
 	loginTest(),
 	pageManagementSiteTest,
+	isolatedSiteTest,
 	pagesPagesTest
 );
 
@@ -102,7 +118,7 @@ test.describe('General', () => {
 		await pageEditorPage.addFragment(
 			'Basic Components',
 			'Image',
-			page.locator('.page-editor__collection-item.empty').last()
+			page.locator('.page-editor__collection-item.empty').first()
 		);
 
 		// Map editable to image field
@@ -715,6 +731,784 @@ test.describe('Preview Item', () => {
 					timeout: 100,
 				});
 			}).toPass();
+		}
+	);
+});
+
+test.describe('Object Display page', () => {
+	test(
+		'Can display relationship element in display page',
+		{tag: '@LPS-191554'},
+		async ({
+			apiHelpers,
+			displayPageTemplatesPage,
+			page,
+			pageEditorPage,
+			pageManagementSite,
+		}) => {
+
+			// Create DPT for Lemon Basket
+
+			await displayPageTemplatesPage.goto(
+				pageManagementSite.friendlyUrlPath
+			);
+
+			const displayPageTemplateName = getRandomString();
+
+			await displayPageTemplatesPage.createTemplate({
+				contentType: 'Lemon Basket',
+				name: displayPageTemplateName,
+			});
+
+			await displayPageTemplatesPage.editTemplate(
+				displayPageTemplateName
+			);
+
+			// Add a collection display fragment with related collection provider
+
+			await pageEditorPage.addFragment(
+				'Content Display',
+				'Collection Display'
+			);
+
+			await pageEditorPage.chooseCollectionDisplayOption(
+				'Related Items Collection Providers',
+				'Lemon Basket to Lemon'
+			);
+
+			await pageEditorPage.addFragment(
+				'Basic Components',
+				'Heading',
+				page.locator('.page-editor__collection-item.empty').first()
+			);
+
+			// Map editable to field
+
+			const headingFragmentId =
+				await pageEditorPage.getFragmentId('Heading');
+
+			await pageEditorPage.selectEditable(
+				headingFragmentId,
+				'element-text'
+			);
+
+			await page.getByLabel('Field').selectOption('Lemon History');
+
+			await displayPageTemplatesPage.publishTemplate();
+
+			// Create a lemon basket and lemons
+
+			const lemonBasket = await apiHelpers.objectEntry.postObjectEntry(
+				{
+					lemonDimensions: ['large'],
+					material: 'plastic',
+				},
+				'c/lemonbaskets',
+				pageManagementSite.key
+			);
+
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					lemonHistory: 'one',
+					lemonSize: 'lemonSize',
+					lemonWeight: 5,
+					r_lemonBasketToLemons_c_lemonBasketId: lemonBasket.id,
+				},
+				'c/lemons',
+				pageManagementSite.key
+			);
+
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					lemonHistory: 'two',
+					lemonSize: 'lemonSize',
+					lemonWeight: 5,
+					r_lemonBasketToLemons_c_lemonBasketId: lemonBasket.id,
+				},
+				'c/lemons',
+				pageManagementSite.key
+			);
+
+			// Go to lemon basket display page
+
+			const objectDefinitionApiClient =
+				await apiHelpers.buildRestClient(ObjectDefinitionApi);
+
+			const {className: objectDefinitionClassName} = (
+				await objectDefinitionApiClient.getObjectDefinitionByExternalReferenceCode(
+					getObjectERC('Lemon Basket')
+				)
+			).body;
+
+			const className =
+				await apiHelpers.jsonWebServicesClassName.fetchClassName(
+					objectDefinitionClassName
+				);
+
+			await page.goto(
+				`/web${pageManagementSite.friendlyUrlPath}/e/${displayPageTemplateName}/${className.classNameId}/${lemonBasket.id}`
+			);
+
+			// Assert collection contains all lemons
+
+			await expect(page.getByText('one')).toBeVisible();
+			await expect(page.getByText('two')).toBeVisible();
+		}
+	);
+
+	test(
+		'Can map an object action',
+		{tag: '@LPS-165556'},
+		async ({
+			apiHelpers,
+			applicationsMenuPage,
+			displayPageTemplatesPage,
+			page,
+			pageEditorPage,
+			site,
+		}) => {
+
+			// Create ticket object definition
+
+			const objectDefinitionAPIClient =
+				await apiHelpers.buildRestClient(ObjectDefinitionApi);
+
+			const {body: ticketObjectDefinition} =
+				await objectDefinitionAPIClient.postObjectDefinition({
+					active: true,
+					externalReferenceCode: 'ticketERC',
+					label: {
+						en_US: 'Ticket',
+					},
+					name: 'Ticket',
+					objectFields: [
+						{
+							DBType: ObjectField.DBTypeEnum.String,
+							businessType: ObjectField.BusinessTypeEnum.Text,
+							externalReferenceCode: 'textERC',
+							indexed: true,
+							indexedAsKeyword: false,
+							label: {
+								en_US: 'Text',
+							},
+							localized: false,
+							name: 'text',
+							required: false,
+						},
+					],
+					panelCategoryKey: 'control_panel.users',
+					pluralLabel: {
+						en_US: 'Tickets',
+					},
+					scope: 'company',
+					status: {
+						code: 0,
+					},
+				});
+
+			apiHelpers.data.push({
+				id: ticketObjectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			// Add object entry
+
+			const applicationName =
+				'c/' + ticketObjectDefinition.name.toLowerCase() + 's';
+
+			const ticketObjectEntry =
+				await apiHelpers.objectEntry.postObjectEntry(
+					{
+						text: 'text1',
+					},
+					applicationName
+				);
+
+			// Add object action
+
+			const objectActionApiClient =
+				await apiHelpers.buildRestClient(ObjectActionApi);
+
+			await objectActionApiClient.postObjectDefinitionByExternalReferenceCodeObjectAction(
+				ticketObjectDefinition.externalReferenceCode,
+				{
+					active: true,
+					errorMessage: {
+						en_US: 'The location should be Canary Islands.',
+					},
+					label: {
+						en_US: 'addObjectEntryName',
+					},
+					name: 'addObjectEntryName',
+					objectActionExecutorKey: 'add-object-entry',
+					objectActionTriggerKey: 'standalone',
+					parameters: {
+						objectDefinitionExternalReferenceCode:
+							ticketObjectDefinition.externalReferenceCode,
+						predefinedValues: [
+							{
+								businessType: 'Text',
+								inputAsValue: true,
+								label: {
+									en_US: 'Text',
+								},
+								name: 'text',
+								value: 'sample text',
+							},
+						],
+					},
+					system: false,
+				}
+			);
+
+			// Add display page template
+
+			const className =
+				await apiHelpers.jsonWebServicesClassName.fetchClassName(
+					ticketObjectDefinition.className
+				);
+
+			const displayPageTemplateName = getRandomString();
+
+			const displayPage =
+				await apiHelpers.jsonWebServicesLayoutPageTemplateEntry.addDisplayPageLayoutPageTemplateEntry(
+					{
+						classNameId: className.classNameId,
+						groupId: site.id,
+						name: displayPageTemplateName,
+					}
+				);
+
+			await apiHelpers.jsonWebServicesLayoutPageTemplateEntry.markAsDefaultDisplayPageLayoutPageTemplateEntry(
+				{
+					layoutPageTemplateEntryId:
+						displayPage.layoutPageTemplateEntryId,
+				}
+			);
+
+			// Add button and configure it to execute action
+
+			displayPageTemplatesPage.goto(site.friendlyUrlPath);
+
+			displayPageTemplatesPage.editTemplate(displayPageTemplateName);
+
+			await pageEditorPage.addFragment('Basic Components', 'Button');
+
+			const buttonId = await pageEditorPage.getFragmentId('Button');
+
+			await pageEditorPage.changeFragmentConfiguration({
+				fieldLabel: 'Type',
+				fragmentId: buttonId,
+				tab: 'General',
+				value: 'Action',
+			});
+
+			await pageEditorPage.selectEditable(buttonId, 'action');
+
+			await pageEditorPage.changeConfiguration({
+				fieldLabel: 'Action',
+				tab: 'Action',
+				value: 'addObjectEntryName',
+			});
+
+			await pageEditorPage.changeConfiguration({
+				fieldLabel: 'Success Interaction',
+				tab: 'Action',
+				value: 'Show Notification',
+			});
+
+			// Publish display page template
+
+			await displayPageTemplatesPage.publishTemplate();
+
+			// Go to display page and execute action
+
+			await page.goto(
+				`/web${site.friendlyUrlPath}/e/${displayPageTemplateName}/${className.classNameId}/${ticketObjectEntry.id}`
+			);
+
+			// Wait for action button to be ready
+
+			await page.waitForTimeout(1000);
+
+			// Execute action
+
+			await page.getByRole('button', {name: 'Go somewhere'}).click();
+
+			await waitForAlert(page);
+
+			// Check object entry was created
+
+			await applicationsMenuPage.goToControlPanel();
+
+			page.getByRole('menuitem', {
+				exact: true,
+				name: 'Tickets',
+			}).click();
+
+			await expect(page.getByText('sample text')).toBeVisible();
+		}
+	);
+
+	test(
+		'Can edit one field from an object in a display page',
+		{
+			tag: '@LPS-191389',
+		},
+		async ({
+			apiHelpers,
+			displayPageTemplatesPage,
+			page,
+			pageEditorPage,
+			pageManagementSite,
+		}) => {
+
+			// Create a default display page for lemon object
+
+			const objectDefinitionApiClient =
+				await apiHelpers.buildRestClient(ObjectDefinitionApi);
+
+			const {className: objectDefinitionClassName} = (
+				await objectDefinitionApiClient.getObjectDefinitionByExternalReferenceCode(
+					getObjectERC('Lemon')
+				)
+			).body;
+
+			const className =
+				await apiHelpers.jsonWebServicesClassName.fetchClassName(
+					objectDefinitionClassName
+				);
+
+			const displayPageTemplateName = getRandomString();
+
+			await apiHelpers.jsonWebServicesLayoutPageTemplateEntry.addDisplayPageLayoutPageTemplateEntry(
+				{
+					classNameId: className.classNameId,
+					groupId: pageManagementSite.id,
+					name: displayPageTemplateName,
+				}
+			);
+
+			// Edit display page template and add a form container when only one field
+
+			displayPageTemplatesPage.goto(pageManagementSite.friendlyUrlPath);
+
+			displayPageTemplatesPage.editTemplate(displayPageTemplateName);
+
+			await pageEditorPage.addFragment(
+				'Form Components',
+				'Form Container'
+			);
+
+			await pageEditorPage.mapFormFragment(
+				await pageEditorPage.getFragmentId('Form Container'),
+				'Lemon (Default)',
+				['Lemon Size']
+			);
+
+			await displayPageTemplatesPage.publishTemplate();
+
+			// Create a lemon object entry
+
+			const lemonObjectEntry =
+				await apiHelpers.objectEntry.postObjectEntry(
+					{
+						lemonHistory: 'one',
+						lemonSize: 'lemonSize',
+						lemonWeight: 5,
+					},
+					'c/lemons',
+					pageManagementSite.key
+				);
+
+			await page.goto(
+				`/web${pageManagementSite.friendlyUrlPath}/e/${displayPageTemplateName}/${className.classNameId}/${lemonObjectEntry.id}`
+			);
+
+			// Edit only the lemon size field
+
+			await page
+				.getByLabel('Lemon Size', {exact: true})
+				.fill('lemonSize2');
+
+			await page.getByRole('button', {name: 'Submit'}).click();
+
+			// Go to admin and check that only lemon size was updated
+
+			goToObjectEntity({
+				entityName: 'Lemon',
+				page,
+			});
+
+			const row = page.locator('.fds tbody tr').first();
+
+			await expect(row).toContainText('one');
+			await expect(row).toContainText('lemonSize2');
+			await expect(row).toContainText('5');
+		}
+	);
+
+	test(
+		'Can map object attachment to image fragment',
+		{
+			tag: '@LPS-182999',
+		},
+		async ({
+			apiHelpers,
+			displayPageTemplatesPage,
+			page,
+			pageEditorPage,
+			site,
+		}) => {
+
+			// Create object definition with attachment field
+
+			const objectDefinitionApiClient =
+				await apiHelpers.buildRestClient(ObjectDefinitionApi);
+
+			const {body: objectDefinition} =
+				await objectDefinitionApiClient.postObjectDefinition({
+					active: true,
+					externalReferenceCode: 'attachmentERC',
+					label: {
+						en_US: 'Attachment',
+					},
+					name: 'Attachment',
+					objectFields: [
+						{
+							DBType: ObjectField.DBTypeEnum.Long,
+							businessType:
+								ObjectField.BusinessTypeEnum.Attachment,
+							indexed: true,
+							indexedAsKeyword: false,
+							label: {
+								en_US: 'customAttachment',
+							},
+							name: 'customAttachment',
+							objectFieldSettings: [
+								{
+									name: 'acceptedFileExtensions',
+									value: 'jpeg, jpg, pdf, png',
+								} as any,
+								{
+									name: 'fileSource',
+									value: 'documentsAndMedia',
+								} as any,
+								{
+									name: 'maximumFileSize',
+									value: '100',
+								} as any,
+							],
+							required: false,
+							type: ObjectField.TypeEnum.Long,
+						},
+					],
+					pluralLabel: {
+						en_US: 'Attachments',
+					},
+					scope: 'company',
+					status: {
+						code: 0,
+					},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			// Create a default display page
+
+			const {className: objectDefinitionClassName} = (
+				await objectDefinitionApiClient.getObjectDefinitionByExternalReferenceCode(
+					objectDefinition.externalReferenceCode
+				)
+			).body;
+
+			const className =
+				await apiHelpers.jsonWebServicesClassName.fetchClassName(
+					objectDefinitionClassName
+				);
+
+			const displayPageTemplateName = getRandomString();
+
+			await apiHelpers.jsonWebServicesLayoutPageTemplateEntry.addDisplayPageLayoutPageTemplateEntry(
+				{
+					classNameId: className.classNameId,
+					groupId: site.id,
+					name: displayPageTemplateName,
+				}
+			);
+
+			// Edit display display page and map image fragment to attachment field
+
+			displayPageTemplatesPage.goto(site.friendlyUrlPath);
+
+			displayPageTemplatesPage.editTemplate(displayPageTemplateName);
+
+			await pageEditorPage.addFragment('Basic Components', 'Image');
+
+			await pageEditorPage.selectEditable(
+				await pageEditorPage.getFragmentId('Image'),
+				'image-square'
+			);
+
+			await page.getByLabel('Source Selection').selectOption('Mapping');
+
+			await pageEditorPage.setMappingConfiguration({
+				mapping: {field: 'Preview URL'},
+				source: 'structure',
+			});
+
+			await displayPageTemplatesPage.publishTemplate();
+
+			// Create an object with attachment
+
+			const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+				{
+					customAttachment: {
+						fileBase64: 'R0lGODlhAQABAAAAACw=',
+						name: 'attachment.png',
+					},
+				},
+				'c/attachments'
+			);
+
+			apiHelpers.data.push({
+				id: objectEntry.customAttachment.id,
+				type: 'document',
+			});
+
+			// Check that the mapping is working
+
+			await page.goto(
+				`/web${site.friendlyUrlPath}/e/${displayPageTemplateName}/${className.classNameId}/${objectEntry.id}`
+			);
+
+			expect(
+				await page.locator('.component-image img').getAttribute('src')
+			).toContain('attachment.png');
+		}
+	);
+
+	test(
+		'Can edit values in display page',
+		{
+			tag: '@LPS-182999',
+		},
+		async ({
+			apiHelpers,
+			displayPageTemplatesPage,
+			page,
+			pageEditorPage,
+			site,
+		}) => {
+
+			// Create list definitions
+
+			const genrePicklist =
+				await apiHelpers.listTypeAdmin.postRandomListTypeDefinition();
+
+			await apiHelpers.listTypeAdmin.postListTypeEntry(
+				genrePicklist.externalReferenceCode,
+				'horror'
+			);
+
+			await apiHelpers.listTypeAdmin.postListTypeEntry(
+				genrePicklist.externalReferenceCode,
+				'musical'
+			);
+
+			await apiHelpers.listTypeAdmin.postListTypeEntry(
+				genrePicklist.externalReferenceCode,
+				'thriller'
+			);
+
+			apiHelpers.data.push({
+				id: genrePicklist.id,
+				type: 'listTypeDefinition',
+			});
+
+			const originPicklist =
+				await apiHelpers.listTypeAdmin.postRandomListTypeDefinition();
+
+			await apiHelpers.listTypeAdmin.postListTypeEntry(
+				originPicklist.externalReferenceCode,
+				'hollywood'
+			);
+
+			await apiHelpers.listTypeAdmin.postListTypeEntry(
+				originPicklist.externalReferenceCode,
+				'bollywood'
+			);
+
+			apiHelpers.data.push({
+				id: originPicklist.id,
+				type: 'listTypeDefinition',
+			});
+
+			// Create object definition
+
+			const objectDefinitionApiClient =
+				await apiHelpers.buildRestClient(ObjectDefinitionApi);
+
+			const {body: objectDefinition} =
+				await objectDefinitionApiClient.postObjectDefinition({
+					active: true,
+					externalReferenceCode: 'filmERC',
+					label: {
+						en_US: 'Film',
+					},
+					name: 'Film',
+					objectFields: [
+						{
+							DBType: ObjectField.DBTypeEnum.String,
+							businessType:
+								ObjectField.BusinessTypeEnum
+									.MultiselectPicklist,
+							externalReferenceCode: 'genreERC',
+							indexed: true,
+							indexedAsKeyword: false,
+							label: {
+								en_US: 'Genre',
+							},
+							listTypeDefinitionExternalReferenceCode:
+								genrePicklist.externalReferenceCode,
+							name: 'genre',
+						},
+						{
+							DBType: ObjectField.DBTypeEnum.String,
+							businessType: ObjectField.BusinessTypeEnum.Picklist,
+							externalReferenceCode: 'originERC',
+							indexed: true,
+							indexedAsKeyword: false,
+							label: {
+								en_US: 'Origin',
+							},
+							listTypeDefinitionExternalReferenceCode:
+								originPicklist.externalReferenceCode,
+							name: 'origin',
+						},
+						{
+							DBType: ObjectField.DBTypeEnum.DateTime,
+							externalReferenceCode: 'releaseDateERC',
+							indexed: true,
+							indexedAsKeyword: false,
+							label: {
+								en_US: 'Release Date',
+							},
+							name: 'releaseDate',
+							objectFieldSettings: [
+								{
+									name: 'timeStorage',
+									value: {},
+								},
+							],
+						},
+					],
+					pluralLabel: {
+						en_US: 'Films',
+					},
+					scope: 'company',
+					status: {
+						code: 0,
+					},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			// Create a display page
+
+			const {className: objectDefinitionClassName} = (
+				await objectDefinitionApiClient.getObjectDefinitionByExternalReferenceCode(
+					objectDefinition.externalReferenceCode
+				)
+			).body;
+
+			const className =
+				await apiHelpers.jsonWebServicesClassName.fetchClassName(
+					objectDefinitionClassName
+				);
+
+			const displayPageTemplateName = getRandomString();
+
+			await apiHelpers.jsonWebServicesLayoutPageTemplateEntry.addDisplayPageLayoutPageTemplateEntry(
+				{
+					classNameId: className.classNameId,
+					groupId: site.id,
+					name: displayPageTemplateName,
+				}
+			);
+
+			// Edit display display page and add form container
+
+			displayPageTemplatesPage.goto(site.friendlyUrlPath);
+
+			displayPageTemplatesPage.editTemplate(displayPageTemplateName);
+
+			await pageEditorPage.addFragment(
+				'Form Components',
+				'Form Container'
+			);
+
+			await pageEditorPage.mapFormFragment(
+				await pageEditorPage.getFragmentId('Form Container'),
+				'Film (Default)'
+			);
+
+			await displayPageTemplatesPage.publishTemplate();
+
+			// Create an Object Entry
+
+			const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+				{
+					genre: ['horror', 'thriller'],
+					origin: 'hollywood',
+					releaseDate: '2025-01-10T17:26:00Z',
+				},
+				'c/films'
+			);
+
+			// Go to the display page and edit the values
+
+			await page.goto(
+				`/web${site.friendlyUrlPath}/e/${displayPageTemplateName}/${className.classNameId}/${objectEntry.id}`
+			);
+
+			await page.getByLabel('horror', {exact: true}).uncheck();
+
+			await page.locator('.select-from-list').getByRole('button').click();
+
+			await page.getByRole('option', {name: 'bollywood'}).click();
+
+			await page.getByLabel('Release Date').fill('2020-03-02T05:15');
+
+			await page.getByRole('button', {name: 'Submit'}).click();
+
+			// Check that the values were updated
+
+			await page.goto(
+				`/web${site.friendlyUrlPath}/e/${displayPageTemplateName}/${className.classNameId}/${objectEntry.id}`
+			);
+
+			await expect(
+				page.getByLabel('horror', {exact: true})
+			).not.toBeChecked();
+			await expect(
+				page.getByLabel('musical', {exact: true})
+			).not.toBeChecked();
+			await expect(
+				page.getByLabel('thriller', {exact: true})
+			).toBeChecked();
+
+			await expect(page.getByLabel('Origin')).toHaveValue('bollywood');
+
+			await expect(page.getByLabel('Release Date')).toHaveValue(
+				'2020-03-02T05:15'
+			);
 		}
 	);
 });

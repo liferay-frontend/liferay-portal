@@ -5,27 +5,26 @@
 
 import {Page} from '@playwright/test';
 
-import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
+import {AssetPublisherPage} from '../../../pages/asset-publisher-web/AssetPublisherPage';
+import {PageEditorPage} from '../../../pages/layout-content-page-editor-web/PageEditorPage';
 import getRandomString from '../../../utils/getRandomString';
 import {openFieldset} from '../../../utils/openFieldset';
-import {waitForAlert} from '../../../utils/waitForAlert';
 import getPageDefinition from '../../layout-content-page-editor-web/utils/getPageDefinition';
 import getWidgetDefinition from '../../layout-content-page-editor-web/utils/getWidgetDefinition';
 
 import type {ApiHelpers} from '../../../helpers/ApiHelpers';
-import type {PageEditorPage} from '../../../pages/layout-content-page-editor-web/PageEditorPage';
 
 export async function createAssetPublisherAndConfigure({
 	apiHelpers,
 	page,
-	pageEditorPage,
 	site,
 }: {
 	apiHelpers: ApiHelpers;
 	page: Page;
-	pageEditorPage: PageEditorPage;
 	site: Site;
 }) {
+	const assetPublisherPage = new AssetPublisherPage(page);
+	const pageEditorPage = new PageEditorPage(page);
 	const widgetId = getRandomString();
 
 	const widgetDefinition = getWidgetDefinition({
@@ -42,50 +41,19 @@ export async function createAssetPublisherAndConfigure({
 
 	await pageEditorPage.goto(layout, site.friendlyUrlPath);
 
-	const topper = pageEditorPage.getTopper(widgetId);
-	await topper.hover();
-	await clickAndExpectToBeVisible({
-		autoClick: true,
-		target: page.getByRole('menuitem', {
-			exact: true,
-			name: 'Configuration',
-		}),
-		trigger: topper.locator('.portlet-options'),
-	});
+	const configurationIframe = await assetPublisherPage.configurationIframe;
 
-	const configurationModal = await page.frameLocator(
-		'iframe[title*="Asset Publisher"][title*="Configuration"]'
-	);
-	await configurationModal.locator('.portlet-body').waitFor();
+	await pageEditorPage.goToWidgetConfiguration(widgetId);
+	await configurationIframe.locator('.portlet-body').waitFor();
 
-	const configurationDynamicInput = await configurationModal.getByLabel(
-		'Dynamic',
-		{exact: true}
-	);
-	if (await configurationDynamicInput.isHidden()) {
-		await configurationModal
-			.getByRole('link', {name: 'Asset Selection'})
-			.click();
-	}
-	if (!(await configurationDynamicInput.isChecked())) {
-		await configurationDynamicInput.click();
+	await assetPublisherPage.changeAssetSelection('Dynamic');
 
-		await waitForAlert(
-			configurationModal,
-			'Success:You have successfully updated the setup.'
-		);
-	}
-
-	await openFieldset(configurationModal, 'Source');
-	await configurationModal.getByLabel('Asset Type').selectOption({
+	await openFieldset(configurationIframe, 'Source');
+	await configurationIframe.getByLabel('Asset Type').selectOption({
 		label: 'Blogs Entry',
 	});
 
-	await configurationModal.getByRole('button', {name: 'Save'}).click();
-	await waitForAlert(
-		configurationModal,
-		'Success:You have successfully updated the setup.'
-	);
+	await assetPublisherPage.saveConfiguration();
 	await page.getByLabel('close', {exact: true}).click();
 
 	await pageEditorPage.publishPage();

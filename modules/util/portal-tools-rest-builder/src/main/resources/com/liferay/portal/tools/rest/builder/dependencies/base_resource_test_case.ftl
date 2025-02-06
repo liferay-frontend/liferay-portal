@@ -37,10 +37,17 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 </#if>
 
 <#assign
+	generatePermissionsJavaMethodSignatures = []
 	javaMethodSignatures = freeMarkerTool.getResourceTestCaseJavaMethodSignatures(configYAML, openAPIYAML, schemaName)
 
 	generateDepotEntry = freeMarkerTool.containsJavaMethodSignature(javaMethodSignatures, "AssetLibrary")
 />
+
+<#list javaMethodSignatures as javaMethodSignature>
+	<#if freeMarkerTool.isGeneratePermissions(configYAML, javaMethodSignature, javaMethodSignatures, schema, schemaName)>
+		<#assign generatePermissionsJavaMethodSignatures = generatePermissionsJavaMethodSignatures + [javaMethodSignature] />
+	</#if>
+</#list>
 
 <#if generateDepotEntry>
 	import com.liferay.depot.model.DepotEntry;
@@ -152,15 +159,27 @@ public abstract class Base${schemaName}ResourceTestCase {
 
 		com.liferay.portal.kernel.model.User testCompanyAdminUser = UserTestUtil.getAdminUser(testCompany.getCompanyId());
 
-		${schemaName}Resource.Builder builder = ${schemaName}Resource.builder();
-
-		${schemaVarName}Resource = builder.authentication(
+		${schemaVarName}Resource = ${schemaName}Resource.builder(
+		).authentication(
 			testCompanyAdminUser.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
 		).endpoint(
 			testCompany.getVirtualHostname(), 8080, "http"
 		).locale(
 			LocaleUtil.getDefault()
 		).build();
+
+		<#if (generatePermissionsJavaMethodSignatures?size > 0)>
+			permissions${schemaName}Resource = ${schemaName}Resource.builder(
+			).authentication(
+				testCompanyAdminUser.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
+			).endpoint(
+				testCompany.getVirtualHostname(), 8080, "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).parameter(
+				"nestedFields", "permissions"
+			).build();
+		</#if>
 	}
 
 	@After
@@ -627,6 +646,34 @@ public abstract class Base${schemaName}ResourceTestCase {
 						</#list>
 					));
 
+					<#if generatePermissionsJavaMethodSignatures?seq_contains(javaMethodSignature)>
+						for (${schemaName} ${schemaVarName} : page.getItems()) {
+							Assert.assertNull(${schemaVarName}.getPermissions());
+						}
+
+						page = permissions${schemaName}Resource.${javaMethodSignature.methodName}(
+
+						<#list javaMethodSignature.javaMethodParameters as javaMethodParameter>
+							<#if !javaMethodParameter?is_first>
+								,
+							</#if>
+
+							<#if stringUtil.equals(javaMethodParameter.parameterName, "pagination")>
+								Pagination.of(1, 10)
+							<#elseif freeMarkerTool.isPathParameter(javaMethodParameter, javaMethodSignature.operation)>
+								${javaMethodParameter.parameterName}
+							<#else>
+								null
+							</#if>
+						</#list>
+
+						);
+
+						for (${schemaName} ${schemaVarName} : page.getItems()) {
+							Assert.assertNotNull(${schemaVarName}.getPermissions());
+						}
+					</#if>
+
 					<#if freeMarkerTool.hasJavaMethodSignature(javaMethodSignatures, "delete" + schemaName)>
 						<#assign deleteJavaMethodSignature = freeMarkerTool.getJavaMethodSignature(javaMethodSignatures, "delete" + schemaName) />
 
@@ -661,7 +708,6 @@ public abstract class Base${schemaName}ResourceTestCase {
 						${javaMethodParameter.parameterType} ${javaMethodParameter.parameterName}<#sep>, </#sep>
 					</#list>
 				) throws Exception {
-
 					Map<String, Map<String, String>> expectedActions = new HashMap<>();
 
 					<#if (javaMethodSignature.pathJavaMethodParameters?size == 1) && freeMarkerTool.hasPath(javaMethodSignatures, javaMethodSignature.path + "/batch")>
@@ -1266,6 +1312,56 @@ public abstract class Base${schemaName}ResourceTestCase {
 
 					assertEquals(post${schemaName}, get${schemaName});
 					assertValid(get${schemaName});
+
+					<#if generatePermissionsJavaMethodSignatures?seq_contains(javaMethodSignature)>
+						Assert.assertNull(get${schemaName}.getPermissions());
+
+						get${schemaName} = permissions${schemaName}Resource.${javaMethodSignature.methodName}(
+
+						<#list javaMethodSignature.javaMethodParameters as javaMethodParameter>
+							<#if !javaMethodParameter?is_first>
+								,
+							</#if>
+
+							<#if stringUtil.equals(javaMethodParameter.parameterName, "pagination")>
+								Pagination.of(1, 2)
+							<#elseif freeMarkerTool.isPathParameter(javaMethodParameter, javaMethodSignature.operation)>
+								<#if stringUtil.equals(javaMethodParameter.parameterName, schemaVarName + "Id")>
+									post${schemaName}.getId()
+								<#elseif properties?keys?seq_contains(javaMethodParameter.parameterName)>
+									<#if freeMarkerTool.isParameterNameSchemaRelated(javaMethodParameter.parameterName, javaMethodSignature.path, schemaName)>
+										post${schemaName}.get${javaMethodParameter.parameterName?cap_first}()
+									<#else>
+										<#assign
+											addGetterMethod = true
+											defaultImplementationGetterMethod = true
+										/>
+									</#if>
+								<#else>
+									<#assign
+										addGetterMethod = true
+										defaultImplementationGetterMethod = false
+									/>
+								</#if>
+							<#else>
+								null
+							</#if>
+
+							<#if addGetterMethod>
+								<#if defaultImplementationGetterMethod>
+									test${javaMethodSignature.methodName?cap_first}_get${javaMethodParameter.parameterName?cap_first}(post${schemaName})
+								<#else>
+									test${javaMethodSignature.methodName?cap_first}_get${javaMethodParameter.parameterName?cap_first}()
+								</#if>
+
+								<#assign addGetterMethod = false />
+							</#if>
+						</#list>
+
+						);
+
+						Assert.assertNotNull(get${schemaName}.getPermissions());
+					</#if>
 				<#else>
 					Assert.assertTrue(false);
 				</#if>
@@ -1413,6 +1509,20 @@ public abstract class Base${schemaName}ResourceTestCase {
 					assertValid(post${schemaName}, multipartFiles);
 				</#if>
 
+				<#if generatePermissionsJavaMethodSignatures?seq_contains(javaMethodSignature)>
+					${schemaName} randomPermissions${schemaName}1 = randomPermissions${schemaName}();
+
+					${schemaName} postPermissions${schemaName}1 = test${javaMethodSignature.methodName?cap_first}_add${schemaName}(randomPermissions${schemaName}1);
+
+					Assert.assertNull(postPermissions${schemaName}1.getPermissions());
+
+					${schemaName} randomPermissions${schemaName}2 = randomPermissions${schemaName}();
+
+					${schemaName} postPermissions${schemaName}2 = test${javaMethodSignature.methodName?cap_first}_addPermissions${schemaName}(randomPermissions${schemaName}2);
+
+					Assert.assertNotNull(postPermissions${schemaName}2.getPermissions());
+				</#if>
+
 				<#if schema.discriminator?has_content>
 					<#assign discriminatorPropertyName = schema.discriminator.propertyName />
 
@@ -1483,6 +1593,30 @@ public abstract class Base${schemaName}ResourceTestCase {
 					throw new UnsupportedOperationException("This method needs to be implemented");
 				</#if>
 			}
+
+			<#if generatePermissionsJavaMethodSignatures?seq_contains(javaMethodSignature)>
+				protected ${schemaName} test${javaMethodSignature.methodName?cap_first}_addPermissions${schemaName}(${schemaName} ${schemaVarName}) throws Exception {
+					<#if (javaMethodSignature.pathJavaMethodParameters?size == 1)>
+						<#assign
+							firstPathJavaMethodParameter = javaMethodSignature.pathJavaMethodParameters[0]
+							modifiedPathJavaMethodParameterName = firstPathJavaMethodParameter.parameterName?remove_beginning("parent")?remove_ending("Id")?cap_first
+						/>
+
+						<#if freeMarkerTool.hasPostSchemaJavaMethodSignature(javaMethodSignatures, firstPathJavaMethodParameter.parameterName, schemaName) && stringUtil.equals(javaMethodSignature.methodName, "post" + modifiedPathJavaMethodParameterName + schemaName)>
+							<#if freeMarkerTool.isCollection(javaMethodSignature, javaMethodSignatures, modifiedPathJavaMethodParameterName + schemaNames)>
+								return permissions${schemaName}Resource.post${modifiedPathJavaMethodParameterName}${schemaName}(testGet${modifiedPathJavaMethodParameterName}${schemaNames}Page_get<#if stringUtil.startsWith(firstPathJavaMethodParameter.parameterName, "parent")>Parent</#if>${modifiedPathJavaMethodParameterName}Id(), ${schemaVarName}
+							<#else>
+								return permissions${schemaName}Resource.post${modifiedPathJavaMethodParameterName}${schemaName}(testGet${modifiedPathJavaMethodParameterName}${schemaName}_get${modifiedPathJavaMethodParameterName}Id(${schemaVarName})
+							</#if>
+							);
+						<#else>
+							throw new UnsupportedOperationException("This method needs to be implemented");
+						</#if>
+					<#else>
+						throw new UnsupportedOperationException("This method needs to be implemented");
+					</#if>
+				}
+			</#if>
 		<#elseif freeMarkerTool.hasHTTPMethod(javaMethodSignature, "put") && javaMethodSignature.methodName?contains("Permission")>
 			@Test
 			public void test${javaMethodSignature.methodName?cap_first}() throws Exception {
@@ -1604,6 +1738,10 @@ public abstract class Base${schemaName}ResourceTestCase {
 					assertEquals(random${schemaName}, put${schemaName});
 					assertValid(put${schemaName});
 
+					<#if generatePermissionsJavaMethodSignatures?seq_contains(javaMethodSignature)>
+						Assert.assertNull(put${schemaName}.getPermissions());
+					</#if>
+
 					${schemaName} get${schemaName} =
 
 					<#assign getJavaMethodSignature = javaMethodSignature.methodName?replace("put", "get", "f") />
@@ -1621,6 +1759,39 @@ public abstract class Base${schemaName}ResourceTestCase {
 
 					<#if freeMarkerTool.hasRequestBodyMediaType(javaMethodSignature, "multipart/form-data")>
 						assertValid(get${schemaName}, multipartFiles);
+					</#if>
+
+					<#if generatePermissionsJavaMethodSignatures?seq_contains(javaMethodSignature)>
+						${schemaName} randomPermissions${schemaName} = randomPermissions${schemaName}();
+
+						put${schemaName} = ${schemaVarName}Resource.${javaMethodSignature.methodName}(
+							<@getPutParameters
+								hasMultipartFiles = true
+								javaMethodSignature = javaMethodSignature
+								newSchemaVarNamePrefix = "randomPermissions"
+								schemaName = schemaName
+								schemaVarName = schemaVarName
+								schemaVarNamePrefix = "post"
+							/>
+						);
+
+						assertEquals(randomPermissions${schemaName}, put${schemaName});
+						assertValid(put${schemaName});
+
+						Assert.assertNull(put${schemaName}.getPermissions());
+
+						put${schemaName} = permissions${schemaName}Resource.${javaMethodSignature.methodName}(
+							<@getPutParameters
+								hasMultipartFiles = true
+								javaMethodSignature = javaMethodSignature
+								newSchemaVarNamePrefix = "randomPermissions"
+								schemaName = schemaName
+								schemaVarName = schemaVarName
+								schemaVarNamePrefix = "post"
+							/>
+						);
+
+						Assert.assertNotNull(put${schemaName}.getPermissions());
 					</#if>
 				</#if>
 
@@ -3237,6 +3408,26 @@ public abstract class Base${schemaName}ResourceTestCase {
 		protected ${schemaName} randomPatch${schemaName}() throws Exception {
 			return random${schemaName}();
 		}
+
+		<#if (generatePermissionsJavaMethodSignatures?size > 0)>
+			protected ${schemaName} randomPermissions${schemaName}() throws Exception {
+				${schemaName} ${schemaVarName} = random${schemaName}();
+
+				com.liferay.portal.kernel.model.Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+				${schemaVarName}.setPermissions(
+					new Permission[] {
+						new Permission() {
+							{
+								setActionIds(new String[] {"VIEW"});
+								setRoleName(role.getName());
+							}
+						}
+					});
+
+				return ${schemaVarName};
+			}
+		</#if>
 	</#if>
 
 	<#list relatedSchemaNames as relatedSchemaName>
@@ -3258,6 +3449,11 @@ public abstract class Base${schemaName}ResourceTestCase {
 	</#list>
 
 	protected ${schemaName}Resource ${schemaVarName}Resource;
+
+	<#if (generatePermissionsJavaMethodSignatures?size > 0)>
+		protected ${schemaName}Resource permissions${schemaName}Resource;
+	</#if>
+
 	protected com.liferay.portal.kernel.model.Group irrelevantGroup;
 	protected com.liferay.portal.kernel.model.Company testCompany;
 

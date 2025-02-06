@@ -135,11 +135,7 @@ public class LiferayTokenIntrospectionService extends AbstractTokenService {
 			client2.getProperties(),
 			OAuth2ProviderRESTEndpointConstants.PROPERTY_KEY_COMPANY_ID);
 
-		if (Objects.equals(companyId1, companyId2)) {
-			return true;
-		}
-
-		return false;
+		return Objects.equals(companyId1, companyId2);
 	}
 
 	private TokenIntrospection _createTokenIntrospection(
@@ -279,29 +275,18 @@ public class LiferayTokenIntrospectionService extends AbstractTokenService {
 
 		Map<String, String> properties = client.getProperties();
 
-		if (!properties.containsKey(
-				OAuth2ProviderRESTEndpointConstants.
-					PROPERTY_KEY_CLIENT_FEATURE_PREFIX +
-						OAuth2ProviderRESTEndpointConstants.
-							PROPERTY_KEY_CLIENT_FEATURE_TOKEN_INTROSPECTION)) {
-
-			return false;
-		}
-
-		return true;
+		return properties.containsKey(
+			OAuth2ProviderRESTEndpointConstants.
+				PROPERTY_KEY_CLIENT_FEATURE_PREFIX +
+					OAuth2ProviderRESTEndpointConstants.
+						PROPERTY_KEY_CLIENT_FEATURE_TOKEN_INTROSPECTION);
 	}
 
 	private boolean _verifyServerAccessToken(
 		ServerAccessToken serverAccessToken) {
 
-		if (OAuthUtils.isExpired(
-				serverAccessToken.getIssuedAt(),
-				serverAccessToken.getExpiresIn())) {
-
-			return false;
-		}
-
-		return true;
+		return !OAuthUtils.isExpired(
+			serverAccessToken.getIssuedAt(), serverAccessToken.getExpiresIn());
 	}
 
 	private final LiferayOAuthDataProvider _liferayOAuthDataProvider;

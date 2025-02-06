@@ -8,6 +8,7 @@ package com.liferay.iframe.web.internal.display.context;
 import com.liferay.iframe.web.internal.configuration.IFramePortletInstanceConfiguration;
 import com.liferay.iframe.web.internal.constants.IFrameWebKeys;
 import com.liferay.iframe.web.internal.util.IFrameUtil;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
@@ -83,28 +84,24 @@ public class IFrameDisplayContext {
 	}
 
 	public List<KeyValuePair> getHiddenVariableKVPs() {
-		List<KeyValuePair> hiddenVariableKVPs = new ArrayList<>();
-
 		List<String> hiddenVariables = ListUtil.fromArray(
 			StringUtil.split(getHiddenVariables(), CharPool.PIPE));
 
 		hiddenVariables.addAll(getIFrameVariables());
 
-		for (String hiddenVariable : hiddenVariables) {
-			String key = StringPool.BLANK;
-			String value = StringPool.BLANK;
+		return TransformUtil.transform(
+			hiddenVariables,
+			hiddenVariable -> {
+				int pos = hiddenVariable.indexOf(StringPool.EQUAL);
 
-			int pos = hiddenVariable.indexOf(StringPool.EQUAL);
+				if (pos == -1) {
+					return new KeyValuePair(StringPool.BLANK, StringPool.BLANK);
+				}
 
-			if (pos != -1) {
-				key = hiddenVariable.substring(0, pos);
-				value = hiddenVariable.substring(pos + 1);
-			}
-
-			hiddenVariableKVPs.add(new KeyValuePair(key, value));
-		}
-
-		return hiddenVariableKVPs;
+				return new KeyValuePair(
+					hiddenVariable.substring(0, pos),
+					hiddenVariable.substring(pos + 1));
+			});
 	}
 
 	public String getHiddenVariables() {

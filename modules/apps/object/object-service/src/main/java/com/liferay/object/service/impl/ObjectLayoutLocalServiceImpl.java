@@ -39,6 +39,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -199,6 +200,26 @@ public class ObjectLayoutLocalServiceImpl
 	public int getObjectLayoutsCount(long objectDefinitionId) {
 		return objectLayoutPersistence.countByObjectDefinitionId(
 			objectDefinitionId);
+	}
+
+	@Override
+	public Map<Long, List<ObjectLayout>> getObjectLayoutsMap(long companyId) {
+		Map<Long, List<ObjectLayout>> objectLayoutsMap = new HashMap<>();
+
+		for (ObjectLayout objectLayout :
+				objectLayoutPersistence.findByC_DOL(companyId, true)) {
+
+			objectLayout.setObjectLayoutTabs(
+				_getObjectLayoutTabs(objectLayout));
+
+			List<ObjectLayout> objectLayouts = objectLayoutsMap.computeIfAbsent(
+				objectLayout.getObjectDefinitionId(),
+				objectDefinitionId -> new ArrayList<>());
+
+			objectLayouts.add(objectLayout);
+		}
+
+		return objectLayoutsMap;
 	}
 
 	@Indexable(type = IndexableType.REINDEX)

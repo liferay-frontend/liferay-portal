@@ -5,16 +5,33 @@
 
 import {openToast, sub} from 'frontend-js-web';
 
+import {ACCOUNT_ENTRY_ID_DEFAULT} from '../../../utilities/constants';
 import {
 	DEFAULT_ORDER_DETAILS_PORTLET_ID,
 	MAXIMUM_ALLOWED_QUANTITY_NOT_VALID_ERROR,
 	MAXIMUM_PRODUCT_QUANTITY_NOT_VALID_ERROR,
 	MINIMUM_PRODUCT_QUANTITY_NOT_VALID_ERROR,
-	ORDER_DETAILS_ENDPOINT,
 	ORDER_UUID_PARAMETER,
 	PRODUCT_MULTIPLE_OF_QUANTITY_NOT_VALID_ERROR,
 	PRODUCT_QUANTITY_NOT_VALID_ERROR,
+	WORKFLOW_STATUS_APPROVED,
 } from './constants';
+
+export function canSubmit({
+	accountId: rawAccountId,
+	cartItems = [],
+	id: orderId,
+	workflowStatusInfo: {code: workflowStatus = WORKFLOW_STATUS_APPROVED} = {},
+}) {
+	const accountId = parseInt(rawAccountId, 10);
+
+	const areAccountAndOrderSelected =
+		accountId !== ACCOUNT_ENTRY_ID_DEFAULT && !!orderId;
+	const areItemsPurchasable =
+		!hasErrors(cartItems) && workflowStatus === WORKFLOW_STATUS_APPROVED;
+
+	return areAccountAndOrderSelected && areItemsPurchasable;
+}
 
 export function getCorrectedQuantity(
 	productConfiguration,
@@ -252,35 +269,43 @@ export function parseValue(value) {
 		: value;
 }
 
-export function regenerateOrderDetailURL(orderUUID, siteDefaultURL) {
-	if (!orderUUID || !siteDefaultURL) {
+export function regenerateOrderDetailURL(
+	hasCommerceOpenOrderContentPortlet,
+	orderId,
+	orderUUID,
+	siteDefaultURL
+) {
+	if (!siteDefaultURL) {
 		throw new Error(
-			`Cannot generate a new Order Detail URL. Invalid "${
-				siteDefaultURL ? 'orderUUID' : 'siteDefaultURL'
-			}"`
+			'Cannot generate a new Order Detail URL. Invalid "siteDefaultURL"'
 		);
 	}
 
-	const orderDetailURL = new URL(
-		`${siteDefaultURL}${ORDER_DETAILS_ENDPOINT}`
-	);
+	if (hasCommerceOpenOrderContentPortlet) {
+		if (!orderUUID) {
+			throw new Error(
+				'Cannot generate a new Order Detail URL. Invalid "orderUUID"'
+			);
+		}
 
-	orderDetailURL.searchParams.append(
-		'p_p_id',
-		DEFAULT_ORDER_DETAILS_PORTLET_ID
-	);
-	orderDetailURL.searchParams.append('p_p_lifecycle', '0');
-	orderDetailURL.searchParams.append(
-		`_${DEFAULT_ORDER_DETAILS_PORTLET_ID}_mvcRenderCommandName`,
-		'/commerce_open_order_content/edit_commerce_order'
-	);
+		const orderDetailURL = new URL(siteDefaultURL);
 
-	orderDetailURL.searchParams.append(
-		`_${DEFAULT_ORDER_DETAILS_PORTLET_ID}_${ORDER_UUID_PARAMETER}`,
-		orderUUID
-	);
+		orderDetailURL.searchParams.append(
+			`_${DEFAULT_ORDER_DETAILS_PORTLET_ID}_${ORDER_UUID_PARAMETER}`,
+			orderUUID
+		);
 
-	return orderDetailURL.toString();
+		return orderDetailURL.toString();
+	}
+	else {
+		if (!orderId) {
+			throw new Error(
+				'Cannot generate a new Order Detail URL. Invalid "orderId"'
+			);
+		}
+
+		return `${siteDefaultURL}${orderId}`;
+	}
 }
 
 export function summaryDataMapper({

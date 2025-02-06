@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 
 import java.net.URL;
+import java.net.URLConnection;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -36,6 +37,8 @@ import javax.servlet.Servlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import javax.xml.bind.DatatypeConverter;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -72,32 +75,32 @@ public class AuthVerifierTest {
 		_bundleContext = bundle.getBundleContext();
 
 		_registerServletContextHelper(
-			"auth-verifier-guest-allowed-false-test",
 			HashMapDictionaryBuilder.<String, Object>put(
 				JaxrsWhiteboardConstants.JAX_RS_NAME, "guest-no-allowed"
 			).put(
 				"auth-verifier-guest-allowed-test-servlet-context-helper", true
 			).put(
 				"auth.verifier.guest.allowed", false
-			).build());
+			).build(),
+			"auth-verifier-guest-allowed-false-test");
 
 		_registerServletContextHelper(
-			"auth-verifier-guest-allowed-true-test",
 			HashMapDictionaryBuilder.<String, Object>put(
 				JaxrsWhiteboardConstants.JAX_RS_NAME, "guest-allowed"
 			).put(
 				"auth-verifier-guest-allowed-test-servlet-context-helper", true
 			).put(
 				"auth.verifier.guest.allowed", true
-			).build());
+			).build(),
+			"auth-verifier-guest-allowed-true-test");
 
 		_registerServletContextHelper(
-			"auth-verifier-guest-allowed-default-test",
 			HashMapDictionaryBuilder.<String, Object>put(
 				JaxrsWhiteboardConstants.JAX_RS_NAME, "guest-default"
 			).put(
 				"auth-verifier-guest-allowed-test-servlet-context-helper", true
-			).build());
+			).build(),
+			"auth-verifier-guest-allowed-default-test");
 
 		_registerServlet(
 			HashMapDictionaryBuilder.<String, Object>put(
@@ -113,28 +116,28 @@ public class AuthVerifierTest {
 			GuestAllowedHttpServlet::new);
 
 		_registerServletContextHelper(
-			"auth-verifier-filter-tracker-enabled-test",
 			HashMapDictionaryBuilder.<String, Object>put(
 				JaxrsWhiteboardConstants.JAX_RS_NAME, "filter-enabled"
 			).put(
 				"auth-verifier-tracker-test-servlet-context-helper", true
 			).put(
 				"auth.verifier.guest.allowed", true
-			).build());
+			).build(),
+			"auth-verifier-filter-tracker-enabled-test");
 
 		_registerServletContextHelper(
-			"auth-verifier-filter-tracker-disabled-test",
 			HashMapDictionaryBuilder.<String, Object>put(
 				"auth-verifier-tracker-test-servlet-context-helper", true
 			).put(
 				"liferay.auth.verifier", false
-			).build());
+			).build(),
+			"auth-verifier-filter-tracker-disabled-test");
 
 		_registerServletContextHelper(
-			"auth-verifier-filter-tracker-default-test",
 			HashMapDictionaryBuilder.<String, Object>put(
 				"auth-verifier-tracker-test-servlet-context-helper", true
-			).build());
+			).build(),
+			"auth-verifier-filter-tracker-default-test");
 
 		_registerServlet(
 			HashMapDictionaryBuilder.<String, Object>put(
@@ -150,12 +153,12 @@ public class AuthVerifierTest {
 			RemoteUserHttpServlet::new);
 
 		_registerServletContextHelper(
-			"auth-verifier-filter-tracker-remote-access-test",
 			HashMapDictionaryBuilder.<String, Object>put(
 				JaxrsWhiteboardConstants.JAX_RS_NAME, "filter-enabled"
 			).put(
 				"auth-verifier-tracker-test-servlet-context-helper", true
-			).build());
+			).build(),
+			"auth-verifier-filter-tracker-remote-access-test");
 
 		_registerServlet(
 			HashMapDictionaryBuilder.<String, Object>put(
@@ -171,7 +174,6 @@ public class AuthVerifierTest {
 			RemoteAccessHttpServlet::new);
 
 		_registerServletContextHelper(
-			"auth-verifier-filter-override-matched-test",
 			HashMapDictionaryBuilder.<String, Object>put(
 				JaxrsWhiteboardConstants.JAX_RS_NAME,
 				"auth-verifier-filter-override-matched"
@@ -183,10 +185,10 @@ public class AuthVerifierTest {
 				"*"
 			).put(
 				"auth.verifier.guest.allowed", true
-			).build());
+			).build(),
+			"auth-verifier-filter-override-matched-test");
 
 		_registerServletContextHelper(
-			"auth-verifier-filter-override-not-matched-test",
 			HashMapDictionaryBuilder.<String, Object>put(
 				JaxrsWhiteboardConstants.JAX_RS_NAME,
 				"auth-verifier-filter-override-not-matched"
@@ -198,10 +200,10 @@ public class AuthVerifierTest {
 				"/wrongPath"
 			).put(
 				"auth.verifier.guest.allowed", true
-			).build());
+			).build(),
+			"auth-verifier-filter-override-not-matched-test");
 
 		_registerServletContextHelper(
-			"auth-verifier-filter-override-missing-test",
 			HashMapDictionaryBuilder.<String, Object>put(
 				JaxrsWhiteboardConstants.JAX_RS_NAME,
 				"auth-verifier-filter-override-missing"
@@ -209,7 +211,8 @@ public class AuthVerifierTest {
 				"auth-verifier-matched-test-auth-verifier-filter-helper", true
 			).put(
 				"auth.verifier.guest.allowed", true
-			).build());
+			).build(),
+			"auth-verifier-filter-override-missing-test");
 
 		_registerServlet(
 			HashMapDictionaryBuilder.<String, Object>put(
@@ -250,18 +253,7 @@ public class AuthVerifierTest {
 			"http://localhost:8080/o/auth-verifier-guest-allowed-false-test" +
 				"/guestAllowed");
 
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"portal_web.docroot.errors.code_jsp", LoggerTestUtil.WARN);
-			InputStream inputStream = url.openStream()) {
-
-			Assert.fail();
-		}
-		catch (IOException ioException) {
-			String message = ioException.getMessage();
-
-			Assert.assertTrue(
-				message.startsWith("Server returned HTTP response code: 403"));
-		}
+		_assertHttpResponseStatusCode(403, url.openConnection());
 
 		url = new URL(
 			"http://localhost:8080/o/auth-verifier-guest-allowed-true-test" +
@@ -274,6 +266,23 @@ public class AuthVerifierTest {
 				"/guestAllowed");
 
 		Assert.assertEquals("guest-allowed", URLUtil.toString(url));
+	}
+
+	@Test
+	public void testAllowGuestFailsForInvalidCredentials() throws Exception {
+		URL url = new URL(
+			"http://localhost:8080/o/auth-verifier-guest-allowed-true-test" +
+				"/guestAllowed");
+
+		String credentials = DatatypeConverter.printBase64Binary(
+			"test@liferay.com:wrongpassword".getBytes());
+
+		_testAllowGuestFailsForInvalidCredentials(
+			"Basic " + credentials, url.openConnection());
+
+		_testAllowGuestFailsForInvalidCredentials(
+			"Bearer 3646534f4654396f6e565648315557534253613062673d3d",
+			url.openConnection());
 	}
 
 	@Test
@@ -491,7 +500,7 @@ public class AuthVerifierTest {
 	}
 
 	private static void _registerServletContextHelper(
-		String servletContextName, Dictionary<String, Object> properties) {
+		Dictionary<String, Object> properties, String servletContextName) {
 
 		properties.put(
 			HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME,
@@ -506,6 +515,33 @@ public class AuthVerifierTest {
 				new ServletContextHelper(_bundleContext.getBundle()) {
 				},
 				properties));
+	}
+
+	private void _assertHttpResponseStatusCode(
+		int expectedHttpResponseStatusCode, URLConnection urlConnection) {
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"portal_web.docroot.errors.code_jsp", LoggerTestUtil.WARN);
+			InputStream inputStream = urlConnection.getInputStream()) {
+
+			Assert.fail();
+		}
+		catch (IOException ioException) {
+			String message = ioException.getMessage();
+
+			Assert.assertTrue(
+				message.startsWith(
+					"Server returned HTTP response code: " +
+						expectedHttpResponseStatusCode));
+		}
+	}
+
+	private void _testAllowGuestFailsForInvalidCredentials(
+		String authorization, URLConnection urlConnection) {
+
+		urlConnection.setRequestProperty("Authorization", authorization);
+
+		_assertHttpResponseStatusCode(401, urlConnection);
 	}
 
 	private static BundleContext _bundleContext;

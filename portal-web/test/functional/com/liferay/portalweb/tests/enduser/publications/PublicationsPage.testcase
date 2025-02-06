@@ -1073,21 +1073,12 @@ definition {
 			groupName = "Site Name",
 			name = "Collection Name");
 
-		FragmentsAdminNavigator.openFragmentsAdmin(siteURLKey = "site-name");
-
-		FragmentsAdminNavigator.gotoCollection(collectionName = "Collection Name");
-
-		FragmentsAdmin.addFragment(fragmentName = "Fragment Name");
-
-		var fragmentHtml = '''<lfr-widget-asset-list>''';
-		var htmlSnippet = '''<lfr-''';
-
-		FragmentsEditor.autocompleteFragmentHTML(
-			autocompleteField = "lfr-widget-asset-list",
-			fragmentHtml = ${fragmentHtml},
-			htmlSnippet = ${htmlSnippet});
-
-		PortletEntry.publish();
+		JSONFragment.addSection(
+			collectionName = "Collection Name",
+			fragmentStatus = "Approved",
+			groupName = "Site Name",
+			html = "<lfr-widget-asset-list></lfr-widget-asset-list>",
+			name = "Fragment Name");
 
 		JSONWebcontent.addWebContent(
 			content = "WC WebContent Content",
@@ -1197,157 +1188,6 @@ definition {
 				key_fieldLabel = "Text Field",
 				locator1 = "CustomFields#CUSTOM_INPUT_FIELD",
 				value1 = "Text Field Update");
-		}
-	}
-
-	@description = "This is use case for LPS-179333. Verify that timeline and conflict icon can display for the conflict publication bar."
-	@priority = 3
-	test TimelineAndConflictIconCanAppearOnConflictPublicationBar {
-		property test.assert.warning.exceptions = "true";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Make change to the Home page on Publication 1 Name") {
-			JSONPublications.addPublication(publicationName = "Publication 1 Name");
-
-			JSONPublications.selectPublication(publicationName = "Publication 1 Name");
-
-			ContentPagesNavigator.openEditContentPage(
-				pageName = "Home",
-				siteName = "Guest");
-
-			PageEditor.addFragment(
-				collectionName = "Basic Components",
-				fragmentName = "Heading",
-				targetFragmentName = "Container");
-
-			PageEditor.publish();
-		}
-
-		task ("Make change to the Home page on Publication 1 Name") {
-			JSONPublications.addPublication(publicationName = "Publication 2 Name");
-
-			JSONPublications.selectPublication(publicationName = "Publication 2 Name");
-
-			ContentPagesNavigator.openEditContentPage(
-				pageName = "Home",
-				siteName = "Guest");
-
-			PageEditor.addFragment(
-				collectionName = "Basic Components",
-				fragmentName = "Heading",
-				targetFragmentName = "Container");
-
-			PageEditor.publish();
-		}
-
-		task ("Publish Publication 2 Name") {
-			Publications.publishPublication(
-				gotoPublicationsAdmin = "true",
-				publicationName = "Publication 1 Name");
-		}
-
-		task ("Access the Home page on Publication 2 Name") {
-			JSONPublications.selectPublication(publicationName = "Publication 2 Name");
-
-			ContentPagesNavigator.openViewContentPage(
-				pageName = "Home",
-				siteName = "Guest");
-		}
-
-		task ("Assert Timeline and conflict icon appear on the Publication bar") {
-			Publications.viewPublicationTimeline(publicationName = "Publication 1 Name");
-
-			AssertElementPresent(locator1 = "Publications#PUBLICATION_CONFLICT_BUTTON");
-		}
-	}
-
-	@description = "Verify that changes made across multiple Publications are shown in the history"
-	@priority = 3
-	test ViewChangesAcrossMultiplePublications {
-		task ("Add new site and a new page in it with Documents and Media widget") {
-			HeadlessSite.addSite(siteName = "Site Name");
-
-			JSONLayout.addPublicLayout(
-				groupName = "Site Name",
-				layoutName = "Page Name");
-
-			JSONLayout.addWidgetToPublicLayout(
-				groupName = "Site Name",
-				layoutName = "Page Name",
-				widgetName = "Documents and Media");
-		}
-
-		task ("Add Document and Media ") {
-			JSONDocument.addFileWithUploadedFile(
-				dmDocumentDescription = "DM Document Description",
-				dmDocumentTitle = "Document_1",
-				groupName = "Site Name",
-				mimeType = "application/msword",
-				sourceFileName = "Document_1.doc");
-		}
-
-		task ("Add and select a new Publication 1") {
-			JSONPublications.addPublication(publicationName = "Publication Name 1");
-
-			JSONPublications.selectPublication(publicationName = "Publication Name 1");
-		}
-
-		task ("Delete Documents and Media widget") {
-			Navigator.gotoSitePage(
-				pageName = "Page Name",
-				siteName = "Site Name");
-
-			Portlet.deletePG(portletName = "Documents and Media");
-		}
-
-		task ("Assert that the timeline of Publication 1 is present") {
-			Navigator.gotoSitePage(
-				pageName = "Page Name",
-				siteName = "Site Name");
-
-			Publications.viewPublicationTimeline(publicationName = "Publication Name 1");
-		}
-
-		task ("Add and select a new Publication 2") {
-			JSONPublications.addPublication(publicationName = "Publication Name 2");
-
-			JSONPublications.selectPublication(publicationName = "Publication Name 2");
-		}
-
-		task ("Add new content page with a Documents and Media widget") {
-			JSONLayout.addPublicLayout(
-				groupName = "Site Name",
-				layoutName = "Page Name 2",
-				type = "content");
-
-			ContentPagesNavigator.openEditContentPage(
-				pageName = "Page Name 2",
-				siteName = "Site Name");
-
-			PageEditor.addWidget(portletName = "Documents and Media");
-
-			PageEditor.publish();
-
-			Navigator.gotoSitePage(
-				pageName = "Page Name 2",
-				siteName = "Site Name");
-		}
-
-		task ("Assert that the timeline of Publication 2 is present") {
-			Publications.viewPublicationTimeline(publicationName = "Publication Name 2");
-		}
-
-		task ("Publish Publication 2 and assert that the timeline for Publication 2 is shown in Production") {
-			Publications.publishPublication(
-				gotoPublicationsAdmin = "true",
-				publicationName = "Publication Name 2");
-
-			Navigator.gotoSitePage(
-				pageName = "Page Name 2",
-				siteName = "Site Name");
-
-			Publications.viewPublicationTimeline(publicationName = "Publication Name 2");
 		}
 	}
 

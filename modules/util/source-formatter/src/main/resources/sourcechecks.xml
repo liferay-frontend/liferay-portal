@@ -220,7 +220,6 @@
 		<check name="CSPComplianceCheck">
 			<category name="Bug Prevention" />
 			<description name="Checks code to prevent common CSP related pitfalls." />
-			<property name="enabled" value="false" />
 		</check>
 		<check name="FTLEmptyLinesCheck">
 			<category name="Styling" />
@@ -697,6 +696,11 @@
 			<category name="Bug Prevention" />
 			<description name="Checks that variables in `Tag` classes get cleaned up properly." />
 		</check>
+		<check name="JavaCompanyScopedIdsCheck">
+			<category name="Bug Prevention" />
+			<description name="Finds cases where company scoped ids are used, see LPD-45118." />
+			<property name="enabled" value="false" />
+		</check>
 		<check name="JavaComponentActivateCheck">
 			<category name="Naming Conventions" />
 			<description name="Checks if methods with annotation `@Activate` or `@Deactivate` follow naming conventions." />
@@ -1091,7 +1095,6 @@
 		<check name="CSPComplianceCheck">
 			<category name="Bug Prevention" />
 			<description name="Checks code to prevent common CSP related pitfalls." />
-			<property name="enabled" value="false" />
 		</check>
 		<check name="EmptyCollectionCheck">
 			<category name="Styling" />
@@ -1532,6 +1535,11 @@
 			<category name="Bug Prevention" />
 			<description name="Performs several checks on `imported-files.properties` file." />
 		</check>
+		<check name="PropertiesLanguageContractionsCheck">
+			<category name="Styling" />
+			<description name="Finds contractions (such as `can't` or `you're`)." />
+			<property name="enabled" value="false" />
+		</check>
 		<check name="PropertiesLanguageKeysCheck">
 			<category name="Bug Prevention" />
 			<description name="Checks that there is no HTML markup in language keys." />
@@ -1751,23 +1759,28 @@
 		</check>
 		<check name="UpgradeCatchAllJavaImportsCheck">
 			<category name="Upgrade" />
-			<description name="Sorts and groups imports in `UpgradeCatchAllCheck.testjava` file." />
+			<description name="Sorts and groups imports in `LPD_XXXXX.java` and `LPS_XXXXX.java` files." />
 			<weight>1</weight>
 		</check>
 		<check name="UpgradeCatchAllJavaTermOrderCheck">
 			<category name="Upgrade" />
-			<description name="Sorts javaterms in `UpgradeCatchAllCheck.testjava` file." />
+			<description name="Sorts javaterms in `LPD_XXXXX.java` and `LPS_XXXXX.java` files." />
 			<weight>1</weight>
 		</check>
 		<check name="UpgradeCatchAllJSPImportsCheck">
 			<category name="Upgrade" />
-			<description name="Sorts and groups imports in `UpgradeCatchAllCheck.testjsp` file." />
+			<description name="Sorts and groups imports in `LPD_XXXXX.jsp` and `LPS_XXXXX.jsp` files." />
 			<weight>1</weight>
 		</check>
 		<check name="UpgradeGradleIncludeResourceCheck">
 			<category name="Upgrade" />
 			<description name="Replaces with `compileInclude` the configuration attribute for dependencies in `build.gradle` that are listed at `Include-Resource` property at `bnd.bnd` associated file." />
 			<weight>2</weight>
+		</check>
+		<check name="UpgradeImportsCheck">
+			<category name="Upgrade" />
+			<description name="Replaces deprecated package references with updated values from `imports.txt` and handles class renaming by updating variable declarations and references when a package change involves a class name change." />
+			<weight>3</weight>
 		</check>
 		<check name="UpgradeJavaAssetEntryAssetCategoriesCheck">
 			<category name="Upgrade" />
@@ -1784,11 +1797,6 @@
 		<check name="UpgradeJavaBasePanelAppExtendedClassesCheck">
 			<category name="Upgrade" />
 			<description name="Replace the setPortlet method with getPortlet." />
-		</check>
-		<check name="UpgradeJavaCheck">
-			<category name="Upgrade" />
-			<description name="Performs upgrade checks for `java` files." />
-			<weight>3</weight>
 		</check>
 		<check name="UpgradeJavaCommerceOrderValidatorCheck">
 			<category name="Upgrade" />

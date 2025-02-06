@@ -13,10 +13,10 @@ import com.liferay.info.form.InfoForm;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemFormProvider;
 import com.liferay.layout.constants.LayoutTypeSettingsConstants;
-import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
+import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.list.type.entry.util.ListTypeEntryUtil;
@@ -63,6 +63,7 @@ import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.PipingServletResponse;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.struts.StrutsAction;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -207,6 +208,40 @@ public class EditInfoItemStrutsActionTest {
 	}
 
 	@Test
+	@TestInfo("LPS-151402")
+	public void testAddInfoItemInvalidListTypeEntryValue() throws Exception {
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		UnsyncStringWriter unsyncStringWriter = new UnsyncStringWriter();
+
+		PipingServletResponse pipingServletResponse = new PipingServletResponse(
+			mockHttpServletResponse, unsyncStringWriter);
+
+		UploadPortletRequest uploadPortletRequest = _getUploadPortletRequest(
+			null, null, null, null, 0, null, null, null, null, null, null, null,
+			"invalid", null, 0, null, null);
+
+		_processEvents(uploadPortletRequest, mockHttpServletResponse, _user);
+
+		_editInfoItemStrutsAction.execute(
+			uploadPortletRequest, pipingServletResponse);
+
+		List<ObjectEntry> objectEntries =
+			_objectEntryLocalService.getObjectEntries(
+				0, _objectDefinition.getObjectDefinitionId(), QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS);
+
+		Object object = SessionErrors.get(uploadPortletRequest, _formItemId);
+
+		Assert.assertNotNull(object);
+
+		Assert.assertTrue(object instanceof InfoFormException);
+
+		Assert.assertEquals(objectEntries.toString(), 0, objectEntries.size());
+	}
+
+	@Test
 	public void testAddInfoItemInvalidLongTooBig() throws Exception {
 		_testAddInfoItemWithInvalidData(null, null, "9007199254740992");
 	}
@@ -255,13 +290,10 @@ public class EditInfoItemStrutsActionTest {
 		throws Exception {
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
-				null, _group.getCreatorUserId(), _group.getGroupId(), 0,
+			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+				_group.getGroupId(),
 				_portal.getClassNameId(_objectDefinition.getClassName()), 0,
-				RandomTestUtil.randomString(),
-				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, 0, false, 0,
-				0, 0, WorkflowConstants.STATUS_APPROVED,
-				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+				true, WorkflowConstants.STATUS_APPROVED);
 
 		InfoItemFormProvider<?> infoItemFormProvider =
 			_infoItemServiceRegistry.getFirstInfoItemService(
@@ -800,7 +832,7 @@ public class EditInfoItemStrutsActionTest {
 
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
-				_user.getUserId(), 0, null, false, true, false, true,
+				_user.getUserId(), 0, null, false, false, true, false, true,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				ObjectDefinitionTestUtil.getRandomName(), null,
 				"control_panel.sites",
@@ -993,12 +1025,12 @@ public class EditInfoItemStrutsActionTest {
 				).put(
 					"classPK",
 					() -> {
-						if (classPK > 0) {
-							return Collections.singletonList(
-								String.valueOf(classPK));
+						if (classPK <= 0) {
+							return null;
 						}
 
-						return null;
+						return Collections.singletonList(
+							String.valueOf(classPK));
 					}
 				).put(
 					"classTypeId", Collections.singletonList("0")
@@ -1038,12 +1070,11 @@ public class EditInfoItemStrutsActionTest {
 				).put(
 					"myDateTime",
 					() -> {
-						if (dateTimeValueInput != null) {
-							return Collections.singletonList(
-								dateTimeValueInput);
+						if (dateTimeValueInput == null) {
+							return null;
 						}
 
-						return null;
+						return Collections.singletonList(dateTimeValueInput);
 					}
 				).put(
 					"myDecimal",

@@ -7,6 +7,7 @@ import {Page} from '@playwright/test';
 
 import {ApiHelpers} from '../../../../helpers/ApiHelpers';
 import {TProduct} from '../../../../helpers/HeadlessCommerceAdminCatalogApiHelper';
+import {userData} from '../../../../utils/performLogin';
 import {
 	ORDER_TYPES,
 	ORDER_WORKFLOW_STATUS_CODE,
@@ -48,12 +49,17 @@ export class MarketplaceHelper {
 		accountType,
 	}: CreateAccountUserCatalog) {
 		try {
-			const account = await this.apiHelpers.headlessAdminUser.postAccount(
-				{
+			let account =
+				await this.apiHelpers.headlessAdminUser.getAccountByName(
+					accountName
+				);
+
+			if (!account) {
+				account = await this.apiHelpers.headlessAdminUser.postAccount({
 					name: accountName,
 					type: accountType,
-				}
-			);
+				});
+			}
 
 			await this.apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 				account.id,
@@ -77,6 +83,38 @@ export class MarketplaceHelper {
 		}
 		catch (error) {
 			console.error('Error when trying to create account', error);
+
+			throw error;
+		}
+	}
+
+	async createAccountUserSupplier({
+		accountId,
+		accountRoleIds,
+		emailAddresses,
+	}: any) {
+		try {
+			const userAccount =
+				await this.apiHelpers.headlessAdminUser.postAccountUserAccountByEmailAddress(
+					accountId,
+					[accountRoleIds],
+					[emailAddresses]
+				);
+
+			await this.apiHelpers.headlessAdminUser.patchUserAccount(
+				userAccount.items[0],
+				{
+					familyName: userData['demo.unprivileged'].surname,
+					givenName: userData['demo.unprivileged'].name,
+					name: userData['demo.unprivileged'].name,
+					password: userData['demo.unprivileged'].password,
+				}
+			);
+
+			return userAccount;
+		}
+		catch (error) {
+			console.error('Error when trying to create account user', error);
 
 			throw error;
 		}

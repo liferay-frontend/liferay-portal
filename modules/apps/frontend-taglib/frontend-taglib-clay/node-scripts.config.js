@@ -14,7 +14,9 @@ module.exports = {
 		'@clayui/charts',
 		'@clayui/color-picker',
 		'@clayui/core',
-		'@clayui/css',
+		'@clayui/css/lib/css/atlas.css',
+		'@clayui/css/lib/css/base.css',
+		'@clayui/css/lib/css/cadmin.css',
 		'@clayui/data-provider',
 		'@clayui/date-picker',
 		'@clayui/drop-down',
@@ -49,6 +51,8 @@ module.exports = {
 		'@clayui/tooltip',
 		'@clayui/upper-toolbar',
 	],
-	main: 'src/main/resources/META-INF/resources/index.js',
-	npmscripts: {},
+	main: './src/main/resources/META-INF/resources/index.js',
+	symbols: {
+		'@clayui/charts': ['bb', 'default'],
+	},
 };

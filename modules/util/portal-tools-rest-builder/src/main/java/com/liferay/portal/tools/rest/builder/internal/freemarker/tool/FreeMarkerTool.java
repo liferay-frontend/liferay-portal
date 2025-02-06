@@ -11,8 +11,10 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.CamelCaseUtil;
 import com.liferay.portal.kernel.util.DateUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TextFormatter;
@@ -26,6 +28,7 @@ import com.liferay.portal.tools.rest.builder.internal.freemarker.tool.java.parse
 import com.liferay.portal.tools.rest.builder.internal.freemarker.tool.java.parser.util.OpenAPIParserUtil;
 import com.liferay.portal.tools.rest.builder.internal.freemarker.util.ConfigUtil;
 import com.liferay.portal.tools.rest.builder.internal.freemarker.util.OpenAPIUtil;
+import com.liferay.portal.tools.rest.builder.internal.util.GraphQLNamingUtil;
 import com.liferay.portal.tools.rest.builder.internal.yaml.config.Application;
 import com.liferay.portal.tools.rest.builder.internal.yaml.config.ConfigYAML;
 import com.liferay.portal.tools.rest.builder.internal.yaml.openapi.Components;
@@ -38,8 +41,6 @@ import com.liferay.portal.tools.rest.builder.internal.yaml.openapi.Parameter;
 import com.liferay.portal.tools.rest.builder.internal.yaml.openapi.PathItem;
 import com.liferay.portal.tools.rest.builder.internal.yaml.openapi.RequestBody;
 import com.liferay.portal.tools.rest.builder.internal.yaml.openapi.Schema;
-import com.liferay.portal.vulcan.graphql.util.GraphQLNamingUtil;
-import com.liferay.portal.vulcan.pagination.Pagination;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -1048,6 +1049,64 @@ public class FreeMarkerTool {
 			configYAML, propertyName, schema, schemas);
 	}
 
+	public boolean isGeneratePermissions(
+		ConfigYAML configYAML, JavaMethodSignature javaMethodSignature,
+		List<JavaMethodSignature> javaMethodSignatures, Schema schema,
+		String schemaName) {
+
+		if (!configYAML.isGeneratePermissions()) {
+			return false;
+		}
+
+		Map<String, Schema> propertySchemas = schema.getPropertySchemas();
+
+		if (MapUtil.isEmpty(propertySchemas) ||
+			!propertySchemas.containsKey("permissions") ||
+			!containsJavaMethodSignature(
+				javaMethodSignatures, "get" + schemaName + "PermissionsPage") ||
+			!containsJavaMethodSignature(
+				javaMethodSignatures, "put" + schemaName + "PermissionsPage")) {
+
+			return false;
+		}
+
+		String methodName = javaMethodSignature.getMethodName();
+		String parentSchemaName = GetterUtil.getString(
+			javaMethodSignature.getParentSchemaName());
+		String pluralSchemaName = TextFormatter.formatPlural(schemaName);
+
+		if (!(methodName.equals(
+				StringBundler.concat(
+					"get", parentSchemaName, pluralSchemaName, "Page")) ||
+			  methodName.equals("get" + parentSchemaName + schemaName) ||
+			  methodName.equals(
+				  StringBundler.concat(
+					  "get", parentSchemaName, schemaName,
+					  "ByExternalReferenceCode")) ||
+			  methodName.equals("post" + parentSchemaName + schemaName) ||
+			  methodName.equals("put" + parentSchemaName + schemaName) ||
+			  methodName.equals(
+				  StringBundler.concat(
+					  "put", parentSchemaName, schemaName,
+					  "ByExternalReferenceCode")))) {
+
+			return false;
+		}
+
+		Schema permissionsSchema = propertySchemas.get("permissions");
+
+		if (permissionsSchema.isReadOnly() || permissionsSchema.isWriteOnly()) {
+			throw new IllegalStateException(
+				StringBundler.concat(
+					"The attribute \"", schemaName,
+					".permissions\" cannot be \"",
+					permissionsSchema.isReadOnly() ? "readOnly" : "writeOnly",
+					"\""));
+		}
+
+		return true;
+	}
+
 	public boolean isParameter(
 		JavaMethodParameter javaMethodParameter, Operation operation,
 		String type) {
@@ -1102,7 +1161,7 @@ public class FreeMarkerTool {
 				javaMethodParameter.getParameterName(), "pagination") &&
 			 Objects.equals(
 				 javaMethodParameter.getParameterType(),
-				 Pagination.class.getName())) ||
+				 "com.liferay.portal.vulcan.pagination.Pagination")) ||
 			(Objects.equals(javaMethodParameter.getParameterName(), "sorts") &&
 			 Objects.equals(
 				 javaMethodParameter.getParameterType(),

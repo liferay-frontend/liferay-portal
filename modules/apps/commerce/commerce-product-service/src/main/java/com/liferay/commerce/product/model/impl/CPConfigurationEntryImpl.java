@@ -5,7 +5,9 @@
 
 package com.liferay.commerce.product.model.impl;
 
+import com.liferay.commerce.product.model.CPConfigurationList;
 import com.liferay.commerce.product.model.CPTaxCategory;
+import com.liferay.commerce.product.service.CPConfigurationListLocalServiceUtil;
 import com.liferay.commerce.product.service.CPTaxCategoryLocalServiceUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
@@ -50,6 +52,17 @@ public class CPConfigurationEntryImpl extends CPConfigurationEntryBaseImpl {
 		}
 
 		return null;
+	}
+
+	@Override
+	public CPConfigurationList getParentCPConfigurationList()
+		throws PortalException {
+
+		CPConfigurationList cpConfigurationList =
+			CPConfigurationListLocalServiceUtil.getCPConfigurationList(
+				getCPConfigurationListId());
+
+		return cpConfigurationList.getParentCPConfigurationList();
 	}
 
 }

@@ -56,6 +56,14 @@ public interface SamlConfiguration {
 	public int getIdpSsoSessionCheckInterval();
 
 	@Meta.AD(
+		deflt = "50",
+		description = "saml-max-saml-sso-request-contexts-description",
+		id = "saml.max.saml.sso.request.contexts", min = "1",
+		name = "saml-max-saml-sso-request-contexts", required = false
+	)
+	public int getMaxSamlSsoRequestContexts();
+
+	@Meta.AD(
 		deflt = "300",
 		description = "saml-metadata-refresh-interval-description",
 		id = "saml.metadata.refresh.interval", min = "1",

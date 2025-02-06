@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.util.PropsValues;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -110,17 +111,23 @@ public class LayoutSEOLinkManagerImpl implements LayoutSEOLinkManager {
 			getCanonicalLayoutSEOLink(
 				layout, locale, canonicalURL, themeDisplay));
 
-		alternateURLs.forEach(
-			(urlLocale, url) -> layoutSEOLinks.add(
-				new LayoutSEOLinkImpl(
-					HtmlUtil.escapeAttribute(
-						_getAlternateCustomCanonicalURL(
-							layout, urlLocale, url)),
-					LocaleUtil.toW3cLanguageId(urlLocale),
-					LayoutSEOLink.Relationship.ALTERNATE)));
+		Locale siteDefaultLocale = _portal.getSiteDefaultLocale(
+			layout.getGroupId());
 
-		String defaultLocaleURL = alternateURLs.get(
-			_portal.getSiteDefaultLocale(layout.getGroupId()));
+		Map<Locale, String> alternateCanonicalURLs = _getAlternateCanonicalURLs(
+			alternateURLs, layout, siteDefaultLocale);
+
+		for (Map.Entry<Locale, String> entry :
+				alternateCanonicalURLs.entrySet()) {
+
+			layoutSEOLinks.add(
+				new LayoutSEOLinkImpl(
+					HtmlUtil.escapeAttribute(entry.getValue()),
+					LocaleUtil.toW3cLanguageId(entry.getKey()),
+					LayoutSEOLink.Relationship.ALTERNATE));
+		}
+
+		String defaultLocaleURL = alternateCanonicalURLs.get(siteDefaultLocale);
 
 		if (defaultLocaleURL == null) {
 			return layoutSEOLinks;
@@ -166,8 +173,9 @@ public class LayoutSEOLinkManagerImpl implements LayoutSEOLinkManager {
 		_alternateURLMapperProvider = null;
 	}
 
-	private String _getAlternateCustomCanonicalURL(
-		Layout layout, Locale locale, String alternateURL) {
+	private Map<Locale, String> _getAlternateCanonicalURLs(
+		Map<Locale, String> alternateURLs, Layout layout,
+		Locale siteDefaultLocale) {
 
 		LayoutSEOEntry layoutSEOEntry =
 			_layoutSEOEntryLocalService.fetchLayoutSEOEntry(
@@ -177,10 +185,10 @@ public class LayoutSEOLinkManagerImpl implements LayoutSEOLinkManager {
 		if ((layoutSEOEntry == null) ||
 			!layoutSEOEntry.isCanonicalURLEnabled()) {
 
-			return alternateURL;
+			return alternateURLs;
 		}
 
-		Locale siteDefaultLocale = LocaleUtil.getSiteDefault();
+		Map<Locale, String> alternateCanonicalURLs = new HashMap<>();
 
 		try {
 			siteDefaultLocale = _portal.getSiteDefaultLocale(
@@ -192,13 +200,23 @@ public class LayoutSEOLinkManagerImpl implements LayoutSEOLinkManager {
 
 		String currentCanonicalURL = layoutSEOEntry.getCanonicalURL(
 			siteDefaultLocale);
-		String alternateCanonicalURL = layoutSEOEntry.getCanonicalURL(locale);
 
-		if (currentCanonicalURL.equals(alternateCanonicalURL)) {
-			return alternateURL;
+		for (Map.Entry<Locale, String> entry : alternateURLs.entrySet()) {
+			Locale locale = entry.getKey();
+
+			String alternateCanonicalURL = layoutSEOEntry.getCanonicalURL(
+				locale);
+
+			if (!locale.equals(siteDefaultLocale) &&
+				currentCanonicalURL.equals(alternateCanonicalURL)) {
+
+				alternateCanonicalURL = entry.getValue();
+			}
+
+			alternateCanonicalURLs.put(locale, alternateCanonicalURL);
 		}
 
-		return alternateCanonicalURL;
+		return alternateCanonicalURLs;
 	}
 
 	private HttpServletRequest _getHttpServletRequest() {

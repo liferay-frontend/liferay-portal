@@ -16,8 +16,10 @@ import com.liferay.document.library.web.internal.helper.DLTrashHelper;
 import com.liferay.document.library.web.internal.security.permission.resource.DLFolderPermission;
 import com.liferay.document.library.web.internal.security.permission.resource.DLPermission;
 import com.liferay.document.library.web.internal.util.DLFolderUtil;
+import com.liferay.document.library.web.internal.util.DLSubscriptionUtil;
 import com.liferay.document.library.web.internal.util.FolderItemSelectorURLProvider;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.learn.LearnMessage;
@@ -29,6 +31,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
@@ -74,6 +77,8 @@ public class FolderActionDisplayContext {
 		_httpServletRequest = httpServletRequest;
 
 		_dlRequestHelper = new DLRequestHelper(httpServletRequest);
+		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
 	}
 
 	public List<DropdownItem> getActionDropdownItems() {
@@ -97,6 +102,18 @@ public class FolderActionDisplayContext {
 							dropdownItem.setLabel(
 								LanguageUtil.get(_httpServletRequest, "edit"));
 						}
+					).add(
+						this::_isSubscribeFolderActionVisible,
+						dropdownItem -> {
+							dropdownItem.setHref(_getSubscribeFolderURL());
+							dropdownItem.setIcon("bell-on");
+							dropdownItem.setLabel(
+								LanguageUtil.get(
+									_httpServletRequest, "subscribe"));
+						}
+					).add(
+						this::_isUnsubscribeFolderActionVisible,
+						_createUnsubscribeDropdownItem()
 					).build());
 				dropdownGroupItem.setSeparator(true);
 			}
@@ -279,11 +296,42 @@ public class FolderActionDisplayContext {
 		DLPortletInstanceSettingsHelper dlPortletInstanceSettingsHelper =
 			new DLPortletInstanceSettingsHelper(_dlRequestHelper);
 
-		if (dlPortletInstanceSettingsHelper.isShowActions()) {
-			return true;
+		return dlPortletInstanceSettingsHelper.isShowActions();
+	}
+
+	private DropdownItem _createUnsubscribeDropdownItem()
+		throws PortalException {
+
+		long parentFolderId = DLFolderConstants.DEFAULT_PARENT_FOLDER_ID;
+
+		Folder folder = _getFolder();
+
+		if (folder != null) {
+			parentFolderId = folder.getParentFolderId();
 		}
 
-		return false;
+		if ((folder == null) ||
+			!DLSubscriptionUtil.isSubscribedToFolder(
+				_themeDisplay.getCompanyId(), _themeDisplay.getScopeGroupId(),
+				_themeDisplay.getUserId(), parentFolderId)) {
+
+			return DropdownItemBuilder.setHref(
+				_getUnsubscribeFolderURL()
+			).setIcon(
+				"bell-off"
+			).setLabel(
+				LanguageUtil.get(_httpServletRequest, "unsubscribe")
+			).build();
+		}
+
+		return DropdownItemBuilder.setDisabled(
+			true
+		).setIcon(
+			"bell-off"
+		).setLabel(
+			LanguageUtil.get(
+				_httpServletRequest, "subscribed-to-a-parent-folder")
+		).build();
 	}
 
 	private String _getAddFileShortcutURL() {
@@ -687,6 +735,34 @@ public class FolderActionDisplayContext {
 		return _status;
 	}
 
+	private String _getSubscribeFolderURL() {
+		return PortletURLBuilder.createActionURL(
+			_dlRequestHelper.getLiferayPortletResponse()
+		).setActionName(
+			"/document_library/edit_folder"
+		).setCMD(
+			Constants.SUBSCRIBE
+		).setRedirect(
+			_dlRequestHelper.getCurrentURL()
+		).setParameter(
+			"folderId", _getFolderId()
+		).buildString();
+	}
+
+	private String _getUnsubscribeFolderURL() {
+		return PortletURLBuilder.createActionURL(
+			_dlRequestHelper.getLiferayPortletResponse()
+		).setActionName(
+			"/document_library/edit_folder"
+		).setCMD(
+			Constants.UNSUBSCRIBE
+		).setRedirect(
+			_dlRequestHelper.getCurrentURL()
+		).setParameter(
+			"folderId", _getFolderId()
+		).buildString();
+	}
+
 	private String _getViewSlideShowURL() {
 		return PortletURLBuilder.createRenderURL(
 			_dlRequestHelper.getLiferayPortletResponse()
@@ -711,6 +787,20 @@ public class FolderActionDisplayContext {
 		return DLPermission.contains(
 			_dlRequestHelper.getPermissionChecker(),
 			_dlRequestHelper.getScopeGroupId(), ActionKeys.PERMISSIONS);
+	}
+
+	private boolean _hasSubscribePermission() throws PortalException {
+		Folder folder = _getFolder();
+
+		if (folder != null) {
+			return DLFolderPermission.contains(
+				_dlRequestHelper.getPermissionChecker(), folder,
+				ActionKeys.SUBSCRIBE);
+		}
+
+		return DLPermission.contains(
+			_dlRequestHelper.getPermissionChecker(),
+			_dlRequestHelper.getScopeGroupId(), ActionKeys.SUBSCRIBE);
 	}
 
 	private boolean _hasViewPermission() throws PortalException {
@@ -753,27 +843,17 @@ public class FolderActionDisplayContext {
 			return false;
 		}
 
-		if (DLFolderPermission.contains(
-				_dlRequestHelper.getPermissionChecker(),
-				_dlRequestHelper.getScopeGroupId(), _getFolderId(),
-				ActionKeys.ADD_SHORTCUT)) {
-
-			return true;
-		}
-
-		return false;
+		return DLFolderPermission.contains(
+			_dlRequestHelper.getPermissionChecker(),
+			_dlRequestHelper.getScopeGroupId(), _getFolderId(),
+			ActionKeys.ADD_SHORTCUT);
 	}
 
 	private boolean _isAddFolderActionVisible() throws PortalException {
-		if (DLFolderPermission.contains(
-				_dlRequestHelper.getPermissionChecker(),
-				_dlRequestHelper.getScopeGroupId(), _getFolderId(),
-				ActionKeys.ADD_FOLDER)) {
-
-			return true;
-		}
-
-		return false;
+		return DLFolderPermission.contains(
+			_dlRequestHelper.getPermissionChecker(),
+			_dlRequestHelper.getScopeGroupId(), _getFolderId(),
+			ActionKeys.ADD_FOLDER);
 	}
 
 	private boolean _isAddMediaActionVisible() throws PortalException {
@@ -789,15 +869,10 @@ public class FolderActionDisplayContext {
 			return false;
 		}
 
-		if (DLFolderPermission.contains(
-				_dlRequestHelper.getPermissionChecker(),
-				_dlRequestHelper.getScopeGroupId(), _getFolderId(),
-				ActionKeys.ADD_DOCUMENT)) {
-
-			return true;
-		}
-
-		return false;
+		return DLFolderPermission.contains(
+			_dlRequestHelper.getPermissionChecker(),
+			_dlRequestHelper.getScopeGroupId(), _getFolderId(),
+			ActionKeys.ADD_DOCUMENT);
 	}
 
 	private boolean _isAddRepositoryActionVisible() throws PortalException {
@@ -807,31 +882,24 @@ public class FolderActionDisplayContext {
 			return false;
 		}
 
-		if (DLFolderPermission.contains(
-				_dlRequestHelper.getPermissionChecker(),
-				_dlRequestHelper.getScopeGroupId(), _getFolderId(),
-				ActionKeys.ADD_REPOSITORY)) {
-
-			return true;
-		}
-
-		return false;
+		return DLFolderPermission.contains(
+			_dlRequestHelper.getPermissionChecker(),
+			_dlRequestHelper.getScopeGroupId(), _getFolderId(),
+			ActionKeys.ADD_REPOSITORY);
 	}
 
 	private Boolean _isCopyActionVisible() throws PortalException {
 		Folder folder = _getFolder();
 
-		if ((folder == null) ||
+		User user = _dlRequestHelper.getUser();
+
+		if ((folder == null) || user.isGuestUser() ||
 			RepositoryUtil.isExternalRepository(_getRepositoryId())) {
 
 			return false;
 		}
 
-		if (_hasViewPermission()) {
-			return true;
-		}
-
-		return false;
+		return _hasViewPermission();
 	}
 
 	private boolean _isDeleteExpiredTemporaryFileEntriesActionVisible() {
@@ -865,15 +933,10 @@ public class FolderActionDisplayContext {
 			return false;
 		}
 
-		if (DLFolderPermission.contains(
-				_dlRequestHelper.getPermissionChecker(),
-				_dlRequestHelper.getScopeGroupId(), _getFolderId(),
-				ActionKeys.DELETE)) {
-
-			return true;
-		}
-
-		return false;
+		return DLFolderPermission.contains(
+			_dlRequestHelper.getPermissionChecker(),
+			_dlRequestHelper.getScopeGroupId(), _getFolderId(),
+			ActionKeys.DELETE);
 	}
 
 	private boolean _isDownloadFolderActionVisible() throws PortalException {
@@ -885,11 +948,7 @@ public class FolderActionDisplayContext {
 			return false;
 		}
 
-		if (_hasViewPermission()) {
-			return true;
-		}
-
-		return false;
+		return _hasViewPermission();
 	}
 
 	private boolean _isEditFolderActionVisible() throws PortalException {
@@ -897,15 +956,10 @@ public class FolderActionDisplayContext {
 			return false;
 		}
 
-		if (DLFolderPermission.contains(
-				_dlRequestHelper.getPermissionChecker(),
-				_dlRequestHelper.getScopeGroupId(), _getFolderId(),
-				ActionKeys.UPDATE)) {
-
-			return true;
-		}
-
-		return false;
+		return DLFolderPermission.contains(
+			_dlRequestHelper.getPermissionChecker(),
+			_dlRequestHelper.getScopeGroupId(), _getFolderId(),
+			ActionKeys.UPDATE);
 	}
 
 	private boolean _isMoveFolderActionVisible() throws PortalException {
@@ -915,15 +969,10 @@ public class FolderActionDisplayContext {
 			return false;
 		}
 
-		if (DLFolderPermission.contains(
-				_dlRequestHelper.getPermissionChecker(),
-				_dlRequestHelper.getScopeGroupId(), _getFolderId(),
-				ActionKeys.UPDATE)) {
-
-			return true;
-		}
-
-		return false;
+		return DLFolderPermission.contains(
+			_dlRequestHelper.getPermissionChecker(),
+			_dlRequestHelper.getScopeGroupId(), _getFolderId(),
+			ActionKeys.UPDATE);
 	}
 
 	private boolean _isMultipleUploadSupported() {
@@ -983,6 +1032,14 @@ public class FolderActionDisplayContext {
 		return true;
 	}
 
+	private Boolean _isSubscribeFolderActionVisible() throws PortalException {
+		if (!_hasSubscribePermission()) {
+			return false;
+		}
+
+		return !_isUnsubscribeFolderActionVisible();
+	}
+
 	private boolean _isTrashEnabled() {
 		try {
 			Folder folder = _getFolder();
@@ -1003,6 +1060,24 @@ public class FolderActionDisplayContext {
 
 			return false;
 		}
+	}
+
+	private Boolean _isUnsubscribeFolderActionVisible() throws PortalException {
+		if (_subscribed != null) {
+			return _subscribed;
+		}
+
+		if (_hasSubscribePermission()) {
+			_subscribed = DLSubscriptionUtil.isSubscribedToFolder(
+				_dlRequestHelper.getCompanyId(),
+				_dlRequestHelper.getScopeGroupId(), _themeDisplay.getUserId(),
+				_getFolderId());
+		}
+		else {
+			_subscribed = false;
+		}
+
+		return _subscribed;
 	}
 
 	private boolean _isView() {
@@ -1075,6 +1150,8 @@ public class FolderActionDisplayContext {
 	private final HttpServletRequest _httpServletRequest;
 	private Long _repositoryId;
 	private Integer _status;
+	private Boolean _subscribed;
+	private final ThemeDisplay _themeDisplay;
 	private Boolean _view;
 
 }

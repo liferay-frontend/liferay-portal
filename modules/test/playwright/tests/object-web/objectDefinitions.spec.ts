@@ -23,13 +23,14 @@ import {getRandomInt} from '../../utils/getRandomInt';
 import getRandomString from '../../utils/getRandomString';
 import getFragmentDefinition from '../layout-content-page-editor-web/utils/getFragmentDefinition';
 import getPageDefinition from '../layout-content-page-editor-web/utils/getPageDefinition';
-import {createObjectField} from './utils/mockObjectFields';
+import {createObjectFields} from './utils/mockObjectFields';
 
 export const test = mergeTests(
 	collectionsPagesTest,
 	dataApiHelpersTest,
 	featureFlagsTest({
-		'LPS-178052': true,
+		'LPD-21926': {enabled: true},
+		'LPS-178052': {enabled: true},
 	}),
 	fragmentsPagesTest,
 	isolatedSiteTest,
@@ -458,17 +459,18 @@ test.describe('Manage object definitions through Model Builder', () => {
 		const {body: department} =
 			await objectDefinitionAPIClient.postObjectDefinition({
 				active: true,
+				enableFriendlyURLCustomization: true,
 				label: {
 					en_US: 'Department',
 					pt_BR: 'Departamento',
 				},
 				name: 'Department',
-				objectFields: [
-					createObjectField('text', {
+				objectFields: createObjectFields('text', [
+					{
 						label: 'Name',
 						name: 'name',
-					}),
-				],
+					},
+				]),
 				objectFolderExternalReferenceCode:
 					objectFolder.externalReferenceCode,
 				panelCategoryKey: 'control_panel.object',
@@ -478,7 +480,7 @@ test.describe('Manage object definitions through Model Builder', () => {
 				},
 				scope: 'company',
 				status: {code: 0},
-				titleObjectFieldName: 'id',
+				titleObjectFieldName: 'name',
 			});
 
 		apiHelpers.data.push({id: department.id, type: 'objectDefinition'});
@@ -500,7 +502,7 @@ test.describe('Manage object definitions through Model Builder', () => {
 				},
 				scope: 'site',
 				status: {code: 1},
-				titleObjectFieldName: 'name',
+				titleObjectFieldName: 'id',
 			});
 
 		apiHelpers.data.push({id: employee.id, type: 'objectDefinition'});
@@ -580,6 +582,14 @@ test.describe('Manage object definitions through Model Builder', () => {
 			await expect(
 				modelBuilderRightSidebarPage.objectDefinitionPanelLink
 			).toHaveText(panelLink, {ignoreCase: true});
+
+			// Seo Container
+
+			await expect(
+				modelBuilderRightSidebarPage.objectDefinitionSeo
+			).toBeChecked({
+				checked: objectDefinition.enableFriendlyURLCustomization,
+			});
 		}
 	});
 });
@@ -613,10 +623,10 @@ test.describe('Manage object definitions through View Object Definitions', () =>
 
 		await viewObjectDefinitionsPage.goto();
 
-		await page.locator('.dnd-td.item-actions').first().waitFor();
+		await page.locator('.cell-item-actions').first().waitFor();
 
 		await page
-			.locator('.dnd-td.item-actions')
+			.locator('.cell-item-actions')
 			.last()
 			.locator('.dropdown-toggle')
 			.click();

@@ -14,6 +14,78 @@
 	"items": [
 		{
 			"defaultLanguageId": "en_US",
+			"externalReferenceCode": "L_API_APPLICATION_STATUSES",
+			"listTypeEntries": [
+				{
+					"externalReferenceCode": "PUBLISHED",
+					"key": "published",
+					"name": "published"
+				},
+				{
+					"externalReferenceCode": "UNPUBLISHED",
+					"key": "unpublished",
+					"name": "unpublished"
+				}
+			],
+			"name": "Application Status",
+			"system": true
+		},
+		{
+			"defaultLanguageId": "en_US",
+			"externalReferenceCode": "L_API_ENDPOINT_HTTP_METHODS",
+			"listTypeEntries": [
+				{
+					"externalReferenceCode": "GET",
+					"key": "get",
+					"name": "get"
+				},
+				{
+					"externalReferenceCode": "POST",
+					"key": "post",
+					"name": "post"
+				}
+			],
+			"name": "HTTP Method",
+			"system": true
+		},
+		{
+			"defaultLanguageId": "en_US",
+			"externalReferenceCode": "L_API_ENDPOINT_RETRIEVE_TYPES",
+			"listTypeEntries": [
+				{
+					"externalReferenceCode": "COLLECTION",
+					"key": "collection",
+					"name": "collection"
+				},
+				{
+					"externalReferenceCode": "SINGLE_ELEMENT",
+					"key": "singleElement",
+					"name": "singleElement"
+				}
+			],
+			"name": "Retrieve Type",
+			"system": true
+		},
+		{
+			"defaultLanguageId": "en_US",
+			"externalReferenceCode": "L_API_ENDPOINT_SCOPES",
+			"listTypeEntries": [
+				{
+					"externalReferenceCode": "COMPANY",
+					"key": "company",
+					"name": "company"
+				},
+				{
+					"externalReferenceCode": "SITE",
+					"key": "site",
+					"name": "site"
+				}
+			],
+			"name": "Scope",
+			"system": true
+		},
+		{
+			"defaultLanguageId": "en_US",
 			"externalReferenceCode": "L_API_PROPERTY_TYPES",
 			"listTypeEntries": [
 				{

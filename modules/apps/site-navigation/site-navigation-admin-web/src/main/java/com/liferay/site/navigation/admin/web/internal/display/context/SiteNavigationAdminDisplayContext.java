@@ -443,16 +443,9 @@ public class SiteNavigationAdminDisplayContext {
 						ddmTemplate.getName(_themeDisplay.getLocale()))
 				).put(
 					"selected",
-					() -> {
-						if (Objects.equals(
-								ddmTemplate.getTemplateKey(),
-								_getDefaultDDMTemplateKey())) {
-
-							return true;
-						}
-
-						return false;
-					}
+					() -> Objects.equals(
+						ddmTemplate.getTemplateKey(),
+						_getDefaultDDMTemplateKey())
 				).put(
 					"value", HtmlUtil.escape(ddmTemplate.getTemplateKey())
 				));

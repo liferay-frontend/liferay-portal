@@ -34,7 +34,6 @@ import com.nimbusds.openid.connect.sdk.AuthenticationSuccessResponse;
 import com.nimbusds.openid.connect.sdk.Nonce;
 import com.nimbusds.openid.connect.sdk.OIDCTokenResponse;
 import com.nimbusds.openid.connect.sdk.OIDCTokenResponseParser;
-import com.nimbusds.openid.connect.sdk.claims.IDTokenClaimsSet;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import com.nimbusds.openid.connect.sdk.rp.OIDCClientInformation;
 import com.nimbusds.openid.connect.sdk.rp.OIDCClientMetadata;
@@ -150,7 +149,7 @@ public class OpenIdConnectTokenRequestUtil {
 			OIDCTokens oidcTokens = oidcTokenResponse.getOIDCTokens();
 
 			_validate(
-				clientID, secret, nonce,
+				authorizationCodeGrant, clientID, secret, nonce,
 				oidcClientInformation.getOIDCMetadata(), oidcProviderMetadata,
 				oidcTokens);
 
@@ -172,8 +171,9 @@ public class OpenIdConnectTokenRequestUtil {
 		}
 	}
 
-	private static IDTokenClaimsSet _validate(
-			ClientID clientID, Secret clientSecret, Nonce nonce,
+	private static void _validate(
+			AuthorizationGrant authorizationCodeGrant, ClientID clientID,
+			Secret clientSecret, Nonce nonce,
 			OIDCClientMetadata oidcClientMetadata,
 			OIDCProviderMetadata oidcProviderMetadata, OIDCTokens oidcTokens)
 		throws OpenIdConnectServiceException.TokenException {
@@ -204,8 +204,14 @@ public class OpenIdConnectTokenRequestUtil {
 			}
 		}
 
+		if ((authorizationCodeGrant instanceof RefreshTokenGrant) &&
+			(oidcTokens.getIDToken() == null)) {
+
+			return;
+		}
+
 		try {
-			return idTokenValidator.validate(oidcTokens.getIDToken(), nonce);
+			idTokenValidator.validate(oidcTokens.getIDToken(), nonce);
 		}
 		catch (BadJOSEException | JOSEException exception) {
 			throw new OpenIdConnectServiceException.TokenException(

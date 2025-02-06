@@ -5,6 +5,7 @@
 
 package com.liferay.layout.content.page.editor.web.internal.manager;
 
+import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.contributor.FragmentCollectionContributor;
 import com.liferay.fragment.contributor.FragmentCollectionContributorRegistry;
 import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
@@ -19,7 +20,9 @@ import com.liferay.info.form.InfoForm;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemFormProvider;
 import com.liferay.info.search.InfoSearchClassMapperRegistry;
+import com.liferay.layout.content.page.editor.web.internal.exception.FormContainerParentItemRequiredException;
 import com.liferay.layout.content.page.editor.web.internal.util.layout.structure.LayoutStructureUtil;
+import com.liferay.layout.util.constants.LayoutDataItemTypeConstants;
 import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
 import com.liferay.layout.util.structure.FormStepContainerStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.FormStyledLayoutStructureItem;
@@ -48,6 +51,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -354,6 +358,22 @@ public class FormItemManager {
 		return layoutStructureItemChanges;
 	}
 
+	public void checkFormContainerParentItemRequired(
+			List<FragmentEntryLink> fragmentEntryLinks,
+			LayoutStructure layoutStructure, Locale locale, String parentItemId)
+		throws PortalException {
+
+		if (_hasParentFormStyledLayoutStructureItem(
+				parentItemId, layoutStructure)) {
+
+			return;
+		}
+
+		if (_hasTypeInputFragmentEntryLink(fragmentEntryLinks, locale)) {
+			throw new FormContainerParentItemRequiredException();
+		}
+	}
+
 	public LayoutStructureItemChanges removeFormStepLayoutStructureItems(
 		FormStyledLayoutStructureItem formStyledLayoutStructureItem,
 		LayoutStructure layoutStructure, int numberOfSteps) {
@@ -650,6 +670,54 @@ public class FormItemManager {
 		}
 
 		return null;
+	}
+
+	private boolean _hasParentFormStyledLayoutStructureItem(
+		String itemId, LayoutStructure layoutStructure) {
+
+		LayoutStructureItem layoutStructureItem =
+			layoutStructure.getLayoutStructureItem(itemId);
+
+		if ((layoutStructureItem == null) ||
+			Objects.equals(
+				layoutStructureItem.getItemType(),
+				LayoutDataItemTypeConstants.TYPE_ROOT)) {
+
+			return false;
+		}
+
+		if (Objects.equals(
+				layoutStructureItem.getItemType(),
+				LayoutDataItemTypeConstants.TYPE_FORM)) {
+
+			return true;
+		}
+
+		return _hasParentFormStyledLayoutStructureItem(
+			layoutStructureItem.getParentItemId(), layoutStructure);
+	}
+
+	private boolean _hasTypeInputFragmentEntryLink(
+		List<FragmentEntryLink> fragmentEntryLinks, Locale locale) {
+
+		for (FragmentEntryLink fragmentEntryLink : fragmentEntryLinks) {
+			if (!Objects.equals(
+					fragmentEntryLink.getType(),
+					FragmentConstants.TYPE_INPUT)) {
+
+				continue;
+			}
+
+			Set<String> fragmentEntryLinkFieldTypes =
+				_fragmentEntryLinkManager.getFragmentEntryLinkFieldTypes(
+					fragmentEntryLink.getFragmentEntryLinkId(), locale);
+
+			if (!fragmentEntryLinkFieldTypes.contains("localizationSelect")) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private boolean _isAllowedFragmentEntryKey(

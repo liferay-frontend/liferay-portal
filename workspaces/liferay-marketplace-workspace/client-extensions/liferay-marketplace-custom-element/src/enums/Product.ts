@@ -30,12 +30,12 @@ export enum PRODUCT_PRICE_MODEL {
 }
 
 export enum PRODUCT_SPECIFICATION_KEY {
-	APP_BUILD_CLOUD_COMPATIBLE = 'type',
 	APP_BUILD_NUMBER_OF_CPUS = 'cpu',
 	APP_BUILD_RAM_IN_GBS = 'ram',
 	APP_DEVELOPER_NAME = 'developer-name',
 	APP_LICENSING_TYPE = 'license-type',
 	APP_PRICING_MODEL = 'price-model',
+	APP_SETTINGS = 'app-settings',
 	APP_SUPPORT_DOCUMENTATION_URL = 'appdocumentationurl',
 	APP_SUPPORT_EMAIL = 'supportemailaddress',
 	APP_SUPPORT_INSTALLATION_GUIDE_URL = 'appinstallationguideurl',
@@ -43,9 +43,9 @@ export enum PRODUCT_SPECIFICATION_KEY {
 	APP_SUPPORT_PUBLISHER_WEBSITE_URL = 'publisherwebsiteurl',
 	APP_SUPPORT_URL = 'supporturl',
 	APP_SUPPORT_USAGE_TERMS_URL = 'appusagetermsurl',
+	APP_TYPE = 'type',
 	APP_VERSION = 'latest-version',
 	APP_VERSION_NOTES = 'product-notes',
-	DOWNLOADABLE_CLOUD_APP = 'downloadable-cloud-app',
 	LIFERAY_VERSION = 'liferay-version',
 	SOLUTION_COMPANY_DESCRIPTION = 'solution-company-description',
 	SOLUTION_COMPANY_EMAIL = 'solution-company-email',

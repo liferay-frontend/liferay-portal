@@ -3,7 +3,6 @@ definition {
 
 	property portal.release = "true";
 	property portal.upstream = "true";
-	property testray.component.names = "Blogs";
 	property testray.main.component.name = "Blogs";
 
 	setUp {
@@ -56,7 +55,7 @@ definition {
 			site = "false",
 			siteURLKey = "site-name-staging");
 
-		Panel.expandPanel(panel = "Configuration");
+		Blogs.expandPanel(panel = "Friendly URL");
 
 		BlogsEntry.addCustomURL(customURL = "custom-url");
 
@@ -108,7 +107,7 @@ definition {
 			site = "false",
 			siteURLKey = "site-name-staging");
 
-		Panel.expandPanel(panel = "Configuration");
+		Blogs.expandPanel(panel = "Friendly URL");
 
 		BlogsEntry.addCustomURL(customURL = "custom-url");
 
@@ -164,7 +163,7 @@ definition {
 			site = "false",
 			siteURLKey = "site-name-staging");
 
-		Panel.expandPanel(panel = "Configuration");
+		Blogs.expandPanel(panel = "Friendly URL");
 
 		BlogsEntry.addCustomURL(customURL = "custom-url");
 

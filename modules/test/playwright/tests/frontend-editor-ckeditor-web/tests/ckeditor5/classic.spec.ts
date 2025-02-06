@@ -15,8 +15,8 @@ export const test = mergeTests(
 	apiHelpersTest,
 	ckeditorSamplePageTest,
 	featureFlagsTest({
-		'LPD-11235': true,
-		'LPS-178052': true,
+		'LPD-11235': {enabled: true},
+		'LPS-178052': {enabled: true},
 	}),
 	isolatedSiteTest,
 	loginTest()
@@ -40,5 +40,25 @@ test(
 				'p[data-placeholder="This placeholder is set from EditorConfigContributor."]'
 			)
 		).toBeAttached();
+	}
+);
+
+test(
+	'Assert editor is rendered with the default plugins configuration',
+	{tag: '@LPD-11235'},
+	async ({page}) => {
+		const editorToolbar = page.getByLabel('Editor toolbar');
+		const expectedButtons = ['Undo', 'Redo', 'Bold', 'Italic', 'Underline'];
+
+		await editorToolbar.waitFor({state: 'attached'});
+
+		await expect(editorToolbar).toBeVisible();
+
+		const availableButtons = await editorToolbar
+			.getByRole('button')
+			.locator('.ck-button__label')
+			.allInnerTexts();
+
+		expect(availableButtons).toEqual(expectedButtons);
 	}
 );

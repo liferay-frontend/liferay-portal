@@ -84,8 +84,8 @@ public class ExportTaskResourceImpl extends BaseExportTaskResourceImpl {
 
 	@Override
 	public ExportTask postExportTask(
-			String className, String contentType, String callbackURL,
-			String externalReferenceCode, String fieldNames,
+			String className, String contentType, String batchNestedFields,
+			String callbackURL, String externalReferenceCode, String fieldNames,
 			String taskItemDelegateName)
 		throws Exception {
 

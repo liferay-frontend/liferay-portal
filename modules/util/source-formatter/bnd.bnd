@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Source Formatter
 Bundle-SymbolicName: com.liferay.source.formatter
-Bundle-Version: 1.0.1463
+Bundle-Version: 1.0.1473
 Main-Class: com.liferay.source.formatter.SourceFormatter
 -includeresource:\
 	@biz.aQute.bndlib-[0-9.]*.jar!/aQute/bnd/osgi/Constants.class,\
@@ -62,6 +62,7 @@ Main-Class: com.liferay.source.formatter.SourceFormatter
 	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/search/highlight/HighlightUtil.class,\
 	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/security/RandomUtil.class,\
 	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/security/SecureRandomUtil.class,\
+	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/security/auth/CompanyCentralizedThreadLocal.class,\
 	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/security/auth/CompanyThreadLocal.class,\
 	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/security/xml/SecureXMLFactoryProvider.class,\
 	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/security/xml/SecureXMLFactoryProviderUtil.class,\

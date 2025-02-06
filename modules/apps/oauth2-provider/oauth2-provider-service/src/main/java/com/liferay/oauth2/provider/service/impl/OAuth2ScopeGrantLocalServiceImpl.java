@@ -203,13 +203,8 @@ public class OAuth2ScopeGrantLocalServiceImpl
 
 		String bundleSymbolicName = bundle.getSymbolicName();
 
-		if (!Objects.equals(
-				oAuth2ScopeGrant.getBundleSymbolicName(), bundleSymbolicName)) {
-
-			return false;
-		}
-
-		return true;
+		return Objects.equals(
+			oAuth2ScopeGrant.getBundleSymbolicName(), bundleSymbolicName);
 	}
 
 }

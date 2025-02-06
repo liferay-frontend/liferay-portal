@@ -18,11 +18,9 @@ import {clickAndExpectToBeHidden} from '../../utils/clickAndExpectToBeHidden';
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import getGlobalSiteId from '../../utils/getGlobalSiteId';
 import getRandomString from '../../utils/getRandomString';
-import {
-	disableSystemFeatureFlag,
-	enableSystemFeatureFlag,
-} from '../../utils/systemFeatureFlag';
+import {getTempDir} from '../../utils/temp';
 import {waitForAlert} from '../../utils/waitForAlert';
+import {zipFolder} from '../../utils/zip';
 import getFormContainerDefinition from '../layout-content-page-editor-web/utils/getFormContainerDefinition';
 import getFragmentDefinition from '../layout-content-page-editor-web/utils/getFragmentDefinition';
 import getPageDefinition from '../layout-content-page-editor-web/utils/getPageDefinition';
@@ -32,12 +30,26 @@ const test = mergeTests(
 	apiHelpersTest,
 	isolatedSiteTest,
 	featureFlagsTest({
-		'LPS-178052': true,
+		'LPS-178052': {enabled: true},
 	}),
 	loginTest(),
 	fragmentsPagesTest,
 	pageEditorPagesTest,
 	pageManagementSiteTest
+);
+
+const testDeprecatedFragmentSet = mergeTests(
+	test,
+	featureFlagsTest({
+		'LPD-40529': {enabled: true, system: true},
+	})
+);
+
+const testEmbeddingWidgets = mergeTests(
+	test,
+	featureFlagsTest({
+		'LPD-40535': {enabled: true},
+	})
 );
 
 async function checkBackButtonTitle(page: Page, title: string) {
@@ -67,15 +79,7 @@ test(
 
 		await fragmentsPage.createFragment(setName, fragmentName);
 
-		// Assert fragment editor autocomplete for lfr-widget tags
-
 		await page.locator('.html.source-editor .CodeMirror').click();
-
-		await page.keyboard.type('<lfr-');
-
-		await expect(page.getByText('lfr-widget-asset-list')).toBeVisible();
-
-		await page.keyboard.press('Enter');
 
 		// Assert fragment editor autocomplete for variables
 
@@ -621,7 +625,9 @@ test(
 
 		await clickAndExpectToBeVisible({
 			autoClick: true,
-			target: page.getByRole('menuitem', {name: 'Configuration'}),
+			target: page
+				.locator('.dropdown-menu')
+				.getByRole('menuitem', {name: 'Configuration'}),
 			trigger: page.getByLabel('Options', {exact: true}),
 		});
 
@@ -1040,12 +1046,6 @@ test(
 			});
 		}).toPass();
 
-		await expect(
-			fragmentsPage.selectFragmentIFrame.getByText(
-				globalInputFragmentEntryName
-			)
-		).toBeAttached();
-
 		// Assert new input fragment is present under long text type
 
 		await fragmentsPage.goto(pageManagementSite.friendlyUrlPath);
@@ -1167,6 +1167,364 @@ test(
 		await pageEditorPage.goto(layout, site.friendlyUrlPath);
 
 		await expect(page.getByText('Test Fragment New')).toBeVisible();
+	}
+);
+
+test(
+	'Export Import multiple fragment collections',
+	{
+		tag: ['@LPS-98501', '@LPS-120957', '@LPS-175242'],
+	},
+	async ({apiHelpers, fragmentsPage, page, site}) => {
+
+		// Create two global fragment set
+
+		const globalSiteId = await getGlobalSiteId(apiHelpers);
+
+		const globalFragmentCollectionName1 = getRandomString();
+
+		const globalFragmentCollection1 =
+			await apiHelpers.jsonWebServicesFragmentCollection.addFragmentCollection(
+				{
+					groupId: globalSiteId,
+					name: globalFragmentCollectionName1,
+				}
+			);
+
+		const globalFragmentCollectionName2 = getRandomString();
+
+		const globalFragmentCollection2 =
+			await apiHelpers.jsonWebServicesFragmentCollection.addFragmentCollection(
+				{
+					groupId: globalSiteId,
+					name: globalFragmentCollectionName2,
+				}
+			);
+
+		// Create global fragment for each fragment set
+
+		const fragmentEntryName1 = getRandomString();
+
+		await apiHelpers.jsonWebServicesFragmentEntry.addFragmentEntry({
+			fragmentCollectionId:
+				globalFragmentCollection1.fragmentCollectionId,
+			groupId: globalSiteId,
+			html: '<div class="fragment-name">Fragment Entry 1</div>',
+			name: fragmentEntryName1,
+		});
+
+		const fragmentEntryName2 = getRandomString();
+
+		await apiHelpers.jsonWebServicesFragmentEntry.addFragmentEntry({
+			fragmentCollectionId:
+				globalFragmentCollection2.fragmentCollectionId,
+			groupId: globalSiteId,
+			html: '<div class="fragment-name">Fragment Entry 2</div>',
+			name: fragmentEntryName2,
+		});
+
+		// Go to global site and export fragment sets
+
+		await fragmentsPage.goto('/global');
+
+		const downloadPromise = page.waitForEvent('download');
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {name: 'Export'}),
+			trigger: page.locator('.navbar-nav').getByLabel('Show Actions'),
+		});
+
+		const iframe = page.frameLocator('iframe[title="Export Fragment Set"]');
+
+		await iframe
+			.getByLabel('Select All Items on the Page')
+			.check({trial: true});
+
+		await iframe.getByLabel('Select All Items on the Page').check();
+
+		await page.getByRole('button', {exact: true, name: 'Export'}).click();
+
+		await waitForAlert(
+			page,
+			'Success:Your request processed successfully.'
+		);
+
+		const download = await downloadPromise;
+
+		const filePath = getTempDir() + download.suggestedFilename();
+
+		await download.saveAs(filePath);
+
+		// Delete global fragment sets
+
+		await apiHelpers.jsonWebServicesFragmentCollection.deleteFragmentCollection(
+			globalFragmentCollection1.fragmentCollectionId
+		);
+
+		await apiHelpers.jsonWebServicesFragmentCollection.deleteFragmentCollection(
+			globalFragmentCollection2.fragmentCollectionId
+		);
+
+		// Go to site and import fragment sets
+
+		await fragmentsPage.goto(site.friendlyUrlPath);
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {name: 'Import'}),
+			trigger: page.locator('.navbar-nav').getByLabel('Show Actions'),
+		});
+
+		await fragmentsPage.importFile(download.suggestedFilename(), filePath);
+
+		await expect(
+			page.getByRole('button', {name: 'items were imported.'})
+		).toBeVisible();
+
+		// Assert imported entries
+
+		await fragmentsPage.goto(site.friendlyUrlPath);
+
+		await fragmentsPage.gotoFragmentSet(globalFragmentCollectionName1);
+
+		await expect(
+			page.getByRole('link', {name: fragmentEntryName1})
+		).toBeVisible();
+
+		await fragmentsPage.gotoFragmentSet(globalFragmentCollectionName2);
+
+		await expect(
+			page.getByRole('link', {name: fragmentEntryName2})
+		).toBeVisible();
+	}
+);
+
+test(
+	'Export Import global fragment collection',
+	{
+		tag: '@LPS-98501',
+	},
+	async ({apiHelpers, fragmentsPage, page}) => {
+
+		// Create global fragment set
+
+		const globalSiteId = await getGlobalSiteId(apiHelpers);
+
+		const globalFragmentCollectionName = getRandomString();
+
+		const globalFragmentCollection =
+			await apiHelpers.jsonWebServicesFragmentCollection.addFragmentCollection(
+				{
+					groupId: globalSiteId,
+					name: globalFragmentCollectionName,
+				}
+			);
+
+		// Create global fragment
+
+		const fragmentEntryName = getRandomString();
+
+		await apiHelpers.jsonWebServicesFragmentEntry.addFragmentEntry({
+			fragmentCollectionId: globalFragmentCollection.fragmentCollectionId,
+			groupId: globalSiteId,
+			html: '<div class="fragment-name">Fragment Entry 1</div>',
+			name: fragmentEntryName,
+		});
+
+		// Go to global site and export fragment set
+
+		await fragmentsPage.goto('/global');
+
+		await fragmentsPage.gotoFragmentSet(globalFragmentCollectionName);
+
+		const downloadPromise = page.waitForEvent('download');
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {name: 'Export'}),
+			trigger: page.locator('.sheet-title').getByLabel('Show Actions'),
+		});
+
+		const download = await downloadPromise;
+
+		const filePath = getTempDir() + download.suggestedFilename();
+
+		await download.saveAs(filePath);
+
+		// Delete fragment set
+
+		await fragmentsPage.deleteFragmentSet(globalFragmentCollectionName);
+
+		// Go to site and import fragment sets
+
+		await fragmentsPage.goto('/global');
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {name: 'Import'}),
+			trigger: page.locator('.navbar-nav').getByLabel('Show Actions'),
+		});
+
+		await fragmentsPage.importFile(download.suggestedFilename(), filePath);
+
+		await expect(
+			page.getByRole('button', {name: '1 item was imported.'})
+		).toBeVisible();
+
+		// Assert imported entries
+
+		await fragmentsPage.goto('/global');
+
+		await fragmentsPage.gotoFragmentSet(globalFragmentCollectionName);
+
+		await expect(
+			page.getByRole('link', {name: fragmentEntryName})
+		).toBeVisible();
+
+		// Delete global fragment set
+
+		await fragmentsPage.deleteFragmentSet(globalFragmentCollectionName);
+	}
+);
+
+test(
+	'Import fragments',
+	{
+		tag: '@LPS-188478',
+	},
+	async ({fragmentsPage, page, site}) => {
+
+		// Go to fragments administration
+
+		await fragmentsPage.goto(site.friendlyUrlPath);
+
+		// Open import view
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {name: 'Import'}),
+			trigger: page.getByTitle('Fragment Sets Options'),
+		});
+
+		// Import fragments
+
+		await expect(
+			page.getByRole('heading', {name: 'Import File'})
+		).toBeVisible();
+
+		await fragmentsPage.importFile(
+			'react-fragment-example.zip',
+			await zipFolder(
+				path.join(__dirname, '/dependencies/react-fragment-example.zip')
+			)
+		);
+
+		// Assert import message
+
+		await expect(
+			page.getByRole('button', {name: '1 item was imported.'})
+		).toBeVisible();
+
+		// Upload another file
+
+		await page.getByRole('button', {name: 'Upload Another File'}).click();
+
+		await fragmentsPage.importFile(
+			'basic-fragment-example.zip',
+			await zipFolder(
+				path.join(__dirname, '/dependencies/basic-fragment-example.zip')
+			)
+		);
+
+		await expect(
+			page.getByRole('button', {name: '1 item was imported.'})
+		).toBeVisible();
+
+		// Assert imported entries
+
+		await fragmentsPage.goto(site.friendlyUrlPath);
+
+		await expect(
+			page.getByRole('menuitem', {name: 'Collection Name'})
+		).toBeVisible();
+
+		await expect(
+			page.getByRole('menuitem', {name: 'Sample'})
+		).toBeVisible();
+	}
+);
+
+test(
+	'Import form fragment without field type',
+	{
+		tag: ['@LPS-151157', '@LPS-175242'],
+	},
+	async ({fragmentsPage, page, site}) => {
+
+		// Go to fragments administration
+
+		await fragmentsPage.goto(site.friendlyUrlPath);
+
+		// Open import view
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {name: 'Import'}),
+			trigger: page.getByTitle('Fragment Sets Options'),
+		});
+
+		// Import fragments
+
+		await expect(
+			page.getByRole('heading', {name: 'Import File'})
+		).toBeVisible();
+
+		await fragmentsPage.importFile(
+			'form-fragment-without-field-type.zip',
+			await zipFolder(
+				path.join(
+					__dirname,
+					'/dependencies/form-fragment-without-field-type.zip'
+				)
+			)
+		);
+
+		await expect(
+			page.locator('.panel', {
+				hasText: '1 item was imported with warnings.',
+			})
+		).toBeVisible();
+
+		await expect(
+			page.getByText(
+				'Fragment type input must have at least one field type'
+			)
+		).toBeVisible();
+
+		// Assert imported entries
+
+		await fragmentsPage.goto(site.friendlyUrlPath);
+
+		await fragmentsPage.gotoFragmentSet('Form Fragments');
+
+		const fragmentCard = page.locator('.card-type-asset', {
+			hasText: 'Fragment Example',
+		});
+
+		await expect(
+			fragmentCard.locator('.label-warning', {hasText: 'Warnings'})
+		).toBeVisible();
+
+		await fragmentsPage.clickAction('Edit', 'Fragment Example');
+
+		// Go to configuration tab
+
+		await page.getByRole('tab', {name: 'Configuration'}).click();
+
+		await expect(
+			page.getByText('No field type is defined for this fragment.')
+		).toBeVisible();
 	}
 );
 
@@ -1316,19 +1674,71 @@ test(
 );
 
 test(
+	'Preview cannot receive messages from other windows',
+	{tag: '@LPD-47375'},
+	async ({apiHelpers, context, fragmentsPage, page, site}) => {
+		const fragmentCollectionName = getRandomString();
+
+		const fragmentCollection =
+			await apiHelpers.jsonWebServicesFragmentCollection.addFragmentCollection(
+				{
+					groupId: site.id,
+					name: fragmentCollectionName,
+				}
+			);
+
+		// Create fragment
+
+		const fragmentEntryName = getRandomString();
+
+		await apiHelpers.jsonWebServicesFragmentEntry.addFragmentEntry({
+			fragmentCollectionId: fragmentCollection.fragmentCollectionId,
+			groupId: site.id,
+			html: '<div class="fragment-name">hello</div>',
+			name: fragmentEntryName,
+		});
+
+		await fragmentsPage.goto(site.friendlyUrlPath);
+
+		await fragmentsPage.gotoFragmentSet(fragmentCollectionName);
+
+		await fragmentsPage.clickAction('Edit', fragmentEntryName);
+
+		const url = await page
+			.locator('.fragment-preview__content')
+			.evaluate((element: any) => element.contentWindow.location.href);
+
+		await page.evaluate((url) => {
+			const previewTarget = window.open(url, '_blank');
+
+			setTimeout(() => {
+				previewTarget.postMessage(
+					JSON.stringify({
+						data: '<body><script>alert("This alert should not be shown")</script></body>',
+					}),
+					'*'
+				);
+			}, 1000);
+		}, url);
+
+		context.on('page', async (page) => {
+			await page.waitForLoadState();
+
+			page.on('dialog', async () => {
+				throw new Error('Alert detected');
+			});
+		});
+
+		await page.waitForTimeout(2000);
+	}
+);
+
+testDeprecatedFragmentSet(
 	'The deprecated label and button exist for the contributed Featured Content Fragment Set',
 	{
 		tag: '@LPD-42061',
 	},
 	async ({fragmentsPage, page, site}) => {
-
-		// Enable feature flag
-
-		await enableSystemFeatureFlag({
-			page,
-			title: 'Featured Content Fragment Set',
-			type: 'Deprecation',
-		});
 
 		// Go to fragment administration and look for the label
 
@@ -1345,17 +1755,119 @@ test(
 		await page.getByRole('button', {name: 'Deprecated'}).click();
 
 		await expect(
-			page.getByText(
-				'This feature is deprecated. Learn more about deprecated features.'
+			page.getByText('This feature is deprecated.')
+		).toBeVisible();
+	}
+);
+
+testEmbeddingWidgets(
+	'The Embedded Widget Modal appears when embedding widgets inside of fragments using lfr-widget tags',
+	{
+		tag: '@LPD-44999',
+	},
+	async ({fragmentsPage, page, site}) => {
+
+		// Go to fragment administration and create fragment set
+
+		await fragmentsPage.goto(site.friendlyUrlPath);
+
+		const setName = getRandomString();
+
+		await fragmentsPage.createFragmentSet(setName);
+
+		// Create fragment
+
+		const fragmentName = getRandomString();
+
+		await fragmentsPage.createFragment(setName, fragmentName);
+
+		// Check that fragment editor don't autocomplete for lfr-widget tags
+
+		await page.locator('.html.source-editor .CodeMirror').click();
+
+		await page.keyboard.type('<lfr-widget-');
+
+		await expect(page.getByText('lfr-widget-asset-list')).toBeVisible();
+
+		// Edit the fragment and add a lfr-widget tag
+
+		await page.keyboard.type('asset-list>');
+
+		// Check the warning icon
+
+		await page.locator('.warning-icon').hover();
+
+		await expect(
+			page.getByTitle(
+				'Embedding widgets within fragments is a deprecated practice that can cause performance issues.'
 			)
 		).toBeVisible();
 
-		// Disable feature flag
+		// Publish the fragment
 
-		await disableSystemFeatureFlag({
-			page,
-			title: 'Featured Content Fragment Set',
-			type: 'Deprecation',
-		});
+		await page.getByRole('button', {name: 'Publish'}).click();
+
+		const frameLocator = page.getByLabel('Fragment with Embedded Widget');
+
+		await frameLocator.getByRole('button', {name: 'Publish'}).click();
+
+		await expect(
+			page.getByText('Success:Your request completed successfully.')
+		).toBeVisible();
+	}
+);
+
+testEmbeddingWidgets(
+	'The Embedded Widget Modal appears when embedding widgets inside of fragments using liferay_portlet taglib',
+	{
+		tag: '@LPD-44999',
+	},
+	async ({fragmentsPage, page, site}) => {
+
+		// Go to fragment administration and create fragment set
+
+		await fragmentsPage.goto(site.friendlyUrlPath);
+
+		const setName = getRandomString();
+
+		await fragmentsPage.createFragmentSet(setName);
+
+		// Create fragment
+
+		const fragmentName = getRandomString();
+
+		await fragmentsPage.createFragment(setName, fragmentName);
+
+		// Add a liferay_portlet taglib to see the warning icon
+
+		await page.locator('.html.source-editor .CodeMirror').click();
+
+		await page.keyboard.type(
+			'[@liferay_portlet["runtime"]\n' +
+				'portletName="com_liferay_journal_content_web_portlet_JournalContentPortlet"\n' +
+				'instanceId="myInstanceId" persistSettings=false /]'
+		);
+
+		// Check the warning icon
+
+		await page.locator('.warning-icon').hover();
+
+		await expect(
+			page.getByTitle(
+				'Embedding widgets within fragments is a deprecated practice that can cause performance issues.'
+			)
+		).toBeVisible();
+
+		// Publish the fragment
+
+		await page.getByRole('button', {name: 'Publish'}).click();
+
+		const frameLocator = page.getByLabel('Fragment with Embedded Widget');
+
+		await frameLocator.getByRole('button', {name: 'Publish'}).click();
+
+		await expect(
+			page.getByText('Success:Your request completed successfully.')
+		).toBeVisible();
 	}
 );

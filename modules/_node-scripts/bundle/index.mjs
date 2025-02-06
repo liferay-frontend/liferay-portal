@@ -4,12 +4,12 @@
  */
 
 import getGlobalImports from '../configuration/getGlobalImports.mjs';
+import getGlobalSubmodules from '../configuration/getGlobalSubmodules.mjs';
 import getLanguageJSON from '../configuration/getLanguageJSON.mjs';
 import getOverridenPackageSymbols from '../configuration/getOverridenPackageSymbols.mjs';
 import getProjectDescription from '../configuration/getProjectDescription.mjs';
 import getProjectEntryPoints from '../configuration/getProjectEntryPoints.mjs';
 import getProjectExports from '../configuration/getProjectExports.mjs';
-import getProjectNpmScriptsConfig from '../configuration/getProjectNpmScriptsConfig.mjs';
 import getProjectWebContextPath from '../configuration/getProjectWebContextPath.mjs';
 import writeExportBridges from './amd/writeExportBridges.mjs';
 import writeMainBridge from './amd/writeMainBridge.mjs';
@@ -20,7 +20,6 @@ import writeCSSExportsLoaderModules from './cssLoad/writeCSSExportsLoaderModules
 import bundleCSSExports from './esbuild/bundleCSSExports.mjs';
 import bundleJavaScriptExports from './esbuild/bundleJavaScriptExports.mjs';
 import bundleJavaScriptMain from './esbuild/bundleJavaScriptMain.mjs';
-import runNpmScripts from './npmscripts/runNpmScripts.mjs';
 import processSassFiles from './sass/processSassFiles.mjs';
 import writeTimings from './writeTimings.mjs';
 
@@ -29,21 +28,21 @@ export default async function main() {
 
 	const [
 		globalImports,
+		globalSubmodules,
 		languageJSON,
 		overridenPackageSymbols,
 		projectDescription,
 		projectEntryPoints,
 		projectExports,
-		projectNpmScriptsConfig,
 		projectWebContextPath,
 	] = await Promise.all([
 		getGlobalImports(),
+		getGlobalSubmodules(),
 		getLanguageJSON(),
 		getOverridenPackageSymbols(),
 		getProjectDescription(),
 		getProjectEntryPoints(),
 		getProjectExports(),
-		getProjectNpmScriptsConfig(),
 		getProjectWebContextPath(),
 	]);
 
@@ -58,7 +57,8 @@ export default async function main() {
 			languageJSON,
 			overridenPackageSymbols,
 			projectEntryPoints,
-			projectWebContextPath
+			projectWebContextPath,
+			globalSubmodules
 		),
 		bundleJavaScriptExports(
 			globalImports,
@@ -102,7 +102,6 @@ export default async function main() {
 
 		// Rest of legacy build
 
-		runNpmScripts(projectNpmScriptsConfig),
 	]);
 
 	await writeTimings(start, endConfig);

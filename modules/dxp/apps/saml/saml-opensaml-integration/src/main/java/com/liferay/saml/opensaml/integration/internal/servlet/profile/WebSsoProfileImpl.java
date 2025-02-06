@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.LRUMap;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.URLCodec;
@@ -330,33 +331,36 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 			HttpServletResponse httpServletResponse)
 		throws Exception {
 
+		SamlSsoRequestContext samlSsoRequestContext = null;
+
 		String samlMessageId = ParamUtil.getString(
-			httpServletRequest, "saml_message_id");
+			httpServletRequest, "samlMessageId");
 
 		if (!Validator.isBlank(samlMessageId)) {
-			SamlSsoRequestContext samlSsoRequestContext =
-				_decodeAuthnConversationAfterLogin(
-					httpServletRequest, httpServletResponse);
+			samlSsoRequestContext = _decodeAuthnConversationAfterLogin(
+				httpServletRequest, httpServletResponse);
 
 			if (samlSsoRequestContext != null) {
 				MessageContext<?> messageContext =
 					samlSsoRequestContext.getSAMLMessageContext();
 
 				InOutOperationContext<?, ?> inOutOperationContext =
-					messageContext.getSubcontext(InOutOperationContext.class);
+					messageContext.getSubcontext(
+						InOutOperationContext.class, false);
 
-				MessageContext<?> inboundMessageContext =
-					inOutOperationContext.getInboundMessageContext();
+				if (inOutOperationContext != null) {
+					MessageContext<?> inboundMessageContext =
+						inOutOperationContext.getInboundMessageContext();
 
-				SAMLMessageInfoContext samlMessageInfoContext =
-					inboundMessageContext.getSubcontext(
-						SAMLMessageInfoContext.class, true);
+					SAMLMessageInfoContext samlMessageInfoContext =
+						inboundMessageContext.getSubcontext(
+							SAMLMessageInfoContext.class, true);
 
-				if ((messageContext != null) &&
-					samlMessageId.equals(
-						samlMessageInfoContext.getMessageId())) {
+					if (samlMessageId.equals(
+							samlMessageInfoContext.getMessageId())) {
 
-					return samlSsoRequestContext;
+						return samlSsoRequestContext;
+					}
 				}
 			}
 		}
@@ -372,9 +376,10 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 		}
 
 		if (idpInitiatedSSO) {
-			SamlSsoRequestContext samlSsoRequestContext =
-				_decodeAuthnConversationAfterLogin(
+			if (Validator.isBlank(samlMessageId)) {
+				samlSsoRequestContext = _decodeAuthnConversationAfterLogin(
 					httpServletRequest, httpServletResponse);
+			}
 
 			if (samlSsoRequestContext != null) {
 				MessageContext<?> messageContext =
@@ -383,9 +388,7 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 				SAMLPeerEntityContext samlPeerEntityContext =
 					messageContext.getSubcontext(SAMLPeerEntityContext.class);
 
-				if ((messageContext != null) &&
-					entityId.equals(samlPeerEntityContext.getEntityId())) {
-
+				if (entityId.equals(samlPeerEntityContext.getEntityId())) {
 					return samlSsoRequestContext;
 				}
 			}
@@ -405,8 +408,6 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 			samlBinding = samlBindingProvider.getSamlBinding(
 				SAMLConstants.SAML2_POST_BINDING_URI);
 		}
-
-		SamlSsoRequestContext samlSsoRequestContext = null;
 
 		if (idpInitiatedSSO) {
 			messageContext = getMessageContext(
@@ -1085,15 +1086,20 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 			HttpServletResponse httpServletResponse)
 		throws Exception {
 
+		SamlSsoRequestContext samlSsoRequestContext = null;
+
 		HttpSession httpSession = httpServletRequest.getSession();
 
-		SamlSsoRequestContext samlSsoRequestContext =
-			(SamlSsoRequestContext)httpSession.getAttribute(
+		Map<String, SamlSsoRequestContext> samlSsoRequestContexts =
+			(Map<String, SamlSsoRequestContext>)httpSession.getAttribute(
 				SamlWebKeys.SAML_SSO_REQUEST_CONTEXT);
 
-		if (samlSsoRequestContext != null) {
-			httpSession.removeAttribute(SamlWebKeys.SAML_SSO_REQUEST_CONTEXT);
+		if (samlSsoRequestContexts != null) {
+			samlSsoRequestContext = samlSsoRequestContexts.remove(
+				ParamUtil.getString(httpServletRequest, "samlMessageId"));
+		}
 
+		if (samlSsoRequestContext != null) {
 			MessageContext<?> messageContext = getMessageContext(
 				httpServletRequest, httpServletResponse,
 				samlSsoRequestContext.getPeerEntityId());
@@ -1895,9 +1901,6 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 
 		samlSsoRequestContext.setSAMLMessageContext(null);
 
-		httpSession.setAttribute(
-			SamlWebKeys.SAML_SSO_REQUEST_CONTEXT, samlSsoRequestContext);
-
 		httpServletResponse.addHeader(
 			HttpHeaders.CACHE_CONTROL,
 			HttpHeaders.CACHE_CONTROL_NO_CACHE_VALUE);
@@ -1914,7 +1917,7 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 
 		sb.append("/portal/login?redirect=");
 
-		StringBundler redirectSB = new StringBundler(4);
+		StringBundler redirectSB = new StringBundler(6);
 
 		redirectSB.append(themeDisplay.getPathMain());
 		redirectSB.append("/portal/saml/sso");
@@ -1937,15 +1940,26 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 			if ((samlMessageInfoContext != null) &&
 				(samlMessageInfoContext.getMessageId() != null)) {
 
-				redirectSB.append("?saml_message_id=");
+				_saveSamlSsoRequestContext(
+					httpSession, samlMessageInfoContext.getMessageId(),
+					samlSsoRequestContext);
+
+				redirectSB.append("?samlMessageId=");
 				redirectSB.append(
 					URLCodec.encodeURL(samlMessageInfoContext.getMessageId()));
 			}
 		}
 		else if (samlPeerEntityContext.getEntityId() != null) {
+			String samlMessageId = generateIdentifier(20);
+
+			_saveSamlSsoRequestContext(
+				httpSession, samlMessageId, samlSsoRequestContext);
+
 			redirectSB.append("?entityId=");
 			redirectSB.append(
 				URLCodec.encodeURL(samlPeerEntityContext.getEntityId()));
+			redirectSB.append("&samlMessageId=");
+			redirectSB.append(samlMessageId);
 		}
 
 		sb.append(URLCodec.encodeURL(redirectSB.toString()));
@@ -1958,6 +1972,25 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 		catch (IOException ioException) {
 			throw new SystemException(ioException);
 		}
+	}
+
+	private void _saveSamlSsoRequestContext(
+		HttpSession httpSession, String samlMessageId,
+		SamlSsoRequestContext samlSsoRequestContext) {
+
+		Map<String, SamlSsoRequestContext> samlSsoRequestContexts =
+			(Map<String, SamlSsoRequestContext>)httpSession.getAttribute(
+				SamlWebKeys.SAML_SSO_REQUEST_CONTEXT);
+
+		if (samlSsoRequestContexts == null) {
+			samlSsoRequestContexts = new LRUMap<>(
+				_samlConfiguration.getMaxSamlSsoRequestContexts());
+
+			httpSession.setAttribute(
+				SamlWebKeys.SAML_SSO_REQUEST_CONTEXT, samlSsoRequestContexts);
+		}
+
+		samlSsoRequestContexts.put(samlMessageId, samlSsoRequestContext);
 	}
 
 	private void _sendFailureResponse(

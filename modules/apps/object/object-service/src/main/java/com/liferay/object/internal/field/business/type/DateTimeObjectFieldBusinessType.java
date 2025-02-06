@@ -12,10 +12,13 @@ import com.liferay.object.field.business.type.ObjectFieldBusinessType;
 import com.liferay.object.field.setting.util.ObjectFieldSettingUtil;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectField;
+import com.liferay.object.model.ObjectFieldSetting;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.extension.PropertyDefinition;
@@ -28,6 +31,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -71,27 +75,77 @@ public class DateTimeObjectFieldBusinessType
 			ObjectField objectField, long userId, Map<String, Object> values)
 		throws PortalException {
 
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(
+			"yyyy-MM-dd HH:mm");
+
+		User user = _userLocalService.getUser(userId);
+
+		if (objectField.isLocalized()) {
+			Map<String, Object> localizedValues =
+				ObjectFieldBusinessType.super.getLocalizedValues(
+					objectField, userId, values);
+
+			if (localizedValues == null) {
+				return null;
+			}
+
+			for (Map.Entry<String, Object> entry : localizedValues.entrySet()) {
+				localizedValues.put(
+					entry.getKey(),
+					dateTimeFormatter.format(
+						_getLocalDateTime(
+							StringPool.UTC,
+							ObjectFieldSettingUtil.getTimeZoneId(
+								objectField.getObjectFieldSettings(), user),
+							GetterUtil.getString(entry.getValue()))));
+			}
+
+			return localizedValues;
+		}
+
 		String value = MapUtil.getString(values, objectField.getName());
 
 		if (Validator.isNull(value)) {
 			return StringPool.BLANK;
 		}
 
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(
-			"yyyy-MM-dd HH:mm");
-
 		return dateTimeFormatter.format(
 			_getLocalDateTime(
 				StringPool.UTC,
 				ObjectFieldSettingUtil.getTimeZoneId(
-					objectField.getObjectFieldSettings(),
-					_userLocalService.getUser(userId)),
+					objectField.getObjectFieldSettings(), user),
 				value));
 	}
 
 	@Override
 	public String getLabel(Locale locale) {
 		return _language.get(locale, "date-and-time");
+	}
+
+	@Override
+	public Map<String, Object> getLocalizedValues(
+			ObjectField objectField, Long userId, Map<String, Object> values)
+		throws PortalException {
+
+		Map<String, Object> localizedValues =
+			ObjectFieldBusinessType.super.getLocalizedValues(
+				objectField, userId, values);
+
+		if (localizedValues == null) {
+			return null;
+		}
+
+		User user = _userLocalService.getUser(userId);
+
+		for (Map.Entry<String, Object> entry : localizedValues.entrySet()) {
+			localizedValues.put(
+				entry.getKey(),
+				_getTimestamp(
+					objectField.getObjectFieldSettings(), user,
+					GetterUtil.getString(entry.getValue())));
+		}
+
+		return localizedValues;
 	}
 
 	@Override
@@ -123,18 +177,22 @@ public class DateTimeObjectFieldBusinessType
 			ObjectField objectField, long userId, Map<String, Object> values)
 		throws PortalException {
 
-		String value = MapUtil.getString(values, objectField.getName());
+		String value = String.valueOf(
+			ObjectFieldBusinessType.super.getValue(
+				objectField, userId, values));
 
 		if (Validator.isNull(value)) {
 			return null;
 		}
 
-		return Timestamp.valueOf(
-			_getLocalDateTime(
-				ObjectFieldSettingUtil.getTimeZoneId(
-					objectField.getObjectFieldSettings(),
-					_userLocalService.getUser(userId)),
-				StringPool.UTC, value));
+		return _getTimestamp(
+			objectField.getObjectFieldSettings(),
+			_userLocalService.getUser(userId), value);
+	}
+
+	@Override
+	public boolean isLocalizable() {
+		return true;
 	}
 
 	private LocalDateTime _getLocalDateTime(
@@ -156,6 +214,19 @@ public class DateTimeObjectFieldBusinessType
 
 		return LocalDateTime.ofInstant(
 			zonedDateTime.toInstant(), ZoneId.of(targetTimeZoneId));
+	}
+
+	private Timestamp _getTimestamp(
+		List<ObjectFieldSetting> objectFieldSettings, User user, String value) {
+
+		if (Validator.isNull(value)) {
+			return null;
+		}
+
+		return Timestamp.valueOf(
+			_getLocalDateTime(
+				ObjectFieldSettingUtil.getTimeZoneId(objectFieldSettings, user),
+				StringPool.UTC, value));
 	}
 
 	@Reference

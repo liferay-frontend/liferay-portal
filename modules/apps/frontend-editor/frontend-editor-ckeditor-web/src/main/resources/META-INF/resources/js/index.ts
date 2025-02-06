@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -22,3 +22,5 @@ export {Editor} from './ckeditor4/Editor';
 export {InlineEditor} from './ckeditor4/InlineEditor';
 
 export {default as CKEditor5ClassicEditor} from './ckeditor5/ClassicEditor';
+export {default as AdvancedPreset} from './ckeditor5/presets/AdvancedPreset';
+export {default as BasicPreset} from './ckeditor5/presets/BasicPreset';

@@ -6,10 +6,9 @@ dependencies {
 }
 
 jar {
-	setActions([])
-
 	dependsOn jarPatched
 	finalizedBy jarManifest
+	setActions([])
 }
 
 jarManifest {
@@ -22,10 +21,8 @@ jarPatched {
 	archiveFileName = jar.archiveFileName
 	destinationDirectory = jar.destinationDirectory
 	duplicatesStrategy = "exclude"
-
 	exclude "META-INF/versions/9/javax/xml/bind/ModuleUtil.class"
 	exclude "module-info.class"
-
 	from sourceSets.main.output
 
 	from {

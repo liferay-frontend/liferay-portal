@@ -1,8 +1,8 @@
 import {gql} from 'apollo-boost';
 
 export const EXPERIMENT_QUERY = gql`
-	query Experiment($experimentId: String!) {
-		experiment(experimentId: $experimentId) {
+	query Experiment($channelId: String!, $experimentId: String!) {
+		experiment(channelId: $channelId, experimentId: $experimentId) {
 			description
 			dxpExperienceName
 			dxpSegmentName
@@ -64,8 +64,8 @@ export const EXPERIMENT_QUERY = gql`
 `;
 
 export const EXPERIMENT_DRAFT_QUERY = gql`
-	query ExperimentDraft($experimentId: String!) {
-		experiment(experimentId: $experimentId) {
+	query ExperimentDraft($channelId: String!, $experimentId: String!) {
+		experiment(channelId: $channelId, experimentId: $experimentId) {
 			dxpExperienceName
 			dxpSegmentName
 			dxpVariants {
@@ -114,8 +114,8 @@ export const EXPERIMENT_LIST_QUERY = gql`
 `;
 
 export const EXPERIMENT_STATUS_QUERY = gql`
-	query ExperimentStatus($experimentId: String!) {
-		experiment(experimentId: $experimentId) {
+	query ExperimentStatus($channelId: String!, $experimentId: String!) {
+		experiment(channelId: $channelId, experimentId: $experimentId) {
 			status
 		}
 	}

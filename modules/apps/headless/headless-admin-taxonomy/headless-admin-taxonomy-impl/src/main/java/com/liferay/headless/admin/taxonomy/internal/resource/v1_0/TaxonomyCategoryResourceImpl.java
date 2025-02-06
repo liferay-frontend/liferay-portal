@@ -140,20 +140,6 @@ public class TaxonomyCategoryResourceImpl
 	}
 
 	@Override
-	public TaxonomyCategory getTaxonomyCategory(String taxonomyCategoryId)
-		throws Exception {
-
-		AssetCategory assetCategory = _getAssetCategory(taxonomyCategoryId);
-
-		ContentLanguageUtil.addContentLanguageHeader(
-			assetCategory.getAvailableLanguageIds(),
-			assetCategory.getDefaultLanguageId(), contextHttpServletResponse,
-			contextAcceptLanguage.getPreferredLocale());
-
-		return _toTaxonomyCategory(assetCategory);
-	}
-
-	@Override
 	public Page<TaxonomyCategory> getTaxonomyCategoryTaxonomyCategoriesPage(
 			String parentTaxonomyCategoryId, String search,
 			Aggregation aggregation, Filter filter, Pagination pagination,
@@ -203,10 +189,90 @@ public class TaxonomyCategoryResourceImpl
 	}
 
 	@Override
-	public Page<TaxonomyCategory> getTaxonomyVocabularyTaxonomyCategoriesPage(
-			Long taxonomyVocabularyId, Boolean flatten, String search,
-			Aggregation aggregation, Filter filter, Pagination pagination,
-			Sort[] sorts)
+	public TaxonomyCategory patchTaxonomyCategory(
+			String taxonomyCategoryId, TaxonomyCategory taxonomyCategory)
+		throws Exception {
+
+		AssetCategory assetCategory = _getAssetCategory(taxonomyCategoryId);
+
+		if (!ArrayUtil.contains(
+				assetCategory.getAvailableLanguageIds(),
+				contextAcceptLanguage.getPreferredLanguageId())) {
+
+			throw new BadRequestException(
+				StringBundler.concat(
+					"Unable to patch taxonomy category with language ",
+					LocaleUtil.toW3cLanguageId(
+						contextAcceptLanguage.getPreferredLanguageId()),
+					" because it is only available in the following languages ",
+					LocaleUtil.toW3cLanguageIds(
+						assetCategory.getAvailableLanguageIds())));
+		}
+
+		long assetVocabularyId = _getAssetVocabularyId(
+			assetCategory, taxonomyCategory);
+
+		assetCategory = _assetCategoryService.updateCategory(
+			assetCategory.getCategoryId(),
+			_getParentAssetCategoryId(
+				assetCategory, assetVocabularyId, taxonomyCategory),
+			LocalizedMapUtil.patchLocalizedMap(
+				assetCategory.getTitleMap(),
+				contextAcceptLanguage.getPreferredLocale(),
+				taxonomyCategory.getName(), taxonomyCategory.getName_i18n()),
+			LocalizedMapUtil.patchLocalizedMap(
+				assetCategory.getDescriptionMap(),
+				contextAcceptLanguage.getPreferredLocale(),
+				taxonomyCategory.getDescription(),
+				taxonomyCategory.getDescription_i18n()),
+			assetVocabularyId,
+			_merge(
+				_assetCategoryPropertyLocalService.getCategoryProperties(
+					assetCategory.getCategoryId()),
+				taxonomyCategory.getTaxonomyCategoryProperties()),
+			ServiceContextBuilder.create(
+				assetCategory.getGroupId(), contextHttpServletRequest,
+				taxonomyCategory.getViewableByAsString()
+			).build());
+
+		return _toTaxonomyCategory(assetCategory);
+	}
+
+	@Override
+	public TaxonomyCategory postTaxonomyCategoryTaxonomyCategory(
+			String parentTaxonomyCategoryId, TaxonomyCategory taxonomyCategory)
+		throws Exception {
+
+		AssetCategory assetCategory = _getAssetCategory(
+			parentTaxonomyCategoryId);
+
+		return _addTaxonomyCategory(
+			taxonomyCategory.getExternalReferenceCode(),
+			assetCategory.getGroupId(), assetCategory.getDefaultLanguageId(),
+			taxonomyCategory, assetCategory.getCategoryId(),
+			assetCategory.getVocabularyId());
+	}
+
+	@Override
+	protected TaxonomyCategory doGetTaxonomyCategory(String taxonomyCategoryId)
+		throws Exception {
+
+		AssetCategory assetCategory = _getAssetCategory(taxonomyCategoryId);
+
+		ContentLanguageUtil.addContentLanguageHeader(
+			assetCategory.getAvailableLanguageIds(),
+			assetCategory.getDefaultLanguageId(), contextHttpServletResponse,
+			contextAcceptLanguage.getPreferredLocale());
+
+		return _toTaxonomyCategory(assetCategory);
+	}
+
+	@Override
+	protected Page<TaxonomyCategory>
+			doGetTaxonomyVocabularyTaxonomyCategoriesPage(
+				Long taxonomyVocabularyId, Boolean flatten, String search,
+				Aggregation aggregation, Filter filter, Pagination pagination,
+				Sort[] sorts)
 		throws Exception {
 
 		AssetVocabulary assetVocabulary = _assetVocabularyService.getVocabulary(
@@ -264,8 +330,8 @@ public class TaxonomyCategoryResourceImpl
 	}
 
 	@Override
-	public TaxonomyCategory
-			getTaxonomyVocabularyTaxonomyCategoryByExternalReferenceCode(
+	protected TaxonomyCategory
+			doGetTaxonomyVocabularyTaxonomyCategoryByExternalReferenceCode(
 				Long taxonomyVocabularyId, String externalReferenceCode)
 		throws Exception {
 
@@ -278,72 +344,7 @@ public class TaxonomyCategoryResourceImpl
 	}
 
 	@Override
-	public TaxonomyCategory patchTaxonomyCategory(
-			String taxonomyCategoryId, TaxonomyCategory taxonomyCategory)
-		throws Exception {
-
-		AssetCategory assetCategory = _getAssetCategory(taxonomyCategoryId);
-
-		if (!ArrayUtil.contains(
-				assetCategory.getAvailableLanguageIds(),
-				contextAcceptLanguage.getPreferredLanguageId())) {
-
-			throw new BadRequestException(
-				StringBundler.concat(
-					"Unable to patch taxonomy category with language ",
-					LocaleUtil.toW3cLanguageId(
-						contextAcceptLanguage.getPreferredLanguageId()),
-					" because it is only available in the following languages ",
-					LocaleUtil.toW3cLanguageIds(
-						assetCategory.getAvailableLanguageIds())));
-		}
-
-		long assetVocabularyId = _getAssetVocabularyId(
-			assetCategory, taxonomyCategory);
-
-		return _toTaxonomyCategory(
-			_assetCategoryService.updateCategory(
-				assetCategory.getCategoryId(),
-				_getParentAssetCategoryId(
-					assetCategory, assetVocabularyId, taxonomyCategory),
-				LocalizedMapUtil.patchLocalizedMap(
-					assetCategory.getTitleMap(),
-					contextAcceptLanguage.getPreferredLocale(),
-					taxonomyCategory.getName(),
-					taxonomyCategory.getName_i18n()),
-				LocalizedMapUtil.patchLocalizedMap(
-					assetCategory.getDescriptionMap(),
-					contextAcceptLanguage.getPreferredLocale(),
-					taxonomyCategory.getDescription(),
-					taxonomyCategory.getDescription_i18n()),
-				assetVocabularyId,
-				_merge(
-					_assetCategoryPropertyLocalService.getCategoryProperties(
-						assetCategory.getCategoryId()),
-					taxonomyCategory.getTaxonomyCategoryProperties()),
-				ServiceContextBuilder.create(
-					assetCategory.getGroupId(), contextHttpServletRequest,
-					taxonomyCategory.getViewableByAsString()
-				).build()));
-	}
-
-	@Override
-	public TaxonomyCategory postTaxonomyCategoryTaxonomyCategory(
-			String parentTaxonomyCategoryId, TaxonomyCategory taxonomyCategory)
-		throws Exception {
-
-		AssetCategory assetCategory = _getAssetCategory(
-			parentTaxonomyCategoryId);
-
-		return _addTaxonomyCategory(
-			taxonomyCategory.getExternalReferenceCode(),
-			assetCategory.getGroupId(), assetCategory.getDefaultLanguageId(),
-			taxonomyCategory, assetCategory.getCategoryId(),
-			assetCategory.getVocabularyId());
-	}
-
-	@Override
-	public TaxonomyCategory postTaxonomyVocabularyTaxonomyCategory(
+	protected TaxonomyCategory doPostTaxonomyVocabularyTaxonomyCategory(
 			Long taxonomyVocabularyId, TaxonomyCategory taxonomyCategory)
 		throws Exception {
 
@@ -358,7 +359,7 @@ public class TaxonomyCategoryResourceImpl
 	}
 
 	@Override
-	public TaxonomyCategory putTaxonomyCategory(
+	protected TaxonomyCategory doPutTaxonomyCategory(
 			String taxonomyCategoryId, TaxonomyCategory taxonomyCategory)
 		throws Exception {
 
@@ -368,8 +369,8 @@ public class TaxonomyCategoryResourceImpl
 	}
 
 	@Override
-	public TaxonomyCategory
-			putTaxonomyVocabularyTaxonomyCategoryByExternalReferenceCode(
+	protected TaxonomyCategory
+			doPutTaxonomyVocabularyTaxonomyCategoryByExternalReferenceCode(
 				Long taxonomyVocabularyId, String externalReferenceCode,
 				TaxonomyCategory taxonomyCategory)
 		throws Exception {

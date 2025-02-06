@@ -1,4 +1,4 @@
-@component-name = "portal-publications"
+@component-name = "portal-site-management"
 definition {
 
 	property portal.acceptance = "true";
@@ -291,7 +291,7 @@ definition {
 
 		WebContent.editFriendlyURL(webContentFriendlyURL = "prueba");
 
-		PortletEntry.publish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		Navigator.openSpecificURL(url = "${portalURL}/es/web/test-site-name/-/prueba");
 
@@ -317,7 +317,7 @@ definition {
 
 		WebContent.editFriendlyURL(webContentFriendlyURL = "");
 
-		PortletEntry.publish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		WebContentNavigator.openToEditWCInSite(
 			groupName = "Test Site Name",
@@ -337,7 +337,7 @@ definition {
 
 		WebContent.editFriendlyURL(webContentFriendlyURL = "prueba");
 
-		PortletEntry.publish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		Navigator.openSpecificURL(url = "${portalURL}/es/web/test-site-name/-/prueba");
 
@@ -465,15 +465,19 @@ definition {
 
 		AssetPublisherPortlet.configureDisplaySettings(displaySettings = "Set as the Default Asset Publisher for This Page");
 
-		JSONWebcontent.addWebContent(
-			content = "Web Content Content",
+		WebContentNavigator.openToAddBasicArticle(
 			groupName = "Test Site Name",
-			title = "Web Content Article");
+			siteURLKey = "test-site-name");
+
+		WebContent.addWithFriendlyURL(
+			friendlyURL = "web-content-article",
+			webContentContent = "Web Content Content",
+			webContentTitle = "Web Content Article");
 
 		WebContentNavigator.openToEditWCInSite(
 			groupName = "Test Site Name",
 			siteURLKey = "test-site-name",
-			version = "1.1",
+			urlTitle = "web-content-article",
 			webContentTitle = "Web Content Article");
 
 		WebContent.editDisplayPage(
@@ -482,7 +486,7 @@ definition {
 
 		WebContent.editFriendlyURL(webContentFriendlyURL = "friendlyUrl");
 
-		PortletEntry.publish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		WebContentNavigator.openToEditWCInSite(
 			groupName = "Test Site Name",
@@ -493,7 +497,7 @@ definition {
 
 		WebContent.editFriendlyURL(webContentFriendlyURL = "web-content-article");
 
-		PortletEntry.publish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		Navigator.openSpecificURL(url = "${portalURL}/web/test-site-name/-/web-content-article");
 
@@ -676,7 +680,9 @@ definition {
 
 		PagesAdmin.viewActiveURL(activeURL = "/new-test-page");
 
-		PagesAdmin.viewOldFriendlyURLNotPresent(oldFriendlyURLList = "/test-page");
+		AssertElementNotPresent(
+			key_oldFriendlyURL = "/test-page",
+			locator1 = "PagesAdmin#FRIENDLY_URL_HISTORY_ITEM");
 	}
 
 	@description = "This ensures that a previous friendlyURL of web content can be deleted when updating."
@@ -716,7 +722,7 @@ definition {
 			pageName = "Test Source Page",
 			pageType = "Pages");
 
-		PortletEntry.publish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		Navigator.openSpecificURL(url = "${portalURL}/web/test-site-name/-/friendlyUrl");
 
@@ -808,7 +814,7 @@ definition {
 			groupName = "Test Site Name",
 			siteURLKey = "test-site-name");
 
-		Panel.expandPanel(panel = "Configuration");
+		Blogs.expandPanel(panel = "Friendly URL");
 
 		BlogsEntry.addCustomURL(customURL = "blogs-entry-new");
 
@@ -932,7 +938,7 @@ definition {
 			groupName = "Test Site Name",
 			siteURLKey = "test-site-name");
 
-		Panel.expandPanel(panel = "Configuration");
+		Blogs.expandPanel(panel = "Friendly URL");
 
 		BlogsEntry.addCustomURL(customURL = "blogs-entry-new");
 

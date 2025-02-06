@@ -705,11 +705,7 @@ public class StagedLayoutSetStagedModelDataHandler
 			GetterUtil.getLong(
 				layoutElement.attributeValue("layout-parent-layout-id")));
 
-		if (actions.contains(Constants.SKIP)) {
-			return true;
-		}
-
-		return false;
+		return actions.contains(Constants.SKIP);
 	}
 
 	private void _importClientExtensionEntryRels(
@@ -981,16 +977,24 @@ public class StagedLayoutSetStagedModelDataHandler
 			}
 
 			if (action.equals(Constants.ADD)) {
-				long layoutId = GetterUtil.getLong(
-					layoutElement.attributeValue("layout-id"));
+				Layout layout = layouts.get(
+					GetterUtil.getLong(
+						layoutElement.attributeValue("layout-id")));
+				String uuid = layoutElement.attributeValue("uuid");
 
-				Layout layout = layouts.get(layoutId);
+				if ((layout != null) &&
+					!Objects.equals(layout.getUuid(), uuid)) {
+
+					layout = _layoutLocalService.fetchLayoutByUuidAndGroupId(
+						uuid, portletDataContext.getScopeGroupId(),
+						privateLayout);
+				}
 
 				if (layout == null) {
 					if (_log.isDebugEnabled()) {
 						_log.debug(
 							StringBundler.concat(
-								"Layout ", layoutElement.attributeValue("uuid"),
+								"Layout ", uuid,
 								" might not have been imported due to a ",
 								"controlled error. See ",
 								"SitesImpl#addMergeFailFriendlyURLLayout."));

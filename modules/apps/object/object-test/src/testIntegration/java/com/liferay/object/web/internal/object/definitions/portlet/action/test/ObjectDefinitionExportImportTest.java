@@ -8,19 +8,26 @@ package com.liferay.object.web.internal.object.definitions.portlet.action.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.object.admin.rest.dto.v1_0.ObjectDefinition;
 import com.liferay.object.admin.rest.dto.v1_0.Status;
+import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.object.web.internal.BaseExportImportTestCase;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.SetUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
@@ -29,8 +36,6 @@ import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
 import java.util.List;
-import java.util.Locale;
-import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -41,7 +46,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Gabriel Albuquerque
  */
-@FeatureFlags("LPS-187142")
+@FeatureFlags("LPD-34594")
 @RunWith(Arquillian.class)
 public class ObjectDefinitionExportImportTest extends BaseExportImportTestCase {
 
@@ -82,16 +87,25 @@ public class ObjectDefinitionExportImportTest extends BaseExportImportTestCase {
 		objectDefinitionResource.deleteObjectDefinition(
 			getId("TestObjectDefinitionptBR"));
 
-		// Localized object definition with portuguese locale removed from the
-		// company available locales
+		Company company = CompanyTestUtil.addCompany();
 
-		Set<Locale> availableLocales = LanguageUtil.getAvailableLocales();
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					company.getCompanyId())) {
 
-		try {
+			User user = UserTestUtil.getAdminUser(company.getCompanyId());
+
+			PrincipalThreadLocal.setName(user.getUserId());
+
+			// Localized object definition with portuguese locale removed from
+			// the company available locales
+
 			CompanyTestUtil.resetCompanyLocales(
-				TestPropsValues.getCompanyId(),
+				company.getCompanyId(),
 				SetUtil.fromArray(LocaleUtil.SPAIN, LocaleUtil.US),
-				LocaleUtil.getDefault());
+				LocaleUtil.US);
+
+			LocaleThreadLocal.setSiteDefaultLocale(LocaleUtil.US);
 
 			String expectedJSON = read(
 				"test-object-definition.site-default-locale.json");
@@ -105,16 +119,94 @@ public class ObjectDefinitionExportImportTest extends BaseExportImportTestCase {
 
 			objectDefinitionResource.deleteObjectDefinition(
 				getId("TestObjectDefinitionptBRRemoved"));
-		}
-		finally {
+
+			// Localized object definition with United States english locale
+			// removed from the company available locales
+
 			CompanyTestUtil.resetCompanyLocales(
-				TestPropsValues.getCompanyId(), availableLocales,
-				LocaleUtil.getDefault());
+				company.getCompanyId(), SetUtil.fromArray(LocaleUtil.UK),
+				LocaleUtil.UK);
+
+			LocaleThreadLocal.setSiteDefaultLocale(LocaleUtil.UK);
+
+			testExportImportJSON(
+				read("test-object-definition.json"),
+				StringUtil.replace(
+					StringUtil.replace(
+						read("test-object-definition.json"),
+						"TestObjectDefinition",
+						"TestObjectDefinitionenUSRemoved"),
+					"\"en_US\":", "\"en_GB\":"),
+				"TESTOBJECTDEFINITIONENGLISHREMOVED",
+				"TestObjectDefinitionenUSRemoved");
+
+			objectDefinitionResource.deleteObjectDefinition(
+				getId("TestObjectDefinitionenUSRemoved"));
 		}
 	}
 
 	@Test
 	public void testExportImportObjectDefinition() throws Exception {
+
+		// Account restricted object definition
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+		String name = ObjectDefinitionTestUtil.getRandomName();
+
+		JSONObject accountRestrictedObjectDefinitionJSONObject =
+			jsonFactory.createJSONObject(
+				defaultObjectDefinitionJSON
+			).put(
+				"accountEntryRestricted", true
+			).put(
+				"accountEntryRestrictedObjectFieldName",
+				"r_testAccountRelationship_accountEntryId"
+			).put(
+				"active", true
+			).put(
+				"externalReferenceCode", externalReferenceCode
+			).put(
+				"name", name
+			).put(
+				"status",
+				jsonFactory.createJSONObject(
+				).put(
+					"code", 0
+				).put(
+					"label", "approved"
+				).put(
+					"label_i18n", "Approved"
+				)
+			);
+
+		accountRestrictedObjectDefinitionJSONObject.put(
+			"objectFields",
+			JSONUtil.concat(
+				accountRestrictedObjectDefinitionJSONObject.getJSONArray(
+					"objectFields"),
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"businessType", "Relationship"
+					).put(
+						"name", "r_testAccountRelationship_accountEntryId"
+					).put(
+						"objectDefinitionExternalReferenceCode1", "L_ACCOUNT"
+					).put(
+						"objectRelationshipExternalReferenceCode",
+						"OBJECTRELATIONSHIPERC"
+					))));
+
+		testExportImportJSON(
+			accountRestrictedObjectDefinitionJSONObject.toString(),
+			accountRestrictedObjectDefinitionJSONObject.toString(),
+			externalReferenceCode, name);
+
+		ObjectDefinition accountRestrictedObjectDefinition =
+			objectDefinitionResource.getObjectDefinitionByExternalReferenceCode(
+				externalReferenceCode);
+
+		Assert.assertTrue(
+			accountRestrictedObjectDefinition.getAccountEntryRestricted());
 
 		// Custom object definition
 
@@ -144,8 +236,8 @@ public class ObjectDefinitionExportImportTest extends BaseExportImportTestCase {
 
 		// Published object definition
 
-		String externalReferenceCode = RandomTestUtil.randomString();
-		String name = ObjectDefinitionTestUtil.getRandomName();
+		externalReferenceCode = RandomTestUtil.randomString();
+		name = ObjectDefinitionTestUtil.getRandomName();
 
 		String publishedObjectDefinitionJSON = jsonFactory.createJSONObject(
 			defaultObjectDefinitionJSON
@@ -202,7 +294,9 @@ public class ObjectDefinitionExportImportTest extends BaseExportImportTestCase {
 			JSONUtil.put(
 				createOneToManyObjectRelationship(
 					"TESTOBJECTDEFINITION1", "TESTOBJECTDEFINITION2",
-					"TESTOBJECTDEFINITION2", "objectRelationship1"))
+					"TESTOBJECTDEFINITION2",
+					ObjectDefinitionConstants.SCOPE_COMPANY,
+					"objectRelationship1"))
 		).put(
 			"rootObjectDefinitionExternalReferenceCode", "TESTOBJECTDEFINITION1"
 		).toString();

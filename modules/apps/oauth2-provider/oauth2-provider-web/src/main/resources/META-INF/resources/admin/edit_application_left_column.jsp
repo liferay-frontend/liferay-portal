@@ -19,7 +19,7 @@ OAuth2Application oAuth2Application = oAuth2AdminPortletDisplayContext.getOAuth2
 	<aui:input helpMessage="home-page-url-help" name="homePageURL" />
 
 	<c:if test="<%= oAuth2Application != null %>">
-		<aui:input helpMessage="application-description-help" label="application-description" name="description" />
+		<aui:input helpMessage="application-description-help" label="description" name="description" />
 	</c:if>
 
 	<aui:input helpMessage="redirect-uris-help" label="redirect-uris" name="redirectURIs" required="<%= true %>" />
@@ -35,7 +35,7 @@ OAuth2Application oAuth2Application = oAuth2AdminPortletDisplayContext.getOAuth2
 		<aui:option label="private-key-jwt" value="private_key_jwt" />
 	</aui:select>
 
-	<aui:input helpMessage="json-web-key-set-help" label="JSON Web Key Set" name="jwks" style="min-height: 100px;" type="textarea" />
+	<aui:input cssClass="jwks-textarea" helpMessage="json-web-key-set-help" label="JSON Web Key Set" name="jwks" type="textarea" />
 
 	<aui:select helpMessage="client-profile-help" name="clientProfile">
 

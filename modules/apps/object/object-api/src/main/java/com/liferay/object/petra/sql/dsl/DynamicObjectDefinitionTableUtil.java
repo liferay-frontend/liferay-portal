@@ -8,6 +8,8 @@ package com.liferay.object.petra.sql.dsl;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
+import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -56,7 +58,19 @@ public class DynamicObjectDefinitionTableUtil {
 		int size = 280;
 
 		if (StringUtil.equals(
-				businessType, ObjectFieldConstants.BUSINESS_TYPE_PICKLIST)) {
+				businessType,
+				ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST)) {
+
+			if (DBManagerUtil.getDBType() == DBType.SQLSERVER) {
+				size = 4000;
+			}
+			else {
+				size = 5000;
+			}
+		}
+		else if (StringUtil.equals(
+					businessType,
+					ObjectFieldConstants.BUSINESS_TYPE_PICKLIST)) {
 
 			size = 75;
 		}

@@ -35,11 +35,8 @@ module.exports = {
 			target: ['es2020'],
 		},
 	},
-	main: 'src/main/resources/META-INF/resources/index.es.js',
-	npmscripts: {
-		bridges: ['lodash.groupby', 'lodash.isequal', 'svg4everybody'],
-	},
+	main: './src/main/resources/META-INF/resources/index.es.js',
 	typescript: {
-		main: 'src/main/resources/META-INF/resources/index.d.ts',
+		main: './src/main/resources/META-INF/resources/index.d.ts',
 	},
 };

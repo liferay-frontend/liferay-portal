@@ -270,8 +270,7 @@ public class StripFilter extends BasePortalFilter {
 			minifiedContent = _minifierPortalCache.get(key);
 
 			if (minifiedContent == null) {
-				minifiedContent = MinifierUtil.minifyJavaScript(
-					resourceName, content);
+				minifiedContent = content;
 
 				boolean skipCache = false;
 
@@ -290,10 +289,6 @@ public class StripFilter extends BasePortalFilter {
 					_minifierPortalCache.put(key, minifiedContent);
 				}
 			}
-		}
-		else {
-			minifiedContent = MinifierUtil.minifyJavaScript(
-				resourceName, content);
 		}
 
 		if (Validator.isNotNull(minifiedContent)) {

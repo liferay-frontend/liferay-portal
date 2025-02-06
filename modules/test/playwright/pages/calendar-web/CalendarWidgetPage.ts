@@ -14,6 +14,8 @@ export class CalendarWidgetPage {
 	readonly addEventButton: Locator;
 	readonly allDayCheckbox: Locator;
 	readonly calendarWidget: Locator;
+	readonly calendarColumns: Locator;
+	readonly calendarOptions: Locator;
 	readonly closeConfigurationButton: Locator;
 	readonly configurationMenuItem: Locator;
 	readonly endDate: Locator;
@@ -25,6 +27,7 @@ export class CalendarWidgetPage {
 	readonly miniCalendarGrid: Locator;
 	readonly miniCalendarHeaderLabel: Locator;
 	readonly miniCalendarNextMonthButton: Locator;
+	readonly miniCalendarPastMonthButton: Locator;
 	readonly page: Page;
 	readonly publishEventButton: Locator;
 	readonly repeatCheckbox: Locator;
@@ -34,6 +37,7 @@ export class CalendarWidgetPage {
 	readonly successAlert: Locator;
 	readonly timeZoneDropdown: Locator;
 	readonly title: Locator;
+	readonly toggleSideBarButton: Locator;
 	readonly useGlobalTimeZoneCheckBox: Locator;
 
 	constructor(page: Page) {
@@ -44,6 +48,12 @@ export class CalendarWidgetPage {
 				exact: true,
 				name: 'All Day',
 			});
+		this.calendarColumns = page.locator(
+			'div.scheduler-view-day-table-col-shim'
+		);
+		this.calendarOptions = page
+			.locator('#wrapper')
+			.getByRole('button', {name: 'Options'});
 		this.calendarWidget = page.locator(
 			'.lfr-layout-structure-item-com-liferay-calendar-web-portlet-calendarportlet'
 		);
@@ -74,9 +84,12 @@ export class CalendarWidgetPage {
 		this.miniCalendarHeaderLabel = page.locator(
 			'.yui3-calendar-header-label'
 		);
-		this.miniCalendarNextMonthButton = page.getByRole('button', {
-			name: 'Go to next month',
-		});
+		this.miniCalendarNextMonthButton = page.locator(
+			'.yui3-calendarnav-nextmonth'
+		);
+		this.miniCalendarPastMonthButton = page.locator(
+			'.yui3-calendarnav-prevmonth'
+		);
 		this.page = page;
 		this.publishEventButton = page
 			.frameLocator('iframe')
@@ -108,6 +121,9 @@ export class CalendarWidgetPage {
 		this.title = page
 			.frameLocator('iframe')
 			.getByLabel('Title', {exact: true});
+		this.toggleSideBarButton = page.locator(
+			'.calendar-portlet-column-toggler .lexicon-icon-caret-left'
+		);
 		this.useGlobalTimeZoneCheckBox = page
 			.frameLocator('iframe')
 			.getByRole('checkbox', {
@@ -143,6 +159,10 @@ export class CalendarWidgetPage {
 		if (publishEvent) {
 			await this.publishEvent({waitForSuccessAlert: true});
 		}
+	}
+
+	async addEventOnGrid() {
+		await this.calendarColumns.nth(0).click();
 	}
 
 	async addInvitation(userName: string) {
@@ -229,7 +249,8 @@ export class CalendarWidgetPage {
 		useGlobalTimeZone: boolean
 	) {
 		await this.calendarWidget.click();
-		await this.calendarWidget.getByLabel('Options').click();
+
+		await this.calendarOptions.click();
 
 		await this.configurationMenuItem.click();
 

@@ -7,8 +7,9 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../fixtures/apiHelpersTest';
 import {changeTrackingPagesTest} from '../../fixtures/changeTrackingPagesTest';
-import {productMenuPageTest} from '../../fixtures/productMenuPageTest';
+import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../utils/getRandomString';
+import {PORTLET_URLS} from '../../utils/portletUrls';
 import {waitForAlert} from '../../utils/waitForAlert';
 import {blogsPagesTest} from '../blogs-web/fixtures/blogsPagesTest';
 import {journalPagesTest} from '../journal-web/fixtures/journalPagesTest';
@@ -17,20 +18,16 @@ export const test = mergeTests(
 	apiHelpersTest,
 	blogsPagesTest,
 	changeTrackingPagesTest,
-	journalPagesTest,
-	productMenuPageTest
+	journalPagesTest
 );
 
 test('Resolve deletion modification conflict publications by discarding', async ({
 	apiHelpers,
-	blogsEditBlogEntryPage,
-	blogsPage,
 	changeTrackingPage,
 	ctCollection,
 	journalEditArticlePage,
 	journalPage,
 	page,
-	productMenuPage,
 }) => {
 	await changeTrackingPage.workOnProduction();
 
@@ -40,7 +37,7 @@ test('Resolve deletion modification conflict publications by discarding', async 
 
 	await journalEditArticlePage.fillTitle(title);
 
-	await page.getByRole('button', {name: 'Publish'}).click();
+	await journalEditArticlePage.publishArticle();
 
 	await waitForAlert(page, `Success:${title} was created successfully.`);
 
@@ -67,21 +64,25 @@ test('Resolve deletion modification conflict publications by discarding', async 
 
 	await journalEditArticlePage.editArticle(title);
 
-	await page.getByRole('button', {name: 'Publish'}).click();
+	await clickAndExpectToBeVisible({
+		autoClick: true,
+		target: page.getByRole('menuitem', {
+			exact: true,
+			name: 'Publish',
+		}),
+		trigger: page.getByRole('button', {
+			name: 'Select and Confirm Publish Settings',
+		}),
+	});
 
 	await waitForAlert(page, `Success:${title} was updated successfully.`);
 
-	await blogsEditBlogEntryPage.goto();
+	const site =
+		await apiHelpers.headlessAdminUser.getSiteByFriendlyUrlPath('guest');
 
-	const content = getRandomString();
+	const blog = await apiHelpers.headlessDelivery.postBlog(site.id);
 
-	await blogsEditBlogEntryPage.editBlogEntry({
-		content,
-		publish: true,
-		title,
-	});
-
-	await changeTrackingPage.goToReviewChanges(ctCollection.name);
+	await changeTrackingPage.goToReviewChanges(ctCollection.body.name);
 
 	const publishLink = page.getByRole('link', {name: 'Publish'});
 
@@ -95,7 +96,7 @@ test('Resolve deletion modification conflict publications by discarding', async 
 
 	await expect(page.getByRole('link', {name: 'History'})).toBeVisible();
 
-	await page.getByRole('link', {name: ctCollection.name}).click();
+	await page.getByRole('link', {name: ctCollection.body.name}).click();
 
 	await expect(page.getByText('Deleted')).toBeVisible();
 
@@ -109,7 +110,7 @@ test('Resolve deletion modification conflict publications by discarding', async 
 
 	await expect(page.getByText(title)).toBeVisible();
 
-	await changeTrackingPage.goToReviewChanges(ctCollection2.name);
+	await changeTrackingPage.goToReviewChanges(ctCollection2.body.name);
 
 	await publishLink.click();
 
@@ -131,39 +132,10 @@ test('Resolve deletion modification conflict publications by discarding', async 
 	await expect(page.getByText('No web content was found.')).toBeVisible();
 
 	await apiHelpers.headlessChangeTracking.deleteCTCollection(
-		ctCollection2.id
+		ctCollection2.body.id
 	);
 
-	await blogsPage.goto();
-
-	await blogsPage.deleteAllBlogEntries();
-
-	await page.waitForTimeout(300);
-
-	await productMenuPage.openProductMenuIfClosed();
-
-	await page.getByRole('menuitem', {name: 'Recycle Bin'}).click();
-
-	await page.getByLabel('Recycle Bin').getByTestId('app').click();
-
-	await expect(
-		page
-			.getByTestId('header')
-			.locator('div')
-			.filter({hasText: 'Recycle Bin'})
-			.nth(1)
-	).toBeVisible();
-
-	await page.getByLabel('Select All Items on the Page').check();
-
-	await page.getByRole('button', {name: 'Delete'}).click();
-
-	await page
-		.getByLabel('Delete- Loading')
-		.getByRole('button', {name: 'Delete'})
-		.click();
-
-	await waitForAlert(page, 'Success:Your request completed successfully.');
+	await apiHelpers.headlessDelivery.deleteBlog(blog.id);
 });
 
 test('Resolve deletion modification conflict publications by restoring from recycle bin', async ({
@@ -172,7 +144,6 @@ test('Resolve deletion modification conflict publications by restoring from recy
 	journalEditArticlePage,
 	journalPage,
 	page,
-	productMenuPage,
 }) => {
 	await changeTrackingPage.workOnProduction();
 
@@ -182,7 +153,7 @@ test('Resolve deletion modification conflict publications by restoring from recy
 
 	await journalEditArticlePage.fillTitle(title);
 
-	await page.getByRole('button', {name: 'Publish'}).click();
+	await journalEditArticlePage.publishArticle();
 
 	await waitForAlert(page, `Success:${title} was created successfully.`);
 
@@ -192,7 +163,16 @@ test('Resolve deletion modification conflict publications by restoring from recy
 
 	await journalEditArticlePage.editArticle(title);
 
-	await page.getByRole('button', {name: 'Publish'}).click();
+	await clickAndExpectToBeVisible({
+		autoClick: true,
+		target: page.getByRole('menuitem', {
+			exact: true,
+			name: 'Publish',
+		}),
+		trigger: page.getByRole('button', {
+			name: 'Select and Confirm Publish Settings',
+		}),
+	});
 
 	await waitForAlert(page, `Success:${title} was updated successfully.`);
 
@@ -206,7 +186,7 @@ test('Resolve deletion modification conflict publications by restoring from recy
 
 	await page.reload();
 
-	await changeTrackingPage.goToReviewChanges(ctCollection.name);
+	await changeTrackingPage.goToReviewChanges(ctCollection.body.name);
 
 	const publishLink = page.getByRole('link', {name: 'Publish'});
 
@@ -224,19 +204,13 @@ test('Resolve deletion modification conflict publications by restoring from recy
 
 	await changeTrackingPage.workOnProduction();
 
-	await productMenuPage.openProductMenuIfClosed();
-
 	await journalPage.goto();
 
 	await page.getByLabel(`Actions for ${title}`).click();
 
 	await page.getByRole('menuitem', {name: 'Delete'}).click();
 
-	await page.reload();
-
-	await page.getByRole('menuitem', {name: 'Recycle Bin'}).click();
-
-	await page.getByLabel('Recycle Bin').getByTestId('app').click();
+	await page.goto(`/group/guest${PORTLET_URLS.recycleBin}`);
 
 	await expect(
 		page

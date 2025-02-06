@@ -27,9 +27,9 @@ interface ObjectRelationshipFormBaseProps {
 	hasDefinedObjectDefinitionTarget?: boolean;
 	objectDefinitionExternalReferenceCode1: string;
 	objectDefinitionExternalReferenceCode2?: string;
-	onChangeInheritanceCheckbox?: (
+	onChangeInheritanceCheckbox: (
 		event: React.ChangeEvent<HTMLInputElement>
-	) => void;
+	) => Promise<void> | void;
 	onSubmit?: (values?: Partial<ObjectRelationship>) => Promise<void>;
 	readonly?: boolean;
 	setValues: (values: Partial<ObjectRelationship>) => void;
@@ -250,21 +250,7 @@ export function ObjectRelationshipFormBase({
 			setObjectDefinitions(objectDefinitions);
 		};
 
-		if (readonly) {
-			setObjectDefinitions([
-				{
-					externalReferenceCode:
-						values.objectDefinitionExternalReferenceCode2 as string,
-					id: values.objectDefinitionId2 as number,
-					label: values.label as LocalizedValue<string>,
-					name: values.objectDefinitionName2 as string,
-					system: false,
-				},
-			]);
-		}
-		else {
-			fetchObjectDefinitions();
-		}
+		fetchObjectDefinitions();
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [objectDefinitionExternalReferenceCode1, readonly]);
@@ -445,7 +431,7 @@ export function ObjectRelationshipFormBase({
 
 			{onChangeInheritanceCheckbox &&
 				values.type === 'oneToMany' &&
-				Liferay.FeatureFlags['LPS-187142'] && (
+				Liferay.FeatureFlags['LPD-34594'] && (
 					<ObjectRelationshipInheritanceCheckbox
 						onChange={onChangeInheritanceCheckbox}
 						values={values}

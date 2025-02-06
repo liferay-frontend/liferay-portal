@@ -37,15 +37,20 @@ public class ProvidesResourceBundleLoaderAnalyzerPlugin
 		attrs.put("bundle.symbolic.name", analyzer.getBsn());
 		attrs.put("resource.bundle.base.name", "content.Language");
 
-		parameters.add(
-			ResourceBundleLoaderAnalyzerPlugin.LIFERAY_RESOURCE_BUNDLE, attrs);
+		String headerName = ResourceBundleLoaderAnalyzerPlugin.getHeaderName(
+			analyzer);
 
-		if (provideCapabilityHeaders.containsKey(
-				ResourceBundleLoaderAnalyzerPlugin.LIFERAY_RESOURCE_BUNDLE)) {
+		if (headerName.equals(
+				ResourceBundleLoaderAnalyzerPlugin.
+					HEADER_NAME_LIFERAY_LANGUAGE_RESOURCES)) {
 
-			provideCapabilityHeaders.add(
-				ResourceBundleLoaderAnalyzerPlugin.LIFERAY_RESOURCE_BUNDLE,
-				attrs);
+			attrs.put("module.only", "true");
+		}
+
+		parameters.add(headerName, attrs);
+
+		if (provideCapabilityHeaders.containsKey(headerName)) {
+			provideCapabilityHeaders.add(headerName, attrs);
 		}
 		else {
 			provideCapabilityHeaders.mergeWith(parameters, false);

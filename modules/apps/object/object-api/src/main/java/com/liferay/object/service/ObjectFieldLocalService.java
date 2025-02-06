@@ -388,6 +388,9 @@ public interface ObjectFieldLocalService
 	public int getObjectFieldsCountByListTypeDefinitionId(
 		long listTypeDefinitionId);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Map<Long, List<ObjectField>> getObjectFieldsMap(long companyId);
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *

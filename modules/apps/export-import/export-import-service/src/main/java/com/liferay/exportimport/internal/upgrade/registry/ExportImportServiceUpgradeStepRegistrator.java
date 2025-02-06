@@ -34,17 +34,23 @@ public class ExportImportServiceUpgradeStepRegistrator
 		registry.registerInitialization();
 
 		registry.register(
-			"0.0.1", "1.0.0",
+			"0.0.1", "0.0.2",
 			new com.liferay.exportimport.internal.upgrade.v1_0_0.
-				UpgradeBackgroundTaskExecutorClassNames(),
+				UpgradeBackgroundTaskExecutorClassNames());
+
+		registry.register(
+			"0.0.2", "1.0.0",
 			new PublisherRequestUpgradeProcess(
 				_exportImportConfigurationLocalService, _groupLocalService,
 				_schedulerEngineHelper, _userLocalService));
 
 		registry.register(
-			"1.0.0", "1.0.1",
+			"1.0.0", "1.0.0.step-1",
 			new SystemEventsUpgradeProcess(
-				_groupLocalService, _systemEventLocalService),
+				_groupLocalService, _systemEventLocalService));
+
+		registry.register(
+			"1.0.0.step-1", "1.0.1",
 			new UpgradeBackgroundTaskExecutorClassNames());
 
 		registry.register(

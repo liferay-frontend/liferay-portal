@@ -17,20 +17,30 @@ import com.liferay.commerce.currency.util.comparator.CommerceCurrencyPriorityCom
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.product.constants.CommerceChannelAccountEntryRelConstants;
 import com.liferay.commerce.product.constants.CommerceChannelConstants;
+import com.liferay.commerce.product.discovery.CPConfigurationListDiscovery;
+import com.liferay.commerce.product.model.CPConfigurationList;
+import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.model.CommerceChannelAccountEntryRel;
+import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.commerce.util.AccountEntryAllowedTypesUtil;
+import com.liferay.commerce.util.CommerceUtil;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
+import com.liferay.portal.kernel.util.MapUtil;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Marco Leo
@@ -43,12 +53,14 @@ public class BaseCommerceContext implements CommerceContext {
 		long commerceAccountId,
 		AccountEntryLocalService accountEntryLocalService,
 		AccountGroupLocalService accountGroupLocalService,
+		CommerceCatalogLocalService commerceCatalogLocalService,
 		CommerceChannelAccountEntryRelLocalService
 			commerceChannelAccountEntryRelLocalService,
 		CommerceChannelLocalService commerceChannelLocalService,
 		CommerceCurrencyLocalService commerceCurrencyLocalService,
 		CommerceOrderService commerceOrderService,
-		ConfigurationProvider configurationProvider) {
+		ConfigurationProvider configurationProvider,
+		CPConfigurationListDiscovery cpConfigurationListDiscovery) {
 
 		_companyId = companyId;
 		_commerceChannelGroupId = commerceChannelGroupId;
@@ -56,11 +68,13 @@ public class BaseCommerceContext implements CommerceContext {
 		_commerceAccountId = commerceAccountId;
 		_accountEntryLocalService = accountEntryLocalService;
 		_accountGroupLocalService = accountGroupLocalService;
+		_commerceCatalogLocalService = commerceCatalogLocalService;
 		_commerceChannelAccountEntryRelLocalService =
 			commerceChannelAccountEntryRelLocalService;
 		_commerceChannelLocalService = commerceChannelLocalService;
 		_commerceCurrencyLocalService = commerceCurrencyLocalService;
 		_commerceOrderService = commerceOrderService;
+		_cpConfigurationListDiscovery = cpConfigurationListDiscovery;
 
 		try {
 			if (getCommerceChannelGroupId() > 0) {
@@ -205,6 +219,31 @@ public class BaseCommerceContext implements CommerceContext {
 		return _commerceAccountGroupServiceConfiguration.commerceSiteType();
 	}
 
+	@Override
+	public long getCPConfigurationListId(long groupId) throws PortalException {
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-10889")) {
+			return 0;
+		}
+
+		Map<Long, CPConfigurationList> cpConfigurationLists =
+			_getCPConfigurationLists();
+
+		CPConfigurationList cpConfigurationList = cpConfigurationLists.get(
+			groupId);
+
+		return cpConfigurationList.getCPConfigurationListId();
+	}
+
+	@Override
+	public long[] getCPConfigurationListIds() throws PortalException {
+		Map<Long, CPConfigurationList> cpConfigurationLists =
+			_getCPConfigurationLists();
+
+		return TransformUtil.transformToLongArray(
+			cpConfigurationLists.values(),
+			CPConfigurationList::getCPConfigurationListId);
+	}
+
 	private CommerceCurrency _getCommerceCurrency(
 		long companyId, String currencyCode) {
 
@@ -245,6 +284,40 @@ public class BaseCommerceContext implements CommerceContext {
 		return commerceCurrency;
 	}
 
+	private Map<Long, CPConfigurationList> _getCPConfigurationLists()
+		throws PortalException {
+
+		if (MapUtil.isNotEmpty(_cpConfigurationLists)) {
+			return _cpConfigurationLists;
+		}
+
+		_cpConfigurationLists = new HashMap<>();
+
+		long orderTypeId = 0;
+
+		CommerceOrder commerceOrder = getCommerceOrder();
+
+		if (commerceOrder != null) {
+			orderTypeId = commerceOrder.getCommerceOrderTypeId();
+		}
+
+		for (long groupId :
+				TransformUtil.transformToLongArray(
+					_commerceCatalogLocalService.getCommerceCatalogs(
+						_companyId),
+					CommerceCatalog::getGroupId)) {
+
+			_cpConfigurationLists.put(
+				groupId,
+				_cpConfigurationListDiscovery.getCPConfigurationList(
+					_companyId, groupId,
+					CommerceUtil.getCommerceAccountId(this),
+					getCommerceChannelId(), orderTypeId));
+		}
+
+		return _cpConfigurationLists;
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		BaseCommerceContext.class);
 
@@ -256,6 +329,7 @@ public class BaseCommerceContext implements CommerceContext {
 	private CommerceAccountGroupServiceConfiguration
 		_commerceAccountGroupServiceConfiguration;
 	private final long _commerceAccountId;
+	private final CommerceCatalogLocalService _commerceCatalogLocalService;
 	private final CommerceChannelAccountEntryRelLocalService
 		_commerceChannelAccountEntryRelLocalService;
 	private final long _commerceChannelGroupId;
@@ -265,6 +339,8 @@ public class BaseCommerceContext implements CommerceContext {
 	private CommerceOrder _commerceOrder;
 	private final CommerceOrderService _commerceOrderService;
 	private final long _companyId;
+	private final CPConfigurationListDiscovery _cpConfigurationListDiscovery;
+	private Map<Long, CPConfigurationList> _cpConfigurationLists;
 	private final long _orderId;
 
 }

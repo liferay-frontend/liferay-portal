@@ -23,7 +23,9 @@ import com.liferay.object.exception.ObjectRelationshipSystemException;
 import com.liferay.object.exception.ObjectRelationshipTypeException;
 import com.liferay.object.internal.dao.db.ObjectDBManagerUtil;
 import com.liferay.object.internal.info.collection.provider.RelatedInfoCollectionProviderFactory;
+import com.liferay.object.internal.security.permission.resource.util.ObjectDefinitionResourcePermissionUtil;
 import com.liferay.object.model.ObjectAction;
+import com.liferay.object.model.ObjectActionModel;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
@@ -51,6 +53,8 @@ import com.liferay.object.tree.Node;
 import com.liferay.object.tree.ObjectDefinitionTreeFactory;
 import com.liferay.object.tree.Tree;
 import com.liferay.object.tree.constants.TreeConstants;
+import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.sql.dsl.expression.Predicate;
@@ -77,6 +81,7 @@ import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.security.RandomUtil;
+import com.liferay.portal.kernel.security.permission.ResourceActions;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -97,6 +102,8 @@ import java.io.Serializable;
 import java.sql.Connection;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -818,13 +825,37 @@ public class ObjectRelationshipLocalServiceImpl
 	}
 
 	@Override
+	public Map<Long, List<ObjectRelationship>> getObjectRelationshipsMap(
+		long companyId) {
+
+		Map<Long, List<ObjectRelationship>> objectRelationshipsMap =
+			new HashMap<>();
+
+		for (ObjectRelationship objectRelationship :
+				objectRelationshipPersistence.findByCompanyId(companyId)) {
+
+			List<ObjectRelationship> objectRelationships =
+				objectRelationshipsMap.computeIfAbsent(
+					objectRelationship.getObjectDefinitionId1(),
+					objectDefinitionId -> new ArrayList<>());
+
+			objectRelationships.add(objectRelationship);
+		}
+
+		return objectRelationshipsMap;
+	}
+
+	@Override
 	public void registerObjectRelationshipsRelatedInfoCollectionProviders(
 		ObjectDefinition objectDefinition1,
-		ObjectDefinitionLocalService objectDefinitionLocalService) {
+		ObjectDefinitionLocalService objectDefinitionLocalService,
+		List<ObjectRelationship> objectRelationships) {
 
-		List<ObjectRelationship> objectRelationships =
-			objectRelationshipLocalService.getObjectRelationships(
-				objectDefinition1.getObjectDefinitionId());
+		if (objectRelationships == null) {
+			objectRelationships =
+				objectRelationshipLocalService.getObjectRelationships(
+					objectDefinition1.getObjectDefinitionId());
+		}
 
 		for (ObjectRelationship objectRelationship : objectRelationships) {
 			if (!objectRelationship.isAllowedObjectRelationshipType(
@@ -975,18 +1006,31 @@ public class ObjectRelationshipLocalServiceImpl
 
 		if (edge && !objectRelationship.isEdge() &&
 			FeatureFlagManagerUtil.isEnabled(
-				objectRelationship.getCompanyId(), "LPS-187142")) {
+				objectRelationship.getCompanyId(), "LPD-34594")) {
 
 			_bindObjectDefinitions(objectRelationship);
 		}
 		else if (!edge && objectRelationship.isEdge() &&
 				 FeatureFlagManagerUtil.isEnabled(
-					 objectRelationship.getCompanyId(), "LPS-187142")) {
+					 objectRelationship.getCompanyId(), "LPD-34594")) {
 
 			_unbindObjectDefinitions(objectRelationship);
 		}
 
 		return objectRelationship;
+	}
+
+	@Override
+	public void updateUserId(long companyId, long oldUserId, long newUserId)
+		throws PortalException {
+
+		for (ObjectRelationship objectRelationship :
+				objectRelationshipPersistence.findByC_U(companyId, oldUserId)) {
+
+			objectRelationship.setUserId(newUserId);
+
+			objectRelationshipPersistence.update(objectRelationship);
+		}
 	}
 
 	@Activate
@@ -1244,7 +1288,7 @@ public class ObjectRelationshipLocalServiceImpl
 
 		if (edge &&
 			FeatureFlagManagerUtil.isEnabled(
-				objectRelationship.getCompanyId(), "LPS-187142")) {
+				objectRelationship.getCompanyId(), "LPD-34594")) {
 
 			_bindObjectDefinitions(objectRelationship);
 		}
@@ -1342,15 +1386,6 @@ public class ObjectRelationshipLocalServiceImpl
 						nodeObjectDefinition);
 				}
 			}
-
-			ObjectDefinition rootObjectDefinition =
-				_objectDefinitionPersistence.findByPrimaryKey(
-					objectDefinition1.getRootObjectDefinitionId());
-
-			if (rootObjectDefinition.isApproved()) {
-				objectDefinitionLocalService.deployObjectDefinition(
-					rootObjectDefinition);
-			}
 		}
 		else {
 			if (objectDefinition2.isRootNode()) {
@@ -1360,15 +1395,31 @@ public class ObjectRelationshipLocalServiceImpl
 			objectDefinition2.setRootObjectDefinitionId(
 				objectDefinition2.getObjectDefinitionId());
 
-			objectDefinitionLocalService.updateObjectDefinition(
-				objectDefinition2);
+			objectDefinition2 =
+				objectDefinitionLocalService.updateObjectDefinition(
+					objectDefinition2);
+
+			if (objectDefinition2.isApproved()) {
+				objectDefinitionLocalService.deployObjectDefinition(
+					objectDefinition2);
+			}
+		}
+
+		ObjectDefinition rootObjectDefinition =
+			_objectDefinitionPersistence.findByPrimaryKey(
+				objectDefinition1.getRootObjectDefinitionId());
+
+		if (rootObjectDefinition.isApproved()) {
+			objectDefinitionLocalService.deployObjectDefinition(
+				rootObjectDefinition);
 		}
 	}
 
 	private void _copyResourcePermissions(
 			List<ResourceAction> sourceResourceActions,
 			List<ResourcePermission> sourceResourcePermissions,
-			String targetName, String targetPrimKey)
+			String targetName, List<String> targetObjectActionNames,
+			String targetPrimKey)
 		throws PortalException {
 
 		for (ResourcePermission sourceResourcePermission :
@@ -1388,6 +1439,16 @@ public class ObjectRelationshipLocalServiceImpl
 				targetResourceActionIds.add(sourceResourceAction.getActionId());
 			}
 
+			if (ListUtil.isNotEmpty(targetObjectActionNames)) {
+				targetResourceActionIds.addAll(
+					_resourcePermissionLocalService.
+						getAvailableResourcePermissionActionIds(
+							sourceResourcePermission.getCompanyId(), targetName,
+							sourceResourcePermission.getScope(), targetPrimKey,
+							sourceResourcePermission.getRoleId(),
+							targetObjectActionNames));
+			}
+
 			_resourcePermissionLocalService.setResourcePermissions(
 				sourceResourcePermission.getCompanyId(), targetName,
 				sourceResourcePermission.getScope(), targetPrimKey,
@@ -1397,7 +1458,8 @@ public class ObjectRelationshipLocalServiceImpl
 	}
 
 	private void _copyResourcePermissions(
-			long companyId, String sourceName, String targetName)
+			long companyId, String sourceName, String targetName,
+			List<String> targetObjectActionNames)
 		throws PortalException {
 
 		List<ResourceAction> resourceActions =
@@ -1408,13 +1470,14 @@ public class ObjectRelationshipLocalServiceImpl
 			_resourcePermissionLocalService.getResourcePermissions(
 				companyId, sourceName, ResourceConstants.SCOPE_COMPANY,
 				String.valueOf(companyId)),
-			targetName, String.valueOf(companyId));
+			targetName, targetObjectActionNames, String.valueOf(companyId));
 		_copyResourcePermissions(
 			resourceActions,
 			_resourcePermissionLocalService.getResourcePermissions(
 				companyId, sourceName, ResourceConstants.SCOPE_GROUP_TEMPLATE,
 				String.valueOf(GroupConstants.DEFAULT_PARENT_GROUP_ID)),
-			targetName, String.valueOf(GroupConstants.DEFAULT_PARENT_GROUP_ID));
+			targetName, targetObjectActionNames,
+			String.valueOf(GroupConstants.DEFAULT_PARENT_GROUP_ID));
 	}
 
 	private void _copyResourcePermissions(
@@ -1428,6 +1491,11 @@ public class ObjectRelationshipLocalServiceImpl
 			return;
 		}
 
+		List<String> objectActionNames = TransformUtil.transform(
+			_objectActionPersistence.findByO_A_OATK(
+				objectDefinition2.getObjectDefinitionId(), true,
+				ObjectActionTriggerConstants.KEY_STANDALONE),
+			ObjectActionModel::getName);
 		List<ResourceAction> resourceActions =
 			_resourceActionLocalService.getResourceActions(
 				objectDefinition1.getClassName());
@@ -1441,19 +1509,20 @@ public class ObjectRelationshipLocalServiceImpl
 					objectDefinition1.getClassName(),
 					ResourceConstants.SCOPE_INDIVIDUAL,
 					String.valueOf(objectEntry.getRootObjectEntryId())),
-				objectDefinition2.getClassName(),
+				objectDefinition2.getClassName(), objectActionNames,
 				String.valueOf(objectEntry.getObjectEntryId())));
 
 		_copyResourcePermissions(
 			objectDefinition1.getCompanyId(), objectDefinition1.getClassName(),
-			objectDefinition2.getClassName());
+			objectDefinition2.getClassName(), objectActionNames);
+
 		_copyResourcePermissions(
 			objectDefinition1.getCompanyId(), objectDefinition1.getPortletId(),
-			objectDefinition2.getPortletId());
+			objectDefinition2.getPortletId(), null);
 		_copyResourcePermissions(
 			objectDefinition1.getCompanyId(),
 			objectDefinition1.getResourceName(),
-			objectDefinition2.getResourceName());
+			objectDefinition2.getResourceName(), null);
 	}
 
 	private void _deleteObjectFields(
@@ -1645,6 +1714,8 @@ public class ObjectRelationshipLocalServiceImpl
 							KEY_ON_AFTER_ROOT_UPDATE)) {
 
 				objectAction.setActive(false);
+				objectAction.setObjectActionTriggerKey(
+					ObjectActionTriggerConstants.KEY_ON_AFTER_UPDATE);
 
 				_objectActionPersistence.update(objectAction);
 			}
@@ -1674,12 +1745,32 @@ public class ObjectRelationshipLocalServiceImpl
 		_updateObjectDefinitionTree(
 			objectDefinition2, oldRootObjectDefinitionId2,
 			newRootObjectDefinitionId2);
+
+		if (objectDefinition2.isRootNode()) {
+			_deployObjectDefinition(objectDefinition2);
+		}
 	}
 
 	private void _updateObjectDefinitionTree(
 			ObjectDefinition objectDefinition1, long oldRootObjectDefinitionId,
 			long newRootObjectDefinitionId)
 		throws PortalException {
+
+		try {
+			ObjectDefinitionResourcePermissionUtil.
+				populateRootDescendantNodeModelResources(
+					_objectActionPersistence, _objectDefinitionPersistence,
+					_resourceActions, objectDefinition1,
+					newRootObjectDefinitionId);
+
+			ObjectDefinitionResourcePermissionUtil.
+				removeRootDescendantNodeModelResources(
+					_objectDefinitionPersistence, _resourceActions,
+					objectDefinition1, oldRootObjectDefinitionId);
+		}
+		catch (Exception exception) {
+			ReflectionUtil.throwException(exception);
+		}
 
 		if (newRootObjectDefinitionId == 0) {
 			return;
@@ -1824,7 +1915,7 @@ public class ObjectRelationshipLocalServiceImpl
 		if (!edge ||
 			((objectRelationship != null) && objectRelationship.isEdge()) ||
 			!FeatureFlagManagerUtil.isEnabled(
-				objectDefinition1.getCompanyId(), "LPS-187142")) {
+				objectDefinition1.getCompanyId(), "LPD-34594")) {
 
 			return;
 		}
@@ -1849,14 +1940,23 @@ public class ObjectRelationshipLocalServiceImpl
 					"an-edge-of-a-root-context");
 		}
 
-		if (objectDefinition1.isUnmodifiableSystemObject() ||
-			objectDefinition2.isUnmodifiableSystemObject()) {
+		if ((objectDefinition1.isModifiableAndSystem() &&
+			 !objectDefinition2.isSystem()) ||
+			(objectDefinition2.isModifiableAndSystem() &&
+			 !objectDefinition1.isSystem())) {
 
 			throw new ObjectRelationshipEdgeException(
-				"Object relationship must not be between unmodifiable system " +
-					"object definitions to be an edge of a root context",
-				"object-relationship-must-not-be-between-unmodifiable-system-" +
-					"object-definitions-to-be-an-edge-of-a-root-context");
+				"Inheritance between modifiable system and custom object " +
+					"definitions is not allowed",
+				"inheritance-between-modifiable-system-and-custom-object-" +
+					"definitions-is-not-allowed");
+		}
+		else if (objectDefinition1.isUnmodifiableSystemObject() ||
+				 objectDefinition2.isUnmodifiableSystemObject()) {
+
+			throw new ObjectRelationshipEdgeException(
+				"System object definitions cannot inherit configurations",
+				"system-object-definitions-cannot-inherit-configurations");
 		}
 
 		// Circular reference in a root context must be validated before
@@ -1943,10 +2043,17 @@ public class ObjectRelationshipLocalServiceImpl
 				objectDefinition1.getScope(), objectDefinition2.getScope())) {
 
 			throw new ObjectRelationshipEdgeException(
-				"Unable to bind the object definitions when they have " +
-					"different scopes",
-				"unable-to-bind-the-object-definitions-when-they-have-" +
-					"different-scopes");
+				Arrays.asList(
+					objectDefinition1.getShortName(),
+					objectDefinition2.getShortName()),
+				String.format(
+					"The scope of \"%s\" is not the same as \"%s\". To " +
+						"enable inheritance, the object definitions must " +
+							"have the same scope",
+					objectDefinition1.getShortName(),
+					objectDefinition2.getShortName()),
+				"the-scope-of-x-is-not-the-same-as-x-to-enable-inheritance-" +
+					"the-object-definitions-must-have-the-same-scope");
 		}
 	}
 
@@ -2266,6 +2373,9 @@ public class ObjectRelationshipLocalServiceImpl
 
 	@Reference
 	private ResourceActionLocalService _resourceActionLocalService;
+
+	@Reference
+	private ResourceActions _resourceActions;
 
 	@Reference
 	private ResourcePermissionLocalService _resourcePermissionLocalService;

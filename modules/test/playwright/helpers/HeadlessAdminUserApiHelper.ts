@@ -7,6 +7,8 @@ import {getRandomInt} from '../utils/getRandomInt';
 import {ApiHelpers, DataApiHelpers} from './ApiHelpers';
 
 type TAccount = {
+	alternateName?: string;
+	description?: string;
 	externalReferenceCode?: string;
 	id?: number;
 	name?: string;
@@ -118,7 +120,7 @@ export class HeadlessAdminUserApiHelper {
 	}
 
 	async assignUserToOrganizationRole(
-		roleId: string,
+		roleId: number | string,
 		userAccountId: string,
 		organizationId: string
 	) {
@@ -211,6 +213,12 @@ export class HeadlessAdminUserApiHelper {
 		);
 
 		return accountResponse?.items?.at(0);
+	}
+
+	async getMyUserAccount(): Promise<TAccount> {
+		return this.apiHelpers.get(
+			`${this.apiHelpers.baseUrl}${this.basePath}/my-user-account`
+		);
 	}
 
 	async getOrganizationByName(organizationName: string): Promise<TAccount> {
@@ -331,7 +339,7 @@ export class HeadlessAdminUserApiHelper {
 			/user-accounts/by-email-address${
 				accountRoleIds ? `?accountRoleIds=${accountRoleIds}` : ''
 			}`,
-			{data: {emailAddresses}}
+			{data: emailAddresses}
 		);
 	}
 
@@ -396,18 +404,25 @@ export class HeadlessAdminUserApiHelper {
 	}
 
 	async postRole(role: TRole) {
-		role = {
-			roleType: 'regular',
-			...role,
-		};
-
-		return this.apiHelpers.post(
+		role = await this.apiHelpers.post(
 			`${this.apiHelpers.baseUrl}${this.basePath}/roles`,
 			{
-				data: role,
+				data: {
+					roleType: 'regular',
+					...role,
+				},
 				failOnStatusCode: true,
 			}
 		);
+
+		if (this.apiHelpers instanceof DataApiHelpers) {
+			this.apiHelpers.data.push({
+				id: role.id,
+				type: 'role',
+			});
+		}
+
+		return role;
 	}
 
 	async postUserAccount(
@@ -472,6 +487,15 @@ export class HeadlessAdminUserApiHelper {
 	async getAccountRoles(accountId: number) {
 		return this.apiHelpers.get(
 			`${this.apiHelpers.baseUrl}${this.basePath}/accounts/${accountId}/account-roles`
+		);
+	}
+
+	async getAccountRolesByRoleName(
+		accountId: number,
+		accountRoleName: string
+	) {
+		return this.apiHelpers.get(
+			`${this.apiHelpers.baseUrl}${this.basePath}/accounts/${accountId}/account-roles?filter=name eq '${accountRoleName}'`
 		);
 	}
 

@@ -8,6 +8,7 @@ import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 import {liferayConfig} from '../../../liferay.config';
 
 export class CommerceLayoutsPage {
+	readonly accountSelectorButton: (name: string) => Locator;
 	readonly addOrderButton: Locator;
 	readonly addPageButton: Locator;
 	readonly addPageModalSubmitButton: Locator;
@@ -20,6 +21,7 @@ export class CommerceLayoutsPage {
 	readonly changeCurrentThemeButton: Locator;
 	readonly closeProductMenuButton: Locator;
 	readonly configureMenuItem: Locator;
+	readonly createNewOrderButton: Locator;
 	readonly createPageMenuItem: Locator;
 	readonly defaultDisplayPageTemplateIcon: Locator;
 	readonly defineCustomThemeCheckbox: Locator;
@@ -57,6 +59,7 @@ export class CommerceLayoutsPage {
 	readonly orderItemCardButton: Locator;
 	readonly page: Page;
 	readonly pageEditorCollectionItem: Locator;
+	readonly pageEditorElement: (selector: string) => Locator;
 	readonly pageEditorText: (text: RegExp | string) => Locator;
 	readonly pagesMenuItem: Locator;
 	readonly pageTemplatesMenuItem: Locator;
@@ -78,6 +81,11 @@ export class CommerceLayoutsPage {
 	readonly widgetPageTemplateButton: Locator;
 
 	constructor(page: Page) {
+		this.accountSelectorButton = (name) => {
+			return page.getByRole('button', {
+				name,
+			});
+		};
 		this.addOrderButton = page.getByRole('button', {
 			exact: true,
 			name: 'Add Order',
@@ -118,6 +126,10 @@ export class CommerceLayoutsPage {
 		this.configureMenuItem = page.getByRole('menuitem', {
 			exact: true,
 			name: 'Configure',
+		});
+		this.createNewOrderButton = page.getByRole('button', {
+			exact: true,
+			name: 'Create New Order',
 		});
 		this.createPageMenuItem = page
 			.getByTestId('dropdownMenu')
@@ -165,7 +177,7 @@ export class CommerceLayoutsPage {
 		this.firstFragment = page.locator('#page-editor div').nth(2);
 		this.fragmentsAndWidgetsTab = page.getByRole('tab', {
 			exact: true,
-			name: 'Fragments and Widgets',
+			name: 'Components',
 		});
 		this.fragmentMenuItem = (itemName: string) =>
 			page.getByRole('menuitem', {
@@ -186,9 +198,9 @@ export class CommerceLayoutsPage {
 		);
 		this.infoBoxFieldSelect = page.getByLabel('Field', {exact: true});
 		this.infoBoxLabelInput = page.getByLabel('Label', {exact: true});
-		this.infoBoxShippingMethodAlert = page.getByText('are no available');
-		this.infoBoxShippingMethodSelect = page.getByLabel('Choose Courier');
 		this.infoBoxReadOnlyToggle = page.getByLabel('Read Only');
+		this.infoBoxShippingMethodAlert = page.getByText('are no available');
+		this.infoBoxShippingMethodSelect = page.getByLabel('Choose Carrier');
 		this.infoBoxValue = (name: string) => page.getByText(name);
 		this.inputTextArea = page.getByRole('textbox');
 		this.inputTextbox = (name: string) =>
@@ -210,8 +222,10 @@ export class CommerceLayoutsPage {
 			.getByRole('button', {name: 'Select Order Items'});
 		this.page = page;
 		this.pageEditorCollectionItem = page
-			.locator('.page-editor__collection-item__border')
+			.locator('.page-editor__collection-item')
 			.first();
+		this.pageEditorElement = (selector: string) =>
+			page.locator('#page-editor').locator(selector);
 		this.pageEditorText = (text: RegExp | string) =>
 			page.locator('#page-editor').getByText(text);
 		this.pagesMenuItem = page
@@ -395,29 +409,6 @@ export class CommerceLayoutsPage {
 		await this.saveButton.click();
 	}
 
-	async createWidgetPage(pageName: string) {
-		await this.addPageButton.first().click();
-		await this.createPageMenuItem.click();
-		await this.widgetPageTemplateButton.click();
-		await this.addPageNameInput.waitFor({
-			state: 'attached',
-		});
-		await this.addPageNameInput.click();
-		await this.addPageNameInput.fill(pageName);
-		await Promise.all([
-			this.addPageModalSubmitButton.click(),
-			this.page.waitForResponse(
-				(resp) =>
-					resp.status() === 200 &&
-					resp
-						.url()
-						.includes(
-							'p_p_id=com_liferay_layout_admin_web_portlet_GroupPagesPortlet'
-						)
-			),
-		]);
-	}
-
 	async expectOrderActionButtons({
 		approveCount = 0,
 		checkoutCount = 0,
@@ -456,6 +447,12 @@ export class CommerceLayoutsPage {
 		}
 
 		if (
+			(await this.closeProductMenuButton.isVisible()) &&
+			(await this.pageTemplatesMenuItem.isVisible())
+		) {
+			return;
+		}
+		else if (
 			(await this.closeProductMenuButton.isVisible()) &&
 			(await this.pageTemplatesMenuItem.isHidden())
 		) {

@@ -741,18 +741,6 @@ public interface LayoutLocalService
 		throws PortalException;
 
 	/**
-	 * Returns the layout for the icon image; throws a {@link
-	 * NoSuchLayoutException} otherwise.
-	 *
-	 * @param iconImageId the primary key of the icon image
-	 * @return Returns the layout for the icon image
-	 * @throws PortalException if a portal exception occurred
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Layout getLayoutByIconImageId(long iconImageId)
-		throws PortalException;
-
-	/**
 	 * Returns the layout matching the UUID, group, and privacy.
 	 *
 	 * @param uuid the layout's UUID

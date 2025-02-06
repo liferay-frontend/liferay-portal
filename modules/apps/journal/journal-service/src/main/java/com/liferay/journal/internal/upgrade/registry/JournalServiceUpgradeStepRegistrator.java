@@ -164,10 +164,15 @@ public class JournalServiceUpgradeStepRegistrator
 					"and treePath = '/0/'"));
 
 		registry.register(
-			"0.0.8", "1.0.0",
+			"0.0.8", "0.0.9",
 			new ArticleAssetsUpgradeProcess(
-				_assetEntryLocalService, _companyLocalService),
-			new ArticleExpirationDateUpgradeProcess(),
+				_assetEntryLocalService, _companyLocalService));
+
+		registry.register(
+			"0.0.9", "0.0.10", new ArticleExpirationDateUpgradeProcess());
+
+		registry.register(
+			"0.0.10", "1.0.0",
 			new ArticleSystemEventsUpgradeProcess(_systemEventLocalService));
 
 		registry.register(
@@ -176,12 +181,18 @@ public class JournalServiceUpgradeStepRegistrator
 		registry.register("1.0.1", "1.0.2", new DummyUpgradeStep());
 
 		registry.register(
-			"1.0.2", "1.1.0",
+			"1.0.2", "1.0.3",
 			new DocumentLibraryTypeContentUpgradeProcess(
-				_journalArticleImageUpgradeHelper),
+				_journalArticleImageUpgradeHelper));
+
+		registry.register(
+			"1.0.3", "1.0.4",
 			new ImageTypeContentUpgradeProcess(
 				_imageLocalService, _journalArticleImageUpgradeHelper,
-				_portletFileRepository),
+				_portletFileRepository));
+
+		registry.register(
+			"1.0.4", "1.1.0",
 			new JournalArticleLocalizedValuesUpgradeProcess(
 				_counterLocalService));
 
@@ -302,9 +313,9 @@ public class JournalServiceUpgradeStepRegistrator
 		registry.register(
 			"3.5.1", "4.0.0",
 			new JournalArticleDDMFieldsUpgradeProcess(
-				_classNameLocalService, _ddmFieldLocalService,
-				_ddmStructureLocalService, _fieldsToDDMFormValuesConverter,
-				_journalConverter, _portal));
+				_classNameLocalService, _companyLocalService,
+				_ddmFieldLocalService, _ddmStructureLocalService,
+				_fieldsToDDMFormValuesConverter, _journalConverter, _portal));
 
 		registry.register(
 			"4.0.0", "4.1.0",
@@ -393,8 +404,6 @@ public class JournalServiceUpgradeStepRegistrator
 
 		registry.register(
 			"6.0.0", "6.1.0",
-			UpgradeProcessFactory.addColumns(
-				"JournalArticle", "smallImageSource INTEGER"),
 			new JournalArticleSmallImageSourceUpgradeProcess());
 
 		registry.register(

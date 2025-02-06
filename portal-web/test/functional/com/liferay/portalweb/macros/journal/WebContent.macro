@@ -129,7 +129,7 @@ definition {
 			webContentContent = ${webContentContent},
 			webContentTitle = ${webContentTitle});
 
-		Button.clickSaveAsDraft();
+		WebContent.saveAsDraftWithPermissions();
 
 		Alert.viewSuccessMessage();
 	}
@@ -206,11 +206,9 @@ definition {
 			content = "Web Content Content",
 			fieldLabel = "Content");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		AssertElementPresent(locator1 = "Icon#ASTERISK");
-
-		Alert.viewRequestFailedToComplete();
 
 		Panel.expandPanel(panel = "Categorization");
 
@@ -285,23 +283,6 @@ definition {
 
 			var count = ${count} + 1;
 		}
-	}
-
-	@summary = "Default summary"
-	macro addNullCP(webContentContent = null) {
-		AssertElementNotPresent(locator1 = "TextInput#REQUIRED_ALERT");
-
-		if (isSet(webContentContent)) {
-			CKEditor.addContentInWebContent(
-				content = ${webContentContent},
-				fieldLabel = "Content");
-		}
-
-		Button.clickPublish();
-
-		AssertElementPresent(locator1 = "TextInput#REQUIRED_ALERT");
-
-		AssertTextPresent(value1 = "Please enter a valid title for the default language: en-US");
 	}
 
 	@summary = "Default summary"
@@ -479,7 +460,7 @@ definition {
 			vocabularyName = ${vocabularyName});
 
 		if (${allowMultipleCategories} == "false") {
-			Button.clickPublish();
+			WebContent.publishWithPermissions();
 
 			Alert.viewErrorMessage(errorMessage = "You cannot select more than one category for Vocabulary Name.");
 		}
@@ -930,9 +911,7 @@ definition {
 			webContentContent = ${webContentContent},
 			webContentTitle = ${webContentTitle});
 
-		AssertClick(
-			locator1 = "Button#SUBMIT_FOR_WORKFLOW",
-			value1 = "Submit for Workflow");
+		WebContent.submitForWorkflowWithPermission();
 
 		SelectFrame();
 
@@ -1189,7 +1168,7 @@ definition {
 		}
 
 		if (${saveAsDraft} == "true") {
-			WebContent.saveAsDraftWithPermissions();
+			PortletEntry.saveAsDraft();
 
 			AssertTextEquals.assertPartialText(
 				key_status = "Draft",
@@ -1214,35 +1193,13 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro editDisplayDate(displayDate = null) {
-		Panel.expandPanel(panel = "Schedule");
-
-		DoubleClick(locator1 = "TextInput#DISPLAY_DATE");
-
-		Type.sendKeys(
-			locator1 = "TextInput#DISPLAY_DATE",
-			value1 = "keys=CONTROL,a");
-
-		KeyPress(
-			locator1 = "TextInput#DISPLAY_DATE",
-			value1 = "\BACK_SPACE");
-
-		Type.clickAtType(
-			locator1 = "TextInput#DISPLAY_DATE",
-			value1 = ${displayDate});
-
-		if (isSet(displayTime)) {
-			var displayTime = StringUtil.removeSpaces(${displayTime});
-
-			Type.sendKeys(
-				locator1 = "TextInput#DISPLAY_DATE_TIME",
-				value1 = ${displayTime});
+	macro editDisplayPage(pageType = null, pageName = null, assetType = null) {
+		if (${assetType} == "Blogs Entry") {
+			Blogs.expandPanel(panel = "Display Page");
 		}
-	}
-
-	@summary = "Default summary"
-	macro editDisplayPage(pageType = null, pageName = null) {
-		Panel.expandPanel(panel = "Display Page");
+		else {
+			Panel.expandPanel(panel = "Display Page");
+		}
 
 		if (!(isSet(displayPageTemplateType))) {
 			var displayPageTemplateType = "Specific";
@@ -1423,23 +1380,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro editNullCP(webContentContent = null) {
-		AssertElementNotPresent(locator1 = "TextInput#REQUIRED_ALERT");
-
-		WebContent.addCP(webContentTitle = "");
-
-		if (isSet(webContentContent)) {
-			CKEditor.addContentInWebContent(
-				content = ${webContentContent},
-				fieldLabel = "Content");
-		}
-
-		WebContent.publishWithPermissions();
-
-		AssertElementPresent(locator1 = "TextInput#REQUIRED_ALERT");
-	}
-
-	@summary = "Default summary"
 	macro editViaContentPanel(fieldName = null, webContentTitle = null, saveAsDraft = null, webContentContentEdit = null, webContentSelectWcFile = null, webContentTitleEdit = null) {
 		PageEditor.gotoEllipsisMenuItemInPageContentPanel(
 			itemName = ${webContentTitle},
@@ -1469,7 +1409,7 @@ definition {
 			SelectFrame(value1 = "relative=top");
 		}
 
-		if (${saveAsDraft} == "true") {
+		if (isSet(saveAsDraft) && (${saveAsDraft} == "true")) {
 			WebContent.saveAsDraftWithPermissions();
 
 			AssertTextEquals.assertPartialText(
@@ -1540,7 +1480,7 @@ definition {
 			webContentUpload = ${webContentUpload},
 			webContentWebContent = ${webContentWebContent});
 
-		if (${saveAsDraft} == "true") {
+		if (isSet(saveAsDraft) && (${saveAsDraft} == "true")) {
 			WebContent.saveAsDraftWithPermissions();
 
 			AssertTextEquals.assertPartialText(
@@ -1611,17 +1551,11 @@ definition {
 
 	@summary = "Default summary"
 	macro increaseDisplayDate(minuteIncrease = null) {
-		var displayDate = DateTimeSchedule.getCurrentDisplayDate(field = "display");
-		var currentTime = DateTimeSchedule.getCurrentDisplayTime(field = "display");
-		var displayTime = DateTimeSchedule.increaseDisplayTime(
-			field = "display",
-			minuteIncreaseValue = ${minuteIncrease});
+		var displayDate = DateUtil.getDateOffsetByMinutes(${minuteIncrease}, "yyyy-MM-dd HH:mm", "UTC");
 
-		WebContent.editDisplayDate(
-			displayDate = ${displayDate},
-			displayTime = ${displayTime});
+		WebContent.scheduleWCArticleWithPermissions(displayDate = ${displayDate});
 
-		echo("Web Content display time increased ${minuteIncrease} minutes, changed from ${currentTime} to ${displayTime}");
+		echo("Web Content display date increased ${minuteIncrease} minutes, changed to ${displayDate}");
 	}
 
 	@summary = "Default summary"
@@ -1817,6 +1751,27 @@ definition {
 		Click(locator1 = "WCEditWebContent#PUBLISH_IN_MODAL");
 
 		WaitForElementPresent.waitForElementPresentNoException(locator1 = "Message#ALERT_DISMISSIBLE");
+	}
+
+	@summary = "Default summary"
+	macro publishWithPermissionsLocalized(publish = null, publishWithPermissions = null, viewableBy = null) {
+		Button.click(button = ${publish});
+
+		Click(
+			key_text = ${publishWithPermissions},
+			locator1 = "WCEditWebContent#DROPDOWN_BUTTON");
+
+		if (isSet(viewableBy)) {
+			Select(
+				locator1 = "Select#PERMISSIONS",
+				value1 = ${viewableBy});
+		}
+
+		Click(
+			key_text = ${publish},
+			locator1 = "WCEditWebContent#BUTTON_IN_MODAL");
+
+		WaitForElementPresent.waitForElementPresentNoException(locator1 = "Message#ALERT_DISMISSIBLE");
 
 		if (IsElementPresent(locator1 = "Message#WARNING")) {
 			VerifyElementPresent(locator1 = "Message#WARNING");
@@ -1853,7 +1808,7 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro scheduleExistingWCArticleWithPermissions(displayDate = null) {
+	macro scheduleWCArticleWithPermissions(displayDate = null) {
 		Button.clickPublish();
 
 		Click(locator1 = "WCEditWebContent#SCHEDULE_PUBLICATION_BUTTON");
@@ -2068,6 +2023,15 @@ definition {
 			key_fieldFieldLabel = ${fieldFieldLabel},
 			locator1 = "WCEditWebContent#IMAGE_DESCRIPTION",
 			value1 = ${webContentImageDescription});
+	}
+
+	@summary = "Default summary"
+	macro submitForWorkflow() {
+		Button.clickSubmitForWorkflow();
+
+		Click(locator1 = "WCEditWebContent#SUBMIT_FOR_WORKFLOW");
+
+		WaitForElementPresent.waitForElementPresentNoException(locator1 = "Message#ALERT_DISMISSIBLE");
 	}
 
 	@summary = "Default summary"

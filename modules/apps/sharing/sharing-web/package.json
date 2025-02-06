@@ -3,13 +3,13 @@
 		"@clayui/alert": "3.111.0",
 		"@clayui/button": "3.116.0",
 		"@clayui/data-provider": "3.119.0",
-		"@clayui/form": "3.122.0",
+		"@clayui/form": "3.125.0",
 		"@clayui/icon": "3.111.0",
 		"@clayui/layout": "3.111.0",
 		"@clayui/loading-indicator": "3.111.0",
 		"@clayui/modal": "3.122.0",
-		"@clayui/multi-select": "3.123.1",
-		"@clayui/sticker": "3.111.0",
+		"@clayui/multi-select": "3.127.0",
+		"@clayui/sticker": "3.125.0",
 		"@liferay/frontend-js-react-web": "*",
 		"classnames": "2.3.1",
 		"frontend-js-web": "*",
@@ -23,5 +23,5 @@
 		"checkFormat": "node-scripts format --check",
 		"format": "node-scripts format"
 	},
-	"version": "3.0.76"
+	"version": "3.0.77"
 }

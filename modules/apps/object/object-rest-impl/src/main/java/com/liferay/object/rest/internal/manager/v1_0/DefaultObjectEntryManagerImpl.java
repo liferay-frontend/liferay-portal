@@ -5,6 +5,7 @@
 
 package com.liferay.object.rest.internal.manager.v1_0;
 
+import com.liferay.account.exception.NoSuchGroupException;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.object.action.engine.ObjectActionEngine;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
@@ -15,6 +16,7 @@ import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.entry.util.ObjectEntryDTOConverterUtil;
 import com.liferay.object.exception.NoSuchObjectEntryException;
 import com.liferay.object.field.attachment.AttachmentManager;
+import com.liferay.object.field.business.type.ObjectFieldBusinessType;
 import com.liferay.object.field.business.type.ObjectFieldBusinessTypeRegistry;
 import com.liferay.object.field.setting.util.ObjectFieldSettingUtil;
 import com.liferay.object.model.ObjectAction;
@@ -54,6 +56,7 @@ import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -84,6 +87,7 @@ import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.GroupThreadLocal;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -109,7 +113,10 @@ import com.liferay.portal.vulcan.util.ActionUtil;
 import com.liferay.portal.vulcan.util.ObjectMapperUtil;
 import com.liferay.portal.vulcan.util.SearchUtil;
 
+import java.io.IOException;
 import java.io.Serializable;
+
+import java.net.URL;
 
 import java.text.ParseException;
 
@@ -969,7 +976,7 @@ public class DefaultObjectEntryManagerImpl
 			}
 
 			if (properties.containsKey(entry.getKey())) {
-				NestedFieldsSupplier.addFieldName(entry.getKey());
+				NestedFieldsSupplier.addNestedField(entry.getKey());
 			}
 		}
 
@@ -1363,11 +1370,54 @@ public class DefaultObjectEntryManagerImpl
 			ServiceContext serviceContext)
 		throws Exception {
 
-		Object propertyValue = objectEntry.getPropertyValue(
-			objectField.getName());
+		if (objectField.isLocalized()) {
+			Object propertyValue = objectEntry.getPropertyValue(
+				objectField.getI18nObjectFieldName());
+
+			if ((propertyValue == null) ||
+				!(propertyValue instanceof Map<?, ?>)) {
+
+				return;
+			}
+
+			Map<String, Serializable> localizedValues =
+				(Map<String, Serializable>)propertyValue;
+
+			for (Map.Entry<String, Serializable> entry :
+					localizedValues.entrySet()) {
+
+				long fileEntryId = _processAttachment(
+					objectDefinition, objectField, entry.getValue(), scopeKey,
+					serviceContext);
+
+				if (fileEntryId > 0) {
+					entry.setValue(fileEntryId);
+				}
+			}
+
+			return;
+		}
+
+		long fileEntryId = _processAttachment(
+			objectDefinition, objectField,
+			objectEntry.getPropertyValue(objectField.getName()), scopeKey,
+			serviceContext);
+
+		if (fileEntryId > 0) {
+			Map<String, Object> properties = objectEntry.getProperties();
+
+			properties.put(objectField.getName(), fileEntryId);
+		}
+	}
+
+	private long _processAttachment(
+			ObjectDefinition objectDefinition, ObjectField objectField,
+			Object propertyValue, String scopeKey,
+			ServiceContext serviceContext)
+		throws Exception {
 
 		if (propertyValue == null) {
-			return;
+			return 0;
 		}
 
 		FileEntry fileEntry = ObjectMapperUtil.readValue(
@@ -1375,9 +1425,10 @@ public class DefaultObjectEntryManagerImpl
 
 		if ((fileEntry == null) ||
 			((fileEntry.getExternalReferenceCode() == null) &&
-			 (fileEntry.getFileBase64() == null))) {
+			 (fileEntry.getFileBase64() == null) &&
+			 (fileEntry.getFileURL() == null))) {
 
-			return;
+			return 0;
 		}
 
 		String fileSource = ObjectFieldSettingUtil.getValue(
@@ -1392,14 +1443,52 @@ public class DefaultObjectEntryManagerImpl
 				"File source " + fileSource + " is not supported");
 		}
 
-		com.liferay.portal.kernel.repository.model.FileEntry
-			serviceBuilderFileEntry = null;
-
 		byte[] fileContent = {};
 
 		if (fileEntry.getFileBase64() != null) {
 			fileContent = _decode(fileEntry.getFileBase64());
 		}
+		else if ((fileEntry.getFileURL() != null) &&
+				 FeatureFlagManagerUtil.isEnabled("LPD-39967")) {
+
+			try {
+				URL url = new URL(fileEntry.getFileURL());
+
+				if (Objects.equals(url.getProtocol(), "file")) {
+					throw new UnsupportedOperationException(
+						StringBundler.concat(
+							"Unable to download file from ",
+							fileEntry.getFileURL(), ", unsupported protocol: ",
+							url.getProtocol()));
+				}
+
+				Http.Options options = new Http.Options();
+
+				options.setLocation(url.toString());
+
+				fileContent = _http.URLtoByteArray(options);
+
+				Http.Response response = options.getResponse();
+
+				if (response.getResponseCode() != 200) {
+					throw new IllegalArgumentException(
+						StringBundler.concat(
+							"Unable to download file from ",
+							fileEntry.getFileURL(), ", unexpected HTTP code: ",
+							response.getResponseCode()));
+				}
+			}
+			catch (IOException ioException) {
+				_log.error(ioException);
+
+				throw new IllegalArgumentException(
+					"Unable to download file from " + fileEntry.getFileURL(),
+					ioException);
+			}
+		}
+
+		com.liferay.portal.kernel.repository.model.FileEntry
+			serviceBuilderFileEntry = null;
 
 		String groupExternalReferenceCode = null;
 
@@ -1423,7 +1512,14 @@ public class DefaultObjectEntryManagerImpl
 			}
 			else {
 				folderExternalReferenceCode = folder.getExternalReferenceCode();
-				folderGroupId = folder.getSiteId();
+
+				Group group = groupLocalService.getGroup(folder.getSiteId());
+
+				if (group.getCompanyId() != objectField.getCompanyId()) {
+					throw new NoSuchGroupException();
+				}
+
+				folderGroupId = group.getGroupId();
 			}
 
 			serviceBuilderFileEntry = _attachmentManager.getOrAddFileEntry(
@@ -1445,12 +1541,7 @@ public class DefaultObjectEntryManagerImpl
 				objectField.getObjectFieldId(), serviceContext);
 		}
 
-		fileEntry.setFileBase64(() -> (String)null);
-		fileEntry.setId(serviceBuilderFileEntry::getFileEntryId);
-
-		Map<String, Object> properties = objectEntry.getProperties();
-
-		properties.put(objectField.getName(), fileEntry.toString());
+		return serviceBuilderFileEntry.getFileEntryId();
 	}
 
 	private void _processVulcanAggregation(
@@ -1721,13 +1812,19 @@ public class DefaultObjectEntryManagerImpl
 			}
 
 			if (objectField.isLocalized()) {
-				Object localizedValue = objectEntry.getPropertyValue(
-					objectField.getI18nObjectFieldName());
+				ObjectFieldBusinessType objectFieldBusinessType =
+					_objectFieldBusinessTypeRegistry.getObjectFieldBusinessType(
+						objectField.getBusinessType());
 
-				if (localizedValue != null) {
+				Map<String, Object> localizedValues =
+					objectFieldBusinessType.getLocalizedValues(
+						objectField, serviceContext.getUserId(),
+						objectEntry.getProperties());
+
+				if (localizedValues != null) {
 					values.put(
 						objectField.getI18nObjectFieldName(),
-						(Serializable)localizedValue);
+						(Serializable)localizedValues);
 				}
 				else if (value != null) {
 					values.put(
@@ -1777,6 +1874,9 @@ public class DefaultObjectEntryManagerImpl
 		target = "(filter.factory.key=" + ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT + ")"
 	)
 	private FilterFactory<Predicate> _filterFactory;
+
+	@Reference
+	private Http _http;
 
 	@Reference
 	private JSONFactory _jsonFactory;

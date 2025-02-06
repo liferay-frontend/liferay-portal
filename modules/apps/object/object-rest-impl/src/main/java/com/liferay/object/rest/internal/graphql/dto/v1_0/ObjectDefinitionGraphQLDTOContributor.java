@@ -8,6 +8,7 @@ package com.liferay.object.rest.internal.graphql.dto.v1_0;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.entry.util.ObjectEntryDTOConverterUtil;
+import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectRelationship;
@@ -82,7 +83,9 @@ public class ObjectDefinitionGraphQLDTOContributor
 		ObjectDefinitionLocalService objectDefinitionLocalService,
 		ObjectEntryManager objectEntryManager,
 		ObjectFieldLocalService objectFieldLocalService,
+		List<ObjectField> objectFields,
 		ObjectRelationshipLocalService objectRelationshipLocalService,
+		List<ObjectRelationship> objectRelationships,
 		ObjectScopeProvider objectScopeProvider,
 		SystemObjectDefinitionManagerRegistry
 			systemObjectDefinitionManagerRegistry) {
@@ -100,6 +103,7 @@ public class ObjectDefinitionGraphQLDTOContributor
 			GraphQLDTOProperty.of("dateModified", true, Date.class));
 		graphQLDTOProperties.add(
 			GraphQLDTOProperty.of("externalReferenceCode", String.class));
+		graphQLDTOProperties.add(GraphQLDTOProperty.of("id", true, Long.class));
 		graphQLDTOProperties.add(
 			GraphQLDTOProperty.of("status", true, String.class));
 		graphQLDTOProperties.add(
@@ -108,11 +112,16 @@ public class ObjectDefinitionGraphQLDTOContributor
 		List<GraphQLDTOProperty> relationshipGraphQLDTOProperties =
 			new ArrayList<>();
 
-		List<ObjectField> objectFields =
-			objectFieldLocalService.getObjectFields(
+		if (objectFields == null) {
+			objectFields = objectFieldLocalService.getObjectFields(
 				objectDefinition.getObjectDefinitionId());
+		}
 
 		for (ObjectField objectField : objectFields) {
+			if (ObjectFieldUtil.isMetadata(objectField.getName())) {
+				continue;
+			}
+
 			if (Objects.equals(
 					objectField.getBusinessType(),
 					ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT)) {
@@ -159,9 +168,11 @@ public class ObjectDefinitionGraphQLDTOContributor
 			}
 		}
 
-		List<ObjectRelationship> objectRelationships =
-			objectRelationshipLocalService.getObjectRelationships(
-				objectDefinition.getObjectDefinitionId());
+		if (objectRelationships == null) {
+			objectRelationships =
+				objectRelationshipLocalService.getObjectRelationships(
+					objectDefinition.getObjectDefinitionId());
+		}
 
 		for (ObjectRelationship objectRelationship : objectRelationships) {
 			if (!Objects.equals(

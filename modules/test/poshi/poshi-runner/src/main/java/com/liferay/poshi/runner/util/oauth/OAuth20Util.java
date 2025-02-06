@@ -23,9 +23,8 @@ public class OAuth20Util {
 			String requestURL)
 		throws Exception {
 
-		ServiceBuilder serviceBuilder = new ServiceBuilder();
+		ServiceBuilder serviceBuilder = new ServiceBuilder(apiKey);
 
-		serviceBuilder.apiKey(apiKey);
 		serviceBuilder.apiSecret(apiSecret);
 		serviceBuilder.callback(callbackURL);
 
@@ -35,12 +34,11 @@ public class OAuth20Util {
 		OAuth2AccessToken oAuth2AccessToken = new OAuth2AccessToken(
 			accessTokenString);
 
-		OAuthRequest oAuthRequest = new OAuthRequest(
-			Verb.GET, requestURL, oAuth20Service);
+		OAuthRequest oAuthRequest = new OAuthRequest(Verb.GET, requestURL);
 
 		oAuth20Service.signRequest(oAuth2AccessToken, oAuthRequest);
 
-		Response response = oAuthRequest.send();
+		Response response = oAuth20Service.execute(oAuthRequest);
 
 		if (!response.isSuccessful()) {
 			throw new Exception("Response is not successful");

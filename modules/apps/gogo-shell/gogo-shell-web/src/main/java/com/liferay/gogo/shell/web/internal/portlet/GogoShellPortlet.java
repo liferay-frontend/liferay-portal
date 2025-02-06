@@ -210,14 +210,13 @@ public class GogoShellPortlet extends MVCPortlet {
 
 		Object sessionAttribute = portletSession.getAttribute(name);
 
-		if (sessionAttribute instanceof TransientValue) {
-			TransientValue<T> transientValue =
-				(TransientValue<T>)sessionAttribute;
-
-			return transientValue.getValue();
+		if (!(sessionAttribute instanceof TransientValue)) {
+			return null;
 		}
 
-		return null;
+		TransientValue<T> transientValue = (TransientValue<T>)sessionAttribute;
+
+		return transientValue.getValue();
 	}
 
 	private void _initCommandSession(PortletRequest portletRequest) {

@@ -5,13 +5,17 @@
 
 package com.liferay.portal.tools.rest.builder.test.internal.resource.v1_0;
 
+import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.tools.rest.builder.test.dto.v1_0.TestEntity;
+import com.liferay.portal.tools.rest.builder.test.internal.entity.v1_0.TestEntityEntityModel;
 import com.liferay.portal.tools.rest.builder.test.resource.v1_0.TestEntityResource;
 import com.liferay.portal.vulcan.pagination.Page;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.ws.rs.core.MultivaluedMap;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ServiceScope;
@@ -24,6 +28,11 @@ import org.osgi.service.component.annotations.ServiceScope;
 	scope = ServiceScope.PROTOTYPE, service = TestEntityResource.class
 )
 public class TestEntityResourceImpl extends BaseTestEntityResourceImpl {
+
+	@Override
+	public EntityModel getEntityModel(MultivaluedMap multivaluedMap) {
+		return new TestEntityEntityModel();
+	}
 
 	@Override
 	public Page<TestEntity> getTestEntitiesPage() {

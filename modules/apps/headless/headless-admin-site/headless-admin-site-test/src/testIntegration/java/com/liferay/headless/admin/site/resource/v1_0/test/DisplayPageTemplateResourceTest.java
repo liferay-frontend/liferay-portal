@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.exportimport.kernel.service.StagingLocalService;
 import com.liferay.headless.admin.site.client.dto.v1_0.ClassSubtypeReference;
+import com.liferay.headless.admin.site.client.dto.v1_0.ContentPageSpecification;
 import com.liferay.headless.admin.site.client.dto.v1_0.DisplayPageTemplate;
 import com.liferay.headless.admin.site.client.dto.v1_0.DisplayPageTemplateFolder;
 import com.liferay.headless.admin.site.client.dto.v1_0.FriendlyUrlHistory;
@@ -17,6 +18,8 @@ import com.liferay.headless.admin.site.client.pagination.Page;
 import com.liferay.headless.admin.site.client.pagination.Pagination;
 import com.liferay.headless.admin.site.client.problem.Problem;
 import com.liferay.headless.admin.site.client.resource.v1_0.DisplayPageTemplateResource;
+import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutPageTemplateEntryTestUtil;
+import com.liferay.headless.admin.site.resource.v1_0.test.util.PageSpecificationsTestUtil;
 import com.liferay.info.item.InfoItemFormVariation;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemFormVariationsProvider;
@@ -33,6 +36,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -311,14 +315,49 @@ public class DisplayPageTemplateResourceTest
 			testPostSiteSiteByExternalReferenceCodeDisplayPageTemplateFolderDisplayPageTemplate();
 	}
 
-	@Ignore
 	@Override
 	@Test
 	public void testPostSiteSiteByExternalReferenceCodeDisplayPageTemplatePageSpecification()
 		throws Exception {
 
-		super.
-			testPostSiteSiteByExternalReferenceCodeDisplayPageTemplatePageSpecification();
+		DisplayPageTemplateResource displayPageTemplateResource =
+			_getDisplayPageTemplateResource();
+
+		DisplayPageTemplate displayPageTemplate =
+			displayPageTemplateResource.
+				postSiteSiteByExternalReferenceCodeDisplayPageTemplate(
+					testGroup.getExternalReferenceCode(),
+					randomDisplayPageTemplate());
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.
+				getLayoutPageTemplateEntryByExternalReferenceCode(
+					displayPageTemplate.getExternalReferenceCode(),
+					testGroup.getGroupId());
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				testGroup.getGroupId(), TestPropsValues.getUserId());
+
+		PageSpecificationsTestUtil.
+			testPostSiteSiteByExternalReferenceCodePageSpecification(
+				_layoutLocalService.getLayout(
+					layoutPageTemplateEntry.getPlid()),
+				displayPageTemplate.getPageSpecifications(), serviceContext,
+				contentPageSpecification ->
+					displayPageTemplateResource.
+						postSiteSiteByExternalReferenceCodeDisplayPageTemplatePageSpecification(
+							testGroup.getExternalReferenceCode(),
+							displayPageTemplate.getExternalReferenceCode(),
+							contentPageSpecification));
+
+		_assertPostSiteSiteByExternalReferenceCodeDisplayPageTemplatePageSpecificationProblemException(
+			LayoutPageTemplateEntryTestUtil.getBasicLayoutPageTemplateEntry(
+				serviceContext));
+
+		_assertPostSiteSiteByExternalReferenceCodeDisplayPageTemplatePageSpecificationProblemException(
+			LayoutPageTemplateEntryTestUtil.getMasterLayoutPageTemplateEntry(
+				serviceContext, WorkflowConstants.STATUS_DRAFT));
 	}
 
 	@Override
@@ -504,6 +543,28 @@ public class DisplayPageTemplateResourceTest
 			Assert.assertEquals(
 				jsonArray.toString(), entry.getValue(), jsonArray.getString(0));
 		}
+
+		PageSpecificationsTestUtil.assertPageSpecifications(
+			layout, displayPageTemplate.getPageSpecifications());
+	}
+
+	private void
+			_assertPostSiteSiteByExternalReferenceCodeDisplayPageTemplatePageSpecificationProblemException(
+				LayoutPageTemplateEntry layoutPageTemplateEntry)
+		throws Exception {
+
+		_assertProblemException(
+			"BAD_REQUEST",
+			() ->
+				displayPageTemplateResource.
+					postSiteSiteByExternalReferenceCodeDisplayPageTemplatePageSpecification(
+						testGroup.getExternalReferenceCode(),
+						layoutPageTemplateEntry.getExternalReferenceCode(),
+						new ContentPageSpecification() {
+							{
+								setType(() -> Type.CONTENT_PAGE_SPECIFICATION);
+							}
+						}));
 	}
 
 	private void _assertProblemException(
@@ -559,7 +620,7 @@ public class DisplayPageTemplateResourceTest
 		).locale(
 			LocaleUtil.getDefault()
 		).parameters(
-			"nestedFields", "friendlyUrlHistory"
+			"nestedFields", "friendlyUrlHistory,pageSpecifications"
 		).build();
 	}
 
@@ -654,11 +715,11 @@ public class DisplayPageTemplateResourceTest
 				testGroup.getExternalReferenceCode(),
 				randomDisplayPageTemplate());
 
-		DisplayPageTemplateResource curDisplayPageTemplateResource =
+		DisplayPageTemplateResource displayPageTemplateResource =
 			_getDisplayPageTemplateResource();
 
 		page =
-			curDisplayPageTemplateResource.
+			displayPageTemplateResource.
 				getSiteSiteByExternalReferenceCodeDisplayPageTemplatesPage(
 					testGroup.getExternalReferenceCode(), null, null, null,
 					Pagination.of(1, 10), null);
@@ -676,11 +737,11 @@ public class DisplayPageTemplateResourceTest
 				DisplayPageTemplate displayPageTemplate)
 		throws Exception {
 
-		DisplayPageTemplateResource curDisplayPageTemplateResource =
+		DisplayPageTemplateResource displayPageTemplateResource =
 			_getDisplayPageTemplateResource();
 
 		_assertNestedFields(
-			curDisplayPageTemplateResource.
+			displayPageTemplateResource.
 				getSiteSiteByExternalReferenceCodeDisplayPageTemplate(
 					testGroup.getExternalReferenceCode(),
 					displayPageTemplate.getExternalReferenceCode()));
@@ -827,12 +888,12 @@ public class DisplayPageTemplateResourceTest
 		assertEquals(displayPageTemplate, putDisplayPageTemplate);
 		assertValid(putDisplayPageTemplate);
 
-		DisplayPageTemplateFolder curDisplayPageTemplateFolder =
+		DisplayPageTemplateFolder displayPageTemplateFolder =
 			putDisplayPageTemplate.getParentFolder();
 
 		Assert.assertEquals(
 			layoutPageTemplateCollection.getExternalReferenceCode(),
-			curDisplayPageTemplateFolder.getExternalReferenceCode());
+			displayPageTemplateFolder.getExternalReferenceCode());
 	}
 
 	private void _updateLayoutPageTemplateEntryStatus(

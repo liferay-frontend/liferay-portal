@@ -1,6 +1,9 @@
 const currentLength = document.getElementById(
 	`${fragmentNamespace}-current-length`
 );
+const errorMessage = document.getElementById(
+	`${fragmentNamespace}-text-input-error-message`
+);
 const formGroup = document.getElementById(`${fragmentNamespace}-form-group`);
 const lengthInfo = document.getElementById(`${fragmentNamespace}-length-info`);
 const lengthWarning = document.getElementById(
@@ -43,6 +46,10 @@ function onInputKeyup(event) {
 
 	currentLength.innerText = length;
 
+	if (errorMessage) {
+		errorMessage.remove();
+	}
+
 	if (length > input.attributes.maxLength) {
 		enableLengthWarning();
 	}
@@ -51,8 +58,6 @@ function onInputKeyup(event) {
 	}
 }
 
-let currentLanguageId = themeDisplay.getDefaultLanguageId();
-
 function main() {
 	if (layoutMode === 'edit' && inputElement) {
 		inputElement.setAttribute('disabled', true);
@@ -60,67 +65,51 @@ function main() {
 	else {
 		currentLength.innerText = inputElement.value.length;
 
-		if (inputElement.value.length > input.attributes.maxLength) {
+		if (
+			!errorMessage &&
+			inputElement.value.length > input.attributes.maxLength
+		) {
 			enableLengthWarning();
 		}
 
 		inputElement.addEventListener('keyup', onInputKeyup);
 
-		if (input.localizable) {
-			Liferay.on('localizationSelect:localeChanged', (event) => {
-				currentLanguageId = event.languageId;
+		if (Liferay.FeatureFlags['LPD-37927']) {
+			import('@liferay/fragment-impl').then(
+				({registerLocalizedInput, registerUnlocalizedInput}) => {
+					if (input.localizable) {
+						const {onChange} = registerLocalizedInput({
+							defaultLanguageId:
+								themeDisplay.getDefaultLanguageId(),
+							initialValues: input.valueI18n,
+							inputElement,
+							inputName: input.name,
+							localizationInputsContainer:
+								inputElement.parentNode,
+							namespace: fragmentNamespace,
+						});
 
-				const translationInput =
-					getOrCreateTranslationInput(currentLanguageId);
-
-				if (translationInput.getAttribute('value') !== null) {
-					inputElement.value = translationInput.value;
-				}
-			});
-
-			inputElement.addEventListener('input', (event) => {
-				const value = event.target.value;
-
-				const translationInput =
-					getOrCreateTranslationInput(currentLanguageId);
-
-				translationInput.value = value;
-			});
-
-			inputElement.addEventListener('change', () => {
-				Liferay.fire('localizationSelect:updateTranslationStatus', {
-					languageId: currentLanguageId,
-				});
-			});
-
-			if (input.valueI18n) {
-				Object.entries(input.valueI18n).forEach(
-					([languageId, value]) => {
-						const translationInput =
-							getOrCreateTranslationInput(languageId);
-
-						translationInput.value = value;
+						inputElement.addEventListener('change', (event) => {
+							onChange(event.target.value);
+						});
 					}
-				);
-			}
+					else {
+						registerUnlocalizedInput({
+							defaultLanguageId:
+								themeDisplay.getDefaultLanguageId(),
+							inputElement,
+							unlocalizedFieldsState:
+								input.attributes.unlocalizedFieldsState,
+							unlocalizedMessageContainer:
+								document.getElementById(
+									`${fragmentNamespace}-unlocalized-info`
+								),
+						});
+					}
+				}
+			);
 		}
 	}
-}
-
-function getOrCreateTranslationInput(languageId) {
-	const inputId = `${fragmentNamespace}${input.name}_${languageId}`;
-
-	let translationInput = document.getElementById(inputId);
-
-	if (!translationInput) {
-		translationInput = document.createElement('input');
-		translationInput.type = 'hidden';
-		translationInput.id = inputId;
-		translationInput.name = `${input.name}_${languageId}`;
-		inputElement.parentNode.appendChild(translationInput);
-	}
-
-	return translationInput;
 }
 
 main();

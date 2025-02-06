@@ -9,4 +9,10 @@ package com.liferay.oauth.client.persistence.model.impl;
  * @author Brian Wing Shun Chan
  */
 public class OAuthClientEntryImpl extends OAuthClientEntryBaseImpl {
+
+	@Override
+	public int getMetadataCacheInSeconds() {
+		return (int)(getMetadataCacheTime() / 1000);
+	}
+
 }

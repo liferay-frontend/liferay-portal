@@ -235,7 +235,7 @@ public class ExportTaskResourceTest {
 		Map<String, String> classNamePartsMap = _splitClassName(className);
 
 		ExportTask exportTask = _exportTaskResource.postExportTask(
-			classNamePartsMap.get("className"), "jsont", null, null, null,
+			classNamePartsMap.get("className"), "jsont", null, null, null, null,
 			classNamePartsMap.get("taskItemDelegateName"));
 
 		String externalReferenceCode = exportTask.getExternalReferenceCode();
@@ -277,7 +277,7 @@ public class ExportTaskResourceTest {
 		JSONArray itemsJSONArray = jsonObject.getJSONArray("items");
 
 		ImportTask importTask = _importTaskResource.postImportTask(
-			classNamePartsMap.get("className"), null, "UPSERT", null, null,
+			classNamePartsMap.get("className"), null, null, "UPSERT", null,
 			null, null, classNamePartsMap.get("taskItemDelegateName"),
 			itemsJSONArray);
 

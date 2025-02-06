@@ -26,11 +26,11 @@ export class JournalEditArticlePage {
 	readonly historyButton: Locator;
 	readonly journalPage: JournalPage;
 	readonly propertiesTab: Locator;
+	readonly publishDropdown: Locator;
 	readonly publishButton: Locator;
 	readonly redoButton: Locator;
 	readonly selectButton: Locator;
 	readonly selectAndConfirmPublishButton: Locator;
-	readonly submitForWorkflowButton: Locator;
 	readonly titleInput: Locator;
 	readonly undoButton: Locator;
 	readonly alertErrorMessage: Locator;
@@ -58,6 +58,9 @@ export class JournalEditArticlePage {
 		this.propertiesTab = page.getByRole('tab', {
 			name: /properties|propriétés/i,
 		});
+		this.publishDropdown = page.getByRole('button', {
+			name: /select and confirm publish settings|sélectionnez et confirmez les/i,
+		});
 		this.publishButton = page.locator(
 			'#_com_liferay_journal_web_portlet_JournalPortlet_publishButton'
 		);
@@ -68,9 +71,6 @@ export class JournalEditArticlePage {
 		this.selectButton = page.getByRole('button', {
 			exact: true,
 			name: 'Select',
-		});
-		this.submitForWorkflowButton = page.getByRole('button', {
-			name: 'Submit for Workflow',
 		});
 		this.titleInput = page.locator(
 			'#_com_liferay_journal_web_portlet_JournalPortlet_titleMapAsXML'
@@ -154,41 +154,37 @@ export class JournalEditArticlePage {
 		viewableBy?: 'Site Members' | 'Owner'
 	) {
 		if (existingArticle) {
-			await expect(async () => {
-				await clickAndExpectToBeVisible({
-					autoClick: true,
-					target: this.page.getByRole('menuitem', {
-						name: /publish|publier/i,
-					}),
-					trigger: this.page.getByRole('button', {
-						name: /select and confirm publish settings|sélectionnez et confirmez les/i,
-					}),
-				});
+			await clickAndExpectToBeVisible({
+				autoClick: true,
+				target: this.page.getByRole('menuitem', {
+					name: /publish|publier/i,
+				}),
+				trigger: this.publishDropdown,
+			});
 
-				await waitForAlert(this.page, 'was updated successfully');
-			}).toPass();
+			await this.page.locator('.alert-success').waitFor({timeout: 2000});
 
 			return;
 		}
 
-		await expect(async () => {
-			await clickAndExpectToBeVisible({
-				autoClick: true,
-				target: this.page.getByRole('menuitem', {
-					name: /publish with permissions|publier avec permissions/i,
-				}),
-				trigger: this.page.getByRole('button', {
-					name: /select and confirm publish settings|sélectionnez et confirmez les/i,
-				}),
-			});
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page.getByRole('menuitem', {
+				name: /publish with permissions|publier avec permissions/i,
+			}),
+			trigger: this.publishDropdown,
+		});
 
-			await expect(this.page.getByLabel('Viewable By')).toBeVisible({
-				timeout: 2000,
-			});
-		}).toPass();
+		const viewableBySelect = this.page.getByLabel(
+			/Viewable By|Visualisable avec/i
+		);
+
+		await expect(viewableBySelect).toBeVisible({
+			timeout: 2000,
+		});
 
 		if (viewableBy) {
-			await this.page.getByLabel('Viewable By').selectOption(viewableBy);
+			await viewableBySelect.selectOption(viewableBy);
 		}
 
 		await this.page
@@ -287,11 +283,6 @@ export class JournalEditArticlePage {
 		await this.fillTitle(title);
 
 		await this.publishArticle(true);
-
-		await waitForAlert(
-			this.page,
-			`Success:${title} was updated successfully.`
-		);
 	}
 
 	async openDMItemSelectorForImages() {
@@ -435,7 +426,26 @@ export class JournalEditArticlePage {
 	async submitArticleForWorkflow(title: string) {
 		await this.fillTitle(title);
 
-		await this.submitForWorkflowButton.click();
+		await expect(async () => {
+			await clickAndExpectToBeVisible({
+				autoClick: true,
+				target: this.page.getByRole('menuitem', {
+					name: /submit for workflow with permissions/i,
+				}),
+				trigger: this.page.getByRole('button', {
+					name: /select and confirm submit for workflow settings/i,
+				}),
+			});
+
+			await expect(this.page.getByLabel('Viewable By')).toBeVisible({
+				timeout: 2000,
+			});
+		}).toPass();
+
+		await this.page
+			.locator('[role="dialog"]')
+			.getByRole('button', {name: /submit for workflow/i})
+			.click();
 
 		await this.page
 			.locator(

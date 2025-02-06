@@ -895,6 +895,17 @@ public class PortalImpl implements Portal {
 			return url;
 		}
 
+		long companyId = CompanyThreadLocal.getCompanyId();
+
+		String[] allowedProtocols = RedirectURLSettingsUtil.getAllowedProtocols(
+			companyId);
+
+		if ((allowedProtocols.length != 0) &&
+			!ArrayUtil.contains(allowedProtocols, uri.getScheme(), true)) {
+
+			return null;
+		}
+
 		String domain = uri.getHost();
 
 		if (Validator.isNull(domain)) {
@@ -907,8 +918,6 @@ public class PortalImpl implements Portal {
 		if (!_validPortalDomainCheckDisabled && isValidPortalDomain(domain)) {
 			return url;
 		}
-
-		long companyId = CompanyThreadLocal.getCompanyId();
 
 		String securityMode = RedirectURLSettingsUtil.getSecurityMode(
 			companyId);
@@ -6686,7 +6695,6 @@ public class PortalImpl implements Portal {
 					groupId, privateLayout,
 					new String[] {
 						LayoutConstants.TYPE_CONTENT,
-						LayoutConstants.TYPE_COLLECTION,
 						LayoutConstants.TYPE_FULL_PAGE_APPLICATION,
 						LayoutConstants.TYPE_PANEL,
 						LayoutConstants.TYPE_PORTLET,

@@ -19,6 +19,9 @@ const lazyRoutes = {
 		() => import('./pages/LicenseAgreementPage')
 	),
 	'next-steps': React.lazy(() => import('./pages/NextSteps')),
+	'oauth2-authorize': React.lazy(
+		() => import('./pages/OAuth2Authorize/OAuth2AuthorizeRouter')
+	),
 	'product-purchase': React.lazy(
 		() => import('./pages/ProductPurchase/ProductPurchaseRouter')
 	),

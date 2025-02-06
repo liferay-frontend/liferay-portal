@@ -22,8 +22,8 @@ import {
 	CART_PRODUCT_QUANTITY_CHANGED,
 	CURRENT_ACCOUNT_UPDATED,
 
+	// eslint-disable-next-line lines-around-comment
 	// @ts-ignore
-
 } from '../../../src/main/resources/META-INF/resources/utilities/eventsDefinitions';
 
 interface ILocators {
@@ -69,6 +69,13 @@ const props = {
 	showOrderTypeModal: false,
 	size: 'sm',
 };
+
+jest.mock('frontend-js-web', () => {
+	return {
+		...jest.requireActual('frontend-js-web'),
+		openToast: jest.fn(),
+	};
+});
 
 describe('Add to Cart', () => {
 	const addProductToCartFn = jest.fn();

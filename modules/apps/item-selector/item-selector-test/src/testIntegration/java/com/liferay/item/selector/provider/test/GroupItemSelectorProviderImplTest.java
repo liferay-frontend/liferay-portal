@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -67,6 +68,47 @@ public class GroupItemSelectorProviderImplTest {
 
 			Assert.assertTrue(groups.contains(company.getGroup()));
 		}
+
+		List<Group> groups = _groupItemSelectorProvider.getGroups(
+			_group.getCompanyId(), _group.getGroupId(), null, 0, 20);
+
+		int originalGroupsSize = groups.size();
+
+		Assert.assertEquals(
+			groups.toString(), originalGroupsSize, groups.size());
+
+		Assert.assertEquals(
+			originalGroupsSize,
+			_groupItemSelectorProvider.getGroupsCount(
+				_group.getCompanyId(), _group.getGroupId(), null));
+
+		Group childGroup = GroupTestUtil.addGroup(_group.getGroupId());
+
+		groups = _groupItemSelectorProvider.getGroups(
+			_group.getCompanyId(), _group.getGroupId(), null, 0, 20);
+
+		Assert.assertEquals(
+			groups.toString(), originalGroupsSize + 1, groups.size());
+
+		Assert.assertEquals(
+			originalGroupsSize + 1,
+			_groupItemSelectorProvider.getGroupsCount(
+				_group.getCompanyId(), _group.getGroupId(), null));
+
+		childGroup.setActive(false);
+
+		_groupLocalService.updateGroup(childGroup);
+
+		groups = _groupItemSelectorProvider.getGroups(
+			_group.getCompanyId(), _group.getGroupId(), null, 0, 20);
+
+		Assert.assertEquals(
+			groups.toString(), originalGroupsSize, groups.size());
+
+		Assert.assertEquals(
+			originalGroupsSize,
+			_groupItemSelectorProvider.getGroupsCount(
+				_group.getCompanyId(), _group.getGroupId(), null));
 	}
 
 	@Test
@@ -87,6 +129,9 @@ public class GroupItemSelectorProviderImplTest {
 		filter = "component.name=com.liferay.item.selector.internal.provider.GroupItemSelectorProviderImpl"
 	)
 	private GroupItemSelectorProvider _groupItemSelectorProvider;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	private User _user;
 

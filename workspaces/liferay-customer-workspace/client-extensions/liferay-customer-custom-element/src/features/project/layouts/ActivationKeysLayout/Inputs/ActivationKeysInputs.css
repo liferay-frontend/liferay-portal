@@ -1,0 +1,15 @@
+.cp-subscription-select {
+	max-width: 247px;
+
+	select::placeholder {
+		font-weight: var(--font-weight-semi-bold);
+	}
+}
+
+.cp-subscription-term-select {
+	max-width: 360px;
+	
+	select::placeholder {
+		font-weight: var(--font-weight-semi-bold);
+	}
+}

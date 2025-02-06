@@ -45,6 +45,7 @@ public class OAuthClientEntryWrapper
 		attributes.put("authServerWellKnownURI", getAuthServerWellKnownURI());
 		attributes.put("clientId", getClientId());
 		attributes.put("infoJSON", getInfoJSON());
+		attributes.put("metadataCacheTime", getMetadataCacheTime());
 		attributes.put("oidcUserInfoMapperJSON", getOIDCUserInfoMapperJSON());
 		attributes.put(
 			"tokenRequestParametersJSON", getTokenRequestParametersJSON());
@@ -120,6 +121,12 @@ public class OAuthClientEntryWrapper
 
 		if (infoJSON != null) {
 			setInfoJSON(infoJSON);
+		}
+
+		Long metadataCacheTime = (Long)attributes.get("metadataCacheTime");
+
+		if (metadataCacheTime != null) {
+			setMetadataCacheTime(metadataCacheTime);
 		}
 
 		String oidcUserInfoMapperJSON = (String)attributes.get(
@@ -200,6 +207,21 @@ public class OAuthClientEntryWrapper
 	@Override
 	public String getInfoJSON() {
 		return model.getInfoJSON();
+	}
+
+	@Override
+	public int getMetadataCacheInSeconds() {
+		return model.getMetadataCacheInSeconds();
+	}
+
+	/**
+	 * Returns the metadata cache time of this o auth client entry.
+	 *
+	 * @return the metadata cache time of this o auth client entry
+	 */
+	@Override
+	public long getMetadataCacheTime() {
+		return model.getMetadataCacheTime();
 	}
 
 	/**
@@ -355,6 +377,16 @@ public class OAuthClientEntryWrapper
 	@Override
 	public void setInfoJSON(String infoJSON) {
 		model.setInfoJSON(infoJSON);
+	}
+
+	/**
+	 * Sets the metadata cache time of this o auth client entry.
+	 *
+	 * @param metadataCacheTime the metadata cache time of this o auth client entry
+	 */
+	@Override
+	public void setMetadataCacheTime(long metadataCacheTime) {
+		model.setMetadataCacheTime(metadataCacheTime);
 	}
 
 	/**

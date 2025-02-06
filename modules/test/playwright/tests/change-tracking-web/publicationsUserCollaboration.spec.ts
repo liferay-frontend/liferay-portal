@@ -35,7 +35,7 @@ test('LPD-30098 Invite user as admin', async ({
 	const user2 = await changeTrackingPage.addUserWithPublicationsUserRole();
 
 	await changeTrackingPage.addUserToPublication(
-		ctCollection.name,
+		ctCollection.body.name,
 		'Admin',
 		user1
 	);
@@ -46,7 +46,7 @@ test('LPD-30098 Invite user as admin', async ({
 
 	await journalEditArticlePage.fillTitle(title);
 
-	await page.getByRole('button', {name: 'Publish'}).click();
+	await journalEditArticlePage.publishArticle();
 
 	await waitForAlert(page, `Success:${title} was created successfully.`);
 
@@ -60,7 +60,7 @@ test('LPD-30098 Invite user as admin', async ({
 
 	await expect(
 		page.getByText(
-			`has invited you to work on ${ctCollection.name} as a Admin.`
+			`has invited you to work on ${ctCollection.body.name} as a Admin.`
 		)
 	).toBeVisible();
 
@@ -103,5 +103,7 @@ test('LPD-30098 Invite user as admin', async ({
 	await apiHelpers.headlessAdminUser.deleteUserAccount(Number(user1.id));
 	await apiHelpers.headlessAdminUser.deleteUserAccount(Number(user2.id));
 
-	await apiHelpers.headlessChangeTracking.deleteCTCollection(ctCollection.id);
+	await apiHelpers.headlessChangeTracking.deleteCTCollection(
+		ctCollection.body.id
+	);
 });

@@ -16,7 +16,8 @@ import com.liferay.portal.kernel.messaging.Destination;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBus;
 import com.liferay.portal.kernel.messaging.MessageBusInterceptor;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.messaging.internal.configuration.DestinationWorkerConfiguration;
 
@@ -32,6 +33,7 @@ import org.osgi.service.cm.ManagedServiceFactory;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 /**
@@ -78,20 +80,13 @@ public class DefaultMessageBus implements MessageBus {
 			Long[] companyIds = (Long[])message.get("companyIds");
 
 			if (companyIds != null) {
-				long originalCompanyId = CompanyThreadLocal.getCompanyId();
-
-				try {
-					for (Long id : companyIds) {
-						CompanyThreadLocal.setCompanyId(id);
-
-						message.put("companyId", id);
+				_companyLocalService.forEachCompanyId(
+					companyId -> {
+						message.put("companyId", companyId);
 
 						destination.send(message.clone());
-					}
-				}
-				finally {
-					CompanyThreadLocal.setCompanyId(originalCompanyId);
-				}
+					},
+					ArrayUtil.toArray(companyIds));
 
 				return;
 			}
@@ -188,6 +183,9 @@ public class DefaultMessageBus implements MessageBus {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		DefaultMessageBus.class);
+
+	@Reference
+	private CompanyLocalService _companyLocalService;
 
 	private final Map<String, DestinationWorkerConfiguration>
 		_destinationWorkerConfigurations = new ConcurrentHashMap<>();

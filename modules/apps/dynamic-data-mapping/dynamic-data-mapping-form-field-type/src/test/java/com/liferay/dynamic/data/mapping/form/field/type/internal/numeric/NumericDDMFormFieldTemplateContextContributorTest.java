@@ -5,16 +5,19 @@
 
 package com.liferay.dynamic.data.mapping.form.field.type.internal.numeric;
 
+import com.liferay.dynamic.data.mapping.form.field.type.BaseDDMFormFieldTemplateContextContributorTestCase;
+import com.liferay.dynamic.data.mapping.form.field.type.constants.DDMFormFieldTypeConstants;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.render.DDMFormFieldRenderingContext;
-import com.liferay.dynamic.data.mapping.test.util.BaseDDMFormFieldTypeSettingsTestCase;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormValuesTestUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HtmlParser;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.HashMap;
@@ -33,7 +36,7 @@ import org.mockito.Mockito;
  * @author Marcellus Tavares
  */
 public class NumericDDMFormFieldTemplateContextContributorTest
-	extends BaseDDMFormFieldTypeSettingsTestCase {
+	extends BaseDDMFormFieldTemplateContextContributorTestCase {
 
 	@ClassRule
 	@Rule
@@ -43,28 +46,32 @@ public class NumericDDMFormFieldTemplateContextContributorTest
 	@Before
 	@Override
 	public void setUp() throws Exception {
-		super.setUp();
+		setUpLanguageUtil();
 
 		_setUpHtmlParser();
+
+		_ddmFormField.setDDMForm(getDDMForm());
+
+		ReflectionTestUtil.setFieldValue(
+			_numericDDMFormFieldTemplateContextContributor, "_jsonFactory",
+			new JSONFactoryImpl());
 	}
 
 	@Test
 	public void testGetConfirmationFieldProperties() {
-		DDMFormField ddmFormField = new DDMFormField("field", "numeric");
-
-		ddmFormField.setProperty(
+		_ddmFormField.setProperty(
 			"confirmationErrorMessage",
 			DDMFormValuesTestUtil.createLocalizedValue(
 				"The information does not match", _locale));
-		ddmFormField.setProperty(
+		_ddmFormField.setProperty(
 			"confirmationLabel",
 			DDMFormValuesTestUtil.createLocalizedValue(
 				"Confirm Field", _locale));
-		ddmFormField.setProperty("requireConfirmation", true);
+		_ddmFormField.setProperty("requireConfirmation", true);
 
 		Map<String, Object> parameters =
 			_numericDDMFormFieldTemplateContextContributor.getParameters(
-				ddmFormField, _createDDMFormFieldRenderingContext());
+				_ddmFormField, createDDMFormFieldRenderingContext());
 
 		Assert.assertEquals(
 			"The information does not match",
@@ -76,12 +83,10 @@ public class NumericDDMFormFieldTemplateContextContributorTest
 
 	@Test
 	public void testGetDataTypeChanged() {
-		DDMFormField ddmFormField = new DDMFormField("field", "numeric");
-
-		ddmFormField.setProperty("dataType", "integer");
+		_ddmFormField.setProperty("dataType", "integer");
 
 		DDMFormFieldRenderingContext ddmFormFieldRenderingContext =
-			_createDDMFormFieldRenderingContext();
+			createDDMFormFieldRenderingContext();
 
 		ddmFormFieldRenderingContext.setProperty(
 			"changedProperties",
@@ -91,44 +96,40 @@ public class NumericDDMFormFieldTemplateContextContributorTest
 
 		Map<String, Object> parameters =
 			_numericDDMFormFieldTemplateContextContributor.getParameters(
-				ddmFormField, ddmFormFieldRenderingContext);
+				_ddmFormField, ddmFormFieldRenderingContext);
 
 		Assert.assertEquals("double", parameters.get("dataType"));
 	}
 
 	@Test
 	public void testGetDataTypeDouble() {
-		DDMFormField ddmFormField = new DDMFormField("field", "numeric");
-
-		ddmFormField.setProperty("dataType", "double");
+		_ddmFormField.setProperty("dataType", "double");
 
 		DDMFormFieldRenderingContext ddmFormFieldRenderingContext =
-			_createDDMFormFieldRenderingContext();
+			createDDMFormFieldRenderingContext();
 
 		ddmFormFieldRenderingContext.setProperty("changedProperties", null);
 
 		Map<String, Object> parameters =
 			_numericDDMFormFieldTemplateContextContributor.getParameters(
-				ddmFormField, ddmFormFieldRenderingContext);
+				_ddmFormField, ddmFormFieldRenderingContext);
 
 		Assert.assertEquals("double", parameters.get("dataType"));
 	}
 
 	@Test
 	public void testGetDataTypeInteger() {
-		DDMFormField ddmFormField = new DDMFormField("field", "numeric");
-
-		ddmFormField.setProperty("dataType", "integer");
+		_ddmFormField.setProperty("dataType", "integer");
 
 		DDMFormFieldRenderingContext ddmFormFieldRenderingContext =
-			_createDDMFormFieldRenderingContext();
+			createDDMFormFieldRenderingContext();
 
 		ddmFormFieldRenderingContext.setProperty(
 			"changedProperties", new HashMap<String, Object>());
 
 		Map<String, Object> parameters =
 			_numericDDMFormFieldTemplateContextContributor.getParameters(
-				ddmFormField, ddmFormFieldRenderingContext);
+				_ddmFormField, ddmFormFieldRenderingContext);
 
 		Assert.assertEquals("integer", parameters.get("dataType"));
 	}
@@ -136,7 +137,7 @@ public class NumericDDMFormFieldTemplateContextContributorTest
 	@Test
 	public void testGetInputMaskChangedProperties() {
 		DDMFormFieldRenderingContext ddmFormFieldRenderingContext =
-			_createDDMFormFieldRenderingContext();
+			createDDMFormFieldRenderingContext();
 
 		ddmFormFieldRenderingContext.setProperty(
 			"changedProperties",
@@ -158,7 +159,7 @@ public class NumericDDMFormFieldTemplateContextContributorTest
 		Map<String, Object> parameters =
 			_numericDDMFormFieldTemplateContextContributor.getParameters(
 				_createDDMFormFieldWithInputMask(),
-				_createDDMFormFieldRenderingContext());
+				createDDMFormFieldRenderingContext());
 
 		Assert.assertTrue((boolean)parameters.get("inputMask"));
 		Assert.assertEquals(
@@ -166,9 +167,20 @@ public class NumericDDMFormFieldTemplateContextContributorTest
 	}
 
 	@Test
+	public void testGetLocalizedObjectFieldTrue() {
+		_ddmFormField.setProperty("localizedObjectField", true);
+
+		Assert.assertTrue(
+			MapUtil.getBoolean(
+				_numericDDMFormFieldTemplateContextContributor.getParameters(
+					_ddmFormField, createDDMFormFieldRenderingContext()),
+				"localizedObjectField"));
+	}
+
+	@Test
 	public void testGetNumericInputMaskChangedProperties() {
 		DDMFormFieldRenderingContext ddmFormFieldRenderingContext =
-			_createDDMFormFieldRenderingContext();
+			createDDMFormFieldRenderingContext();
 
 		ddmFormFieldRenderingContext.setProperty(
 			"changedProperties",
@@ -214,7 +226,7 @@ public class NumericDDMFormFieldTemplateContextContributorTest
 		Map<String, Object> parameters =
 			_numericDDMFormFieldTemplateContextContributor.getParameters(
 				_createDDMFormFieldWithNumericInputMask(),
-				_createDDMFormFieldRenderingContext());
+				createDDMFormFieldRenderingContext());
 
 		Assert.assertEquals("$", parameters.get("append"));
 		Assert.assertEquals("prefix", parameters.get("appendType"));
@@ -230,13 +242,11 @@ public class NumericDDMFormFieldTemplateContextContributorTest
 
 	@Test
 	public void testGetSymbols() {
-		DDMFormField ddmFormField = new DDMFormField("field", "numeric");
-
-		ddmFormField.setProperty("dataType", "double");
+		_ddmFormField.setProperty("dataType", "double");
 
 		Map<String, Object> parameters =
 			_numericDDMFormFieldTemplateContextContributor.getParameters(
-				ddmFormField, _createDDMFormFieldRenderingContext());
+				_ddmFormField, createDDMFormFieldRenderingContext());
 
 		Map<String, String> symbols = (Map<String, String>)parameters.get(
 			"symbols");
@@ -247,9 +257,7 @@ public class NumericDDMFormFieldTemplateContextContributorTest
 
 	@Test
 	public void testGetSymbolsBrazilLocale() {
-		DDMFormField ddmFormField = new DDMFormField("field", "numeric");
-
-		ddmFormField.setProperty("dataType", "double");
+		_ddmFormField.setProperty("dataType", "double");
 
 		DDMFormFieldRenderingContext ddmFormFieldRenderingContext =
 			new DDMFormFieldRenderingContext();
@@ -258,7 +266,7 @@ public class NumericDDMFormFieldTemplateContextContributorTest
 
 		Map<String, Object> parameters =
 			_numericDDMFormFieldTemplateContextContributor.getParameters(
-				ddmFormField, ddmFormFieldRenderingContext);
+				_ddmFormField, ddmFormFieldRenderingContext);
 
 		Map<String, String> symbols = (Map<String, String>)parameters.get(
 			"symbols");
@@ -267,18 +275,34 @@ public class NumericDDMFormFieldTemplateContextContributorTest
 		Assert.assertEquals(".", symbols.get("thousandsSeparator"));
 	}
 
-	private DDMFormFieldRenderingContext _createDDMFormFieldRenderingContext() {
+	@Test
+	public void testGetValue() {
+		_ddmFormField.setProperty("localizedObjectField", true);
+
 		DDMFormFieldRenderingContext ddmFormFieldRenderingContext =
-			new DDMFormFieldRenderingContext();
+			createDDMFormFieldRenderingContext();
 
-		ddmFormFieldRenderingContext.setLocale(_locale);
+		String value = JSONUtil.put(
+			"en_US", "5"
+		).put(
+			"pt_BR", "9.47"
+		).toString();
 
-		return ddmFormFieldRenderingContext;
+		ddmFormFieldRenderingContext.setValue(value);
+
+		Assert.assertEquals(
+			value,
+			MapUtil.getString(
+				_numericDDMFormFieldTemplateContextContributor.getParameters(
+					_ddmFormField, ddmFormFieldRenderingContext),
+				"value"));
 	}
 
 	private DDMFormField _createDDMFormFieldWithInputMask() {
-		DDMFormField ddmFormField = new DDMFormField("field", "numeric");
+		DDMFormField ddmFormField = new DDMFormField(
+			"field", DDMFormFieldTypeConstants.NUMERIC);
 
+		ddmFormField.setDDMForm(getDDMForm());
 		ddmFormField.setProperty("inputMask", true);
 		ddmFormField.setProperty(
 			"inputMaskFormat",
@@ -289,8 +313,10 @@ public class NumericDDMFormFieldTemplateContextContributorTest
 	}
 
 	private DDMFormField _createDDMFormFieldWithNumericInputMask() {
-		DDMFormField ddmFormField = new DDMFormField("field", "numeric");
+		DDMFormField ddmFormField = new DDMFormField(
+			"field", DDMFormFieldTypeConstants.NUMERIC);
 
+		ddmFormField.setDDMForm(getDDMForm());
 		ddmFormField.setProperty("dataType", "double");
 		ddmFormField.setProperty("inputMask", true);
 		ddmFormField.setProperty(
@@ -325,8 +351,22 @@ public class NumericDDMFormFieldTemplateContextContributorTest
 		).thenReturn(
 			StringPool.BLANK
 		);
+
+		Mockito.when(
+			_htmlParser.extractText("5")
+		).thenReturn(
+			"5"
+		);
+
+		Mockito.when(
+			_htmlParser.extractText("9.47")
+		).thenReturn(
+			"9.47"
+		);
 	}
 
+	private final DDMFormField _ddmFormField = new DDMFormField(
+		"field", DDMFormFieldTypeConstants.NUMERIC);
 	private final HtmlParser _htmlParser = Mockito.mock(HtmlParser.class);
 	private final Locale _locale = LocaleUtil.US;
 	private final NumericDDMFormFieldTemplateContextContributor

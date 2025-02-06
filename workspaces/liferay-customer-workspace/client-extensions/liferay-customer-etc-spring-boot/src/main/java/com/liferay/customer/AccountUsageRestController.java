@@ -5,7 +5,7 @@
 
 package com.liferay.customer;
 
-import com.liferay.client.extension.util.spring.boot.BaseRestController;
+import com.liferay.client.extension.util.spring.boot3.BaseRestController;
 import com.liferay.customer.model.AccountUsage;
 import com.liferay.customer.service.GoogleCloudFunctionService;
 import com.liferay.customer.service.KoroneikiService;
@@ -56,7 +56,7 @@ public class AccountUsageRestController extends BaseRestController {
 					1, 1000, StringPool.BLANK);
 
 			JSONObject jsonObject =
-				_googleCloudFunctionService.getCustomerAccountUsage(
+				_googleCloudFunctionService.fetchCustomerAccountUsage(
 					externalReferenceCode);
 
 			AccountUsage accountUsage = new AccountUsage(

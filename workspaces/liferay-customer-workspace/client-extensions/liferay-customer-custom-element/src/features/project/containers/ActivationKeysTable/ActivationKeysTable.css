@@ -1,0 +1,29 @@
+.cp-activation-key-container {
+	max-width: 1271px;
+}
+
+.cp-activation-key-table {
+	max-width: 85vw;
+
+	& tbody {
+		& tr:first-child {
+			& td {
+				border-top: 1px solid #e1e1e4 !important;
+			}
+		}
+
+		& tr:last-child {
+			& td {
+				border-bottom: 1px solid #e1e1e4 !important;
+			}
+		}
+	}
+
+	.cursor-pointer {
+		cursor: pointer;
+	}
+}
+
+.cp-activation-key-cell-small {
+	max-width: 20%;
+}

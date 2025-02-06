@@ -43,6 +43,7 @@ import com.liferay.object.model.ObjectEntryTable;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectFieldSetting;
 import com.liferay.object.model.ObjectRelationship;
+import com.liferay.object.petra.sql.dsl.DynamicObjectDefinitionLocalizationTable;
 import com.liferay.object.petra.sql.dsl.DynamicObjectDefinitionLocalizationTableFactory;
 import com.liferay.object.petra.sql.dsl.DynamicObjectDefinitionTable;
 import com.liferay.object.petra.sql.dsl.DynamicObjectDefinitionTableUtil;
@@ -534,6 +535,23 @@ public class ObjectFieldLocalServiceImpl
 	}
 
 	@Override
+	public Map<Long, List<ObjectField>> getObjectFieldsMap(long companyId) {
+		Map<Long, List<ObjectField>> objectFieldsMap = new HashMap<>();
+
+		for (ObjectField objectField :
+				objectFieldPersistence.findByCompanyId(companyId)) {
+
+			List<ObjectField> objectFields = objectFieldsMap.computeIfAbsent(
+				objectField.getObjectDefinitionId(),
+				objectDefinitionId -> new ArrayList<>());
+
+			objectFields.add(objectField);
+		}
+
+		return objectFieldsMap;
+	}
+
+	@Override
 	public Table getTable(long objectDefinitionId, String name)
 		throws PortalException {
 
@@ -830,7 +848,7 @@ public class ObjectFieldLocalServiceImpl
 
 		objectField.setExternalReferenceCode(externalReferenceCode);
 
-		_setBusinessTypeAndDBType(businessType, dbType, objectField);
+		_setBusinessTypeAndDBType(businessType, dbType, objectField, system);
 
 		ObjectFieldBusinessType objectFieldBusinessType =
 			_objectFieldBusinessTypeRegistry.getObjectFieldBusinessType(
@@ -892,7 +910,26 @@ public class ObjectFieldLocalServiceImpl
 				ObjectFieldConstants.BUSINESS_TYPE_FORMULA)) {
 
 			if (localized) {
-				dbTableName = objectDefinition.getLocalizationDBTableName();
+				DynamicObjectDefinitionLocalizationTable
+					dynamicObjectDefinitionLocalizationTable =
+						DynamicObjectDefinitionLocalizationTableFactory.create(
+							objectDefinition, this);
+
+				dbTableName =
+					dynamicObjectDefinitionLocalizationTable.getTableName();
+
+				List<ObjectField> objectFields =
+					dynamicObjectDefinitionLocalizationTable.getObjectFields();
+
+				if (objectFields.size() == 1) {
+					runSQL("DROP_TABLE_IF_EXISTS(" + dbTableName + ")");
+
+					runSQL(
+						dynamicObjectDefinitionLocalizationTable.
+							getCreateTableSQL());
+
+					return objectField;
+				}
 			}
 
 			_addObjectFieldColumn(dbTableName, objectField);
@@ -1128,6 +1165,26 @@ public class ObjectFieldLocalServiceImpl
 				objectDefinition);
 		}
 
+		if (objectDefinition.getTitleObjectFieldId() ==
+				objectField.getObjectFieldId()) {
+
+			ObjectField externalReferenceCodeObjectField =
+				objectFieldPersistence.fetchByODI_N(
+					objectDefinition.getObjectDefinitionId(),
+					"externalReferenceCode");
+
+			if (externalReferenceCodeObjectField != null) {
+				objectDefinition.setTitleObjectFieldId(
+					externalReferenceCodeObjectField.getObjectFieldId());
+			}
+			else {
+				objectDefinition.setTitleObjectFieldId(0);
+			}
+
+			objectDefinition = _objectDefinitionPersistence.update(
+				objectDefinition);
+		}
+
 		_objectFieldSettingLocalService.deleteObjectFieldObjectFieldSetting(
 			objectField);
 
@@ -1277,7 +1334,8 @@ public class ObjectFieldLocalServiceImpl
 	}
 
 	private void _setBusinessTypeAndDBType(
-			String businessType, String dbType, ObjectField objectField)
+			String businessType, String dbType, ObjectField objectField,
+			boolean system)
 		throws PortalException {
 
 		ObjectFieldBusinessType objectFieldBusinessType =
@@ -1289,7 +1347,13 @@ public class ObjectFieldLocalServiceImpl
 
 		if (objectFieldBusinessType != null) {
 			objectField.setBusinessType(businessType);
-			objectField.setDBType(objectFieldBusinessType.getDBType());
+
+			if (system) {
+				objectField.setDBType(dbType);
+			}
+			else {
+				objectField.setDBType(objectFieldBusinessType.getDBType());
+			}
 		}
 		else if (objectFieldDBTypes.contains(dbType) &&
 				 _businessTypes.containsKey(dbType)) {
@@ -1406,7 +1470,8 @@ public class ObjectFieldLocalServiceImpl
 			return newObjectField;
 		}
 
-		_setBusinessTypeAndDBType(businessType, dbType, newObjectField);
+		_setBusinessTypeAndDBType(
+			businessType, dbType, newObjectField, newObjectField.isSystem());
 
 		newObjectField.setListTypeDefinitionId(listTypeDefinitionId);
 
@@ -1608,11 +1673,27 @@ public class ObjectFieldLocalServiceImpl
 
 				throw new ObjectFieldLocalizedException(
 					StringBundler.concat(
-						"Only ", ObjectFieldConstants.BUSINESS_TYPE_BOOLEAN,
+						"Only ", ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT,
+						StringPool.COMMA,
+						ObjectFieldConstants.BUSINESS_TYPE_BOOLEAN,
 						StringPool.COMMA,
 						ObjectFieldConstants.BUSINESS_TYPE_DATE,
 						StringPool.COMMA,
+						ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME,
+						StringPool.COMMA,
+						ObjectFieldConstants.BUSINESS_TYPE_DECIMAL,
+						StringPool.COMMA,
+						ObjectFieldConstants.BUSINESS_TYPE_INTEGER,
+						StringPool.COMMA,
+						ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER,
+						StringPool.COMMA,
 						ObjectFieldConstants.BUSINESS_TYPE_LONG_TEXT,
+						StringPool.COMMA,
+						ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST,
+						StringPool.COMMA,
+						ObjectFieldConstants.BUSINESS_TYPE_PICKLIST,
+						StringPool.COMMA,
+						ObjectFieldConstants.BUSINESS_TYPE_PRECISION_DECIMAL,
 						StringPool.COMMA,
 						ObjectFieldConstants.BUSINESS_TYPE_RICH_TEXT, " and ",
 						ObjectFieldConstants.BUSINESS_TYPE_TEXT,

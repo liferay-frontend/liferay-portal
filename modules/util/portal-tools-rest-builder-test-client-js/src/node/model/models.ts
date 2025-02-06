@@ -3,13 +3,22 @@ import localVarRequest from 'request';
 export * from './childTestEntity1';
 export * from './childTestEntity2';
 export * from './childTestEntity3';
+export * from './companyTestEntity';
+export * from './entityModelResourceTestEntity1';
+export * from './entityModelResourceTestEntity2';
 export * from './enumTestEntity';
 export * from './facet';
 export * from './facetValue';
 export * from './jSONMapAttributeTestEntity';
 export * from './nestedArrayItemsTestEntity';
 export * from './nestedTestEntity';
+export * from './pageCompanyTestEntity';
+export * from './pageEntityModelResourceTestEntity1';
+export * from './pagePermission';
+export * from './pageSiteTestEntity';
 export * from './pageTestEntity';
+export * from './permission';
+export * from './siteTestEntity';
 export * from './testEntity';
 export * from './testEntityAddress';
 export * from './unreferencedTestEntity';
@@ -30,13 +39,22 @@ export type RequestFile = string | Buffer | fs.ReadStream | RequestDetailedFile;
 import { ChildTestEntity1 } from './childTestEntity1';
 import { ChildTestEntity2 } from './childTestEntity2';
 import { ChildTestEntity3 } from './childTestEntity3';
+import { CompanyTestEntity } from './companyTestEntity';
+import { EntityModelResourceTestEntity1 } from './entityModelResourceTestEntity1';
+import { EntityModelResourceTestEntity2 } from './entityModelResourceTestEntity2';
 import { EnumTestEntity } from './enumTestEntity';
 import { Facet } from './facet';
 import { FacetValue } from './facetValue';
 import { JSONMapAttributeTestEntity } from './jSONMapAttributeTestEntity';
 import { NestedArrayItemsTestEntity } from './nestedArrayItemsTestEntity';
 import { NestedTestEntity } from './nestedTestEntity';
+import { PageCompanyTestEntity } from './pageCompanyTestEntity';
+import { PageEntityModelResourceTestEntity1 } from './pageEntityModelResourceTestEntity1';
+import { PagePermission } from './pagePermission';
+import { PageSiteTestEntity } from './pageSiteTestEntity';
 import { PageTestEntity } from './pageTestEntity';
+import { Permission } from './permission';
+import { SiteTestEntity } from './siteTestEntity';
 import { TestEntity } from './testEntity';
 import { TestEntityAddress } from './testEntityAddress';
 import { UnreferencedTestEntity } from './unreferencedTestEntity';
@@ -62,13 +80,22 @@ let typeMap: {[index: string]: any} = {
     "ChildTestEntity1": ChildTestEntity1,
     "ChildTestEntity2": ChildTestEntity2,
     "ChildTestEntity3": ChildTestEntity3,
+    "CompanyTestEntity": CompanyTestEntity,
+    "EntityModelResourceTestEntity1": EntityModelResourceTestEntity1,
+    "EntityModelResourceTestEntity2": EntityModelResourceTestEntity2,
     "EnumTestEntity": EnumTestEntity,
     "Facet": Facet,
     "FacetValue": FacetValue,
     "JSONMapAttributeTestEntity": JSONMapAttributeTestEntity,
     "NestedArrayItemsTestEntity": NestedArrayItemsTestEntity,
     "NestedTestEntity": NestedTestEntity,
+    "PageCompanyTestEntity": PageCompanyTestEntity,
+    "PageEntityModelResourceTestEntity1": PageEntityModelResourceTestEntity1,
+    "PagePermission": PagePermission,
+    "PageSiteTestEntity": PageSiteTestEntity,
     "PageTestEntity": PageTestEntity,
+    "Permission": Permission,
+    "SiteTestEntity": SiteTestEntity,
     "TestEntity": TestEntity,
     "TestEntityAddress": TestEntityAddress,
     "UnreferencedTestEntity": UnreferencedTestEntity,

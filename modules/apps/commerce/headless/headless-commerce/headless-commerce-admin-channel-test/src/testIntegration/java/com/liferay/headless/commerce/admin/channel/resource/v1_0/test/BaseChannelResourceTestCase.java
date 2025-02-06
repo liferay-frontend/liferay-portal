@@ -104,9 +104,8 @@ public abstract class BaseChannelResourceTestCase {
 		com.liferay.portal.kernel.model.User testCompanyAdminUser =
 			UserTestUtil.getAdminUser(testCompany.getCompanyId());
 
-		ChannelResource.Builder builder = ChannelResource.builder();
-
-		channelResource = builder.authentication(
+		channelResource = ChannelResource.builder(
+		).authentication(
 			testCompanyAdminUser.getEmailAddress(),
 			PropsValues.DEFAULT_ADMIN_PASSWORD
 		).endpoint(
@@ -174,6 +173,7 @@ public abstract class BaseChannelResourceTestCase {
 
 		channel.setAccountExternalReferenceCode(regex);
 		channel.setCurrencyCode(regex);
+		channel.setCurrencyExternalReferenceCode(regex);
 		channel.setExternalReferenceCode(regex);
 		channel.setName(regex);
 		channel.setType(regex);
@@ -186,6 +186,7 @@ public abstract class BaseChannelResourceTestCase {
 
 		Assert.assertEquals(regex, channel.getAccountExternalReferenceCode());
 		Assert.assertEquals(regex, channel.getCurrencyCode());
+		Assert.assertEquals(regex, channel.getCurrencyExternalReferenceCode());
 		Assert.assertEquals(regex, channel.getExternalReferenceCode());
 		Assert.assertEquals(regex, channel.getName());
 		Assert.assertEquals(regex, channel.getType());
@@ -1320,6 +1321,25 @@ public abstract class BaseChannelResourceTestCase {
 			}
 
 			if (Objects.equals(
+					"currencyExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (channel.getCurrencyExternalReferenceCode() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("currencyId", additionalAssertFieldName)) {
+				if (channel.getCurrencyId() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
 					"externalReferenceCode", additionalAssertFieldName)) {
 
 				if (channel.getExternalReferenceCode() == null) {
@@ -1497,6 +1517,30 @@ public abstract class BaseChannelResourceTestCase {
 				if (!Objects.deepEquals(
 						channel1.getCurrencyCode(),
 						channel2.getCurrencyCode())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"currencyExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						channel1.getCurrencyExternalReferenceCode(),
+						channel2.getCurrencyExternalReferenceCode())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("currencyId", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						channel1.getCurrencyId(), channel2.getCurrencyId())) {
 
 					return false;
 				}
@@ -1759,6 +1803,57 @@ public abstract class BaseChannelResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("currencyExternalReferenceCode")) {
+			Object object = channel.getCurrencyExternalReferenceCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("currencyId")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("externalReferenceCode")) {
 			Object object = channel.getExternalReferenceCode();
 
@@ -1957,6 +2052,9 @@ public abstract class BaseChannelResourceTestCase {
 				accountId = RandomTestUtil.randomLong();
 				currencyCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
+				currencyExternalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				currencyId = RandomTestUtil.randomLong();
 				externalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				id = RandomTestUtil.randomLong();

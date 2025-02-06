@@ -338,6 +338,10 @@ public class ConfigurationModel implements ExtendedObjectClassDefinition {
 		return _isScope(Scope.COMPANY);
 	}
 
+	public boolean isDeprecated() {
+		return GetterUtil.getBoolean(_extensionAttributes.get("deprecated"));
+	}
+
 	public boolean isFactory() {
 		return _factory;
 	}
@@ -363,13 +367,8 @@ public class ConfigurationModel implements ExtendedObjectClassDefinition {
 		Set<Configuration.ConfigurationAttribute> configurationAttributes =
 			_configuration.getAttributes();
 
-		if (configurationAttributes.contains(
-				Configuration.ConfigurationAttribute.READ_ONLY)) {
-
-			return true;
-		}
-
-		return false;
+		return configurationAttributes.contains(
+			Configuration.ConfigurationAttribute.READ_ONLY);
 	}
 
 	public boolean isStrictScope() {

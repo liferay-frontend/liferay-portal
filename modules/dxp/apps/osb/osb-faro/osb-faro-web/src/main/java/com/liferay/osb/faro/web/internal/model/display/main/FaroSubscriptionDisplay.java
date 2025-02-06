@@ -192,16 +192,20 @@ public class FaroSubscriptionDisplay {
 		_syncedIndividualsCount =
 			contactsEngineClient.getSyncedIndividualsCount(faroProject);
 
+		Date date = new Date();
+
+		date = new Date(date.getTime() / Time.DAY * Time.DAY);
+
 		_individualsCountSinceLastAnniversary =
-			contactsEngineClient.getIndividualsCreatedSinceCount(
-				faroProject, _lastAnniversaryDate);
+			contactsEngineClient.getIndividualsCreatedBetweenCount(
+				faroProject, date, _lastAnniversaryDate);
 
 		_individualsStatus = getStatus(
 			_individualsCountSinceLastAnniversary, _individualsLimit);
 
 		_pageViewsCountSinceLastAnniversary = GetterUtil.getInteger(
 			cerebroEngineClient.getPageViews(
-				faroProject, _lastAnniversaryDate, new Date()));
+				faroProject, _lastAnniversaryDate, date));
 
 		_pageViewsStatus = getStatus(
 			_pageViewsCountSinceLastAnniversary, _pageViewsLimit);
@@ -217,8 +221,8 @@ public class FaroSubscriptionDisplay {
 
 	public void setUsageCounts(
 			CerebroEngineClient cerebroEngineClient,
-			ContactsEngineClient contactsEngineClient, Date date,
-			FaroProject faroProject)
+			ContactsEngineClient contactsEngineClient, Date endDate,
+			FaroProject faroProject, Date startDate)
 		throws Exception {
 
 		if ((faroProject == null) ||
@@ -239,12 +243,6 @@ public class FaroSubscriptionDisplay {
 
 		JSONObject subscriptionJSONObject = JSONFactoryUtil.createJSONObject(
 			faroProject.getSubscription());
-
-		Date endDate = new Date(date.getTime() / Time.DAY * Time.DAY);
-
-		date = _addToDate(date, Calendar.DATE, -1);
-
-		Date startDate = new Date(date.getTime() / Time.DAY * Time.DAY);
 
 		_individualsCounts = _setCounts(
 			contactsEngineClient.getIndividualsCreatedBetweenCount(
@@ -441,15 +439,26 @@ public class FaroSubscriptionDisplay {
 			FaroProject faroProject, JSONObject jsonObject, Date startDate)
 		throws Exception {
 
+		long totalSinceLastAnniversary = 0;
+
 		if ((jsonObject.length() == 0) && (count != defaultValue)) {
 			jsonObject = JSONUtil.put(
 				"total", defaultValue
 			).put(
 				"totalSinceLastAnniversary", defaultValue
 			);
-		}
 
-		jsonObject.put("total", jsonObject.getLong("total", 0L) + count);
+			totalSinceLastAnniversary = defaultValue;
+		}
+		else {
+			jsonObject.put("total", jsonObject.getLong("total", 0L) + count);
+
+			totalSinceLastAnniversary =
+				jsonObject.getLong("totalSinceLastAnniversary") + count;
+
+			jsonObject.put(
+				"totalSinceLastAnniversary", totalSinceLastAnniversary);
+		}
 
 		if (!_isBasicSubscription(faroProject) &&
 			(DateUtil.compareTo(endDate, _lastAnniversaryDate) == 0)) {
@@ -462,12 +471,6 @@ public class FaroSubscriptionDisplay {
 
 			return jsonObject.toString();
 		}
-
-		long totalSinceLastAnniversary = jsonObject.getLong(
-			"totalSinceLastAnniversary", 0L);
-
-		jsonObject.put(
-			"totalSinceLastAnniversary", totalSinceLastAnniversary + count);
 
 		JSONObject monthlyValuesJSONObject = jsonObject.getJSONObject(
 			"monthlyValues");
@@ -492,27 +495,32 @@ public class FaroSubscriptionDisplay {
 						_addToDate(startDate, Calendar.MONTH, -1)));
 
 			if (previousMonthlyValueJSONObject != null) {
-				countSinceLastAnniversary =
+				long previousMonthlyCountSinceLastAnniversary =
 					previousMonthlyValueJSONObject.getLong(
 						"countSinceLastAnniversary");
+
+				countSinceLastAnniversary =
+					previousMonthlyCountSinceLastAnniversary + count;
 			}
-			else if (totalSinceLastAnniversary != count) {
+			else {
 				countSinceLastAnniversary = totalSinceLastAnniversary;
 			}
 
 			monthlyValueJSONObject = JSONUtil.put(
-				"count", 0
+				"count", count
 			).put(
 				"countSinceLastAnniversary", countSinceLastAnniversary
 			);
 		}
-
-		monthlyValueJSONObject.put(
-			"count", monthlyValueJSONObject.getLong("count") + count
-		).put(
-			"countSinceLastAnniversary",
-			monthlyValueJSONObject.getLong("countSinceLastAnniversary") + count
-		);
+		else {
+			monthlyValueJSONObject.put(
+				"count", monthlyValueJSONObject.getLong("count") + count
+			).put(
+				"countSinceLastAnniversary",
+				monthlyValueJSONObject.getLong("countSinceLastAnniversary") +
+					count
+			);
+		}
 
 		monthlyValuesJSONObject.put(formattedStartDate, monthlyValueJSONObject);
 

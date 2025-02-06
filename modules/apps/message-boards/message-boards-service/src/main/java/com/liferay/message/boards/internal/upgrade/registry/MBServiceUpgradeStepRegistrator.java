@@ -49,16 +49,25 @@ public class MBServiceUpgradeStepRegistrator implements UpgradeStepRegistrator {
 		registry.register("0.0.1", "1.0.0", new UpgradeClassNames());
 
 		registry.register(
-			"1.0.0", "1.0.1",
+			"1.0.0", "1.0.0.step-1",
 			new GuestUnsupportedResourcePermissionsUpgradeProcess(
 				MBCategory.class.getName(), ActionKeys.DELETE,
-				ActionKeys.MOVE_THREAD, ActionKeys.PERMISSIONS),
+				ActionKeys.MOVE_THREAD, ActionKeys.PERMISSIONS));
+
+		registry.register(
+			"1.0.0.step-1", "1.0.0.step-2",
 			new GuestUnsupportedResourcePermissionsUpgradeProcess(
 				MBMessage.class.getName(), ActionKeys.DELETE,
-				ActionKeys.PERMISSIONS),
+				ActionKeys.PERMISSIONS));
+
+		registry.register(
+			"1.0.0.step-2", "1.0.0.step-3",
 			new GuestUnsupportedResourcePermissionsUpgradeProcess(
 				MBConstants.RESOURCE_NAME, ActionKeys.LOCK_THREAD,
-				ActionKeys.MOVE_THREAD),
+				ActionKeys.MOVE_THREAD));
+
+		registry.register(
+			"1.0.0.step-3", "1.0.1",
 			new GuestUnsupportedResourcePermissionsUpgradeProcess(
 				MBThread.class.getName(), ActionKeys.DELETE));
 
@@ -75,10 +84,12 @@ public class MBServiceUpgradeStepRegistrator implements UpgradeStepRegistrator {
 				}));
 
 		registry.register(
-			"2.0.0", "3.0.0",
+			"2.0.0", "2.0.1",
 			new ViewCountUpgradeProcess(
-				"MBThread", MBThread.class, "threadId", "viewCount"),
-			new MBMessageTreePathUpgradeProcess());
+				"MBThread", MBThread.class, "threadId", "viewCount"));
+
+		registry.register(
+			"2.0.1", "3.0.0", new MBMessageTreePathUpgradeProcess());
 
 		registry.register("3.0.0", "3.1.0", new UrlSubjectUpgradeProcess());
 

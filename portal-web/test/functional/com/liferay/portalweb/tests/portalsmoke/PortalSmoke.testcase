@@ -37,7 +37,6 @@ definition {
 		property environment.acceptance = "true";
 		property operating.system.types = "alpine,amazonlinux,centos,debian,fedora,orcllinux,osx,redhat,rockylinux,solaris,suse,ubuntu,windows";
 		property portal.acceptance = "false";
-		property testray.component.names = "Training";
 
 		SignIn.signInTestSetup();
 
@@ -51,9 +50,13 @@ definition {
 			pageName = "Test Page2",
 			siteName = "Site Name");
 
-		WidgetPages.switchToggleControls(status = "view");
+		Click(
+			key_status = "view",
+			locator1 = "ControlMenu#TOGGLE_CONTROLS");
 
-		WidgetPages.viewToggleControls(status = "hidden");
+		AssertVisible(
+			key_status = "hidden",
+			locator1 = "ControlMenu#TOGGLE_CONTROLS");
 
 		// Assert all bundles installed
 

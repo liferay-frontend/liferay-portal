@@ -68,7 +68,6 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.object.service.ObjectEntryServiceUtil;
 import com.liferay.object.service.ObjectFieldLocalService;
-import com.liferay.object.service.ObjectFieldSettingLocalServiceUtil;
 import com.liferay.object.service.ObjectLayoutLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.tree.Edge;
@@ -1072,29 +1071,29 @@ public class ObjectEntryDisplayContextImpl
 			defaultMaxLength = 280;
 		}
 
-		if ((defaultMaxLength > 0) &&
-			GetterUtil.getBoolean(properties.get("showCounter"))) {
+		if ((defaultMaxLength <= 0) ||
+			!GetterUtil.getBoolean(properties.get("showCounter"))) {
 
-			DDMFormFieldValidation ddmFormFieldValidation =
-				new DDMFormFieldValidation();
-
-			DDMFormFieldValidationExpression ddmFormFieldValidationExpression =
-				new DDMFormFieldValidationExpression();
-
-			int maxLength = GetterUtil.getInteger(
-				properties.get("maxLength"), defaultMaxLength);
-
-			ddmFormFieldValidationExpression.setValue(
-				StringBundler.concat(
-					"length(", objectFieldName, ") <= ", maxLength));
-
-			ddmFormFieldValidation.setDDMFormFieldValidationExpression(
-				ddmFormFieldValidationExpression);
-
-			return ddmFormFieldValidation;
+			return null;
 		}
 
-		return null;
+		DDMFormFieldValidation ddmFormFieldValidation =
+			new DDMFormFieldValidation();
+
+		DDMFormFieldValidationExpression ddmFormFieldValidationExpression =
+			new DDMFormFieldValidationExpression();
+
+		int maxLength = GetterUtil.getInteger(
+			properties.get("maxLength"), defaultMaxLength);
+
+		ddmFormFieldValidationExpression.setValue(
+			StringBundler.concat(
+				"length(", objectFieldName, ") <= ", maxLength));
+
+		ddmFormFieldValidation.setDDMFormFieldValidationExpression(
+			ddmFormFieldValidationExpression);
+
+		return ddmFormFieldValidation;
 	}
 
 	private DDMFormValues _getDDMFormValues(
@@ -1342,9 +1341,8 @@ public class ObjectEntryDisplayContextImpl
 
 				existingValues.put(
 					objectField1.getName(),
-					ObjectFieldSettingUtil.getDefaultValueAsString(
-						null, objectField,
-						ObjectFieldSettingLocalServiceUtil.getService(), null));
+					ObjectFieldSettingUtil.getDefaultValue(
+						null, objectField, null));
 			}
 		}
 		else {

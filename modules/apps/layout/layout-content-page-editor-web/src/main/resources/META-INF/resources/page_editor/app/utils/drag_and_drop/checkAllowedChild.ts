@@ -19,10 +19,10 @@ import {LAYOUT_DATA_ITEM_TYPES} from '../../config/constants/layoutDataItemTypes
 import {getStepperChild} from '../../utils/getStepperChild';
 import {formIsMapped} from '../formIsMapped';
 import {getFormParent} from '../getFormParent';
+import {getFormStepIndex} from '../getFormStepIndex';
 import getItemWidget from '../getItemWidget';
 import getWidget from '../getWidget';
 import {hasCollectionParent} from '../hasCollectionParent';
-import {hasFormStepParent} from '../hasFormStepParent';
 import isLocalizationSelect from '../isLocalizationSelect';
 import {isMultistepForm} from '../isMultistepForm';
 import isStepper from '../isStepper';
@@ -154,7 +154,7 @@ export default function checkAllowedChild(
 	if (
 		!isStepper(child) &&
 		isMultistepForm(formParent) &&
-		!hasFormStepParent(parent, layoutData)
+		getFormStepIndex(parent, layoutData) === null
 	) {
 		return {reason: 'targeting-step-container', valid: false};
 	}
@@ -176,14 +176,6 @@ export default function checkAllowedChild(
 			}
 		}
 		else {
-			if (
-				child.fragmentEntryType === FRAGMENT_ENTRY_TYPES.input &&
-				!formParent &&
-				!isLocalizationSelect(child)
-			) {
-				return {reason: 'input-outside-form', valid: false};
-			}
-
 			if (formParent && child.isWidget) {
 				return {reason: 'widget-inside-form', valid: false};
 			}
@@ -211,9 +203,49 @@ export default function checkAllowedChild(
 		}
 	}
 
+	if (!formParent && hasInputChild(child, layoutData, fragmentEntryLinks)) {
+		return {reason: 'input-outside-form', valid: false};
+	}
+
 	if (!LAYOUT_DATA_CHECK_ALLOWED_CHILDREN[parent.type](child, parent)) {
 		return {valid: false};
 	}
 
 	return {valid: true};
+}
+
+function hasInputChild(
+	child: MovementItem,
+	layoutData: LayoutData,
+	fragmentEntryLinks: FragmentEntryLinkMap
+): boolean {
+	if (child.fragmentEntryType === FRAGMENT_ENTRY_TYPES.input) {
+		return true;
+	}
+
+	const childItem = layoutData.items[child.itemId];
+
+	if (!childItem) {
+		return false;
+	}
+
+	if (childItem.type === LAYOUT_DATA_ITEM_TYPES.fragment) {
+		const fragment =
+			fragmentEntryLinks?.[childItem.config.fragmentEntryLinkId!];
+
+		return (
+			fragment.fragmentEntryType === FRAGMENT_ENTRY_TYPES.input &&
+			!isLocalizationSelect(fragment)
+		);
+	}
+
+	return childItem.children?.some((childId) => {
+		const child = layoutData.items[childId];
+
+		return hasInputChild(
+			child as MovementItem,
+			layoutData,
+			fragmentEntryLinks
+		);
+	});
 }

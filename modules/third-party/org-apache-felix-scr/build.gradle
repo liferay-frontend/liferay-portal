@@ -48,6 +48,5 @@ patch {
 	fileNames "org/apache/felix/scr/impl/logger/LogServiceSupport.java"
 	fileNames "org/apache/felix/scr/impl/manager/AbstractComponentManager.java"
 	fileNames "org/apache/felix/scr/impl/manager/RegionConfigurationSupport.java"
-
 	originalLibModuleName = "org.apache.felix.scr"
 }

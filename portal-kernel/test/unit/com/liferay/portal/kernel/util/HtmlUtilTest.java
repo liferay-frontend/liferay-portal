@@ -156,15 +156,23 @@ public class HtmlUtilTest {
 	@Test
 	public void testEscapeJSLink() {
 		Assert.assertEquals(
-			"javascript%3aalert('hello');",
-			HtmlUtil.escapeJSLink("javascript:alert('hello');"));
+			"%00javascript%3a//localhost:800/123%0aalert(document.domain)",
+			HtmlUtil.escapeJSLink(
+				"%00javascript://localhost:800/123%0aalert(document.domain)"));
 		Assert.assertEquals(
 			"http://localhost:8080",
 			HtmlUtil.escapeJSLink("http://localhost:8080"));
 		Assert.assertEquals(
+			"http://localhost:8080/test?scope='javascript:;'",
+			HtmlUtil.escapeJSLink(
+				"http://localhost:8080/test?scope='javascript:;'"));
+		Assert.assertEquals(
 			"javascript%3a//localhost:800/123%0aalert(document.domain)",
 			HtmlUtil.escapeJSLink(
 				"\tjavascript://localhost:800/123%0aalert(document.domain)"));
+		Assert.assertEquals(
+			"javascript%3aalert('hello');",
+			HtmlUtil.escapeJSLink("javascript:alert('hello');"));
 	}
 
 	@Test

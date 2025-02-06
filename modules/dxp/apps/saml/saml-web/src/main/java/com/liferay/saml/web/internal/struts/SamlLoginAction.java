@@ -5,20 +5,24 @@
 
 package com.liferay.saml.web.internal.struts;
 
+import com.liferay.layout.seo.kernel.LayoutSEOLinkManager;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
 import com.liferay.portal.kernel.struts.StrutsAction;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Props;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.saml.constants.SamlWebKeys;
 import com.liferay.saml.persistence.model.SamlSpIdpConnection;
 import com.liferay.saml.persistence.service.SamlSpIdpConnectionLocalService;
@@ -97,6 +101,10 @@ public class SamlLoginAction extends BaseSamlStrutsAction {
 		boolean samlIdpRedirectMessageEnabled = GetterUtil.getBoolean(
 			_props.get("saml.idp.redirect.message.enabled"), true);
 
+		httpServletRequest.setAttribute(
+			SamlWebKeys.SAML_SSO_LOGIN_CONTEXT,
+			_toJSONObject(samlSpIdpConnections));
+
 		if (samlIdpRedirectMessageEnabled) {
 			httpServletRequest.setAttribute(
 				SamlWebKeys.SAML_IDP_REDIRECT_MESSAGE,
@@ -104,10 +112,23 @@ public class SamlLoginAction extends BaseSamlStrutsAction {
 					httpServletRequest,
 					"redirecting-to-your-identity-provider"));
 		}
+		else if (samlSpIdpConnections.size() == 1) {
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
 
-		httpServletRequest.setAttribute(
-			SamlWebKeys.SAML_SSO_LOGIN_CONTEXT,
-			_toJSONObject(samlSpIdpConnections));
+			Company company = themeDisplay.getCompany();
+
+			JspUtil.dispatch(
+				httpServletRequest, httpServletResponse,
+				"/portal/saml/select_idp.jsp",
+				_layoutSEOLinkManager.getFullPageTitle(
+					themeDisplay.getLayout(), null, null, null, null,
+					company.getName(), themeDisplay.getLocale()),
+				true);
+
+			return null;
+		}
 
 		JspUtil.dispatch(
 			httpServletRequest, httpServletResponse,
@@ -162,6 +183,9 @@ public class SamlLoginAction extends BaseSamlStrutsAction {
 
 	@Reference
 	private Language _language;
+
+	@Reference
+	private LayoutSEOLinkManager _layoutSEOLinkManager;
 
 	@Reference
 	private Portal _portal;

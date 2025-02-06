@@ -9,11 +9,12 @@ dependencies {
 	testImplementation project(":apps:journal:journal-api")
 	testImplementation project(":apps:portal-search:portal-search")
 	testImplementation project(":apps:portal-search:portal-search-test-util")
+	testImplementation project(":core:petra:petra-function")
 	testImplementation project(":core:petra:petra-lang")
 	testImplementation project(":core:petra:petra-sql-dsl-api")
 	testImplementation project(":core:petra:petra-string")
-
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
+	testIntegrationImplementation group: "com.sun.mail", name: "jakarta.mail", version: "1.6.6"
 	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.cm", version: "1.6.0"
 	testIntegrationImplementation group: "org.skyscreamer", name: "jsonassert", version: "1.2.3"
 	testIntegrationImplementation project(":apps:asset:asset-api")
@@ -40,6 +41,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:layout:layout-api")
 	testIntegrationImplementation project(":apps:layout:layout-display-page-api")
 	testIntegrationImplementation project(":apps:layout:layout-page-template-api")
+	testIntegrationImplementation project(":apps:layout:layout-page-template-test-util")
 	testIntegrationImplementation project(":apps:layout:layout-seo-api")
 	testIntegrationImplementation project(":apps:layout:layout-test-util")
 	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-module-configuration-api")

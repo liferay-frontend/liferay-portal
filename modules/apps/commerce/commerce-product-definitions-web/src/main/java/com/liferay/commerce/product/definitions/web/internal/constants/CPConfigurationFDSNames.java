@@ -12,6 +12,24 @@ import com.liferay.commerce.product.constants.CPPortletKeys;
  */
 public class CPConfigurationFDSNames {
 
+	public static final String
+		PRODUCT_CONFIGURATION_LIST_QUALIFIER_ACCOUNT_GROUPS =
+			CPPortletKeys.CP_CONFIGURATION_LISTS +
+				"-productConfigurationListQualifierAccountGroups";
+
+	public static final String PRODUCT_CONFIGURATION_LIST_QUALIFIER_ACCOUNTS =
+		CPPortletKeys.CP_CONFIGURATION_LISTS +
+			"-productConfigurationListQualifierAccounts";
+
+	public static final String PRODUCT_CONFIGURATION_LIST_QUALIFIER_CHANNELS =
+		CPPortletKeys.CP_CONFIGURATION_LISTS +
+			"-productConfigurationListQualifierChannels";
+
+	public static final String
+		PRODUCT_CONFIGURATION_LIST_QUALIFIER_ORDER_TYPES =
+			CPPortletKeys.CP_CONFIGURATION_LISTS +
+				"-productConfigurationListQualifierOrderTypes";
+
 	public static final String PRODUCT_CONFIGURATION_LISTS =
 		CPPortletKeys.CP_CONFIGURATION_LISTS + "-productConfigurationLists";
 

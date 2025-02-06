@@ -103,9 +103,8 @@ public abstract class BaseCTCollectionResourceTestCase {
 		com.liferay.portal.kernel.model.User testCompanyAdminUser =
 			UserTestUtil.getAdminUser(testCompany.getCompanyId());
 
-		CTCollectionResource.Builder builder = CTCollectionResource.builder();
-
-		ctCollectionResource = builder.authentication(
+		ctCollectionResource = CTCollectionResource.builder(
+		).authentication(
 			testCompanyAdminUser.getEmailAddress(),
 			PropsValues.DEFAULT_ADMIN_PASSWORD
 		).endpoint(
@@ -750,51 +749,6 @@ public abstract class BaseCTCollectionResourceTestCase {
 	@Test
 	public void testGetCTCollectionShareLink() throws Exception {
 		Assert.assertTrue(false);
-	}
-
-	@Test
-	public void testGetCTCollectionsHistoryPage() throws Exception {
-		Page<CTCollection> page =
-			ctCollectionResource.getCTCollectionsHistoryPage(null, null);
-
-		long totalCount = page.getTotalCount();
-
-		CTCollection ctCollection1 =
-			testGetCTCollectionsHistoryPage_addCTCollection(
-				randomCTCollection());
-
-		CTCollection ctCollection2 =
-			testGetCTCollectionsHistoryPage_addCTCollection(
-				randomCTCollection());
-
-		page = ctCollectionResource.getCTCollectionsHistoryPage(null, null);
-
-		Assert.assertEquals(totalCount + 2, page.getTotalCount());
-
-		assertContains(ctCollection1, (List<CTCollection>)page.getItems());
-		assertContains(ctCollection2, (List<CTCollection>)page.getItems());
-		assertValid(page, testGetCTCollectionsHistoryPage_getExpectedActions());
-
-		ctCollectionResource.deleteCTCollection(ctCollection1.getId());
-
-		ctCollectionResource.deleteCTCollection(ctCollection2.getId());
-	}
-
-	protected Map<String, Map<String, String>>
-			testGetCTCollectionsHistoryPage_getExpectedActions()
-		throws Exception {
-
-		Map<String, Map<String, String>> expectedActions = new HashMap<>();
-
-		return expectedActions;
-	}
-
-	protected CTCollection testGetCTCollectionsHistoryPage_addCTCollection(
-			CTCollection ctCollection)
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
 	}
 
 	@Test

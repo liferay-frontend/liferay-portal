@@ -79,6 +79,7 @@ export default {
 	'click-on-add-apps-to-start': "Click on 'Add Apps' to start.",
 	'client-extension': 'Client Extension',
 	'client-extensions': 'Client Extensions',
+	'close': 'Close',
 	'cloud-apps-must-state-resource-requirements-if-your-app-has-no-additional-cpu-or-ram-requirements-please-enter-0':
 		'Cloud apps must state resource requirements. If your app has no additional CPU or Ram requirements please enter 0',
 	'cloud-compatible': 'Cloud Compatible?',
@@ -92,8 +93,11 @@ export default {
 	'confirm': 'Confirm',
 	'confirm-deactivate-keys': 'Confirm & Deactivate Keys',
 	'confirm-deactivation-terms': 'Confirm Deactivation Terms',
+	'confirm-deletion': 'Confirm Deletion',
 	'confirm-uninstall': 'Confirm & Uninstall',
 	'confirm-uninstall-terms': 'Confirm Uninstall Terms',
+	'congratulations': 'Congratulations',
+	'connect-anyway': 'Connect Anyway',
 	'contact-publisher': 'Contact Publisher',
 	'contact-sales': 'Contact Sales',
 	'contact-support': 'Contact Support',
@@ -159,6 +163,7 @@ export default {
 	'download-key': 'Download Key',
 	'draft': 'Draft',
 	'drag-and-drop-to-upload-or': 'Drag and drop to upload or',
+	'dxp-connections': 'DXP Connections',
 	'dxp-license-usage-type': 'DXP License Usage Type',
 	'dxp-module-based-apps-are-not-supported-on-liferay-experience-cloud-lxc':
 		'DXP module-based apps are not supported on Liferay SaaS.',
@@ -260,8 +265,8 @@ export default {
 	'liferay-self-hosted': 'Liferay Self-Hosted',
 	'limit-reached': 'Limit Reached',
 	'list-with-latest-published-apps': 'List with latest published apps',
-	'lorem-ipsum-dolor-sit-amet-consectetur':
-		'Lorem ipsum dolor sit amet consectetur.',
+	'login-as-a-user-that-has-access-to-a-project-or-contact-your-project-administrator-to-add-you-to-a-project.':
+		'Login as a user that has access to a project or contact your project administrator to add you to a project.',
 	'mac-addresses': 'Mac Addresses',
 	'manage': 'Manage',
 	'manage-all-your-app-purchases-and-subscriptions-in-one-place-read-other-users-reviews-get-notifications-when-updates-are-available-and-get-the-most-out-of-our-apps-catalog':
@@ -275,8 +280,11 @@ export default {
 	'move-to-bottom': 'Move to Bottom',
 	'move-to-top': 'Move to Top',
 	'move-up': 'Move Up',
+	'my-apps': 'My Apps',
+	'my-solutions': 'My Solutions',
 	'name': 'Name',
 	'never-expires': 'Never Expires',
+	'new-trial': 'New Trial',
 	'no': 'No',
 	'no-apps-yet': 'No Apps Yet',
 	'no-become-a-publisher-request': 'No become a publisher request',
@@ -309,11 +317,14 @@ export default {
 	'please-fill-in-a-valid-email': 'Please fill in a valid email',
 	'please-review-before-submitting-once-sent-you-will-not-be-able-to-edit-any-information-until-this-submission-is-completely-reviewed-by-liferay':
 		'Please, review before submitting. Once sent, you will not be able to edit any information until this submission is completely reviewed by Liferay.',
+	'please-select-the-account-you-wish-to-link-to-your-liferay-dxp-below':
+		'Please select the account you wish to link to your Liferay DXP below',
 	'privacy-policy': 'Privacy Policy',
 	'product': 'Product',
 	'product-unavailable': 'Product Unavailable',
 	'profile': 'Profile',
 	'project': 'Project',
+	'project-selected': 'Project Selected',
 	'project-selection': 'Project Selection',
 	'projects': 'Projects',
 	'provide-app-build': 'Provide app build',
@@ -362,6 +373,8 @@ export default {
 		'Review the new publisher info and the Liferay Marketplace terms before proceeding',
 	'save-as-a-draft-exit': 'Save as a draft & exit',
 	'save-as-draft': 'Save as Draft',
+	'save-this-address-for-future-orders':
+		'Save this address for future orders',
 	'search': 'Search',
 	'select-a-file': 'Select a file',
 	'select-a-local-file-to-upload': 'Select a local file to upload',
@@ -373,7 +386,6 @@ export default {
 		'Select the offering of Liferay your app is compatible with. The compatibility selections will determine on what platforms your app is tested.',
 	'select-the-versions-of-liferay-that-your-app-is-compatible-with':
 		'Select the versions of Liferay that your app is compatible with.',
-	'selected-project': 'Selected Project',
 	'self-managed': 'Self-Managed',
 	'send-request': 'Send Request',
 	'sign-in-with-a-different-account': 'Sign in with a different Account',
@@ -400,8 +412,8 @@ export default {
 	'subtotal-discount': 'Subtotal Discount',
 	'success': 'success',
 	'summary': 'Summary',
-	'support-email': 'Support Email',
-	'support-phone': 'Support Phone',
+	'support-email-address': 'Support Email Address',
+	'support-phone-number': 'Support Phone Number',
 	'support-url': 'Support URL',
 	'supported-version': 'Supported Version',
 	'tags': 'Tags',
@@ -429,8 +441,8 @@ export default {
 		'The DXP app is module-based and is compatible with 7.4 builds of Liferay DXP.',
 	'the-dxp-app-is-module-based-and-is-compatible-with-7-4-builds-of-liferay-dxp-self-managed-liferay-cloud-formerly-dxp-cloud':
 		'The DXP app is module-based and is compatible with 7.4 builds of Liferay Self-Managed.',
-	'the-installation-process-is-ongoing-and-may-take-some-time-navigating-to-other-sections-will-not-cancel-the-process':
-		'The installation process is ongoing and may take some time....Navigating to other sections will not cancel the process.',
+	'the-installation-process-is-ongoing-and-may-take-some-time':
+		'The installation process is ongoing and may take some time. Navigating to other sections will not cancel the process.',
 	'the-installation-process-is-underway-and-should-be-completed-shortly':
 		'The installation process is underway and should be completed shortly...',
 	'the-liferay-marketplace-gives-you-the-opportunity-to-monetize-your-app-or-solutions-from-a-single-use-case-to-many-while-engaging-with-new-customer-opportunities-and-generating-ongoing-revenue':
@@ -450,6 +462,8 @@ export default {
 		'This is the first version of the app to be published',
 	'this-key-is-expired-and-cannot-be-downloaded':
 		'This key is expired and cannot be downloaded.',
+	'this-may-restrict-the-functionality-available-to-you':
+		'This may restrict the functionality available to you.',
 	'this-order-must-be-completed-before-downloading-this-app.':
 		'This order must be completed before downloading this app.',
 	'this-product-is-no-longer-available':
@@ -514,6 +528,8 @@ export default {
 	'x-will-be-deleted-and-this-action-cant-be-undone-are-you-sure-you-want-to-delete-it':
 		'{0} will be deleted and this action can’t be undone. Are you sure you want to delete it?',
 	'yes': 'Yes',
+	'you-are-one-step-away-from-finalizing-your-connection-with-the-marketplace-this-window-will-close-automatically':
+		'You are one step away from finalizing your connection with the Marketplace, this window will close automatically.',
 	'you-can-paste-links-directly-from-youtube':
 		'You can paste links directly from YouTube.',
 	'you-can-put-anything-you-want-here-but-a-good-guideline-is-no-more-than-4-5-paragraphs-this-field-does-not-allow-any-markup-tags-its-just-text-please-do-not-use-misleading-names-information-or-icons-descriptions-should-be-as-concise-as-possible-ensure-your-icons-images-descriptions-and-tags-are-free-of-profanity-or-other-offensive-material':
@@ -524,8 +540,8 @@ export default {
 		'You can view your app in Cloud Console or go back to My Apps.',
 	'you-cannot-upload-more-than-x-files':
 		'You cannot upload more than {0} files.',
-	'you-currently-do-not-have-access-to-any-cloud-projects-please-login-as-a-user-that-has-access-to-a-project-or-contact-your-project-administrator-to-add-you-to-a-project':
-		'You currently do not have access to any Cloud Projects. Please login as a user that has access to a project or contact your project administrator to add you to a project.',
+	'you-do-not-have-access-to-cloud-project':
+		'You do not have access to a cloud project.',
 	'your-request-completed-successfully':
 		'Your request completed successfully',
 	'zip-files-must-be-in-universal-file-format-archive-uffa-the-specially-structured-zip-encoded-archive-used-to-package-client-extension-project-outputs-this-format-must-support-the-following-use-cases-deliver-batch-engine-data-files-compatible-with-all-deployment-targets-deliver-dxp-configuration-resource-compatible-with-all-deployment-targets-deliver-static-resources-compatible-with-all-deployment-targets-deliver-the-infrastructure-metadata-necessary-to-deploy-to-lxc-sm-for-more-information-see':

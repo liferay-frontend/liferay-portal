@@ -22,7 +22,10 @@
 			<#assign navItems = entries />
 
 			<#list navItems as navItem>
-				<#assign showChildrenNavItems = (displayDepth != 1) && navItem.hasBrowsableChildren() />
+				<#assign
+					displayIcon = navItem.getDisplayIcon()
+					showChildrenNavItems = (displayDepth != 1) && navItem.hasBrowsableChildren()
+				/>
 
 				<#if navItem.isBrowsable() || showChildrenNavItems>
 					<#assign
@@ -38,10 +41,7 @@
 
 						<#assign nav_item_caret>
 							<span class="lfr-nav-child-toggle">
-								<@liferay_aui.icon
-									image="angle-down"
-									markupView="lexicon"
-								/>
+								<@clay["icon"] symbol="angle-down" />
 							</span>
 						</#assign>
 
@@ -63,7 +63,15 @@
 
 					<li class="${nav_item_css_class}" id="layout_${portletDisplay.getId()}_${navItem.getLayoutId()}" role="presentation">
 						<a ${nav_item_attr_has_popup} class="${nav_item_link_css_class}" ${nav_item_href_link} ${navItem.getTarget()} role="menuitem">
-							<span class="text-truncate"><@liferay_theme["layout-icon"] layout=navItem.getLayout() /> ${navItem.getName()} ${nav_item_caret}</span>
+							<span class="text-truncate">
+								<#if validator.isNull(displayIcon)>
+									<@liferay_theme["layout-icon"] layout=navItem.getLayout() />
+								<#else>
+									<@clay["icon"] symbol="${displayIcon}" />
+								</#if>
+
+								${navItem.getName()} ${nav_item_caret}
+							</span>
 						</a>
 
 						<#if showChildrenNavItems>

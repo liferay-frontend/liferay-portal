@@ -12,8 +12,10 @@ export class ExportImportPage {
 	readonly continueButton: Locator;
 	readonly downloadButton: Locator;
 	readonly exportButton: Locator;
+	readonly exportPermissionsButton: Locator;
 	readonly fileSelector: Locator;
 	readonly importButton: Locator;
+	readonly importPermissionsButton: Locator;
 	readonly newExportButton: Locator;
 	readonly newImportButton: Locator;
 	readonly newImportProcess: Locator;
@@ -25,8 +27,10 @@ export class ExportImportPage {
 		this.continueButton = page.getByRole('button', {name: 'Continue'});
 		this.downloadButton = page.getByRole('button', {name: 'Download'});
 		this.exportButton = page.getByRole('button', {name: 'Export'});
+		this.exportPermissionsButton = page.getByLabel('Export Permissions');
 		this.fileSelector = page.getByRole('button', {name: 'Select File'});
 		this.importButton = page.getByRole('button', {name: 'Import'});
+		this.importPermissionsButton = page.getByLabel('Import Permissions');
 		this.newExportButton = page.getByRole('link', {name: 'Custom Export'});
 		this.newImportButton = page.getByRole('link', {name: 'Import'});
 		this.newImportProcess = page.getByRole('button', {

@@ -65,7 +65,7 @@ public class CPAvailabilityCheckerImpl implements CPAvailabilityChecker {
 			_cpDefinitionInventoryEngineRegistry.getCPDefinitionInventoryEngine(
 				cpDefinitionInventory);
 
-		if (cpDefinitionInventoryEngine.isBackOrderAllowed(cpInstance)) {
+		if (cpDefinitionInventoryEngine.isBackOrderAllowed(0, cpInstance)) {
 			return true;
 		}
 
@@ -83,11 +83,7 @@ public class CPAvailabilityCheckerImpl implements CPAvailabilityChecker {
 				cpInstance.getSku(), unitOfMeasure);
 		}
 
-		if (BigDecimalUtil.gt(quantity, stockQuantity)) {
-			return false;
-		}
-
-		return true;
+		return !BigDecimalUtil.gt(quantity, stockQuantity);
 	}
 
 	@Override

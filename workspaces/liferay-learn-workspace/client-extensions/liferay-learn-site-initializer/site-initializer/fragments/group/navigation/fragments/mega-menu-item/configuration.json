@@ -1,0 +1,46 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"label": "URL",
+					"localizable": true,
+					"name": "url",
+					"type": "url"
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "none",
+					"label": "Visual",
+					"name": "visual",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"label": "Icon",
+								"value": "icon"
+							},
+							{
+								"label": "Image",
+								"value": "image"
+							},
+							{
+								"label": "None",
+								"value": "none"
+							}
+						]
+					}
+				},
+				{
+					"dataType": "string",
+					"defaultValue": false,
+					"description": "Open in new tab",
+					"label": "External",
+					"name": "external",
+					"type": "checkbox"
+				}
+			],
+			"label": "configuration"
+		}
+	]
+}

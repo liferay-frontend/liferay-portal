@@ -7,12 +7,11 @@ dependencies {
 	compileInclude group: "org.apache.lucene", name: "lucene-queryparser", version: luceneVersion
 	compileInclude group: "org.apache.lucene", name: "lucene-suggest", version: luceneVersion
 	compileInclude group: "org.apache.solr", name: "solr-solrj", version: luceneVersion
-	compileInclude group: "org.apache.zookeeper", name: "zookeeper", version: "3.8.3"
-	compileInclude group: "org.apache.zookeeper", name: "zookeeper-jute", version: "3.8.3"
+	compileInclude group: "org.apache.zookeeper", name: "zookeeper", version: "3.9.3"
+	compileInclude group: "org.apache.zookeeper", name: "zookeeper-jute", version: "3.9.3"
 	compileInclude group: "org.codehaus.woodstox", name: "stax2-api", version: "3.1.4"
 	compileInclude group: "org.codehaus.woodstox", name: "woodstox-core-asl", version: "4.4.1"
-	compileInclude group: "org.noggit", name: "noggit", version: "0.6"
-
+	compileInclude group: "org.noggit", name: "noggit", version: "0.8"
 	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
@@ -36,7 +35,6 @@ dependencies {
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-string")
-
 	testImplementation project(":apps:portal-search:portal-search")
 	testImplementation project(":apps:portal-search:portal-search-test-util")
 	testImplementation project(":apps:static:portal-configuration:portal-configuration-persistence-api")

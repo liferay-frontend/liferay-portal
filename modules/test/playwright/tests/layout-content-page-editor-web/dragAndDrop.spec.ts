@@ -11,8 +11,10 @@ import {collectionsPagesTest} from '../../fixtures/collectionsPagesTest';
 import {featureFlagsTest} from '../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../fixtures/loginTest';
+import {masterPagesPagesTest} from '../../fixtures/masterPagesPagesTest';
 import {pageEditorPagesTest} from '../../fixtures/pageEditorPagesTest';
 import {pageManagementSiteTest} from '../../fixtures/pageManagementSiteTest';
+import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import dragAndDropElement from '../../utils/dragAndDropElement';
 import getRandomString from '../../utils/getRandomString';
 import {ANIMALS_COLLECTION_NAME} from '../setup/page-management-site/constants/animals';
@@ -29,13 +31,22 @@ const test = mergeTests(
 	apiHelpersTest,
 	collectionsPagesTest,
 	featureFlagsTest({
-		'LPD-18221': true,
-		'LPS-178052': true,
+		'LPD-18221': {enabled: true},
+		'LPS-178052': {enabled: true},
 	}),
 	isolatedSiteTest,
 	loginTest(),
+	masterPagesPagesTest,
 	pageEditorPagesTest,
 	pageManagementSiteTest
+);
+
+const testWithoutMultiselection = mergeTests(
+	test,
+	featureFlagsTest({
+		'LPD-18221': {enabled: false},
+		'LPS-178052': {enabled: true},
+	})
 );
 
 test('Checks that a widget can be added and dragged to another part of the page', async ({
@@ -397,5 +408,326 @@ test(
 
 		await expect(firstStep.locator('[data-name="Text"]')).toHaveCount(0);
 		await expect(secondStep.locator('[data-name="Text"]')).toHaveCount(2);
+	}
+);
+
+testWithoutMultiselection(
+	'Check correct item is selected when dragging into a collection item from tree',
+	{tag: ['@LPD-41382']},
+	async ({
+		apiHelpers,
+		collectionsPage,
+		page,
+		pageEditorPage,
+		pageManagementSite,
+	}) => {
+
+		// Add a content page with a fragment and a collection display
+
+		const heading = getFragmentDefinition({
+			id: getRandomString(),
+			key: 'BASIC_COMPONENT-heading',
+		});
+
+		const animalsClassPK = await collectionsPage.getCollectionClassPK(
+			ANIMALS_COLLECTION_NAME,
+			pageManagementSite.friendlyUrlPath
+		);
+
+		const collectionId = getRandomString();
+
+		const collection = getCollectionDefinition({
+			classPK: animalsClassPK,
+			id: collectionId,
+		});
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([heading, collection]),
+			siteId: pageManagementSite.id,
+			title: getRandomString(),
+		});
+
+		// Go to edit mode and to Browser panel
+
+		await pageEditorPage.goto(layout, pageManagementSite.friendlyUrlPath);
+
+		await pageEditorPage.goToSidebarTab('Browser');
+
+		// Expand Collection
+
+		await clickAndExpectToBeVisible({
+			target: page.locator('.page-editor__page-structure__tree-node', {
+				hasText: 'Collection Item',
+			}),
+			trigger: page.locator('.page-editor__page-structure__tree-node', {
+				hasText: 'Collection',
+			}),
+		});
+
+		// Add fragment to collection item
+
+		await pageEditorPage.dragTreeNode({
+			position: 'middle',
+			source: {label: 'Heading'},
+			target: {label: 'Collection Item'},
+		});
+
+		await expect(
+			page.locator('.page-editor__page-structure__tree-node').nth(2)
+		).toContainText('Heading');
+
+		// Check fragment is selected
+
+		await expect(
+			page.locator('.page-editor__topper__title', {hasText: 'Heading'})
+		).toBeVisible();
+
+		// Drag it outside again and check it's selected
+
+		await pageEditorPage.dragTreeNode({
+			position: 'top',
+			source: {label: 'Heading'},
+			target: {label: 'Collection Display'},
+		});
+
+		await expect(
+			page.locator('.page-editor__page-structure__tree-node').nth(0)
+		).toContainText('Heading');
+
+		await expect(
+			page.locator('.page-editor__topper__title', {hasText: 'Heading'})
+		).toBeVisible();
+	}
+);
+
+testWithoutMultiselection(
+	'Check correct item is selected when dragging into a collection item from layout',
+	{tag: ['@LPD-41382']},
+	async ({
+		apiHelpers,
+		collectionsPage,
+		page,
+		pageEditorPage,
+		pageManagementSite,
+	}) => {
+
+		// Add a content page with a fragment and a collection display
+
+		const headingId = getRandomString();
+
+		const headingDefinition = getFragmentDefinition({
+			id: headingId,
+			key: 'BASIC_COMPONENT-heading',
+		});
+
+		const animalsClassPK = await collectionsPage.getCollectionClassPK(
+			ANIMALS_COLLECTION_NAME,
+			pageManagementSite.friendlyUrlPath
+		);
+
+		const collectionId = getRandomString();
+
+		const collection = getCollectionDefinition({
+			classPK: animalsClassPK,
+			id: collectionId,
+		});
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([headingDefinition, collection]),
+			siteId: pageManagementSite.id,
+			title: getRandomString(),
+		});
+
+		// Go to edit mode
+
+		await pageEditorPage.goto(layout, pageManagementSite.friendlyUrlPath);
+
+		const heading = pageEditorPage.getFragment(headingId);
+
+		await heading.waitFor();
+
+		// Drag heading into collection item
+
+		await expect(async () => {
+			await heading.dragTo(
+				page.locator('.page-editor__collection-item-old').nth(1)
+			);
+
+			const topper = page
+				.locator(`.lfr-layout-structure-item-topper-${headingId}`)
+				.nth(1);
+
+			await expect(topper).toHaveClass(/active/, {timeout: 2000});
+		}).toPass();
+	}
+);
+
+test(
+	'Check correct feedback is shown when dragging over an unmapped collection',
+	{tag: ['@LPD-44466']},
+	async ({apiHelpers, page, pageEditorPage, site}) => {
+
+		// Add a content page with a collection display and go to edit mode
+
+		const collectionId = getRandomString();
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getCollectionDefinition({
+					id: collectionId,
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await page.getByText('Select a Page Element', {exact: true}).waitFor();
+
+		// Go to Components sidebar panel
+
+		await pageEditorPage.goToSidebarTab('Components');
+
+		// Check we can drag a fragment from the list on top of the Collection
+
+		const heading = page.locator(
+			'.page-editor__fragments-widgets__tab-list-item',
+			{
+				hasText: 'Heading',
+			}
+		);
+
+		await pageEditorPage.dragToFragment({
+			position: 'top',
+			source: heading,
+			targetId: collectionId,
+		});
+
+		// Check we can drag a fragment from the list on bottom of the Collection
+
+		await pageEditorPage.dragToFragment({
+			position: 'bottom',
+			source: heading,
+			targetId: collectionId,
+		});
+
+		// Check we can not drag a fragment from the list on middle of the Collection
+
+		await expect(async () => {
+			await pageEditorPage.dragToFragment({
+				position: 'middle',
+				source: heading,
+				targetId: collectionId,
+			});
+		}).rejects.toThrow();
+	}
+);
+
+test(
+	'Grid topper title is shown when dragging into a column',
+	{tag: '@LPD-45979'},
+	async ({apiHelpers, page, pageEditorPage, site}) => {
+
+		// Create a content page with a grid and go to edit mode
+
+		const firstColumnId = getRandomString();
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getGridDefinition({
+					columns: [
+						{id: firstColumnId, size: 4},
+						{size: 4},
+						{size: 4},
+					],
+					id: getRandomString(),
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		// Drag a button into a column and check grid is highlighted
+
+		await pageEditorPage.goToSidebarTab('Components');
+
+		// Check we can drag a fragment from the list on top of the Collection
+
+		const heading = page.locator(
+			'.page-editor__fragments-widgets__tab-list-item',
+			{
+				hasText: 'Heading',
+			}
+		);
+
+		await pageEditorPage.dragToFragment({
+			drop: false,
+			position: 'middle',
+			source: heading,
+			targetId: firstColumnId,
+		});
+
+		await expect(
+			page.locator('.page-editor__topper__title', {hasText: 'Grid'})
+		).toBeVisible();
+	}
+);
+
+test(
+	'Show error alert when dropping fragments inside master page fragments dropzone',
+	{tag: '@LPD-47053'},
+	async ({apiHelpers, masterPagesPage, page, pageEditorPage, site}) => {
+
+		// Create a master page
+
+		const layoutPageTemplateEntryName = getRandomString();
+
+		const masterPage =
+			await apiHelpers.jsonWebServicesLayoutPageTemplateEntry.addLayoutPageTemplateEntry(
+				{
+					groupId: site.id,
+					name: layoutPageTemplateEntryName,
+					type: 'master-layout',
+				}
+			);
+
+		await masterPagesPage.goto(site.friendlyUrlPath);
+
+		// Add and image fragment and publish
+
+		await masterPagesPage.editMaster(layoutPageTemplateEntryName);
+
+		await pageEditorPage.addFragment('Basic Components', 'Image');
+
+		await pageEditorPage.publishPage();
+
+		// Create a new content page based on master page
+
+		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			masterLayoutPlid: masterPage.plid,
+			options: {type: 'content'},
+			title: getRandomString(),
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		// Drag and drop a fragment inside master page fragments area, should throw an error
+
+		await dragAndDropElement({
+			dragTarget: page.getByRole('menuitem', {
+				name: 'Add Button',
+			}),
+			dropTarget: page.locator('.page-editor__fragment-content--master'),
+			force: true,
+			page,
+		});
+
+		await expect(page.locator('.alert-danger')).toHaveText(
+			'Error:Fragments and widgets cannot be placed inside this area.'
+		);
 	}
 );

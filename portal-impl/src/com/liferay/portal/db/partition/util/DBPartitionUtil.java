@@ -160,11 +160,19 @@ public class DBPartitionUtil {
 			unsafeConsumer.accept(null);
 		}
 		else {
-			for (long companyId : companyIds) {
-				try (SafeCloseable safeCloseable = CompanyThreadLocal.lock(
-						companyId)) {
+			try (SafeCloseable safeCloseable = CompanyThreadLocal.lock(
+					_defaultCompanyId)) {
 
-					unsafeConsumer.accept(companyId);
+				unsafeConsumer.accept(_defaultCompanyId);
+			}
+
+			for (long companyId : companyIds) {
+				if (companyId != _defaultCompanyId) {
+					try (SafeCloseable safeCloseable = CompanyThreadLocal.lock(
+							companyId)) {
+
+						unsafeConsumer.accept(companyId);
+					}
 				}
 			}
 		}
@@ -214,6 +222,14 @@ public class DBPartitionUtil {
 
 			return configurations;
 		}
+	}
+
+	public static String getPartitionKey(Object key) {
+		if (!DBPartition.isPartitionEnabled()) {
+			return key.toString();
+		}
+
+		return key + StringPool.AT + CompanyThreadLocal.getNonsystemCompanyId();
 	}
 
 	public static String getPartitionName(long companyId) {
@@ -523,11 +539,48 @@ public class DBPartitionUtil {
 								"companyId = ", fromCompanyId));
 					}
 
+					if (fromTableName.startsWith("Object") &&
+						dbInspector.hasColumn(fromTableName, "dbTableName")) {
+
+						statement.executeUpdate(
+							StringBundler.concat(
+								"update ", partitionTableName, " set ",
+								"dbTableName = REPLACE(dbTableName, ",
+								fromCompanyId, ", ", toCompanyId,
+								") where dbTableName like '%", fromCompanyId,
+								"%'"));
+					}
+
 					if (StringUtil.equalsIgnoreCase(fromTableName, "Group_")) {
 						statement.executeUpdate(
 							StringBundler.concat(
 								"update ", partitionTableName, " set classPK ",
 								"= ", toCompanyId, " where classPK = ",
+								fromCompanyId));
+						statement.executeUpdate(
+							StringBundler.concat(
+								"update ", partitionTableName, " set groupKey ",
+								"= '", toCompanyId, "' where groupKey = '",
+								fromCompanyId, "'"));
+					}
+
+					if (StringUtil.equalsIgnoreCase(
+							fromTableName, "PortalPreferences")) {
+
+						statement.executeUpdate(
+							StringBundler.concat(
+								"update ", partitionTableName, " set ownerId ",
+								"= ", toCompanyId, " where ownerId = ",
+								fromCompanyId));
+					}
+
+					if (StringUtil.equalsIgnoreCase(
+							fromTableName, "PortletPreferences")) {
+
+						statement.executeUpdate(
+							StringBundler.concat(
+								"update ", partitionTableName, " set ownerId ",
+								"= ", toCompanyId, " where ownerId = ",
 								fromCompanyId));
 					}
 
@@ -801,31 +854,32 @@ public class DBPartitionUtil {
 				unsafeConsumer.accept(null);
 			}
 			else {
+				try (SafeCloseable safeCloseable = CompanyThreadLocal.lock(
+						_defaultCompanyId)) {
+
+					unsafeConsumer.accept(_defaultCompanyId);
+				}
+
 				for (long companyId : companyIds) {
 					if (companyId == _defaultCompanyId) {
-						try (SafeCloseable safeCloseable =
-								CompanyThreadLocal.lock(companyId)) {
-
-							unsafeConsumer.accept(companyId);
-						}
+						continue;
 					}
-					else {
-						Future<Void> future = executorService.submit(
-							() -> {
-								try (SafeCloseable safeCloseable =
-										CompanyThreadLocal.lock(companyId)) {
 
-									unsafeConsumer.accept(companyId);
-								}
-								catch (Exception exception) {
-									throwableCollector.collect(exception);
-								}
+					Future<Void> future = executorService.submit(
+						() -> {
+							try (SafeCloseable safeCloseable =
+									CompanyThreadLocal.lock(companyId)) {
 
-								return null;
-							});
+								unsafeConsumer.accept(companyId);
+							}
+							catch (Exception exception) {
+								throwableCollector.collect(exception);
+							}
 
-						futures.add(future);
-					}
+							return null;
+						});
+
+					futures.add(future);
 				}
 			}
 		}

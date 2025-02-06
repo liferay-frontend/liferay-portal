@@ -1,5 +1,5 @@
 {
-	"read-more-about-asset-publisher-changes": {
+	"asset-publisher-changes": {
 		"en_US": {
 			"message": "Read more about asset publisher changes.",
 			"url": "https://learn.liferay.com/w/dxp/site-building/displaying-content/using-the-asset-publisher-widget"

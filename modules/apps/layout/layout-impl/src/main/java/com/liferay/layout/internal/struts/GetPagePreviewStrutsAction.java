@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutSet;
+import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -131,14 +132,18 @@ public class GetPagePreviewStrutsAction implements StrutsAction {
 
 			themeDisplay.setLocale(LocaleUtil.fromLanguageId(languageId));
 
+			Layout layout = themeDisplay.getLayout();
+
+			Theme theme = layout.getTheme();
+
+			themeDisplay.setLookAndFeel(theme, layout.getColorScheme());
+
 			themeDisplay.setSignedIn(false);
 
 			User guestUser = _userLocalService.getGuestUser(
 				themeDisplay.getCompanyId());
 
 			themeDisplay.setUser(guestUser);
-
-			Layout layout = themeDisplay.getLayout();
 
 			layout.setClassNameId(0);
 
@@ -174,20 +179,29 @@ public class GetPagePreviewStrutsAction implements StrutsAction {
 			layout.includeLayoutContent(
 				httpServletRequest, httpServletResponse);
 
-			LayoutSet layoutSet = themeDisplay.getLayoutSet();
-
 			Document document = Jsoup.parse(
 				ThemeUtil.include(
 					ServletContextPool.get(_portal.getServletContextName()),
 					httpServletRequest, httpServletResponse,
-					"portal_normal.ftl", layoutSet.getTheme(), false));
+					"portal_normal.ftl", theme, false));
 
-			Element contentElement = document.getElementById("content");
+			Element element = document.getElementById("content");
+
+			if (element == null) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						"Replacing all body content because theme " +
+							theme.getThemeId() +
+								" lacks a tag with ID \"content\"");
+				}
+
+				element = document.body();
+			}
 
 			StringBundler sb = (StringBundler)httpServletRequest.getAttribute(
 				WebKeys.LAYOUT_CONTENT);
 
-			contentElement.html(sb.toString());
+			element.html(sb.toString());
 
 			ServletResponseUtil.write(httpServletResponse, document.html());
 		}

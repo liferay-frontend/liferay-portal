@@ -17,7 +17,6 @@ import com.liferay.commerce.product.permission.CommerceProductViewPermission;
 import com.liferay.commerce.product.util.CPDefinitionHelper;
 import com.liferay.commerce.product.util.CPInstanceHelper;
 import com.liferay.commerce.util.CommerceUtil;
-import com.liferay.commerce.wish.list.constants.CommerceWishListActionKeys;
 import com.liferay.commerce.wish.list.constants.CommerceWishListPortletKeys;
 import com.liferay.commerce.wish.list.model.CommerceWishList;
 import com.liferay.commerce.wish.list.model.CommerceWishListItem;
@@ -329,21 +328,12 @@ public class CommerceWishListDisplayContext {
 		_searchContainer.setResultsAndTotal(
 			() -> _commerceWishListService.getCommerceWishLists(
 				_commerceWishListRequestHelper.getScopeGroupId(),
-				_commerceWishListRequestHelper.getUserId(),
 				_searchContainer.getStart(), _searchContainer.getEnd(),
 				_searchContainer.getOrderByComparator()),
 			_commerceWishListService.getCommerceWishListsCount(
-				_commerceWishListRequestHelper.getScopeGroupId(),
-				_commerceWishListRequestHelper.getUserId()));
+				_commerceWishListRequestHelper.getScopeGroupId()));
 
 		return _searchContainer;
-	}
-
-	public boolean hasManageCommerceWishListsPermission() {
-		return _portletResourcePermission.contains(
-			_commerceWishListRequestHelper.getPermissionChecker(),
-			_commerceWishListRequestHelper.getScopeGroupId(),
-			CommerceWishListActionKeys.MANAGE_COMMERCE_WISH_LISTS);
 	}
 
 	public boolean isProductVisibleToAccount(long cpDefinitionId)
@@ -361,8 +351,7 @@ public class CommerceWishListDisplayContext {
 
 		CommerceWishList commerceWishList =
 			_commerceWishListService.fetchCommerceWishList(
-				_commerceWishListRequestHelper.getScopeGroupId(),
-				_commerceWishListRequestHelper.getUserId(), true,
+				_commerceWishListRequestHelper.getScopeGroupId(), true,
 				CommerceWishListNameComparator.getInstance(true));
 
 		if (commerceWishList != null) {
@@ -406,13 +395,8 @@ public class CommerceWishListDisplayContext {
 	}
 
 	private boolean _isContentPortlet() {
-		if (CommerceWishListPortletKeys.COMMERCE_WISH_LIST_CONTENT.equals(
-				_commerceWishListRequestHelper.getPortletId())) {
-
-			return true;
-		}
-
-		return false;
+		return CommerceWishListPortletKeys.COMMERCE_WISH_LIST_CONTENT.equals(
+			_commerceWishListRequestHelper.getPortletId());
 	}
 
 	private static final String _CLASS_NAME_COMMERCE_WISH_LIST =

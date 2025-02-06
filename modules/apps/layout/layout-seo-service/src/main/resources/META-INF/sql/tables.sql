@@ -13,7 +13,6 @@ create table LayoutSEOEntry (
 	layoutId LONG,
 	canonicalURL STRING null,
 	canonicalURLEnabled BOOLEAN,
-	DDMStorageId LONG,
 	openGraphDescription STRING null,
 	openGraphDescriptionEnabled BOOLEAN,
 	openGraphImageAlt STRING null,
@@ -22,6 +21,18 @@ create table LayoutSEOEntry (
 	openGraphTitleEnabled BOOLEAN,
 	lastPublishDate DATE null,
 	primary key (layoutSEOEntryId, ctCollectionId)
+);
+
+create table LayoutSEOEntryCustomMetaTag (
+	mvccVersion LONG default 0 not null,
+	ctCollectionId LONG default 0 not null,
+	layoutSEOEntryCustomMetaTagId LONG not null,
+	groupId LONG,
+	companyId LONG,
+	layoutSEOEntryId LONG,
+	content STRING null,
+	property VARCHAR(75) null,
+	primary key (layoutSEOEntryCustomMetaTagId, ctCollectionId)
 );
 
 create table LayoutSEOSite (

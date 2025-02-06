@@ -7,6 +7,7 @@ const path = require('path');
 
 function getJestConfig({rootDir = '<rootDir>'}) {
 	let moduleNameMapper = {};
+	let testEnvironment = 'jest-environment-jsdom-sixteen';
 
 	if (process.env.USE_REACT_16 === 'true') {
 		moduleNameMapper = {
@@ -14,8 +15,6 @@ function getJestConfig({rootDir = '<rootDir>'}) {
 			// Testing dependencies
 
 			'^@testing-library/dom((\\/.*)?)$': '@testing-library/dom-8.11.1$1',
-			'^@testing-library/jest-dom((\\/.*)?)$':
-				'@testing-library/jest-dom-4.2.4$1',
 			'^@testing-library/react((\\/.*)?)$':
 				'@testing-library/react-12.1.2$1',
 			'^@testing-library/react-hooks((\\/.*)?)$':
@@ -32,6 +31,8 @@ function getJestConfig({rootDir = '<rootDir>'}) {
 			'^react-dom/test-utils$': 'react-dom-16/test-utils',
 			'^react-test-renderer$': 'react-test-renderer-16.12.0',
 		};
+
+		testEnvironment = 'jest-environment-jsdom-thirteen';
 	}
 
 	return {
@@ -43,7 +44,7 @@ function getJestConfig({rootDir = '<rootDir>'}) {
 		resolver: path.join(__dirname, 'resolver.js'),
 		setupFiles: [path.join(__dirname, 'setup.js')],
 		setupFilesAfterEnv: [path.join(__dirname, 'setupAfterEnv.js')],
-		testEnvironment: 'jest-environment-jsdom-thirteen',
+		testEnvironment,
 		testEnvironmentOptions: {
 			url: 'http://localhost',
 		},

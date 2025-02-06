@@ -12,7 +12,8 @@ export async function loadModule(
 		);
 
 		// @ts-ignore
-		const module = await import(/* webpackIgnore: true */ moduleName);
+
+		const module = await import(moduleName);
 
 		return module[symbolName];
 	}

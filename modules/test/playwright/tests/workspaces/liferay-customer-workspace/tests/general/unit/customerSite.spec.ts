@@ -10,7 +10,6 @@ import {
 	customerPerformLogin,
 	customerPerformLogout,
 } from '../../../utils/customerLogin';
-import {mockOktaApiSession} from '../../../utils/oktaUtil';
 
 export const test = mergeTests(customerPagesTest);
 
@@ -20,8 +19,6 @@ test.afterEach(async ({page}) => {
 
 test.beforeEach(async ({page}) => {
 	await customerPerformLogin(page, 'test@liferay.com');
-
-	await mockOktaApiSession(page);
 });
 
 test.describe('Customer Site', () => {

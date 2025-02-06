@@ -21,6 +21,7 @@ import com.liferay.dynamic.data.mapping.service.DDMStructureLayoutLocalServiceUt
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalServiceUtil;
 import com.liferay.dynamic.data.mapping.service.DDMStructureVersionLocalServiceUtil;
 import com.liferay.dynamic.data.mapping.service.DDMTemplateLocalServiceUtil;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
@@ -370,11 +371,7 @@ public class DDMStructureImpl extends DDMStructureBaseImpl {
 
 				String name = structure.getName(locale);
 
-				if (name.equals(getName(locale))) {
-					return true;
-				}
-
-				return false;
+				return name.equals(getName(locale));
 			});
 
 		if (hasAmbiguousName) {
@@ -487,11 +484,7 @@ public class DDMStructureImpl extends DDMStructureBaseImpl {
 	public boolean isFieldTransient(String fieldName) throws PortalException {
 		DDMFormField ddmFormField = _getDDMFormField(fieldName);
 
-		if (Validator.isNull(ddmFormField.getDataType())) {
-			return true;
-		}
-
-		return false;
+		return Validator.isNull(ddmFormField.getDataType());
 	}
 
 	@Override
@@ -547,13 +540,8 @@ public class DDMStructureImpl extends DDMStructureBaseImpl {
 	protected List<String> getDDMFormFieldNames(
 		List<DDMFormField> ddmFormFields) {
 
-		List<String> fieldNames = new ArrayList<>();
-
-		for (DDMFormField ddmFormField : ddmFormFields) {
-			fieldNames.add(ddmFormField.getName());
-		}
-
-		return fieldNames;
+		return TransformUtil.transform(
+			ddmFormFields, ddmFormField -> ddmFormField.getName());
 	}
 
 	protected DDMStructure getParentDDMStructure() throws PortalException {
@@ -690,11 +678,7 @@ public class DDMStructureImpl extends DDMStructureBaseImpl {
 	}
 
 	private boolean _isFieldSet(DDMFormField ddmFormField) {
-		if (Objects.equals(ddmFormField.getType(), "fieldset")) {
-			return true;
-		}
-
-		return false;
+		return Objects.equals(ddmFormField.getType(), "fieldset");
 	}
 
 	private void _setNestedDDMFormFields(DDMFormField ddmFormField) {

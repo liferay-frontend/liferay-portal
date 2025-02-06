@@ -223,7 +223,7 @@ const FrontendTokenDefinitionFilePicker = ({
 
 					<LearnMessage
 						resource="client-extension-web"
-						resourceKey="learn-frontend-token-definitions"
+						resourceKey="frontend-token-definitions"
 					/>
 				</Text>
 

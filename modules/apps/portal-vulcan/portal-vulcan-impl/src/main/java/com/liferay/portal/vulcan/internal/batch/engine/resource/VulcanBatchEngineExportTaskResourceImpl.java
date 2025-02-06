@@ -38,7 +38,7 @@ public class VulcanBatchEngineExportTaskResourceImpl
 		ExportTaskResource exportTaskResource = _getExportTaskResource();
 
 		return exportTaskResource.postExportTask(
-			name, contentType, callbackURL,
+			name, contentType, null, callbackURL,
 			_getQueryParameterValue("externalReferenceCode"), fieldNames,
 			_getTaskItemDelegateName());
 	}

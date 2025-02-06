@@ -13,6 +13,8 @@ import {loginTest} from '../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../fixtures/pageEditorPagesTest';
 import {pageManagementSiteTest} from '../../fixtures/pageManagementSiteTest';
 import {pageViewModePagesTest} from '../../fixtures/pageViewModePagesTest';
+import {clickAndExpectToBeHidden} from '../../utils/clickAndExpectToBeHidden';
+import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../utils/getRandomString';
 import {ANIMALS_COLLECTION_NAME} from '../setup/page-management-site/constants/animals';
 import getCollectionDefinition from './utils/getCollectionDefinition';
@@ -23,7 +25,8 @@ const test = mergeTests(
 	apiHelpersTest,
 	collectionsPagesTest,
 	featureFlagsTest({
-		'LPS-178052': true,
+		'LPD-18221': {enabled: true},
+		'LPS-178052': {enabled: true},
 	}),
 	loginTest(),
 	pageEditorPagesTest,
@@ -114,6 +117,297 @@ test(
 	}
 );
 
+test(
+	'Can prefilter collection',
+	{
+		tag: '@LPS-166039',
+	},
+	async ({
+		apiHelpers,
+		collectionsPage,
+		page,
+		pageEditorPage,
+		pageManagementSite,
+	}) => {
+
+		// Create definition for a collection mapped to Animals collection
+
+		const animalsClassPK = await collectionsPage.getCollectionClassPK(
+			ANIMALS_COLLECTION_NAME,
+			pageManagementSite.friendlyUrlPath
+		);
+
+		const collectionId = getRandomString();
+
+		const relatedCollectionId = getRandomString();
+
+		const collectionDefinition = getCollectionDefinition({
+			classPK: animalsClassPK,
+			id: collectionId,
+			pageElements: [
+				getCollectionDefinition({
+					id: relatedCollectionId,
+					provider: 'Items with Categories in the Same Vocabularies',
+				}),
+			],
+		});
+
+		// Create a content page and go to edit mode
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([collectionDefinition]),
+			siteId: pageManagementSite.id,
+			title: getRandomString(),
+		});
+
+		await pageEditorPage.goto(layout, pageManagementSite.friendlyUrlPath);
+
+		// Pre-filter collection
+
+		await pageEditorPage.selectFragment(relatedCollectionId);
+
+		await page.locator('.page-editor__disabled-area').first().click();
+
+		await pageEditorPage.selectFragment(relatedCollectionId);
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {name: 'Filter Collection'}),
+			trigger: page.getByTitle('View Collection Options'),
+		});
+
+		await clickAndExpectToBeVisible({
+			autoClick: false,
+			target: page.locator('.dropdown-menu', {hasText: 'Blogs Entry'}),
+			trigger: page.getByLabel('Item Type', {exact: true}),
+		});
+
+		await page.getByLabel('Blogs Entry').check();
+
+		await page.locator('body').click();
+
+		// Assert empty message in filter collection
+
+		await expect(
+			page.getByText('There are 0 results for Blogs Entry.')
+		).toBeVisible();
+
+		await page.getByRole('button', {name: 'Save'}).click();
+
+		// Assert empty message in edit mode
+
+		await expect(
+			page
+				.getByText(
+					'The collection is empty. To display your items, add them to the collection or choose a different collection.'
+				)
+				.first()
+		).toBeVisible();
+	}
+);
+
+testWithIsolatedSite(
+	'Check collection display pagination',
+	{
+		tag: '@LPS-146171',
+	},
+	async ({apiHelpers, page, pageEditorPage, site}) => {
+
+		// Add 25 blogs
+
+		for (let i = 0; i < 25; i++) {
+			await apiHelpers.headlessDelivery.postBlog(site.id);
+		}
+
+		// Create a content page
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition(),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		// Go to edit mode and add collection display with heading fragment
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.addFragment(
+			'Content Display',
+			'Collection Display'
+		);
+
+		await pageEditorPage.selectFragment(
+			await pageEditorPage.getFragmentId('Collection Display')
+		);
+
+		await pageEditorPage.chooseCollectionDisplayOption(
+			'Collection Providers',
+			'Highest Rated Assets'
+		);
+
+		await pageEditorPage.waitForChangesSaved();
+
+		await pageEditorPage.addFragment(
+			'Basic Components',
+			'Heading',
+			page.locator('.page-editor__collection-item.empty').first()
+		);
+
+		// Assert pagination is visible by default
+
+		await expect(page.locator('.pagination-bar')).toBeVisible();
+
+		// Assert numeric is the default option
+
+		const collectionId =
+			await pageEditorPage.getFragmentId('Collection Display');
+
+		await pageEditorPage.selectFragment(collectionId);
+
+		const collectionStyle = page.getByLabel('CollectionStyle');
+
+		await expect(collectionStyle.getByLabel('Pagination')).toHaveValue(
+			'numeric'
+		);
+
+		// Assert display all pages is checked by default and display all collection items is not visible
+
+		await expect(
+			collectionStyle.getByLabel('Display All Pages')
+		).toBeChecked();
+
+		await expect(
+			collectionStyle.getByLabel('Display All Collection Items')
+		).not.toBeVisible();
+
+		// Assert default value for maximum number of items per page
+
+		await expect(
+			collectionStyle.getByLabel('Maximum Number of Items per Page')
+		).toHaveValue('20');
+
+		// Assert performance message
+
+		await pageEditorPage.changeConfiguration({
+			fieldLabel: 'Maximum Number of Items per Page',
+			tab: 'General',
+			value: '21',
+		});
+
+		await expect(
+			page.getByText(
+				'In edit mode, the number of elements displayed is limited to 20 due to performance.'
+			)
+		).toBeVisible();
+
+		// Assert maximum number of pages to display
+
+		await pageEditorPage.changeConfiguration({
+			fieldLabel: 'Maximum Number of Items per Page',
+			tab: 'General',
+			value: '3',
+		});
+
+		await expect(page.getByLabel('Go to page, 1')).toBeVisible();
+
+		await expect(page.getByLabel('Go to page, 2')).toBeVisible();
+
+		await expect(page.getByLabel('Go to page, 3')).toBeVisible();
+
+		await expect(page.getByLabel('Go to page, 4')).not.toBeVisible();
+
+		await expect(page.getByLabel('Go to page, 5')).not.toBeVisible();
+
+		await expect(page.getByLabel('Go to page, 9')).toBeVisible();
+
+		await pageEditorPage.changeConfiguration({
+			fieldLabel: 'Display All Pages',
+			tab: 'General',
+			value: 'false',
+		});
+
+		await expect(
+			collectionStyle.getByLabel('Maximum Number of Pages to Display')
+		).toHaveValue('5');
+
+		await expect(page.getByLabel('Go to page, 1')).toBeVisible();
+
+		await expect(page.getByLabel('Go to page, 2')).toBeVisible();
+
+		await expect(page.getByLabel('Go to page, 3')).toBeVisible();
+
+		await expect(page.getByLabel('Go to page, 4')).toBeVisible();
+
+		await expect(page.getByLabel('Go to page, 5')).toBeVisible();
+
+		await pageEditorPage.changeConfiguration({
+			fieldLabel: 'Maximum Number of Pages to Display',
+			tab: 'General',
+			value: '2',
+		});
+
+		await expect(page.getByLabel('Go to page, 1')).toBeVisible();
+
+		await expect(page.getByLabel('Go to page, 2')).toBeVisible();
+
+		await expect(page.getByLabel('Go to page, 3')).not.toBeVisible();
+
+		await expect(page.getByLabel('Go to page, 4')).not.toBeVisible();
+
+		await expect(page.getByLabel('Go to page, 5')).not.toBeVisible();
+
+		// Assert minimun value of maximum number of pagest to display
+
+		await pageEditorPage.changeConfiguration({
+			fieldLabel: 'Maximum Number of Pages to Display',
+			tab: 'General',
+			value: '-1',
+		});
+
+		await expect(
+			collectionStyle.getByLabel('Maximum Number of Pages to Display')
+		).toHaveValue('1');
+
+		// Change pagination configuration to none
+
+		await pageEditorPage.changeConfiguration({
+			fieldLabel: 'Pagination',
+			tab: 'General',
+			value: 'None',
+		});
+
+		// Assert pagination is not visbile
+
+		await expect(page.locator('.pagination-bar')).not.toBeVisible();
+
+		// Assert default value for maximun number of items to display
+
+		await expect(
+			collectionStyle.getByLabel('Maximum Number of Items to Display')
+		).toHaveValue('5');
+
+		await pageEditorPage.changeConfiguration({
+			fieldLabel: 'Maximum Number of Items to Display',
+			tab: 'General',
+			value: '50',
+		});
+
+		await expect(
+			collectionStyle.getByText('This collection has 25 items.')
+		).toBeVisible();
+
+		// Assert display all pages is not visible and display all collection items by default is disabled
+
+		await expect(
+			collectionStyle.getByLabel('Display All Pages')
+		).not.toBeVisible();
+
+		await expect(
+			collectionStyle.getByLabel('Display All Collection Items')
+		).not.toBeChecked();
+	}
+);
+
 testWithIsolatedSite(
 	'Checks the error message when trying to drag a fragment to an unmapped collection',
 	async ({apiHelpers, page, pageEditorPage, site}) => {
@@ -196,7 +490,7 @@ test('Checks Content Flags, Content Ratings and Content Display are compatible w
 		title: getRandomString(),
 	});
 
-	// Go to edit mode of the created
+	// Go to edit mode of the created page
 
 	await pageEditorPage.goto(layout, pageManagementSite.friendlyUrlPath);
 
@@ -210,57 +504,26 @@ test('Checks Content Flags, Content Ratings and Content Display are compatible w
 
 	// Check that the Content Display shows Default Template by default
 
-	await page.getByText('Animal 02 content').click();
+	await page.getByText('Animal 01 content').click();
 
 	await expect(page.getByLabel('Template', {exact: true})).toHaveValue(
 		'Default Template'
 	);
 
-	// Check that the Content Ratings is shown in each item and the Field input has the corresponding name
+	// Close sidebar
 
-	const voteItem = page.getByLabel('Vote', {exact: true});
+	await clickAndExpectToBeHidden({
+		target: page.locator('header', {hasText: 'Components'}),
+		trigger: page.getByRole('tab', {
+			exact: true,
+			name: 'Components',
+		}),
+	});
 
-	await expect(voteItem).toHaveCount(2);
+	// Check that the Content Ratings and Content Flags are shown for every item
 
-	await voteItem.first().click();
-
-	await expect(page.getByPlaceholder('No Item Selected')).toHaveValue(
-		'Animal 01 - Dogs and Cats categories'
-	);
-
-	await voteItem.nth(1).click();
-
-	await expect(page.getByPlaceholder('No Item Selected')).toHaveValue(
-		'Animal 02 - Dogs category'
-	);
-
-	// Check that the Content Flags is shown in each item and the Field input has the corresponding name
-
-	const reportItem = page.locator('[data-name="Content Flags"]');
-
-	await expect(reportItem).toHaveCount(2);
-
-	const firstReportItem = reportItem.first();
-
-	await firstReportItem.click();
-	await firstReportItem.press('Tab');
-	await firstReportItem.press('Enter');
-
-	await page.getByPlaceholder('No Item Selected').waitFor();
-
-	await expect(page.getByPlaceholder('No Item Selected')).toHaveValue(
-		'Animal 01 - Dogs and Cats categories'
-	);
-
-	const secondReportItem = reportItem.nth(1);
-
-	await secondReportItem.click();
-	await secondReportItem.press('Tab');
-	await secondReportItem.press('Enter');
-
-	await expect(page.getByPlaceholder('No Item Selected')).toHaveValue(
-		'Animal 02 - Dogs category'
-	);
+	await expect(page.getByLabel('Vote', {exact: true})).toHaveCount(2);
+	await expect(page.locator('button', {hasText: 'Report'})).toHaveCount(2);
 });
 
 test('Modifies inline text on all collection items', async ({
@@ -715,7 +978,7 @@ test('Activate the first element when a fragment is added to a Collection Displa
 	await pageEditorPage.addFragment(
 		'Basic Components',
 		'Heading',
-		page.locator('.page-editor__collection-item.empty').last()
+		page.locator('.page-editor__collection-item.empty').first()
 	);
 
 	const headingId = await pageEditorPage.getFragmentId('Heading');
@@ -870,5 +1133,76 @@ testWithIsolatedSite(
 		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
 
 		await expect(page.getByText('No Results Found')).not.toBeVisible();
+	}
+);
+
+testWithIsolatedSite(
+	'Only first collection item is interactable',
+	{
+		tag: '@LPD-45724',
+	},
+	async ({apiHelpers, page, pageEditorPage, site}) => {
+
+		// Create definition for a collection with a heading inside it
+
+		const headingId = getRandomString();
+
+		const collectionId = getRandomString();
+
+		const collectionDefinition = getCollectionDefinition({
+			id: collectionId,
+			pageElements: [
+				getFragmentDefinition({
+					id: headingId,
+					key: 'BASIC_COMPONENT-heading',
+				}),
+			],
+			provider: 'Highest Rated Assets',
+		});
+
+		// Create a content page and go to edit mode
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([collectionDefinition]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await page
+			.getByText('Select a Page Element', {
+				exact: true,
+			})
+			.waitFor();
+
+		// Select Collection Display
+
+		await pageEditorPage.selectFragment(collectionId);
+
+		// Click all headings from the second one to confirm they are not selectable
+
+		const headings = await page
+			.locator(`.lfr-layout-structure-item-${headingId}`)
+			.all();
+
+		for (let i = 1; i < headings.length; i++) {
+			await headings[i].click({force: true});
+
+			await expect(
+				page.locator('.page-editor__topper__title', {
+					hasText: 'Heading',
+				})
+			).not.toBeVisible();
+		}
+
+		// Click first heading and confirm it's selectable
+
+		await clickAndExpectToBeVisible({
+			target: page.locator('.page-editor__topper__title', {
+				hasText: 'Heading',
+			}),
+			trigger: headings[0],
+		});
 	}
 );

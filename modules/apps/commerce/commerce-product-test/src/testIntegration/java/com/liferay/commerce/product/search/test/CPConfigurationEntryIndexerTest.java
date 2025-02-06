@@ -37,8 +37,6 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
-import java.math.BigDecimal;
-
 import java.util.Calendar;
 import java.util.Date;
 
@@ -86,15 +84,10 @@ public class CPConfigurationEntryIndexerTest {
 				commerceCatalog.getGroupId());
 
 		CPConfigurationEntry cpConfigurationEntry =
-			_cpConfigurationEntryLocalService.addCPConfigurationEntry(
-				RandomTestUtil.randomString(), _user.getUserId(),
-				commerceCatalog.getGroupId(),
+			_cpConfigurationEntryLocalService.getCPConfigurationEntry(
 				_portal.getClassNameId(CPDefinition.class),
 				cpDefinition.getCPDefinitionId(),
-				cpConfigurationList1.getCPConfigurationListId(), 0, "123", true,
-				0, "cpde", 1.0, true, true, true, 1.0, "lowstoc",
-				BigDecimal.TEN, BigDecimal.ONE, BigDecimal.ONE, BigDecimal.ONE,
-				true, true, 1.0, true, true, true, 1.0, 1.0);
+				cpConfigurationList1.getCPConfigurationListId());
 
 		SearchContext searchContext = new SearchContext();
 
@@ -125,7 +118,8 @@ public class CPConfigurationEntryIndexerTest {
 
 		CPConfigurationList cpConfigurationList2 =
 			_cpConfigurationListLocalService.addCPConfigurationList(
-				null, commerceCatalog.getGroupId(), _user.getUserId(), 0, false,
+				null, commerceCatalog.getGroupId(), _user.getUserId(),
+				cpConfigurationList1.getCPConfigurationListId(), false,
 				"Test List", 0D, calendar.get(Calendar.MONTH),
 				calendar.get(Calendar.DAY_OF_MONTH),
 				calendar.get(Calendar.YEAR), displayDateHour,

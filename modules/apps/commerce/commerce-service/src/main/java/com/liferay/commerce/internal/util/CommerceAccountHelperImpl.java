@@ -16,7 +16,9 @@ import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.commerce.configuration.CommerceAccountGroupServiceConfiguration;
 import com.liferay.commerce.configuration.CommerceAccountServiceConfiguration;
+import com.liferay.commerce.constants.CommerceCheckoutWebKeys;
 import com.liferay.commerce.constants.CommerceConstants;
+import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.product.constants.CommerceChannelAccountEntryRelConstants;
 import com.liferay.commerce.product.constants.CommerceChannelConstants;
 import com.liferay.commerce.product.model.CommerceChannel;
@@ -29,6 +31,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.RoleConstants;
@@ -49,7 +52,6 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -58,6 +60,7 @@ import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -286,6 +289,26 @@ public class CommerceAccountHelperImpl implements CommerceAccountHelper {
 	public AccountEntry getCurrentAccountEntry(
 			long commerceChannelGroupId, HttpServletRequest httpServletRequest)
 		throws PortalException {
+
+		if (FeatureFlagManagerUtil.isEnabled("LPD-35678")) {
+			HttpServletRequest originalHttpServletRequest =
+				_portal.getOriginalServletRequest(httpServletRequest);
+
+			HttpSession httpSession = originalHttpServletRequest.getSession();
+
+			CommerceOrder commerceOrder =
+				(CommerceOrder)httpSession.getAttribute(
+					CommerceCheckoutWebKeys.
+						COMMERCE_ORDER_ON_ACCOUNT_SELECTION);
+
+			if (commerceOrder != null) {
+				setCurrentCommerceAccount(
+					httpServletRequest, commerceChannelGroupId,
+					AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT);
+
+				return null;
+			}
+		}
 
 		int commerceSiteType = getCommerceSiteType(commerceChannelGroupId);
 
@@ -560,22 +583,22 @@ public class CommerceAccountHelperImpl implements CommerceAccountHelper {
 			return accountEntries;
 		}
 
-		List<AccountEntry> userAccountEntries = new ArrayList<>();
-
 		Set<Long> channelAccountEntryIds = new HashSet<>(
 			ListUtil.toList(
 				commerceChannelAccountEntryRels,
 				CommerceChannelAccountEntryRel::getAccountEntryId));
 
-		for (AccountEntry accountEntry : accountEntries) {
-			if (channelAccountEntryIds.contains(
-					accountEntry.getAccountEntryId())) {
+		return TransformUtil.transform(
+			accountEntries,
+			accountEntry -> {
+				if (channelAccountEntryIds.contains(
+						accountEntry.getAccountEntryId())) {
 
-				userAccountEntries.add(accountEntry);
-			}
-		}
+					return accountEntry;
+				}
 
-		return userAccountEntries;
+				return null;
+			});
 	}
 
 	private List<AccountEntry> _getCommerceChannelAccountEntries(

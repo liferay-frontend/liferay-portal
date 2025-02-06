@@ -4392,11 +4392,6 @@ components:
             description:
                 Represents a definition of a Page Rule Action.
             properties:
-                action:
-                    # @review
-                    description:
-                        The page rule action's action.
-                    type: string
                 id:
                     # @review
                     description:
@@ -4418,25 +4413,32 @@ components:
             description:
                 Represents a definition of a Page Rule Condition.
             properties:
-                condition:
+                field:
                     # @review
                     description:
-                        The page rule condition's description.
+                        The page rule condition's field.
                     type: string
                 id:
                     # @review
                     description:
                         The page rule condition's ID.
                     type: string
+                options:
+                    properties:
+                        type:
+                            description:
+                                The page rule condition option's type.
+                            enum: [Equal, NotEqual]
+                            type: string
+                        value:
+                            description:
+                                The page rule condition's value.
+                            type: string
+                    type: object
                 type:
                     # @review
                     description:
                         The page rule condition's type.
-                    type: string
-                value:
-                    # @review
-                    description:
-                        The page rule condition's value.
                     type: string
             type: object
         PageSectionDefinition:
@@ -6165,7 +6167,7 @@ components:
 info:
     description:
         "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
-        'com.liferay.headless.delivery.client', and version '4.0.89'."
+        'com.liferay.headless.delivery.client', and version '4.0.91'."
     license:
         name: "Apache 2.0"
         url: "http://www.apache.org/licenses/LICENSE-2.0.html"

@@ -10,10 +10,6 @@ package com.liferay.portal.configuration.settings.internal.constants;
  */
 public class SettingsLocatorTestConstants {
 
-	public static final String PORTLET_PREFERENCES_FORMAT =
-		"<portlet-preferences><preference><name>%s</name><value>%s</value>" +
-			"</preference></portlet-preferences>";
-
 	public static final String TEST_CONFIGURATION_PID =
 		"com.liferay.portal.configuration.settings.internal.samples." +
 			"TestConfiguration";
@@ -21,5 +17,12 @@ public class SettingsLocatorTestConstants {
 	public static final String TEST_DEFAULT_VALUE = "testDefaultValue";
 
 	public static final String TEST_KEY = "settingsLocatorTestKey";
+
+	public static final String TEST_REQUIRED_CONFIGURATION_PID =
+		"com.liferay.portal.configuration.settings.internal.samples." +
+			"TestRequiredConfiguration";
+
+	public static final String TEST_REQUIRED_KEY =
+		"settingsLocatorTestRequiredKey";
 
 }

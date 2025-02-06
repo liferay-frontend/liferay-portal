@@ -9,6 +9,7 @@ import com.liferay.account.model.AccountEntry;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.list.type.model.ListTypeDefinition;
 import com.liferay.list.type.service.ListTypeDefinitionLocalService;
+import com.liferay.object.admin.rest.client.dto.v1_0.ObjectAction;
 import com.liferay.object.admin.rest.client.dto.v1_0.ObjectDefinition;
 import com.liferay.object.admin.rest.client.dto.v1_0.ObjectField;
 import com.liferay.object.admin.rest.client.dto.v1_0.ObjectLayout;
@@ -23,7 +24,10 @@ import com.liferay.object.admin.rest.client.dto.v1_0.Status;
 import com.liferay.object.admin.rest.client.pagination.Page;
 import com.liferay.object.admin.rest.client.pagination.Pagination;
 import com.liferay.object.admin.rest.client.problem.Problem;
+import com.liferay.object.admin.rest.client.resource.v1_0.ObjectDefinitionResource;
 import com.liferay.object.admin.rest.client.serdes.v1_0.ObjectDefinitionSerDes;
+import com.liferay.object.constants.ObjectActionExecutorConstants;
+import com.liferay.object.constants.ObjectActionTriggerConstants;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
@@ -34,21 +38,27 @@ import com.liferay.object.model.ObjectFolder;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectFolderLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.SystemProperties;
 import com.liferay.portal.kernel.util.TextFormatter;
@@ -65,6 +75,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -76,7 +87,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Javier Gamarra
  */
-@FeatureFlags("LPS-187142")
+@FeatureFlags("LPD-34594")
 @RunWith(Arquillian.class)
 public class ObjectDefinitionResourceTest
 	extends BaseObjectDefinitionResourceTestCase {
@@ -136,8 +147,58 @@ public class ObjectDefinitionResourceTest
 
 	@Override
 	@Test
+	public void testGetObjectDefinitionByExternalReferenceCode()
+		throws Exception {
+
+		super.testGetObjectDefinitionByExternalReferenceCode();
+
+		ObjectDefinition objectDefinition =
+			testGetObjectDefinitionsPage_addObjectDefinition(
+				randomObjectDefinition());
+
+		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+			null,
+			StringBundler.concat(
+				"object-admin/v1.0/object-definitions",
+				"/by-external-reference-code/",
+				objectDefinition.getExternalReferenceCode(),
+				"?nestedFields=objectFields"),
+			Http.Method.GET);
+
+		JSONArray jsonArray = jsonObject.getJSONArray("objectFields");
+
+		Assert.assertEquals(jsonArray.toString(), 7, jsonArray.length());
+	}
+
+	@Override
+	@Test
 	public void testGetObjectDefinitionsPage() throws Exception {
-		super.testGetObjectDefinitionsPage();
+		ObjectDefinitionResource.Builder builder =
+			ReflectionTestUtil.getFieldValue(
+				objectDefinitionResource, "_builder");
+
+		ReflectionTestUtil.setFieldValue(
+			this, "objectDefinitionResource",
+			ProxyUtil.newProxyInstance(
+				ObjectDefinitionResourceTest.class.getClassLoader(),
+				new Class<?>[] {ObjectDefinitionResource.class},
+				(proxy, method, args) -> {
+					if (Objects.equals(
+							method.getName(), "getObjectDefinitionsPage")) {
+
+						args[3] = Pagination.of(1, 20);
+					}
+
+					return method.invoke(builder.build(), args);
+				}));
+
+		try {
+			super.testGetObjectDefinitionsPage();
+		}
+		finally {
+			ReflectionTestUtil.setFieldValue(
+				this, "objectDefinitionResource", builder.build());
+		}
 
 		Page<ObjectDefinition> page =
 			objectDefinitionResource.getObjectDefinitionsPage(
@@ -290,29 +351,25 @@ public class ObjectDefinitionResourceTest
 	public void testPostObjectDefinition() throws Exception {
 		super.testPostObjectDefinition();
 
+		// Enable index search
+
 		ObjectDefinition randomObjectDefinition = randomObjectDefinition();
 
-		Status status = new Status() {
-			{
-				code = WorkflowConstants.STATUS_APPROVED;
-				label = WorkflowConstants.getStatusLabel(
-					WorkflowConstants.STATUS_APPROVED);
-				label_i18n = _language.get(
-					LanguageResources.getResourceBundle(
-						LocaleUtil.getDefault()),
-					WorkflowConstants.getStatusLabel(
-						WorkflowConstants.STATUS_APPROVED));
-			}
-		};
-
-		randomObjectDefinition.setStatus(status);
+		randomObjectDefinition.setEnableIndexSearch((Boolean)null);
+		randomObjectDefinition.setObjectFields((ObjectField[])null);
 
 		ObjectDefinition postObjectDefinition =
 			testPostObjectDefinition_addObjectDefinition(
 				randomObjectDefinition);
 
-		assertEquals(postObjectDefinition, randomObjectDefinition);
-		assertValid(postObjectDefinition);
+		Assert.assertTrue(postObjectDefinition.getEnableIndexSearch());
+		Assert.assertTrue(
+			ArrayUtil.isEmpty(
+				ArrayUtil.filter(
+					postObjectDefinition.getObjectFields(),
+					objectField -> !objectField.getSystem())));
+
+		// Modifiable system object definition
 
 		String randomListTypeDefinitionExternalReferenceCode =
 			RandomTestUtil.randomString();
@@ -377,6 +434,53 @@ public class ObjectDefinitionResourceTest
 		Assert.assertNotNull(serviceBuilderlistTypeDefinition);
 		Assert.assertTrue(serviceBuilderlistTypeDefinition.isSystem());
 
+		// Object action
+
+		ObjectAction objectAction = new ObjectAction();
+
+		objectAction.setExternalReferenceCode(RandomTestUtil.randomString());
+		objectAction.setActive(true);
+		objectAction.setConditionExpression(StringPool.BLANK);
+		objectAction.setDescription(RandomTestUtil.randomString());
+		objectAction.setErrorMessage(
+			Collections.singletonMap("en_US", RandomTestUtil.randomString()));
+		objectAction.setLabel(
+			Collections.singletonMap("en_US", RandomTestUtil.randomString()));
+		objectAction.setName("a" + RandomTestUtil.randomString());
+		objectAction.setObjectActionExecutorKey(
+			ObjectActionExecutorConstants.KEY_ADD_OBJECT_ENTRY);
+		objectAction.setObjectActionTriggerKey(
+			ObjectActionTriggerConstants.KEY_ON_AFTER_ADD);
+		objectAction.setParameters(
+			HashMapBuilder.put(
+				"objectDefinitionExternalReferenceCode",
+				RandomTestUtil.randomString()
+			).put(
+				"predefinedValues",
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"inputAsValue", true
+					).put(
+						"name", RandomTestUtil.randomString()
+					).put(
+						"value", RandomTestUtil.randomString()
+					)
+				).toString()
+			).build());
+
+		randomObjectDefinition = randomObjectDefinition();
+
+		randomObjectDefinition.setObjectActions(
+			new ObjectAction[] {objectAction});
+
+		postObjectDefinition = testPostObjectDefinition_addObjectDefinition(
+			randomObjectDefinition);
+
+		assertEquals(postObjectDefinition, randomObjectDefinition);
+		assertValid(postObjectDefinition);
+
+		// Object relationship
+
 		randomObjectDefinition = randomObjectDefinition();
 
 		ObjectRelationship objectRelationship = new ObjectRelationship();
@@ -425,22 +529,33 @@ public class ObjectDefinitionResourceTest
 		assertEquals(postObjectDefinition, randomObjectDefinition);
 		assertValid(postObjectDefinition);
 
+		// Status
+
 		randomObjectDefinition = randomObjectDefinition();
 
-		randomObjectDefinition.setEnableIndexSearch((Boolean)null);
-		randomObjectDefinition.setObjectFields((ObjectField[])null);
+		Status status = new Status() {
+			{
+				code = WorkflowConstants.STATUS_APPROVED;
+				label = WorkflowConstants.getStatusLabel(
+					WorkflowConstants.STATUS_APPROVED);
+				label_i18n = _language.get(
+					LanguageResources.getResourceBundle(
+						LocaleUtil.getDefault()),
+					WorkflowConstants.getStatusLabel(
+						WorkflowConstants.STATUS_APPROVED));
+			}
+		};
+
+		randomObjectDefinition.setStatus(status);
 
 		postObjectDefinition = testPostObjectDefinition_addObjectDefinition(
 			randomObjectDefinition);
 
-		Assert.assertTrue(postObjectDefinition.getEnableIndexSearch());
-		Assert.assertTrue(
-			ArrayUtil.isEmpty(
-				ArrayUtil.filter(
-					postObjectDefinition.getObjectFields(),
-					objectField -> !objectField.getSystem())));
+		assertEquals(postObjectDefinition, randomObjectDefinition);
+		assertValid(postObjectDefinition);
 	}
 
+	@FeatureFlags("LPD-32050")
 	@Override
 	@Test
 	public void testPutObjectDefinition() throws Exception {
@@ -608,6 +723,93 @@ public class ObjectDefinitionResourceTest
 							WorkflowConstants.STATUS_APPROVED));
 				}
 			});
+
+		// Enable localization
+
+		randomObjectDefinition = randomObjectDefinition();
+
+		randomObjectDefinition.setObjectFields(
+			new ObjectField[] {
+				new ObjectField() {
+					{
+						businessType = BusinessType.TEXT;
+						DBType = ObjectField.DBType.create("String");
+						label = Collections.singletonMap("en_US", "Column");
+						localized = true;
+						name = StringUtil.randomId();
+					}
+				}
+			});
+		randomObjectDefinition.setStatus(
+			() -> new Status() {
+				{
+					code = WorkflowConstants.STATUS_APPROVED;
+					label = WorkflowConstants.getStatusLabel(
+						WorkflowConstants.STATUS_APPROVED);
+					label_i18n = _language.get(
+						LanguageResources.getResourceBundle(
+							LocaleUtil.getDefault()),
+						WorkflowConstants.getStatusLabel(
+							WorkflowConstants.STATUS_APPROVED));
+				}
+			});
+
+		postObjectDefinition = testPostObjectDefinition_addObjectDefinition(
+			randomObjectDefinition);
+
+		Assert.assertTrue(postObjectDefinition.getEnableLocalization());
+
+		ObjectField[] localizedObjectFields = ArrayUtil.filter(
+			postObjectDefinition.getObjectFields(), ObjectField::getLocalized);
+
+		Assert.assertEquals(
+			Arrays.toString(localizedObjectFields), 1,
+			localizedObjectFields.length);
+
+		postObjectDefinition.setObjectFields(
+			new ObjectField[] {
+				new ObjectField() {
+					{
+						businessType = BusinessType.TEXT;
+						DBType = ObjectField.DBType.create("String");
+						label = Collections.singletonMap("en_US", "Column");
+						localized = false;
+						name = StringUtil.randomId();
+					}
+				}
+			});
+
+		postObjectDefinition = objectDefinitionResource.putObjectDefinition(
+			postObjectDefinition.getId(), postObjectDefinition);
+
+		Assert.assertTrue(postObjectDefinition.getEnableLocalization());
+
+		localizedObjectFields = ArrayUtil.filter(
+			postObjectDefinition.getObjectFields(), ObjectField::getLocalized);
+
+		Assert.assertEquals(
+			Arrays.toString(localizedObjectFields), 0,
+			localizedObjectFields.length);
+
+		postObjectDefinition.setObjectFields(
+			new ObjectField[] {
+				new ObjectField() {
+					{
+						businessType = BusinessType.TEXT;
+						DBType = ObjectField.DBType.create("String");
+						label = Collections.singletonMap("en_US", "Column");
+						localized = true;
+						name = StringUtil.randomId();
+					}
+				}
+			});
+
+		localizedObjectFields = ArrayUtil.filter(
+			postObjectDefinition.getObjectFields(), ObjectField::getLocalized);
+
+		Assert.assertEquals(
+			Arrays.toString(localizedObjectFields), 1,
+			localizedObjectFields.length);
 
 		// Modifiable system object definition
 

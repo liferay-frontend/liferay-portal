@@ -176,7 +176,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Matija Petanjek
  */
-@FeatureFlags({"LPS-135430", "LPS-187142"})
+@FeatureFlags({"LPD-34594", "LPS-135430"})
 @RunWith(Arquillian.class)
 public class BatchEngineBrokerTest {
 
@@ -1162,7 +1162,7 @@ public class BatchEngineBrokerTest {
 
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
-				user.getUserId(), 0, null, false, true, false, false,
+				user.getUserId(), 0, null, false, false, true, false, false,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				name, null, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),

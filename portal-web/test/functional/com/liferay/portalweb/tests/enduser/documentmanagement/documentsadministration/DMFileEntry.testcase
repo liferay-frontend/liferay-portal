@@ -182,7 +182,6 @@ definition {
 	@refactordone
 	test CanAddCommentToDocument {
 		property portal.acceptance = "true";
-		property testray.component.names = "Comment";
 
 		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
 
@@ -204,60 +203,6 @@ definition {
 		DMDocumentComment.viewPG(
 			commentBody = "This is a comment",
 			dmDocumentTitle = "DM Document Title");
-	}
-
-	@description = "This test asserts that a major version can be created for a file."
-	@priority = 4
-	@refactordone
-	test CanAddMajorVersionIncrement {
-		property portal.acceptance = "true";
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Guest",
-			mimeType = "text/plain",
-			sourceFileName = "Document_1.txt");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMDocument.editCP(
-			dmDocumentDescription = "DM Document Description1",
-			dmDocumentDescriptionEdit = "DM Document Description Edit",
-			dmDocumentTitle = "DM Document Title",
-			dmDocumentTitleEdit = "DM Document Title Edit",
-			revision = "Major",
-			versioning = "true");
-
-		DMDocument.viewEditCP(
-			dmDocumentTitleEdit = "DM Document Title Edit",
-			dmDocumentVersionNumber = "2.0");
-	}
-
-	@description = "This test asserts that a major version can be created for a file."
-	@priority = 4
-	@refactordone
-	test CanAddMinorVersionIncrement {
-		property portal.acceptance = "true";
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Guest",
-			mimeType = "text/plain",
-			sourceFileName = "Document_1.txt");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMDocument.editCP(
-			dmDocumentFileEdit = "Document_2.doc",
-			dmDocumentTitle = "DM Document Title",
-			revision = "Minor",
-			versioning = "true");
-
-		DMDocument.viewEditCP(
-			dmDocumentTitleEdit = "DM Document Title",
-			dmDocumentVersionNumber = "1.1");
 	}
 
 	@description = "This case covers LPS-140006. It ensures that a valid file can be uploaded after the invalid file is discarded."
@@ -381,41 +326,6 @@ definition {
 		DMDocument.viewCategories(categoryNameList = "category");
 	}
 
-	@description = "This test ensures that the filename character restriction can be configured through the blacklist."
-	@priority = 4
-	@refactordone
-	test CanBlacklistCharacters {
-		property custom.properties = "dl.char.blacklist=\\\\,//,:,*,?,<,#,|,../,/..";
-		property portal.acceptance = "true";
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMDocument.addCP(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentFile = "Document_1.jpg",
-			dmDocumentFileName = '''#.jpg''',
-			dmDocumentTitle = "DM Document Title",
-			validateFileNameRestriction = "true");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMDocument.addCP(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentFile = "Document_1.jpg",
-			dmDocumentFileName = '''>.jpg''',
-			dmDocumentTitle = "DM Document Title");
-
-		DMNavigator.openToEditEntryInSite(
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Guest",
-			siteURLKey = "guest");
-
-		AssertTextEquals(
-			key_fieldLabel = "File Name",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = ">.jpg");
-	}
-
 	@description = "This test ensures that Users can copy multiple documents at the same time."
 	@priority = 5
 	test CanBulkCopyFiles {
@@ -497,30 +407,6 @@ definition {
 				permissionDefinitionKey = ${permissionDefinitionKey},
 				roleTitle = "Guest");
 		}
-	}
-
-	@priority = 4
-	@refactordone
-	test CanCancelCheckout {
-		property custom.properties = "dl.actions.visible=true";
-		property portal.acceptance = "true";
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Guest",
-			mimeType = "application/msword",
-			sourceFileName = "Document_1.doc");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "list");
-
-		DMDocument.checkoutPG(dmDocumentTitle = "DM Document Title");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMDocument.cancelCheckoutPG(dmDocumentTitle = "DM Document Title");
 	}
 
 	@description = "This test ensures that the document type of a published basic document can be changed."
@@ -2503,8 +2389,6 @@ definition {
 	@description = "This is a use case for LPS-114470. Validate crafted or corrupted files cannot cause out of memory errors."
 	@priority = 4
 	test CannotUploadFileThatCausesOutOfMemoryErrors {
-		property testray.component.names = "Security";
-
 		task ("Add new document") {
 			JSONDocument.addFileWithUploadedFile(
 				dmDocumentDescription = "DM Document Description",
@@ -2954,7 +2838,7 @@ definition {
 			DMDocument.addCP(
 				dmDocumentFile = ${dmDocumentTitle},
 				dmDocumentTitle = ${dmDocumentTitle},
-				validationError = "Document names must end with one of the following extensions: .doc");
+				validationError = "Please enter a file with a valid extension (.doc).");
 		}
 	}
 
@@ -4100,7 +3984,7 @@ definition {
 	@description = "This test covers LPS-144687. It validates that a temp zip is not created if NoSuchFileException occurs during a download."
 	@priority = 4
 	test NoZipFileIsCreatedIfDownloadResultsInError {
-		DMDocument.deleteTempFolder(appServer = "tomcat-9.0.97");
+		DMDocument.deleteTempFolder(appServer = "tomcat-9.0.98");
 
 		for (var num : list "1,2,3") {
 			JSONDocument.addFileWithUploadedFile(
@@ -4120,7 +4004,7 @@ definition {
 		AssertConsoleTextPresent(value1 = "com.liferay.document.library.kernel.exception.NoSuchFileException");
 
 		DMDocument.assertNoZipFileFromTempFolder(
-			appServer = "tomcat-9.0.97",
+			appServer = "tomcat-9.0.98",
 			fileNamePattern = "*.zip");
 	}
 

@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.util.Http;
-import com.liferay.portal.test.rule.FeatureFlags;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,18 +28,66 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 /**
  * @author Mauricio Valdivia
  */
-@FeatureFlags("LPD-29367")
 @RunWith(Arquillian.class)
 public class ImportTaskResourceTest extends BaseTaskResourceTestCase {
 
 	@Test
 	public void testPostImportTask() throws Exception {
 
-		// With "permissions" and "createStrategy" INSERT
+		// With "batchRestrictFields" query parameter
 
 		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
-		JSONObject beforeImportJSONObject = JSONUtil.put(
+		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
+			objectDefinition, OBJECT_FIELD_NAME_TEXT, "TestObject");
+
+		JSONObject beforeImportJSONObject = _getJSONObject(
+			objectEntry.getExternalReferenceCode());
+
+		waitForFinish(
+			"COMPLETED", true,
+			HTTPTestUtil.invokeToJSONObject(
+				JSONUtil.putAll(
+					beforeImportJSONObject.put(
+						"permissions",
+						beforeImportJSONObject.getJSONArray(
+							"permissions"
+						).put(
+							JSONUtil.put(
+								"actionIds", JSONUtil.putAll("VIEW")
+							).put(
+								"roleName", role.getName()
+							)
+						))
+				).toString(),
+				StringBundler.concat(
+					"headless-batch-engine/v1.0/import-task",
+					"/com.liferay.object.rest.dto.v1_0.ObjectEntry",
+					"?batchRestrictFields=permissions,", OBJECT_FIELD_NAME_TEXT,
+					"&createStrategy=UPSERT&taskItemDelegateName=",
+					objectDefinition.getName()),
+				Http.Method.POST));
+
+		JSONAssert.assertEquals(
+			JSONUtil.put(
+				"permissions",
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"actionIds",
+						JSONUtil.putAll(
+							"DELETE", "PERMISSIONS", "UPDATE", "VIEW")
+					).put(
+						"roleName", "Owner"
+					))
+			).toString(),
+			_getJSONObject(
+				objectEntry.getExternalReferenceCode()
+			).toString(),
+			JSONCompareMode.LENIENT);
+
+		// With "permissions" and "createStrategy" INSERT
+
+		beforeImportJSONObject = JSONUtil.put(
 			OBJECT_FIELD_NAME_TEXT, RandomTestUtil.randomString()
 		).put(
 			"externalReferenceCode", RandomTestUtil.randomString()
@@ -144,55 +191,6 @@ public class ImportTaskResourceTest extends BaseTaskResourceTestCase {
 			).toString(),
 			_getJSONObject(
 				beforeImportJSONObject.getString("externalReferenceCode")
-			).toString(),
-			JSONCompareMode.LENIENT);
-
-		// With "restrictedFieldNames" query parameter
-
-		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
-			objectDefinition, OBJECT_FIELD_NAME_TEXT, "TestObject");
-
-		beforeImportJSONObject = _getJSONObject(
-			objectEntry.getExternalReferenceCode());
-
-		waitForFinish(
-			"COMPLETED", true,
-			HTTPTestUtil.invokeToJSONObject(
-				JSONUtil.putAll(
-					beforeImportJSONObject.put(
-						"permissions",
-						beforeImportJSONObject.getJSONArray(
-							"permissions"
-						).put(
-							JSONUtil.put(
-								"actionIds", JSONUtil.putAll("VIEW")
-							).put(
-								"roleName", role.getName()
-							)
-						))
-				).toString(),
-				StringBundler.concat(
-					"headless-batch-engine/v1.0/import-task",
-					"/com.liferay.object.rest.dto.v1_0.ObjectEntry",
-					"?taskItemDelegateName=", objectDefinition.getName(),
-					"&createStrategy=UPSERT&restrictedFieldNames=permissions,",
-					OBJECT_FIELD_NAME_TEXT),
-				Http.Method.POST));
-
-		JSONAssert.assertEquals(
-			JSONUtil.put(
-				"permissions",
-				JSONUtil.putAll(
-					JSONUtil.put(
-						"actionIds",
-						JSONUtil.putAll(
-							"DELETE", "PERMISSIONS", "UPDATE", "VIEW")
-					).put(
-						"roleName", "Owner"
-					))
-			).toString(),
-			_getJSONObject(
-				objectEntry.getExternalReferenceCode()
 			).toString(),
 			JSONCompareMode.LENIENT);
 
@@ -358,7 +356,7 @@ public class ImportTaskResourceTest extends BaseTaskResourceTestCase {
 			).toString(),
 			JSONCompareMode.LENIENT);
 
-		// Without "restrictedFieldNames" query parameter
+		// Without "batchRestrictFields" query parameter
 
 		objectEntry = ObjectEntryTestUtil.addObjectEntry(
 			objectDefinition, OBJECT_FIELD_NAME_TEXT, "TestObject");
@@ -385,8 +383,8 @@ public class ImportTaskResourceTest extends BaseTaskResourceTestCase {
 				StringBundler.concat(
 					"headless-batch-engine/v1.0/import-task",
 					"/com.liferay.object.rest.dto.v1_0.ObjectEntry",
-					"?taskItemDelegateName=", objectDefinition.getName(),
-					"&createStrategy=UPSERT"),
+					"?createStrategy=UPSERT&taskItemDelegateName=",
+					objectDefinition.getName()),
 				Http.Method.POST));
 
 		JSONAssert.assertEquals(

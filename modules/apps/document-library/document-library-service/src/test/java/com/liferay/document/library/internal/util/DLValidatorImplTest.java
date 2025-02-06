@@ -6,9 +6,12 @@
 package com.liferay.document.library.internal.util;
 
 import com.liferay.document.library.configuration.DLConfiguration;
+import com.liferay.document.library.configuration.DLFileEntryMimeTypeConfiguration;
 import com.liferay.document.library.internal.configuration.helper.DLSizeLimitConfigurationHelper;
 import com.liferay.document.library.kernel.exception.FileExtensionException;
+import com.liferay.document.library.kernel.exception.FileMimeTypeException;
 import com.liferay.document.library.kernel.util.DLValidator;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -35,10 +38,9 @@ public class DLValidatorImplTest {
 	public void setUp() {
 		DLValidatorImpl dlValidatorImpl = new DLValidatorImpl();
 
+		dlValidatorImpl.setConfigurationProvider(_configurationProvider);
 		dlValidatorImpl.setDLConfiguration(_dlConfiguration);
-
 		dlValidatorImpl.setGroupLocalService(_groupLocalService);
-
 		dlValidatorImpl.setUploadServletRequestConfigurationHelper(
 			_uploadServletRequestConfigurationProvider);
 
@@ -153,6 +155,13 @@ public class DLValidatorImplTest {
 				RandomTestUtil.randomInt(), RandomTestUtil.randomString()));
 	}
 
+	@Test(expected = FileMimeTypeException.class)
+	public void testValidateFileMimeType() throws Exception {
+		_validateFileMimeType(new String[] {"*"}, "text/plain");
+		_validateFileMimeType(new String[] {"text/plain"}, "application/pdf");
+		_validateFileMimeType(new String[] {"text/plain"}, "text/plain");
+	}
+
 	@Test
 	public void testValidLowerCaseExtension() throws Exception {
 		_validateFileExtension("test.gif");
@@ -186,6 +195,31 @@ public class DLValidatorImplTest {
 		_dlValidator.validateFileExtension(fileName);
 	}
 
+	private void _validateFileMimeType(
+			String[] allowedMimeTypes, String mimeType)
+		throws Exception {
+
+		DLFileEntryMimeTypeConfiguration dlFileEntryMimeTypeConfiguration =
+			Mockito.mock(DLFileEntryMimeTypeConfiguration.class);
+
+		Mockito.when(
+			_configurationProvider.getCompanyConfiguration(
+				DLFileEntryMimeTypeConfiguration.class, 123456L)
+		).thenReturn(
+			dlFileEntryMimeTypeConfiguration
+		);
+
+		Mockito.when(
+			dlFileEntryMimeTypeConfiguration.fileMimeTypes()
+		).thenReturn(
+			allowedMimeTypes
+		);
+
+		_dlValidator.validateFileMimeType(123456L, mimeType);
+	}
+
+	private final ConfigurationProvider _configurationProvider = Mockito.mock(
+		ConfigurationProvider.class);
 	private final DLConfiguration _dlConfiguration = Mockito.mock(
 		DLConfiguration.class);
 	private final DLSizeLimitConfigurationHelper

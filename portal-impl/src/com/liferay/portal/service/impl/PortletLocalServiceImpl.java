@@ -15,6 +15,7 @@ import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.ConfigurationFactoryImpl;
+import com.liferay.portal.db.partition.util.DBPartitionUtil;
 import com.liferay.portal.kernel.application.type.ApplicationType;
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.cache.PortalCache;
@@ -24,6 +25,7 @@ import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.cluster.Clusterable;
 import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.configuration.ConfigurationFactoryUtil;
+import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.PortletIdException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -2927,7 +2929,7 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 		new ConcurrentHashMap<>();
 	private static volatile Map<String, String> _portletIdsByStrutsPath;
 	private static final Map<String, Portlet> _portletsMap =
-		new ConcurrentHashMap<>();
+		new ShardedPortletsMap();
 	private static final Map<Long, Map<String, Portlet>> _portletsMaps =
 		new ConcurrentHashMap<>();
 
@@ -2960,6 +2962,50 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 
 	private ServiceTracker<FriendlyURLMapper, String[]> _serviceTracker;
 	private ServiceTrackerList<Consumer<Long>> _serviceTrackerList;
+
+	private static class ShardedPortletsMap
+		extends ConcurrentHashMap<String, Portlet> {
+
+		@Override
+		public Portlet get(Object key) {
+			Portlet portlet = super.get(key);
+
+			if (!DBPartition.isPartitionEnabled() ||
+				((portlet != null) &&
+				 (portlet.getCompanyId() == CompanyConstants.SYSTEM))) {
+
+				return portlet;
+			}
+
+			return super.get(DBPartitionUtil.getPartitionKey(key));
+		}
+
+		@Override
+		public Portlet put(String key, Portlet value) {
+			if (!DBPartition.isPartitionEnabled() || (value == null) ||
+				(value.getCompanyId() == CompanyConstants.SYSTEM)) {
+
+				return super.put(key, value);
+			}
+
+			return super.put(DBPartitionUtil.getPartitionKey(key), value);
+		}
+
+		@Override
+		public Portlet remove(Object key) {
+			if (DBPartition.isPartitionEnabled()) {
+				Portlet portlet = super.remove(
+					DBPartitionUtil.getPartitionKey(key));
+
+				if (portlet != null) {
+					return portlet;
+				}
+			}
+
+			return super.remove(key);
+		}
+
+	}
 
 	private class FriendlyURLMapperServiceTrackerCustomizer
 		implements ServiceTrackerCustomizer<FriendlyURLMapper, String[]> {

@@ -229,13 +229,13 @@ public class CTServicePublisher<T extends CTModel<T>> {
 					primaryKey, tempCTCollectionId);
 			}
 
-			StringBundler sb = new StringBundler(4);
+			StringBundler sb = new StringBundler();
 
 			sb.append("delete from ");
 			sb.append(tableName);
 			sb.append(" where ctCollectionId = ");
 			sb.append(tempCTCollectionId);
-			sb.append(" and ");
+			sb.append(" and (");
 			sb.append(primaryKeyName);
 			sb.append(" in (");
 
@@ -261,6 +261,8 @@ public class CTServicePublisher<T extends CTModel<T>> {
 			}
 
 			sb.setStringAt(")", sb.index() - 1);
+
+			sb.append(")");
 
 			try (PreparedStatement preparedStatement =
 					connection.prepareStatement(sb.toString())) {
@@ -381,7 +383,7 @@ public class CTServicePublisher<T extends CTModel<T>> {
 			Map<Serializable, CTEntry> ctEntries, long ctCollectionId)
 		throws Exception {
 
-		StringBundler sb = new StringBundler((2 * ctEntries.size()) + 9);
+		StringBundler sb = new StringBundler();
 
 		sb.append("select ");
 		sb.append(primaryKeyName);
@@ -389,8 +391,7 @@ public class CTServicePublisher<T extends CTModel<T>> {
 		sb.append(tableName);
 		sb.append(" where ctCollectionId = ");
 		sb.append(ctCollectionId);
-		sb.append(" and ");
-		sb.append("(");
+		sb.append(" and (");
 		sb.append(primaryKeyName);
 		sb.append(" in (");
 
@@ -399,6 +400,7 @@ public class CTServicePublisher<T extends CTModel<T>> {
 		for (Serializable serializable : ctEntries.keySet()) {
 			if (i == _BATCH_SIZE) {
 				sb.setStringAt(")", sb.index() - 1);
+
 				sb.append(" or ");
 				sb.append(primaryKeyName);
 				sb.append(" in (");

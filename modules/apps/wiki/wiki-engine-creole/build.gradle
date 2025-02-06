@@ -1,24 +1,64 @@
-import com.liferay.gradle.util.FileUtil
+task buildCreoleLexer(type: Copy)
+task buildCreoleParser(type: Copy)
 
-import org.apache.tools.ant.filters.FixCrLfFilter
-
-apply plugin: "antlr"
-
-String parserDirName = "com/liferay/wiki/engine/creole/internal/parser/parser"
-List<String> startParameterTaskNames = gradle.startParameter.taskNames
-
-configurations {
-	compileInclude {
-		extendsFrom antlr
+buildCreoleLexer {
+	doFirst {
+		delete "src/main/java/com/liferay/wiki/engine/creole/internal/parser/parser/Creole10Lexer.java"
 	}
+
+	ext {
+		autoClean = false
+	}
+
+	filter {
+		line -> line.replaceAll(/\bthis.type\b/, "this.state.type")
+	}
+
+	from "src/main/antlr/com/liferay/wiki/engine/creole/internal/parser/parser/Creole10Lexer.java"
+	into "src/main/java/com/liferay/wiki/engine/creole/internal/parser/parser/Creole10Lexer.java"
+}
+
+buildCreoleParser {
+	doFirst {
+		delete "src/main/java/com/liferay/wiki/engine/creole/internal/parser/parser/Creole10Parser.java"
+	}
+
+	ext {
+		autoClean = false
+	}
+
+	filter {
+		line -> line.replaceAll(/\b_fsp\b/, "state._fsp")
+	}
+
+	filter {
+		line -> line.replaceAll(/\bbacktracking\b/, "state.backtracking")
+	}
+
+	filter {
+		line -> line.replaceAll(/\berrorRecovery\b/, "state.errorRecovery")
+	}
+
+	filter {
+		line -> line.replaceAll(/\bfailed\b/, "state.failed")
+	}
+
+	filter {
+		line -> line.replaceAll(/\bruleMemo\b/, "state.ruleMemo")
+	}
+
+	from "src/main/antlr/com/liferay/wiki/engine/creole/internal/parser/parser/Creole10Parser.java"
+	into "src/main/java/com/liferay/wiki/engine/creole/internal/parser/parser/Creole10Parser.java"
+}
+
+compileJava {
+	dependsOn buildCreoleLexer
+	dependsOn buildCreoleParser
 }
 
 dependencies {
-	antlr group: "org.antlr", name: "antlr", version: "3.0.1"
-
-	compileInclude group: "antlr", name: "antlr", version: "2.7.7"
-	compileInclude group: "org.antlr", name: "stringtemplate", version: "3.0"
-
+	compileInclude group: "org.antlr", name: "antlr-runtime", version: "3.5.3"
+	compileInclude group: "org.antlr", name: "stringtemplate", version: "3.2.1"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.util.taglib", version: "default"
@@ -31,74 +71,7 @@ dependencies {
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
-
 	testImplementation project(":apps:static:portal-configuration:portal-configuration-persistence-api")
-}
-
-generateGrammarSource {
-	setActions([])
-
-	File grammarFile = file("src/main/antlr/${parserDirName}/Creole10.g")
-
-	dependsOn cleanGenerateGrammarSource
-
-	doFirst {
-		delete fileTree("src/main/java/" + parserDirName) {
-			exclude "**/source_formatter.ignore"
-		}
-
-		delete fileTree("src/main/resources/" + parserDirName) {
-			exclude "**/source_formatter.ignore"
-		}
-
-		javaexec {
-			args "-o", FileUtil.relativize(generateGrammarSource.outputDirectory, grammarFile.parentFile)
-			args grammarFile.name
-
-			classpath = generateGrammarSource.antlrClasspath
-			main = "org.antlr.Tool"
-			maxHeapSize = generateGrammarSource.maxHeapSize
-			workingDir = grammarFile.parentFile
-		}
-	}
-
-	doLast {
-		copy {
-			eachFile {
-				if (name in ["Creole10Lexer.java", "Creole10Parser.java"]) {
-					String javaClass = name[0 .. -6]
-
-					filter {
-						String line ->
-
-						line.replace "public class ${javaClass}", """\
-@SuppressWarnings(\"all\")
-public class ${javaClass}"""
-					}
-				}
-			}
-
-			filter(FixCrLfFilter, javafiles: true, tab: FixCrLfFilter.AddAsisRemove.newInstance("add"))
-
-			from outputDirectory
-			include "**/*.java"
-			into "src/main/java/" + parserDirName
-		}
-
-		copy {
-			from outputDirectory
-			exclude "**/*.java"
-			into "src/main/resources/" + parserDirName
-		}
-	}
-
-	ext {
-		autoClean = false
-	}
-
-	enabled = startParameterTaskNames.contains("generateGrammarSource")
-	maxHeapSize = "1512m"
-	outputDirectory = new File(temporaryDir, "generated")
 }
 
 liferayOSGi {

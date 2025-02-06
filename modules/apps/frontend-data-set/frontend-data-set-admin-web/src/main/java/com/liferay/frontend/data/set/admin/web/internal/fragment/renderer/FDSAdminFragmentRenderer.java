@@ -13,8 +13,8 @@ import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
 import com.liferay.frontend.data.set.constants.FDSEntityFieldTypes;
-import com.liferay.frontend.data.set.resolver.FDSAPIURLResolver;
-import com.liferay.frontend.data.set.resolver.FDSAPIURLResolverRegistry;
+import com.liferay.frontend.data.set.url.FDSAPIURLResolver;
+import com.liferay.frontend.data.set.url.FDSAPIURLResolverRegistry;
 import com.liferay.list.type.model.ListTypeDefinition;
 import com.liferay.list.type.model.ListTypeEntry;
 import com.liferay.list.type.service.ListTypeDefinitionLocalService;
@@ -67,7 +67,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -185,35 +184,12 @@ public class FDSAdminFragmentRenderer implements FragmentRenderer {
 			if ((dataSetObjectEntry == null) &&
 				fragmentRendererContext.isEditMode()) {
 
-				printWriter.write("<div class=\"portlet-msg-info\">");
-				printWriter.write("<ul class=\"navbar-nav\">");
-				printWriter.write("<li class=\"nav-item\">");
 				printWriter.write(
-					_language.get(
-						httpServletRequest, "select-a-data-set-view"));
-				printWriter.write("</li><li class=\"nav-item\"><div id=\"");
-
-				String betaBadgeComponentId =
-					fragmentRendererContext.getFragmentElementId() + "Beta";
-
-				printWriter.write(betaBadgeComponentId);
-
-				printWriter.write("\">");
-
-				Writer writer = new CharArrayWriter();
-
-				ComponentDescriptor componentDescriptor =
-					new ComponentDescriptor(
-						"{FeatureIndicator} from frontend-js-components-web",
-						betaBadgeComponentId, null, true);
-
-				_reactRenderer.renderReact(
-					componentDescriptor, new HashMap<>(), httpServletRequest,
-					writer);
-
-				printWriter.write(writer.toString());
-
-				printWriter.write("</div></li></ul></div>");
+					StringBundler.concat(
+						"<div class=\"portlet-msg-info\">",
+						_language.get(
+							httpServletRequest, "select-a-data-set-view"),
+						"</div>"));
 			}
 
 			if (dataSetObjectEntry == null) {
@@ -750,41 +726,38 @@ public class FDSAdminFragmentRenderer implements FragmentRenderer {
 				String clientExtensionEntryERC = MapUtil.getString(
 					properties, "clientExtensionEntryERC");
 
-				if (Validator.isNotNull(clientExtensionEntryERC)) {
-					ThemeDisplay themeDisplay =
-						(ThemeDisplay)httpServletRequest.getAttribute(
-							WebKeys.THEME_DISPLAY);
-
-					FDSFilterCET fdsFilterCET =
-						(FDSFilterCET)_cetManager.getCET(
-							themeDisplay.getCompanyId(),
-							clientExtensionEntryERC);
-
-					if (fdsFilterCET == null) {
-						_log.error(
-							StringBundler.concat(
-								"No frontend data set filter client extension ",
-								"exists with the external reference code ",
-								clientExtensionEntryERC));
-
-						return null;
-					}
-
-					return JSONUtil.put(
-						"clientExtensionFilterURL", fdsFilterCET.getURL()
-					).put(
-						"entityFieldType", FDSEntityFieldTypes.STRING
-					).put(
-						"id", fieldName
-					).put(
-						"label",
-						_getLabelValue("label", "fieldName", properties)
-					).put(
-						"type", "clientExtension"
-					);
+				if (Validator.isNull(clientExtensionEntryERC)) {
+					return null;
 				}
 
-				return null;
+				ThemeDisplay themeDisplay =
+					(ThemeDisplay)httpServletRequest.getAttribute(
+						WebKeys.THEME_DISPLAY);
+
+				FDSFilterCET fdsFilterCET = (FDSFilterCET)_cetManager.getCET(
+					themeDisplay.getCompanyId(), clientExtensionEntryERC);
+
+				if (fdsFilterCET == null) {
+					_log.error(
+						StringBundler.concat(
+							"No frontend data set filter client extension ",
+							"exists with the external reference code ",
+							clientExtensionEntryERC));
+
+					return null;
+				}
+
+				return JSONUtil.put(
+					"clientExtensionFilterURL", fdsFilterCET.getURL()
+				).put(
+					"entityFieldType", FDSEntityFieldTypes.STRING
+				).put(
+					"id", fieldName
+				).put(
+					"label", _getLabelValue("label", "fieldName", properties)
+				).put(
+					"type", "clientExtension"
+				);
 			});
 	}
 

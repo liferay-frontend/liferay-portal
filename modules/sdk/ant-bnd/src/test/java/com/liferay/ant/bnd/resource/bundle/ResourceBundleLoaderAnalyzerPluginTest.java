@@ -65,15 +65,17 @@ public class ResourceBundleLoaderAnalyzerPluginTest {
 			Map.Entry<String, Attrs> entry = provides.get(0);
 
 			Assert.assertEquals(
-				ResourceBundleLoaderAnalyzerPlugin.LIFERAY_RESOURCE_BUNDLE,
+				ResourceBundleLoaderAnalyzerPlugin.
+					HEADER_NAME_LIFERAY_LANGUAGE_RESOURCES,
 				entry.getKey());
 
 			Attrs attrs = entry.getValue();
 
-			Assert.assertEquals(2, attrs.size());
+			Assert.assertEquals(3, attrs.size());
 
 			Assert.assertEquals(
 				"resources.test", attrs.get("bundle.symbolic.name"));
+			Assert.assertEquals("true", attrs.get("module.only"));
 			Assert.assertEquals(
 				"content.Language", attrs.get("resource.bundle.base.name"));
 		}
@@ -126,12 +128,13 @@ public class ResourceBundleLoaderAnalyzerPluginTest {
 			Map.Entry<String, Attrs> aggregateEntry = provides.get(0);
 
 			Assert.assertEquals(
-				ResourceBundleLoaderAnalyzerPlugin.LIFERAY_RESOURCE_BUNDLE,
+				ResourceBundleLoaderAnalyzerPlugin.
+					HEADER_NAME_LIFERAY_LANGUAGE_RESOURCES,
 				aggregateEntry.getKey());
 
 			Attrs aggregateEntryAttrs = aggregateEntry.getValue();
 
-			Assert.assertEquals(6, aggregateEntryAttrs.size());
+			Assert.assertEquals(7, aggregateEntryAttrs.size());
 
 			Assert.assertEquals("true", aggregateEntryAttrs.get("aggregate"));
 
@@ -150,6 +153,7 @@ public class ResourceBundleLoaderAnalyzerPluginTest {
 			Assert.assertEquals(
 				"resources.test",
 				aggregateEntryAttrs.get("bundle.symbolic.name"));
+			Assert.assertEquals("true", aggregateEntryAttrs.get("module.only"));
 			Assert.assertEquals(
 				"content.Language",
 				aggregateEntryAttrs.get("resource.bundle.base.name"));
@@ -161,18 +165,20 @@ public class ResourceBundleLoaderAnalyzerPluginTest {
 				1);
 
 			Assert.assertEquals(
-				ResourceBundleLoaderAnalyzerPlugin.LIFERAY_RESOURCE_BUNDLE +
-					"~",
+				ResourceBundleLoaderAnalyzerPlugin.
+					HEADER_NAME_LIFERAY_LANGUAGE_RESOURCES + "~",
 				liferayResourceBundleEntry.getKey());
 
 			Attrs liferayResourceBundleAttrs =
 				liferayResourceBundleEntry.getValue();
 
-			Assert.assertEquals(2, liferayResourceBundleAttrs.size());
+			Assert.assertEquals(3, liferayResourceBundleAttrs.size());
 
 			Assert.assertEquals(
 				"resources.test",
 				liferayResourceBundleAttrs.get("bundle.symbolic.name"));
+			Assert.assertEquals(
+				"true", liferayResourceBundleAttrs.get("module.only"));
 			Assert.assertEquals(
 				"content.Language",
 				liferayResourceBundleAttrs.get("resource.bundle.base.name"));
@@ -218,6 +224,97 @@ public class ResourceBundleLoaderAnalyzerPluginTest {
 	}
 
 	@Test
+	public void testLegacyAggregateResourceBundlesInstruction()
+		throws Exception {
+
+		ResourceBundleLoaderAnalyzerPlugin resourceBundleLoaderAnalyzerPlugin =
+			new ResourceBundleLoaderAnalyzerPlugin();
+
+		for (String portalVersion : _PORTAL_VERSIONS) {
+			InputStream inputStream =
+				ResourceBundleLoaderAnalyzerPluginTest.class.
+					getResourceAsStream("dependencies/resources.test1.jar");
+
+			try (Jar jar = new Jar("dot", inputStream);
+				Analyzer analyzer = new Analyzer()) {
+
+				analyzer.setBundleSymbolicName("resources.test");
+				analyzer.setJar(jar);
+				analyzer.setProperty(
+					"-liferay-aggregate-resource-bundles", "resources.lang");
+				analyzer.setProperty("portal.version", portalVersion);
+
+				Assert.assertTrue(
+					resourceBundleLoaderAnalyzerPlugin.analyzeJar(analyzer));
+
+				Parameters requireCapabilityHeaders = new Parameters(
+					analyzer.getProperty(Constants.REQUIRE_CAPABILITY));
+
+				Attrs requireAttrs = requireCapabilityHeaders.get(
+					ResourceBundleLoaderAnalyzerPlugin.
+						HEADER_NAME_LIFERAY_RESOURCE_BUNDLE);
+
+				Assert.assertNotNull(requireAttrs);
+
+				Parameters provideCapabilityHeaders = new Parameters(
+					analyzer.getProperty(Constants.PROVIDE_CAPABILITY));
+
+				Attrs provideAttrs = provideCapabilityHeaders.get(
+					ResourceBundleLoaderAnalyzerPlugin.
+						HEADER_NAME_LIFERAY_RESOURCE_BUNDLE);
+
+				Assert.assertNotNull(provideAttrs);
+
+				Assert.assertTrue(
+					provideAttrs.containsKey("bundle.symbolic.name"));
+				Assert.assertTrue(
+					provideAttrs.containsKey("resource.bundle.base.name"));
+
+				Assert.assertFalse(provideAttrs.containsKey("module.only"));
+			}
+		}
+	}
+
+	@Test
+	public void testLegacyProvideLiferayResourceBundleCapabilityAdded()
+		throws Exception {
+
+		ResourceBundleLoaderAnalyzerPlugin resourceBundleLoaderAnalyzerPlugin =
+			new ResourceBundleLoaderAnalyzerPlugin();
+
+		for (String portalVersion : _PORTAL_VERSIONS) {
+			InputStream inputStream =
+				ResourceBundleLoaderAnalyzerPluginTest.class.
+					getResourceAsStream("dependencies/resources.test1.jar");
+
+			try (Jar jar = new Jar("dot", inputStream);
+				Analyzer analyzer = new Analyzer()) {
+
+				analyzer.setJar(jar);
+				analyzer.setProperty("portal.version", portalVersion);
+
+				Assert.assertTrue(
+					resourceBundleLoaderAnalyzerPlugin.analyzeJar(analyzer));
+
+				Parameters provideCapabilityHeaders = new Parameters(
+					analyzer.getProperty(Constants.PROVIDE_CAPABILITY));
+
+				Attrs attrs = provideCapabilityHeaders.get(
+					ResourceBundleLoaderAnalyzerPlugin.
+						HEADER_NAME_LIFERAY_RESOURCE_BUNDLE);
+
+				Assert.assertNotNull(attrs);
+
+				Assert.assertTrue(attrs.containsKey("bundle.symbolic.name"));
+				Assert.assertTrue(
+					attrs.containsKey("resource.bundle.base.name"));
+
+				Assert.assertFalse(attrs.containsKey("module.only"));
+			}
+		}
+	}
+
+	@Test
 	public void testProvideLiferayResourceBundleCapabilityAdded()
 		throws Exception {
 
@@ -240,11 +337,13 @@ public class ResourceBundleLoaderAnalyzerPluginTest {
 				analyzer.getProperty(Constants.PROVIDE_CAPABILITY));
 
 			Attrs attrs = provideCapabilityHeaders.get(
-				ResourceBundleLoaderAnalyzerPlugin.LIFERAY_RESOURCE_BUNDLE);
+				ResourceBundleLoaderAnalyzerPlugin.
+					HEADER_NAME_LIFERAY_LANGUAGE_RESOURCES);
 
 			Assert.assertNotNull(attrs);
 
 			Assert.assertTrue(attrs.containsKey("bundle.symbolic.name"));
+			Assert.assertTrue(attrs.containsKey("module.only"));
 			Assert.assertTrue(attrs.containsKey("resource.bundle.base.name"));
 		}
 	}
@@ -272,10 +371,15 @@ public class ResourceBundleLoaderAnalyzerPluginTest {
 				analyzer.getProperty(Constants.PROVIDE_CAPABILITY));
 
 			Attrs attrs = provideCapabilityHeaders.get(
-				ResourceBundleLoaderAnalyzerPlugin.LIFERAY_RESOURCE_BUNDLE);
+				ResourceBundleLoaderAnalyzerPlugin.
+					HEADER_NAME_LIFERAY_LANGUAGE_RESOURCES);
 
 			Assert.assertNull(attrs);
 		}
 	}
+
+	private static final String[] _PORTAL_VERSIONS = {
+		"7.3.x", "7.2.x", "7.1.x", "7.0.x"
+	};
 
 }

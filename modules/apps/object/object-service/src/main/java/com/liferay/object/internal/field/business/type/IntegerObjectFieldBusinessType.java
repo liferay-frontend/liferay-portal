@@ -70,11 +70,14 @@ public class IntegerObjectFieldBusinessType
 
 	@Override
 	public Map<String, Object> getProperties(
-		ObjectField objectField,
-		ObjectFieldRenderingContext objectFieldRenderingContext) {
+			ObjectField objectField,
+			ObjectFieldRenderingContext objectFieldRenderingContext)
+		throws PortalException {
 
 		return HashMapBuilder.<String, Object>put(
 			FieldConstants.DATA_TYPE, FieldConstants.INTEGER
+		).putAll(
+			super.getProperties(objectField, objectFieldRenderingContext)
 		).build();
 	}
 
@@ -87,6 +90,11 @@ public class IntegerObjectFieldBusinessType
 	public Set<String> getUnmodifiableObjectFieldSettingsNames() {
 		return SetUtil.fromArray(
 			ObjectFieldSettingConstants.NAME_UNIQUE_VALUES);
+	}
+
+	@Override
+	public boolean isLocalizable() {
+		return true;
 	}
 
 	@Override

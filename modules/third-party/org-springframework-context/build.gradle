@@ -21,6 +21,5 @@ patch {
 	}
 
 	fileNames "org/springframework/validation/DataBinder.java"
-
 	originalLibModuleName = "spring-context"
 }

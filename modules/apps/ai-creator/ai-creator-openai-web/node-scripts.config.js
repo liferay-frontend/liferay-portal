@@ -4,6 +4,5 @@
  */
 
 module.exports = {
-	main: 'src/main/resources/META-INF/resources/ai_creator_modal/index.ts',
-	npmscripts: {},
+	main: './src/main/resources/META-INF/resources/ai_creator_modal/index.ts',
 };

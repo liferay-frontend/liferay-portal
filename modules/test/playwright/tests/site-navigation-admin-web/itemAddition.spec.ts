@@ -16,12 +16,78 @@ import {navigationMenusPagesTest} from './fixtures/navigationMenusPagesTest';
 const test = mergeTests(
 	apiHelpersTest,
 	featureFlagsTest({
-		'LPS-178052': true,
+		'LPS-178052': {enabled: true},
 	}),
 	isolatedSiteTest,
 	loginTest(),
 	navigationMenusPagesTest,
 	pageSelectorPagesTest
+);
+
+test(
+	'Drag and drop navigation menu item allows for non-nested placement',
+	{
+		tag: '@LPS-125802',
+	},
+	async ({apiHelpers, navigationMenusPage, page, site}) => {
+		for (let i = 1; i <= 3; i++) {
+			const parentPage = await apiHelpers.headlessDelivery.createSitePage(
+				{
+					siteId: site.id,
+					title: `Parent ${i}`,
+				}
+			);
+
+			await apiHelpers.headlessDelivery.createSitePage({
+				parentSitePage: {
+					friendlyUrlPath: parentPage.friendlyUrlPath,
+				},
+				siteId: site.id,
+				title: `Child ${i}`,
+			});
+		}
+
+		await navigationMenusPage.goto(site.friendlyUrlPath);
+
+		await navigationMenusPage.createNavigationMenu(getRandomString());
+
+		await navigationMenusPage.openAddPageModal();
+
+		for (let i = 1; i <= 3; i++) {
+			await page
+				.frameLocator('iframe[title="Select Pages"]')
+				.getByText(`Parent ${i}`)
+				.click();
+
+			await page
+				.frameLocator('iframe[title="Select Pages"]')
+				.getByText(`Child ${i}`)
+				.click();
+		}
+
+		await page.getByRole('button', {name: 'Select'}).click();
+
+		const source = page.getByRole('button', {name: 'Move Parent 3'});
+		const target = page
+			.locator('.site_navigation_menu_editor_MenuItem')
+			.nth(1);
+
+		const targetRect = await target.evaluate((element) =>
+			element.getBoundingClientRect()
+		);
+
+		await source.hover();
+		await page.mouse.down();
+		await page.mouse.move(targetRect.x, targetRect.y + 1);
+		await page.mouse.up();
+
+		await page.waitForTimeout(300);
+
+		const cardTitles = await page.locator('.card-title').allTextContents();
+
+		await expect(cardTitles[2]).toBe('Parent 3');
+		await expect(cardTitles[3]).toBe('Child 3');
+	}
 );
 
 test.describe('Add pages to Navigation Menu', () => {

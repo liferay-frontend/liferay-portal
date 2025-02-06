@@ -50,7 +50,7 @@ public class BndBundleUtil {
 
 		File buildDir = new File(System.getProperty("user.dir"));
 
-		try (Workspace workspace = new Workspace(buildDir);
+		try (Workspace workspace = Workspace.createDefaultWorkspace();
 			Project project = new Project(workspace, buildDir);
 			ProjectBuilder projectBuilder = _createProjectBuilder(
 				project, filteredMethodNamesMap, hostAddress, port, passCode);
@@ -129,6 +129,7 @@ public class BndBundleUtil {
 			Headers.TEST_BRIDGE_REPORT_SERVER_PORT, String.valueOf(port));
 		project.setProperty(
 			Headers.TEST_BRIDGE_PASS_CODE, String.valueOf(passCode));
+		project.setProperty("-contract", "!JavaPortlet,!JavaServlet");
 		project.setProperty(
 			"Bundle-Activator", TestBundleActivator.class.getCanonicalName());
 

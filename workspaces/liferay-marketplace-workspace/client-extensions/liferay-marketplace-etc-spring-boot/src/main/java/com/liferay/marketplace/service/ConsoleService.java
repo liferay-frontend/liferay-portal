@@ -5,10 +5,12 @@
 
 package com.liferay.marketplace.service;
 
-import com.liferay.client.extension.util.spring.boot.service.BaseService;
+import com.liferay.client.extension.util.spring.boot3.service.BaseService;
 import com.liferay.petra.string.StringBundler;
 
 import java.time.Duration;
+
+import java.util.Objects;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -102,11 +104,16 @@ public class ConsoleService extends BaseService {
 			).toString());
 	}
 
-	public void setUpProject(String dxpVirtualInstanceId, long orderId)
+	public void setUpProject(
+			String[] emailAddresses, String dxpVirtualInstanceId, long orderId)
 		throws Exception {
 
 		JSONObject jsonObject = _postProject(
 			_consoleProjectPrefix + "-ext" + orderId);
+
+		for (String emailAddress : emailAddresses) {
+			_inviteProject(emailAddress, jsonObject.getString("projectId"));
+		}
 
 		_inviteProject(
 			_trialAdminEmailAddress, jsonObject.getString("projectId"));
@@ -147,6 +154,10 @@ public class ConsoleService extends BaseService {
 
 	private void _inviteProject(String emailAddress, String projectId)
 		throws Exception {
+
+		if (Objects.equals(emailAddress, _consoleAuthEmailAddress)) {
+			return;
+		}
 
 		post(
 			getAuthorization(),

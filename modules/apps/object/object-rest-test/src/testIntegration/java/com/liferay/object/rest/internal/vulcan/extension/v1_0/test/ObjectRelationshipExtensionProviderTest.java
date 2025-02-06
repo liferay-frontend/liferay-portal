@@ -211,7 +211,7 @@ public class ObjectRelationshipExtensionProviderTest {
 		String nestedFieldName) {
 
 		return new NestedFieldsContext(
-			1, Collections.singletonList(nestedFieldName), null, null, null,
+			1, null, Collections.singletonList(nestedFieldName), null, null,
 			null);
 	}
 
@@ -221,7 +221,8 @@ public class ObjectRelationshipExtensionProviderTest {
 
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
-				TestPropsValues.getUserId(), 0, null, false, true, false, false,
+				TestPropsValues.getUserId(), 0, null, false, false, true, false,
+				false,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				ObjectDefinitionTestUtil.getRandomName(), null, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),

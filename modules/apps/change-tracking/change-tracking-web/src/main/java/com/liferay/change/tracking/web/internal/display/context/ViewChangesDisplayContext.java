@@ -35,6 +35,7 @@ import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.data.set.model.FDSSortItemBuilder;
 import com.liferay.frontend.data.set.model.FDSSortItemList;
 import com.liferay.frontend.data.set.model.FDSSortItemListBuilder;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemListBuilder;
 import com.liferay.knowledge.base.model.KBArticleModel;
@@ -49,6 +50,7 @@ import com.liferay.portal.kernel.change.tracking.sql.CTSQLModeThreadLocal;
 import com.liferay.portal.kernel.dao.orm.ORMException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -108,6 +110,7 @@ import java.io.Serializable;
 
 import java.text.Format;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -225,6 +228,51 @@ public class ViewChangesDisplayContext {
 		}
 
 		return portletURL.toString();
+	}
+
+	public List<DropdownItem> getBulkActionDropdownItems() {
+		List<DropdownItem> bulkActionDropdownItems = new ArrayList<>();
+
+		if (FeatureFlagManagerUtil.isEnabled("LPD-20183")) {
+			if ((_ctCollection.getStatus() == WorkflowConstants.STATUS_DRAFT) ||
+				(_ctCollection.getStatus() ==
+					WorkflowConstants.STATUS_EXPIRED)) {
+
+				bulkActionDropdownItems.add(
+					new FDSActionDropdownItem(
+						PortletURLBuilder.createRenderURL(
+							_renderResponse
+						).setMVCRenderCommandName(
+							"/change_tracking/view_move_changes"
+						).setRedirect(
+							_themeDisplay.getURLCurrent()
+						).setParameter(
+							"ctCollectionId", _ctCollection.getCtCollectionId()
+						).buildString(),
+						"move-folder", "move-changes", "post",
+						_language.get(_httpServletRequest, "move-changes"),
+						"move-changes", null));
+			}
+
+			if (_ctCollection.getStatus() == WorkflowConstants.STATUS_DRAFT) {
+				bulkActionDropdownItems.add(
+					new FDSActionDropdownItem(
+						PortletURLBuilder.createRenderURL(
+							_renderResponse
+						).setMVCRenderCommandName(
+							"/change_tracking/view_discard"
+						).setRedirect(
+							_themeDisplay.getURLCurrent()
+						).setParameter(
+							"ctCollectionId", _ctCollection.getCtCollectionId()
+						).buildString(),
+						"trash", "view-discard", "delete",
+						_language.get(_httpServletRequest, "discard"),
+						"view-discard", null));
+			}
+		}
+
+		return bulkActionDropdownItems;
 	}
 
 	public long getCtCollectionId() {
@@ -404,7 +452,8 @@ public class ViewChangesDisplayContext {
 		return HashMapBuilder.<String, Object>put(
 			"itemsOverview", itemsOverviewJSONArray
 		).put(
-			"publicationScore", _ctCollection.getScore()
+			"publicationSizeClassification",
+			_ctCollection.getScoreSizeClassification()
 		).build();
 	}
 

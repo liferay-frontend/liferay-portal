@@ -24,6 +24,23 @@ const DefaultComponent = props => (
 );
 
 describe('IndividualAttributes', () => {
+	let OriginalDate;
+
+	beforeAll(() => {
+		OriginalDate = global.Date;
+
+		global.Date = class extends Date {
+			constructor() {
+				super();
+				return new OriginalDate(0);
+			}
+		};
+	});
+
+	afterAll(() => {
+		global.Date = OriginalDate;
+	});
+
 	afterEach(cleanup);
 
 	it('should render', async () => {

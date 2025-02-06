@@ -16,7 +16,7 @@ import React, {
 	useState,
 } from 'react';
 
-import '../../css/main.scss';
+import '../../css/ckeditor4/main.scss';
 
 const BASEPATH = '/o/frontend-editor-ckeditor-web/ckeditor/';
 const CONTEXT_URL = Liferay.ThemeDisplay.getPathContext();
@@ -102,6 +102,10 @@ const BaseEditor = forwardRef(
 				}
 
 				data = data.replace(/(\u200B){7}/, '');
+			}
+
+			if (editor.config?.extraPlugins.search(/bbcode|creole/) > -1) {
+				return data;
 			}
 
 			return createElementFromHTML(data);

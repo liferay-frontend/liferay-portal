@@ -13,9 +13,12 @@ import com.liferay.commerce.media.CommerceMediaResolver;
 import com.liferay.commerce.price.list.constants.CommercePriceListConstants;
 import com.liferay.commerce.price.list.model.CommercePriceEntry;
 import com.liferay.commerce.price.list.service.CommercePriceEntryLocalService;
+import com.liferay.commerce.product.constants.CPConfigurationEntrySettingConstants;
 import com.liferay.commerce.product.constants.CPField;
 import com.liferay.commerce.product.links.CPDefinitionLinkTypeRegistry;
 import com.liferay.commerce.product.model.CPAttachmentFileEntry;
+import com.liferay.commerce.product.model.CPConfigurationEntry;
+import com.liferay.commerce.product.model.CPConfigurationEntrySetting;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionLink;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
@@ -28,6 +31,7 @@ import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CPConfigurationEntryLocalService;
+import com.liferay.commerce.product.service.CPConfigurationEntrySettingLocalService;
 import com.liferay.commerce.product.service.CPConfigurationListLocalService;
 import com.liferay.commerce.product.service.CPDefinitionLinkLocalService;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
@@ -38,6 +42,7 @@ import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
@@ -594,32 +599,47 @@ public class CPDefinitionModelDocumentContributor
 	}
 
 	private String[] _getCPConfigurationListIds(long cpDefinitionId) {
-		return TransformUtil.transformToArray(
-			_cpConfigurationEntryLocalService.getCPConfigurationEntries(
-				_classNameLocalService.getClassNameId(CPDefinition.class),
-				cpDefinitionId, true),
-			cpConfigurationEntry -> String.valueOf(
-				cpConfigurationEntry.getCPConfigurationListId()),
-			String.class);
+		List<String> cpConfigurationListIds = new ArrayList<>();
+
+		for (CPConfigurationEntry cpConfigurationEntry :
+				_cpConfigurationEntryLocalService.getCPConfigurationEntries(
+					_classNameLocalService.getClassNameId(CPDefinition.class),
+					cpDefinitionId, true)) {
+
+			cpConfigurationListIds.add(
+				String.valueOf(
+					cpConfigurationEntry.getCPConfigurationListId()));
+
+			CPConfigurationEntrySetting cpConfigurationEntrySetting =
+				_cpConfigurationEntrySettingLocalService.
+					fetchCPConfigurationEntrySetting(
+						cpConfigurationEntry.getCPConfigurationEntryId(),
+						CPConfigurationEntrySettingConstants.TYPE_INDEX_IDS);
+
+			if (cpConfigurationEntrySetting == null) {
+				continue;
+			}
+
+			cpConfigurationListIds.addAll(
+				StringUtil.split(cpConfigurationEntrySetting.getValue()));
+		}
+
+		return cpConfigurationListIds.toArray(new String[0]);
 	}
 
 	private List<CPOption> _getCPOptions(
 			List<CPDefinitionOptionRel> cpDefinitionOptionRels)
 		throws Exception {
 
-		List<CPOption> cpOptions = new ArrayList<>();
+		return TransformUtil.transform(
+			cpDefinitionOptionRels,
+			cpDefinitionOptionRel -> {
+				if (!cpDefinitionOptionRel.isFacetable()) {
+					return null;
+				}
 
-		for (CPDefinitionOptionRel cpDefinitionOptionRel :
-				cpDefinitionOptionRels) {
-
-			if (!cpDefinitionOptionRel.isFacetable()) {
-				continue;
-			}
-
-			cpOptions.add(cpDefinitionOptionRel.getCPOption());
-		}
-
-		return cpOptions;
+				return cpDefinitionOptionRel.getCPOption();
+			});
 	}
 
 	private String _getCPSpecificationOptionKey(
@@ -634,25 +654,19 @@ public class CPDefinitionModelDocumentContributor
 					cpDefinitionSpecificationOptionValues)
 		throws Exception {
 
-		List<CPDefinitionSpecificationOptionValue>
-			filteredCPDefinitionSpecificationOptionValues = new ArrayList<>();
+		return TransformUtil.transform(
+			cpDefinitionSpecificationOptionValues,
+			cpDefinitionSpecificationOptionValue -> {
+				CPSpecificationOption cpSpecificationOption =
+					cpDefinitionSpecificationOptionValue.
+						getCPSpecificationOption();
 
-		for (CPDefinitionSpecificationOptionValue
-				cpDefinitionSpecificationOptionValue :
-					cpDefinitionSpecificationOptionValues) {
+				if (!cpSpecificationOption.isFacetable()) {
+					return null;
+				}
 
-			CPSpecificationOption cpSpecificationOption =
-				cpDefinitionSpecificationOptionValue.getCPSpecificationOption();
-
-			if (!cpSpecificationOption.isFacetable()) {
-				continue;
-			}
-
-			filteredCPDefinitionSpecificationOptionValues.add(
-				cpDefinitionSpecificationOptionValue);
-		}
-
-		return filteredCPDefinitionSpecificationOptionValues;
+				return cpDefinitionSpecificationOptionValue;
+			});
 	}
 
 	private String[] _getReverseCPDefinitionIds(long cProductId, String type) {
@@ -708,6 +722,10 @@ public class CPDefinitionModelDocumentContributor
 
 	@Reference
 	private CPConfigurationEntryLocalService _cpConfigurationEntryLocalService;
+
+	@Reference
+	private CPConfigurationEntrySettingLocalService
+		_cpConfigurationEntrySettingLocalService;
 
 	@Reference
 	private CPConfigurationListLocalService _cpConfigurationListLocalService;

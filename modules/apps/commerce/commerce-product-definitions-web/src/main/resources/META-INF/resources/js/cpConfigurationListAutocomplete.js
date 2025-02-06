@@ -41,7 +41,15 @@ export default function ({
 		required: true,
 	});
 
+	let formSubmitted = false;
+
 	Liferay.provide(window, `${namespace}submitForm`, () => {
+		if (formSubmitted) {
+			return;
+		}
+
+		formSubmitted = true;
+
 		const formattedData = {};
 
 		formattedData.catalogId = document.querySelector(
@@ -64,6 +72,7 @@ export default function ({
 					{
 						cpConfigurationListId: productConfigurationList.id,
 						p_p_state: windowState,
+						screenNavigationCategoryKey: 'details',
 					}
 				);
 
@@ -80,6 +89,7 @@ export default function ({
 						type: 'danger',
 					});
 				}
+				formSubmitted = false;
 			});
 	});
 }

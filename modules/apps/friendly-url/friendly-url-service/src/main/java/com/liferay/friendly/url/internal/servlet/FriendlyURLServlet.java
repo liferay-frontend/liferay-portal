@@ -835,15 +835,17 @@ public class FriendlyURLServlet extends HttpServlet {
 				group.getGroupId(), _private, friendlyURL);
 
 		if (layoutFriendlyURL == null) {
-			if (group.isUser()) {
-				List<Layout> layouts = layoutLocalService.getLayouts(
-					group.getGroupId(), _private,
-					LayoutConstants.DEFAULT_PARENT_LAYOUT_ID);
+			if (!group.isUser()) {
+				return null;
+			}
 
-				for (Layout layout : layouts) {
-					if (layout.matches(httpServletRequest, friendlyURL)) {
-						return layout;
-					}
+			List<Layout> layouts = layoutLocalService.getLayouts(
+				group.getGroupId(), _private,
+				LayoutConstants.DEFAULT_PARENT_LAYOUT_ID);
+
+			for (Layout layout : layouts) {
+				if (layout.matches(httpServletRequest, friendlyURL)) {
+					return layout;
 				}
 			}
 

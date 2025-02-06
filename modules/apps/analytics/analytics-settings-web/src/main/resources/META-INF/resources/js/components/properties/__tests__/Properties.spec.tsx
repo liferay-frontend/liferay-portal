@@ -108,7 +108,7 @@ describe('Properties', () => {
 
 		expect(document.body).not.toHaveClass('modal-open');
 
-		fireEvent.click(screen.getAllByRole(/assign-button/i)[0]);
+		fireEvent.click(screen.getAllByRole('assign-button')[0]);
 
 		expect(document.body).toHaveClass('modal-open');
 	});

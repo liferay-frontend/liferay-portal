@@ -5,11 +5,7 @@
 
 import {Page, test} from '@playwright/test';
 
-import createTempFile, {
-	TempFileMissingError,
-	readTempFile,
-} from '../utils/createTempFile';
-import performLogin from '../utils/performLogin';
+import {performLoginViaApi} from '../utils/performLogin';
 
 export interface BackendPage {
 	backendPage: Page;
@@ -27,24 +23,8 @@ const backendPageTest = test.extend<BackendPage>({
 
 		const backendContext = await browser.newContext();
 		const backendPage = await backendContext.newPage();
-		const tempFile = `backendPageTest.json`;
 
-		try {
-			const {cookies} = JSON.parse(readTempFile(tempFile));
-
-			backendContext.addCookies(cookies);
-
-			await backendPage.goto('/');
-		}
-		catch (error) {
-			if (!(error instanceof TempFileMissingError)) {
-				throw error;
-			}
-
-			const cookies = await performLogin(backendPage, 'test');
-
-			createTempFile(tempFile, JSON.stringify({cookies}));
-		}
+		await performLoginViaApi(backendPage, 'test');
 
 		try {
 			await use(backendPage);

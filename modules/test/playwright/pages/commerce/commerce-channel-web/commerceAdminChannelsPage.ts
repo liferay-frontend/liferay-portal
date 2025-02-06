@@ -23,6 +23,7 @@ export class CommerceAdminChannelsPage {
 	readonly healthCheckAction: (actionName: string) => Locator;
 	readonly headerActions: Locator;
 	readonly headerActionsSaveButton: Locator;
+	readonly ordersTabToggle: (toggleName: string) => Locator;
 	readonly page: Page;
 	readonly sellerOrderAcceptanceWorkflow: Locator;
 	readonly shippingMethodActiveField: Locator;
@@ -41,7 +42,7 @@ export class CommerceAdminChannelsPage {
 			'Buyer Order Approval Workflow'
 		);
 		this.channelsTable = page.locator(
-			'#portlet_com_liferay_commerce_channel_web_internal_portlet_CommerceChannelsPortlet .dnd-table'
+			'#portlet_com_liferay_commerce_channel_web_internal_portlet_CommerceChannelsPortlet .fds table'
 		);
 		this.channelsTableRow = async (
 			colPosition: number,
@@ -75,11 +76,12 @@ export class CommerceAdminChannelsPage {
 		this.commerceSiteType = page.getByLabel('Commerce Site Type');
 		this.healthCheckAction = (actionName: string) =>
 			page
-				.locator('.dnd-tr')
+				.locator('.fds tr')
 				.filter({has: page.getByText(actionName, {exact: true})})
 				.locator('.item-actions .btn');
 		this.headerActions = page.locator('.header-actions');
 		this.headerActionsSaveButton = this.headerActions.getByText('Save');
+		this.ordersTabToggle = (toggleName) => page.getByLabel(toggleName);
 		this.page = page;
 		this.sellerOrderAcceptanceWorkflow = page.getByLabel(
 			'Seller Order Acceptance Workflow'

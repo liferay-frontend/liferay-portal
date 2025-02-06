@@ -33,6 +33,11 @@ components:
                         The type of the content.
                     readOnly: true
                     type: string
+                externalReferenceCode:
+                    description:
+                        The user's external reference code.
+                    readOnly: true
+                    type: string
                 familyName:
                     description:
                         The user's surname (last name).
@@ -117,6 +122,11 @@ components:
                 name:
                     description:
                         The keyword's name.
+                    type: string
+                siteExternalReferenceCode:
+                    description:
+                        The external reference code of the site to which this keyword is scoped.
+                    readOnly: true
                     type: string
                 siteId:
                     description:
@@ -239,6 +249,15 @@ components:
                             type: object
                     readOnly: true
                     type: object
+                permissions:
+                    items:
+                        type: permission
+                    type: array
+                siteExternalReferenceCode:
+                    description:
+                        The external reference code of the site to which this category is scoped.
+                    readOnly: true
+                    type: string
                 siteId:
                     description:
                         The ID of the site to which this category is scoped.
@@ -368,6 +387,15 @@ components:
                         The number of categories that directly depend on this vocabulary.
                     readOnly: true
                     type: integer
+                permissions:
+                    items:
+                        type: permission
+                    type: array
+                siteExternalReferenceCode:
+                    description:
+                        The external reference code of the site to which this vocabulary is scoped.
+                    readOnly: true
+                    type: string
                 siteId:
                     description:
                         The ID of the site to which this vocabulary is scoped.
@@ -386,7 +414,7 @@ components:
 info:
     description:
         "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
-        'com.liferay.headless.admin.taxonomy.client', and version '4.0.37'."
+        'com.liferay.headless.admin.taxonomy.client', and version '4.0.38'."
     license:
         name: "Apache 2.0"
         url: "http://www.apache.org/licenses/LICENSE-2.0.html"

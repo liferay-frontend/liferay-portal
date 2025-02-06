@@ -25,26 +25,26 @@ public class PageRuleCondition implements Cloneable, Serializable {
 		return PageRuleConditionSerDes.toDTO(json);
 	}
 
-	public String getCondition() {
-		return condition;
+	public String getField() {
+		return field;
 	}
 
-	public void setCondition(String condition) {
-		this.condition = condition;
+	public void setField(String field) {
+		this.field = field;
 	}
 
-	public void setCondition(
-		UnsafeSupplier<String, Exception> conditionUnsafeSupplier) {
+	public void setField(
+		UnsafeSupplier<String, Exception> fieldUnsafeSupplier) {
 
 		try {
-			condition = conditionUnsafeSupplier.get();
+			field = fieldUnsafeSupplier.get();
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected String condition;
+	protected String field;
 
 	public String getId() {
 		return id;
@@ -65,6 +65,27 @@ public class PageRuleCondition implements Cloneable, Serializable {
 
 	protected String id;
 
+	public Options getOptions() {
+		return options;
+	}
+
+	public void setOptions(Options options) {
+		this.options = options;
+	}
+
+	public void setOptions(
+		UnsafeSupplier<Options, Exception> optionsUnsafeSupplier) {
+
+		try {
+			options = optionsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Options options;
+
 	public String getType() {
 		return type;
 	}
@@ -83,27 +104,6 @@ public class PageRuleCondition implements Cloneable, Serializable {
 	}
 
 	protected String type;
-
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-	public void setValue(
-		UnsafeSupplier<String, Exception> valueUnsafeSupplier) {
-
-		try {
-			value = valueUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected String value;
 
 	@Override
 	public PageRuleCondition clone() throws CloneNotSupportedException {

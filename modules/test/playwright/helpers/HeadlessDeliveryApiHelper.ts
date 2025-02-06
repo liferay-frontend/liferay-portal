@@ -19,12 +19,21 @@ interface createSitePageProps {
 type TDocument = {
 	contentUrl?: string;
 	description?: string;
+	documentFolderId?: number;
 	externalReferenceCode?: string;
 	fileName?: string;
 	id?: number;
 	keywords?: string[];
 	taxonomyCategoryIds?: number[];
 	title?: string;
+	viewableBy?: string;
+};
+
+type TDocumentFolder = {
+	externalReferenceCode?: string;
+	id?: number;
+	name?: string;
+	parentDocumentFolderId?: number;
 	viewableBy?: string;
 };
 
@@ -116,6 +125,7 @@ export class HeadlessDeliveryApiHelper {
 		blog?: {
 			articleBody?: string;
 			headline?: string;
+			keywords?: string[];
 		}
 	): Promise<any> {
 		blog = {
@@ -169,6 +179,24 @@ export class HeadlessDeliveryApiHelper {
 				data: {
 					articleBody,
 					headline,
+				},
+				failOnStatusCode: true,
+			}
+		);
+	}
+
+	async postMessageBoardMessage({
+		articleBody,
+		messageBoardThreadId,
+	}: {
+		articleBody: string;
+		messageBoardThreadId: string;
+	}): Promise<MessageBoardMessage> {
+		return this.apiHelpers.post(
+			`${this.apiHelpers.baseUrl}${this.basePath}/message-board-threads/${messageBoardThreadId}/message-board-messages`,
+			{
+				data: {
+					articleBody,
 				},
 				failOnStatusCode: true,
 			}
@@ -292,6 +320,29 @@ export class HeadlessDeliveryApiHelper {
 				multipart: {
 					document: JSON.stringify(document),
 					file,
+				},
+			}
+		);
+	}
+
+	async postDocumentFolder(
+		siteId: number | string,
+		documentFolder?: TDocumentFolder
+	) {
+		documentFolder = {
+			externalReferenceCode: getRandomString(),
+			name: getRandomString(),
+			viewableBy: 'Anyone',
+			...(documentFolder || {}),
+		};
+
+		return this.apiHelpers.post(
+			`${this.apiHelpers.baseUrl}${this.basePath}/sites/${siteId}/document-folders`,
+			{
+				data: documentFolder,
+				failOnStatusCode: true,
+				headers: {
+					...(await this.apiHelpers.getCSRFTokenHeader()),
 				},
 			}
 		);

@@ -10,6 +10,7 @@ import {dataApiHelpersTest} from '../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../fixtures/loginTest';
 import {usersAndOrganizationsPagesTest} from '../../fixtures/usersAndOrganizationsPagesTest';
 import {getRandomInt} from '../../utils/getRandomInt';
+import performLogin, {performLogout, userData} from '../../utils/performLogin';
 import {waitForAlert} from '../../utils/waitForAlert';
 
 export const test = mergeTests(
@@ -496,6 +497,8 @@ test('LPD-42940 Can Bulk Activate Users', async ({
 	page,
 	usersAndOrganizationsPage,
 }) => {
+	page.on('dialog', async (dialog) => await dialog.accept());
+
 	const user1 = await apiHelpers.headlessAdminUser.postUserAccount();
 	const user2 = await apiHelpers.headlessAdminUser.postUserAccount();
 	const user3 = await apiHelpers.headlessAdminUser.postUserAccount();
@@ -538,3 +541,149 @@ test('LPD-42940 Can Bulk Activate Users', async ({
 		).toBeVisible();
 	}
 });
+
+test('LPD-35634 Organization Administrator can activate and deactivate users', async ({
+	apiHelpers,
+	page,
+	usersAndOrganizationsPage,
+}) => {
+	page.on('dialog', (dialog) => dialog.accept());
+
+	const organization = await apiHelpers.headlessAdminUser.postOrganization();
+
+	const user = await apiHelpers.headlessAdminUser.postUserAccount();
+
+	userData[user.alternateName] = {
+		name: user.givenName,
+		password: 'test',
+		surname: user.familyName,
+	};
+
+	await apiHelpers.headlessAdminUser.assignUserToOrganizationByEmailAddress(
+		organization.id,
+		user.emailAddress
+	);
+
+	apiHelpers.data.push({
+		id: `${organization.id}_${user.emailAddress}`,
+		type: 'organizationUserAccountAssociation',
+	});
+
+	const organizationAdministratorRole =
+		await apiHelpers.headlessAdminUser.getRoleByName(
+			'Organization Administrator'
+		);
+
+	await apiHelpers.headlessAdminUser.assignUserToOrganizationRole(
+		organizationAdministratorRole.id.toString(),
+		user.id,
+		organization.id
+	);
+
+	const user2 = await apiHelpers.headlessAdminUser.postUserAccount();
+
+	await apiHelpers.headlessAdminUser.assignUserToOrganizationByEmailAddress(
+		organization.id,
+		user2.emailAddress
+	);
+
+	apiHelpers.data.push({
+		id: `${organization.id}_${user2.emailAddress}`,
+		type: 'organizationUserAccountAssociation',
+	});
+
+	await performLogout(page);
+	await performLogin(page, user.alternateName);
+
+	await usersAndOrganizationsPage.goToOrganizationsWithLimitedAccess();
+
+	await (
+		await usersAndOrganizationsPage.organizationsTableRowLink(
+			organization.name
+		)
+	).click();
+
+	await (
+		await usersAndOrganizationsPage.organizationUsersTableRowActions(
+			`${user2.name}`
+		)
+	).click();
+
+	await usersAndOrganizationsPage.deactivateUserMenuItem.click();
+
+	await waitForAlert(page);
+
+	await expect(
+		await usersAndOrganizationsPage.organizationUsersTableRowStatusLink(
+			user2.name,
+			'Inactive'
+		)
+	).toBeVisible();
+
+	await (
+		await usersAndOrganizationsPage.organizationUsersTableRowActions(
+			user2.name
+		)
+	).click();
+
+	await usersAndOrganizationsPage.activateUserMenuItem.click();
+
+	await waitForAlert(page);
+
+	await expect(
+		await usersAndOrganizationsPage.organizationUsersTableRowStatusLink(
+			user2.name,
+			'Active'
+		)
+	).toBeVisible();
+});
+
+test(
+	'Bulk delete users succeed',
+	{tag: '@LPD-47050'},
+	async ({apiHelpers, page, usersAndOrganizationsPage}) => {
+		page.on('dialog', async (dialog) => await dialog.accept());
+
+		const user1 = await apiHelpers.headlessAdminUser.postUserAccount();
+		const user2 = await apiHelpers.headlessAdminUser.postUserAccount();
+		const user3 = await apiHelpers.headlessAdminUser.postUserAccount();
+		const user4 = await apiHelpers.headlessAdminUser.postUserAccount();
+		const user5 = await apiHelpers.headlessAdminUser.postUserAccount();
+
+		await usersAndOrganizationsPage.goToUsers();
+
+		const userNames: string[] = [user1.name, user2.name, user3.name];
+
+		await usersAndOrganizationsPage.deActivateUsers(userNames);
+
+		await usersAndOrganizationsPage.filterUsers('inactive');
+
+		for (const userName of userNames) {
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(userName)
+			).toBeVisible();
+		}
+
+		await usersAndOrganizationsPage.deleteUsers(userNames);
+
+		for (const userName of userNames) {
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(userName)
+			).not.toBeVisible();
+		}
+
+		await usersAndOrganizationsPage.goToUsers();
+
+		for (const userName of userNames) {
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(userName)
+			).not.toBeVisible();
+		}
+
+		for (const userName of [user4.name, user5.name]) {
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(userName)
+			).toBeVisible();
+		}
+	}
+);

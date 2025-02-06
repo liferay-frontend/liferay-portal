@@ -15,7 +15,7 @@ import {dataSetFragmentPageTest} from './fixtures/dataSetFragmentPageTest';
 export const test = mergeTests(
 	dataSetManagerApiHelpersTest,
 	featureFlagsTest({
-		'LPS-178052': true,
+		'LPS-178052': {enabled: true},
 	}),
 	isolatedLayoutTest({publish: false}),
 	loginTest(),
@@ -110,10 +110,8 @@ test.describe('Data Set Pagination configuration in the fragment', () => {
 
 		await test.step('Frontend Data Set Table is in the page', async () => {
 			expect(
-				await dataSetFragmentPage.page
-					.locator('.dnd-thead > div')
-					.first()
-					.locator('.dnd-th')
+				await dataSetFragmentPage.table.headRow
+					.locator('th')
 					.allInnerTexts()
 			).toEqual(['Label', 'Id', '']);
 		});

@@ -10,15 +10,18 @@ import {featureFlagsTest} from '../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../fixtures/pageEditorPagesTest';
+import {clickAndExpectToBeHidden} from '../../utils/clickAndExpectToBeHidden';
+import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../utils/getRandomString';
+import getBasicWebContentStructureId from '../../utils/structured-content/getBasicWebContentStructureId';
 import getFragmentDefinition from './utils/getFragmentDefinition';
 import getPageDefinition from './utils/getPageDefinition';
 
 const test = mergeTests(
 	apiHelpersTest,
 	featureFlagsTest({
-		'LPD-18221': true,
-		'LPS-178052': true,
+		'LPD-18221': {enabled: true},
+		'LPS-178052': {enabled: true},
 	}),
 	isolatedSiteTest,
 	loginTest(),
@@ -94,3 +97,168 @@ test('Saves edited contend when leaving page while editing', async ({
 
 	await expect(page.getByText('Papa')).toBeVisible();
 });
+
+test(
+	'Value of editable field should be reset when the mapped content is missing',
+	{
+		tag: '@LPS-110462',
+	},
+	async ({apiHelpers, page, pageEditorPage, site}) => {
+
+		// Add web content
+
+		const basicWebContentStructureId =
+			await getBasicWebContentStructureId(apiHelpers);
+
+		const basicWebContentTitle = getRandomString();
+
+		const {articleId: basicWebContentId} =
+			await apiHelpers.jsonWebServicesJournal.addWebContent({
+				ddmStructureId: basicWebContentStructureId,
+				groupId: site.id,
+				titleMap: {en_US: basicWebContentTitle},
+			});
+
+		// Add content page
+
+		const headingId = getRandomString();
+
+		const headingDefinition = getFragmentDefinition({
+			id: headingId,
+			key: 'BASIC_COMPONENT-heading',
+		});
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([headingDefinition]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		// Go to edit mode and map web content
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.selectEditable(headingId, 'element-text');
+
+		await pageEditorPage.setMappedItem({
+			entity: 'Web Content',
+			entry: basicWebContentTitle,
+			field: 'Title',
+		});
+
+		await expect(page.locator('.component-heading')).toHaveText(
+			basicWebContentTitle
+		);
+
+		// Delete web content
+
+		expect(
+			await apiHelpers.jsonWebServicesJournal.moveArticleToTrash(
+				site.id,
+				basicWebContentId
+			)
+		).toHaveProperty('articleId');
+
+		// Reload edit mode and assert
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await expect(page.locator('.component-heading')).not.toHaveText(
+			basicWebContentTitle
+		);
+
+		await expect(page.locator('.component-heading')).toHaveText(
+			'Heading Example'
+		);
+	}
+);
+
+test(
+	'It is not possible to select editables when multiselect is enabled',
+	{
+		tag: '@LPD-47348',
+	},
+	async ({apiHelpers, page, pageEditorPage, site}) => {
+
+		// Create a page with a Heading and a Card fragment
+
+		const headingId = getRandomString();
+		const headingDefinition = getFragmentDefinition({
+			id: headingId,
+			key: 'BASIC_COMPONENT-heading',
+		});
+
+		const cardId = getRandomString();
+		const cardDefinition = getFragmentDefinition({
+			id: cardId,
+			key: 'BASIC_COMPONENT-card',
+		});
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				headingDefinition,
+				cardDefinition,
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		// Go to edit mode of page
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		// Go to Browser panel and expand Card
+
+		await pageEditorPage.goToSidebarTab('Browser');
+
+		await clickAndExpectToBeVisible({
+			target: page.locator('.page-editor__page-structure__tree-node', {
+				hasText: '02-title',
+			}),
+			trigger: page.locator('.page-editor__page-structure__tree-node', {
+				hasText: 'Card',
+			}),
+		});
+
+		// Select editable
+
+		await clickAndExpectToBeVisible({
+			target: page.locator('.breadcrumb-link', {
+				hasText: '02-title',
+			}),
+			trigger: page.locator('.page-editor__page-structure__tree-node', {
+				hasText: '02-title',
+			}),
+		});
+
+		// Enable multiselect
+
+		await page.keyboard.down('Control');
+
+		// Check editable is deselected if we select the heading
+
+		await clickAndExpectToBeHidden({
+			target: page.locator('.breadcrumb-link', {
+				hasText: '02-title',
+			}),
+			trigger: page.locator('.page-editor__page-structure__tree-node', {
+				hasText: 'Heading',
+			}),
+		});
+
+		await expect(page.getByText('2 Items Selected')).not.toBeVisible();
+
+		// Now check parent is selected if trying to multiselect the editable
+
+		await clickAndExpectToBeVisible({
+			target: page.locator('.page-editor__topper__title', {
+				hasText: 'Card',
+			}),
+			trigger: page.locator('.page-editor__page-structure__tree-node', {
+				hasText: '02-title',
+			}),
+		});
+
+		await expect(page.getByText('2 Items Selected')).toBeVisible();
+	}
+);

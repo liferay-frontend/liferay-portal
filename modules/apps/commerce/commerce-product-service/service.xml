@@ -379,6 +379,46 @@
 			<finder-column name="visible" />
 		</finder>
 	</entity>
+	<entity local-service="true" name="CPConfigurationEntrySetting" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="CPConfigurationEntrySettingId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="CPConfigurationEntryId" type="long" />
+		<column name="type" type="int" />
+		<column name="value" type="String" />
+
+		<!-- Order -->
+
+		<order by="desc">
+			<order-column name="createDate" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="C_T" return-type="CPConfigurationEntrySetting">
+			<finder-column name="CPConfigurationEntryId" />
+			<finder-column name="type" />
+		</finder>
+	</entity>
 	<entity external-reference-code="company" local-service="true" name="CPConfigurationList" remote-service="true" uuid="true">
 
 		<!-- PK fields -->
@@ -400,7 +440,7 @@
 		<!-- Other fields -->
 
 		<column name="parentCPConfigurationListId" type="long" />
-		<column name="masterCPConfigurationList" type="boolean" />
+		<column name="master" type="boolean" />
 		<column name="name" type="String" />
 		<column name="priority" type="double" />
 		<column name="displayDate" type="Date" />
@@ -433,7 +473,7 @@
 		</finder>
 		<finder name="G_M" return-type="CPConfigurationList">
 			<finder-column name="groupId" />
-			<finder-column name="masterCPConfigurationList" />
+			<finder-column name="master" />
 		</finder>
 		<finder name="LtD_S" return-type="Collection">
 			<finder-column comparator="&lt;" name="displayDate" />
@@ -1487,6 +1527,8 @@
 		<exception>CPAttachmentFileEntryName</exception>
 		<exception>CPAttachmentFileEntryProtocol</exception>
 		<exception>CPAttachmentFileEntrySize</exception>
+		<exception>CPConfigurationEntryQuantity</exception>
+		<exception>CPConfigurationListMaster</exception>
 		<exception>CPConfigurationListParentCPConfigurationListGroupId</exception>
 		<exception>CPDefinitionDeliveryMaxSubscriptionCycles</exception>
 		<exception>CPDefinitionDeliverySubscriptionLength</exception>
@@ -1530,6 +1572,7 @@
 		<exception>CPInstanceUnitOfMeasureKey</exception>
 		<exception>CPInstanceUnitOfMeasureName</exception>
 		<exception>CPInstanceUnitOfMeasurePrice</exception>
+		<exception>CPInstanceUnitOfMeasureQuantity</exception>
 		<exception>CPInstanceUnitOfMeasureRate</exception>
 		<exception>CPInstanceUnitOfMeasureSku</exception>
 		<exception>CPInstanceWeight</exception>
