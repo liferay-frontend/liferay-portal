@@ -5,7 +5,7 @@
 
 import {sub} from 'frontend-js-web';
 
-const DEFAULT_BALLOON_EDITOR_CONFIG = {
+const DefaultPreset = {
 	extraAllowedContent: '*',
 	extraPlugins:
 		'itemselector,stylescombo,ballooneditor,videoembed,insertbutton',
@@ -46,4 +46,4 @@ const DEFAULT_BALLOON_EDITOR_CONFIG = {
 	toolbarVideo: 'VideoAlignLeft,VideoAlignCenter,VideoAlignRight',
 };
 
-export default DEFAULT_BALLOON_EDITOR_CONFIG;
+export default DefaultPreset;

@@ -24,9 +24,9 @@ if (Validator.isNotNull(onChangeMethod)) {
 		module="{BalloonEditor} from frontend-editor-ckeditor-web"
 		props='<%=
 			HashMapBuilder.<String, Object>put(
-				"config", (editorData == null) ? null : (JSONObject)editorData.get("editorConfig")
-			).put(
 				"contents", contents
+			).put(
+				"editorConfig", (editorData == null) ? null : (JSONObject)editorData.get("editorConfig")
 			).put(
 				"name", HtmlUtil.escapeAttribute(name)
 			).put(

@@ -19,4 +19,5 @@ declare module Liferay {
 		fn: (event: any) => void,
 		context?: any
 	): void;
+	export const zIndex: any;
 }

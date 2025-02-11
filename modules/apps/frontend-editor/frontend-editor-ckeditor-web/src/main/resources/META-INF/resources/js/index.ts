@@ -5,8 +5,6 @@
 
 import 'ckeditor5/ckeditor5.css';
 
-// @ts-ignore
-
 export {default as BalloonEditor} from './ckeditor4/BalloonEditor';
 
 // @ts-ignore
