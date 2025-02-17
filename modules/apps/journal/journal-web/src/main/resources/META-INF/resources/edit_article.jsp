@@ -15,6 +15,10 @@ JournalEditArticleDisplayContext journalEditArticleDisplayContext = (JournalEdit
 journalEditArticleDisplayContext.setViewAttributes();
 %>
 
+<liferay-editor:resources
+	editorName="alloyeditor"
+/>
+
 <aui:model-context bean="<%= article %>" model="<%= JournalArticle.class %>" />
 
 <portlet:actionURL var="editArticleActionURL" windowState="<%= WindowState.MAXIMIZED.toString() %>">

@@ -100,6 +100,7 @@ module.exports = {
 		'data-engine-js-components-web': [],
 		'data-engine-taglib': [],
 		'dynamic-data-mapping-form-field-type': ['leaflet/dist/leaflet.css'],
+		'frontend-editor-alloyeditor-web': [],
 		'frontend-editor-ckeditor-web': [
 			'@ckeditor/ckeditor5-react',
 			'ckeditor5',

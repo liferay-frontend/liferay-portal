@@ -32,7 +32,8 @@
 	"include": [
 		"**/*.ts",
 		"**/*.tsx",
-		"../../../../../../../../global.d.ts"
+		"../../../../../../../../global.d.ts",
+		"../../../../../../frontend-editor-alloyeditor-web/src/main/resources/META-INF/resources/js/AlloyEditorComponent.tsx"
 	],
 	"references": [
 		{

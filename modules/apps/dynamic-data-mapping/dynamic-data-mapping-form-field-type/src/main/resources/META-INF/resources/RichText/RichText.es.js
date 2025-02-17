@@ -5,7 +5,7 @@
 
 import {ClayInput} from '@clayui/form';
 import {useConfig} from 'data-engine-js-components-web';
-import {ClassicEditor} from 'frontend-editor-ckeditor-web';
+import {AlloyEditor} from 'frontend-editor-alloyeditor-web';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 import FieldBase from '../FieldBase/ReactFieldBase.es';
@@ -263,7 +263,7 @@ const RichText = ({
 		>
 			<ClayInput.Group>
 				<ClayInput.GroupItem>
-					<ClassicEditor
+					<AlloyEditor
 						ariaLabel={label}
 						ariaRequired={otherProps.required}
 						className="w-100"
@@ -290,6 +290,7 @@ const RichText = ({
 								event.data.dataValue = sanitizedValue;
 							}
 						}}
+						preset="rich-text"
 						readOnly={readOnly}
 						ref={editorRef}
 					/>
