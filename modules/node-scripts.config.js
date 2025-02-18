@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-	hash: 'db83cd744a1b2647152cd06089c667fcac37bd796adae202afb7fe59f294982d',
+	hash: 'a7dfb00fb544901c755b19dbaadbf21fb2094a7945f716bb2c06b55d9cea109d',
 	imports: {
 		'@liferay/accessibility-settings-state-web': [],
 		'@liferay/address-web': [],
@@ -29,8 +29,6 @@ module.exports = {
 			'codemirror/lib/codemirror.css',
 		],
 		'@liferay/frontend-js-dependencies-web': [
-			'html-to-image',
-			'jspdf',
 			'@liferay/js-api',
 			'@liferay/js-api/data-set',
 			'cropperjs/dist/cropper.css',
@@ -57,10 +55,7 @@ module.exports = {
 			'highlight.js/lib/languages/java',
 			'highlight.js/lib/languages/javascript',
 			'highlight.js/lib/languages/plaintext',
-			'image-promise',
 			'liferay-ckeditor',
-			'lodash.groupby',
-			'lodash.isequal',
 			'moment',
 			'moment/min/moment-with-locales',
 			'numeral',
@@ -191,6 +186,7 @@ module.exports = {
 			'Essentials',
 			'Font',
 			'GeneralHtmlSupport',
+			'Heading',
 			'HorizontalLine',
 			'Indent',
 			'IndentBlock',
@@ -202,6 +198,7 @@ module.exports = {
 			'RemoveFormat',
 			'SourceEditing',
 			'Strikethrough',
+			'Style',
 			'Table',
 			'TableCaption',
 			'TableProperties',
@@ -218,10 +215,7 @@ module.exports = {
 		'highlight.js/lib/languages/java': ['*', 'default'],
 		'highlight.js/lib/languages/javascript': ['*', 'default'],
 		'highlight.js/lib/languages/plaintext': ['*', 'default'],
-		'image-promise': ['*', 'default'],
 		'liferay-ckeditor': [],
-		'lodash.groupby': ['*', 'default'],
-		'lodash.isequal': ['*', 'default'],
 		'moment': ['*', 'default'],
 		'moment/min/moment-with-locales': ['*', 'default'],
 		'numeral': ['*', 'default'],
