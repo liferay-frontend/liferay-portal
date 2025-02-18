@@ -15,7 +15,6 @@ import {TitleKey, Type} from './types';
 import {useParams} from 'react-router-dom';
 import {useQuery} from '@apollo/react-hooks';
 import {useResize} from 'shared/hooks/useResize';
-import {v4 as uuidv4} from 'uuid';
 
 type pagePathNode = {
 	external: boolean;
@@ -54,7 +53,7 @@ function formatData({pagePath}: {pagePath: pagePathNode}) {
 			?.map(({canonicalUrl, external, title, views}) => ({
 				color: getColor(title),
 				external,
-				id: uuidv4(),
+				id: crypto.randomUUID(),
 				name: getTitle(title, type),
 				type,
 				url: canonicalUrl,
@@ -62,7 +61,7 @@ function formatData({pagePath}: {pagePath: pagePathNode}) {
 			}));
 
 	const mainNode = {
-		id: uuidv4(),
+		id: crypto.randomUUID(),
 		main: true,
 		name: pagePath.title,
 		url: pagePath.canonicalUrl,

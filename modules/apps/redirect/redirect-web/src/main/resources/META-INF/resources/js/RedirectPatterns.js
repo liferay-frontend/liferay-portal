@@ -10,7 +10,6 @@ import ClayLayout from '@clayui/layout';
 import {sub} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useState} from 'react';
-import {v4 as uuidv4} from 'uuid';
 
 import '../css/redirect_pattern.scss';
 
@@ -182,7 +181,7 @@ const RedirectPattern = ({
 	const emptyRow = () => ({
 		destinationURL: '',
 		error: false,
-		id: uuidv4(),
+		id: crypto.randomUUID(),
 		pattern: '',
 	});
 
@@ -191,7 +190,7 @@ const RedirectPattern = ({
 			? initialPatternsList.map((item) => ({
 					...item,
 					error: false,
-					id: uuidv4(),
+					id: crypto.randomUUID(),
 				}))
 			: [emptyRow()]
 	);

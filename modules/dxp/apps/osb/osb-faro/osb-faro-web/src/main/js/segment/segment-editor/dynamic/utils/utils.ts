@@ -21,7 +21,6 @@ import {
 	WEB_BEHAVIORS
 } from '../utils/properties';
 import {Property} from 'shared/util/records';
-import {v4 as uuidv4} from 'uuid';
 
 const GROUP_ID_NAMESPACE = 'group_';
 const ROW_ID_NAMESPACE = 'row_';
@@ -47,12 +46,14 @@ export const createNewGroup = (items: Criteria[]): CriterionGroup => ({
 /**
  * Generates a unique group id.
  */
-export const generateGroupId = (): string => `${GROUP_ID_NAMESPACE}${uuidv4()}`;
+export const generateGroupId = (): string =>
+	`${GROUP_ID_NAMESPACE}${crypto.randomUUID()}`;
 
 /**
  * Generates a unique row id.
  */
-export const generateRowId = (): string => `${ROW_ID_NAMESPACE}${uuidv4()}`;
+export const generateRowId = (): string =>
+	`${ROW_ID_NAMESPACE}${crypto.randomUUID()}`;
 
 /**
  * Gets a list of group ids from a criteria object.
@@ -70,7 +71,7 @@ export const getChildGroupIds = (criteria: Criteria): string[] => {
 							...groupIdList,
 							item.criteriaGroupId,
 							...getChildGroupIds(item)
-					  ]
+						]
 					: groupIdList,
 			[]
 		);
@@ -479,7 +480,7 @@ export const invalidateCriterionWithMissingProperty = (
 				: Object.keys(criteria.valid).reduce(
 						(acc, key) => ({...acc, [key]: false}),
 						{}
-				  )
+					)
 		};
 	}
 };

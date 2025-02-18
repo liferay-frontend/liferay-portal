@@ -17,7 +17,6 @@ import ReactFlow, {
 	addEdge,
 	isEdge,
 } from 'react-flow-renderer';
-import {v4 as uuidv4} from 'uuid';
 
 import {DefinitionBuilderContext} from '../DefinitionBuilderContext';
 import {defaultLanguageId} from '../constants';
@@ -112,7 +111,7 @@ export default function DiagramBuilder() {
 						Liferay.Language.get('transition-label'),
 				},
 			},
-			id: uuidv4(),
+			id: crypto.randomUUID(),
 			type: 'transition',
 		};
 
@@ -182,7 +181,7 @@ export default function DiagramBuilder() {
 					data: {
 						newNode: true,
 					},
-					id: uuidv4(),
+					id: crypto.randomUUID(),
 					position,
 					type,
 				};

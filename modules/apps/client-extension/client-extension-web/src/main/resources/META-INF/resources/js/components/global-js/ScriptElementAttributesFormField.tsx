@@ -6,11 +6,15 @@
 // @ts-nocheck
 
 import React, {useState} from 'react';
-import {v4 as uuidv4} from 'uuid';
 
 import AttributeFields, {TYPE_BOOLEAN, TYPE_STRING} from './AttributeFields';
 
-const emptyRow = () => ({id: uuidv4(), name: '', type: TYPE_STRING, value: ''});
+const emptyRow = () => ({
+	id: crypto.randomUUID(),
+	name: '',
+	type: TYPE_STRING,
+	value: '',
+});
 
 const toJSONObjectString = (attributes) => {
 	const validAttributes = attributes.filter(
@@ -42,7 +46,7 @@ const parseAttributes = (attributes: string) => {
 	} = JSON.parse(attributes);
 
 	return Object.keys(scriptElementAttributesJSONObject).map((key) => ({
-		id: uuidv4(),
+		id: crypto.randomUUID(),
 		name: key,
 		type:
 			typeof scriptElementAttributesJSONObject[key] === 'boolean'

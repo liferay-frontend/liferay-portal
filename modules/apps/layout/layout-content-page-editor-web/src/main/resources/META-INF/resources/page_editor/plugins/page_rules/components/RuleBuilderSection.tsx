@@ -11,10 +11,6 @@ import {ScreenReaderAnnouncerContext} from '@liferay/layout-js-components-web';
 import React, {Dispatch, SetStateAction, useContext, useMemo} from 'react';
 import {flushSync} from 'react-dom';
 
-// @ts-ignore
-
-import {v4 as uuidv4} from 'uuid';
-
 import {LAYOUT_DATA_ITEM_TYPES} from '../../../app/config/constants/layoutDataItemTypes';
 import {useSelector} from '../../../app/contexts/StoreContext';
 import selectLayoutDataItemLabel from '../../../app/selectors/selectLayoutDataItemLabel';
@@ -93,7 +89,7 @@ export function RuleBuilderActionSection({
 	const actionsRefMap = useMemo(() => new Map(), []);
 
 	const onAddAction = () => {
-		const actionId = uuidv4();
+		const actionId = crypto.randomUUID();
 
 		flushSync(() => {
 			setActions((previousActions) => [
@@ -110,7 +106,7 @@ export function RuleBuilderActionSection({
 
 	const onDeleteAction = (action: Action, index: number) => {
 		if (actions.length === 1) {
-			setActions([{id: uuidv4()} as Action]);
+			setActions([{id: crypto.randomUUID()} as Action]);
 		}
 		else {
 			const nextCondition = actions[index - 1] || actions[index + 1];
@@ -248,7 +244,7 @@ export function RuleBuilderConditionSection({
 	const conditionRefMap = useMemo(() => new Map(), []);
 
 	const onAddCondition = () => {
-		const conditionId = uuidv4();
+		const conditionId = crypto.randomUUID();
 
 		flushSync(() => {
 			setConditions((previousConditions) => [
@@ -265,7 +261,7 @@ export function RuleBuilderConditionSection({
 
 	const onDeleteCondition = (condition: Condition, index: number) => {
 		if (conditions.length === 1) {
-			setConditions([{id: uuidv4()} as Condition]);
+			setConditions([{id: crypto.randomUUID()} as Condition]);
 		}
 		else {
 			const nextCondition =

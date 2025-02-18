@@ -5,14 +5,10 @@
 
 import {useMemo} from 'react';
 
-// @ts-ignore
-
-import {v4 as uuidv4} from 'uuid';
-
 /**
  * Hook to generate unique IDs.
  */
 
 export default function useId() {
-	return useMemo(() => `lfr-${uuidv4()}`, []);
+	return useMemo(() => `lfr-${crypto.randomUUID()}`, []);
 }

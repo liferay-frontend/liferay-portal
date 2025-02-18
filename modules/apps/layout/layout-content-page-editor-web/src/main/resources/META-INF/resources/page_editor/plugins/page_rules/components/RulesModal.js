@@ -13,7 +13,6 @@ import classNames from 'classnames';
 import {useId} from 'frontend-js-components-web';
 import {openToast} from 'frontend-js-web';
 import React, {useEffect, useRef, useState} from 'react';
-import {v4 as uuidv4} from 'uuid';
 
 import {useDispatch, useSelector} from '../../../app/contexts/StoreContext';
 import addRule from '../../../app/thunks/addRule';
@@ -43,10 +42,10 @@ export default function RulesModal({editingRule, onCloseModal}) {
 	const [ruleError, setRuleError] = useState(false);
 
 	const [actions, setActions] = useState(
-		() => editingRule?.actions || [{id: uuidv4()}]
+		() => editingRule?.actions || [{id: crypto.randomUUID()}]
 	);
 	const [conditions, setConditions] = useState(
-		() => editingRule?.conditions || [{id: uuidv4()}]
+		() => editingRule?.conditions || [{id: crypto.randomUUID()}]
 	);
 	const [conditionType, setConditionType] = useState('all');
 

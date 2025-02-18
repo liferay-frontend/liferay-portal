@@ -1,5 +1,3 @@
-import {v4 as uuidv4} from 'uuid';
-
 const getRndInteger = (min, max) =>
 	Math.floor(Math.random() * (max - min + 1)) + min;
 
@@ -26,7 +24,7 @@ function generateItems({selectedMetrics, size}) {
 	const arr = new Array(size);
 
 	for (let i = 0; i < arr.length; i++) {
-		const assetTitle = uuidv4();
+		const assetTitle = crypto.randomUUID();
 		const assetId = `http://liferay.com/web/test/abc/123/${assetTitle}`;
 
 		arr[i] = {

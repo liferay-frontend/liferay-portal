@@ -8,8 +8,7 @@
 		"@clayui/modal": "3.122.0",
 		"frontend-js-web": "*",
 		"prop-types": "15.7.2",
-		"react": "18.2.0",
-		"uuid": "9.0.0"
+		"react": "18.2.0"
 	},
 	"main": "js/index.js",
 	"name": "redirect-web",

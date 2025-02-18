@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {v4 as uuidv4} from 'uuid';
-
 import middlewares from './middlewares/defaults';
 import defaultPlugins from './plugins/defaults';
 import QueueFlushService from './queueFlushService';
@@ -401,7 +399,7 @@ class Analytics {
 	 * @returns {string} The generated id
 	 */
 	_generateUserId() {
-		const userId = uuidv4();
+		const userId = crypto.randomUUID();
 
 		setItem(STORAGE_KEY_USER_ID, userId);
 		this._setCookie(STORAGE_KEY_USER_ID, userId);

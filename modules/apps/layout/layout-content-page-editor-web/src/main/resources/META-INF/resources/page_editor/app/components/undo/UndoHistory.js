@@ -7,7 +7,6 @@ import {ClayButtonWithIcon} from '@clayui/button';
 import ClayDropDown, {Align} from '@clayui/drop-down';
 import {useIsMounted} from '@liferay/frontend-js-react-web';
 import React, {useState} from 'react';
-import {v4 as uuidv4} from 'uuid';
 
 import {SELECT_SEGMENTS_EXPERIENCE} from '../../../plugins/experience/actions';
 import {UNDO_TYPES} from '../../config/constants/undoTypes';
@@ -71,7 +70,7 @@ export function useHistoryItems() {
 					action.segmentsExperienceId,
 					store.availableSegmentsExperiences
 				),
-			id: uuidv4(),
+			id: crypto.randomUUID(),
 			label: getActionLabel(action, type, {
 				availableSegmentsExperiences:
 					store.availableSegmentsExperiences,

@@ -7,7 +7,6 @@ import ClayAlert from '@clayui/alert';
 import {render} from '@liferay/frontend-js-react-web';
 import classNames from 'classnames';
 import React from 'react';
-import {v4 as uuidv4} from 'uuid';
 
 import buildFragment from '../../util/build_fragment';
 
@@ -102,7 +101,7 @@ function openToast({
 	type = 'success',
 	variant,
 }) {
-	const id = uuidv4();
+	const id = crypto.randomUUID();
 
 	const rootElement = getRootElement({container, containerId});
 
