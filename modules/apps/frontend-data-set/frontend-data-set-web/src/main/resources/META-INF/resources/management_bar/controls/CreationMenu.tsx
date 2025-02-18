@@ -14,6 +14,7 @@ import {triggerAction} from '../../utils/actionItems/triggerAction';
 
 export interface ICreationActionItem {
 	data?: {
+		action?: string;
 		disableHeader?: boolean;
 		permissionKey?: string;
 		size?: string;
@@ -49,7 +50,7 @@ const DropDown = ({
 }) => {
 	const frontendDataSetContext = useContext(FrontendDataSetContext);
 
-	const {loadData} = frontendDataSetContext;
+	const {loadData, onCreationActionClick} = frontendDataSetContext;
 
 	const [active, setActive] = useState(false);
 
@@ -86,7 +87,13 @@ const DropDown = ({
 								loadData,
 							});
 
-							if (item.href || item.target) {
+							if (onCreationActionClick) {
+								onCreationActionClick({
+									action: item?.data?.action,
+									loadData,
+								});
+							}
+							else if (item.href || item.target) {
 								triggerAction(item, frontendDataSetContext);
 							}
 						}}
@@ -114,7 +121,7 @@ function CreationMenu({
 }) {
 	const frontendDataSetContext = useContext(FrontendDataSetContext);
 
-	const {loadData} = frontendDataSetContext;
+	const {loadData, onCreationActionClick} = frontendDataSetContext;
 
 	return (
 		primaryItems?.length > 0 && (
@@ -142,7 +149,13 @@ function CreationMenu({
 									loadData,
 								});
 
-								if (item.href || item.target) {
+								if (onCreationActionClick) {
+									onCreationActionClick({
+										action: item?.data?.action,
+										loadData,
+									});
+								}
+								else if (item.href || item.target) {
 									triggerAction(item, frontendDataSetContext);
 								}
 							}}
