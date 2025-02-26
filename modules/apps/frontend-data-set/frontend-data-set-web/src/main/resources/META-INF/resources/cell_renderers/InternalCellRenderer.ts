@@ -28,6 +28,7 @@ import LabelRenderer from './LabelRenderer';
 
 import LinkRenderer from './LinkRenderer';
 
+import NavigationLinkRenderer from './NavigationLinkRenderer';
 // @ts-ignore
 
 import QuantitySelectorRenderer from './QuantitySelectorRenderer';
@@ -83,6 +84,12 @@ export const INTERNAL_CELL_RENDERERS: Array<IInternalRenderer> = [
 		component: LinkRenderer,
 		label: Liferay.Language.get('link'),
 		name: 'link',
+		type: 'internal',
+	},
+	{
+		component: NavigationLinkRenderer,
+		label: Liferay.Language.get('link'),
+		name: 'navigationLink',
 		type: 'internal',
 	},
 	{

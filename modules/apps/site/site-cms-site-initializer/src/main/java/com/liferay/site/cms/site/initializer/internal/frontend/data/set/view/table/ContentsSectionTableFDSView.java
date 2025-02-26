@@ -34,7 +34,7 @@ public class ContentsSectionTableFDSView extends BaseTableFDSView {
 		return fdsTableSchemaBuilder.add(
 			"title", "title",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
-				"title"
+				"navigationLink"
 			).setSortable(
 				true
 			)
