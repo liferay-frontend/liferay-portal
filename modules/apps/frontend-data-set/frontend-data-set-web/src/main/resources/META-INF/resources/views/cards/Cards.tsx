@@ -114,17 +114,17 @@ const Cards = ({items, schema}: {items: Array<any>; schema: ICardSchema}) => {
 			)}
 		>
 			<div className="row">
-				{items.map((item) => {
+				{items.map((item, index) => {
 					return (
 						<div
 							className="col-md-3"
-							key={
+							key={index}
+						>
+							<Card item={item} schema={schema} key={
 								selectedItemsKey
 									? item[selectedItemsKey]
 									: getRandomId()
-							}
-						>
-							<Card item={item} schema={schema} />
+							}/>
 						</div>
 					);
 				})}

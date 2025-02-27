@@ -47,6 +47,7 @@ export interface IFrontendDataSetContext {
 	}) => void;
 	onSearch: ({query}: {query: string}) => void;
 	onSelect: Function;
+	openFolder: Function;
 	openModal: Function;
 	openSidePanel: Function;
 	portletId?: string;
@@ -101,6 +102,7 @@ const FrontendDataSetContext = React.createContext({
 	onItemsChange: () => {},
 	onSearch: () => {},
 	onSelect: () => {},
+	openFolder: () => {},
 	openModal: () => {},
 	openSidePanel: () => {},
 	selectItems: () => {},

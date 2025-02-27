@@ -43,7 +43,7 @@ const FrontendDataSet = ({
 	actionParameterName,
 	activeViewSettings,
 	additionalAPIURLParameters,
-	apiURL,
+	apiURL: initialApiURL,
 	appURL,
 	bulkActions,
 	creationMenu: initialCreationMenu,
@@ -87,6 +87,7 @@ const FrontendDataSet = ({
 	views,
 }) => {
 	const wrapperRef = useRef(null);
+	const [apiURL, setApiURL] = useState(initialApiURL);
 	const [componentLoading, setComponentLoading] = useState(false);
 	const [creationMenu, setCreationMenu] = useState(initialCreationMenu);
 	const [dataLoading, setDataLoading] = useState(!!apiURL);
@@ -809,6 +810,19 @@ const FrontendDataSet = ({
 		});
 	}
 
+	function openFolder({item}) {
+		const fullUrl = apiURL.startsWith('/')
+			? Liferay.ThemeDisplay.getPortalURL() +
+				Liferay.ThemeDisplay.getPathContext() +
+				apiURL
+			: apiURL;
+
+		const newApiURL = new URL(fullUrl);
+		newApiURL.searchParams.set('entryClassNames', item.entryClassName);
+
+		setApiURL(newApiURL.toString());
+	}
+
 	function toggleItemInlineEdit(itemKey) {
 		setItemsChanges(({[itemKey]: foundItem, ...itemsChanges}) => {
 			return foundItem
@@ -966,6 +980,7 @@ const FrontendDataSet = ({
 				onItemsChange,
 				onSearch,
 				onSelect,
+				openFolder,
 				openModal,
 				openSidePanel,
 				portletId,
