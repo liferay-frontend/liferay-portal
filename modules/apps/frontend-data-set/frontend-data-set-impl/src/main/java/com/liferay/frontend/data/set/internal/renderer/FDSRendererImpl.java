@@ -124,7 +124,8 @@ public class FDSRendererImpl implements FDSRenderer {
 		_bundleContext = bundleContext;
 
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
-			bundleContext, FDSSerializer.class, "dataset.type");
+			bundleContext, FDSSerializer.class,
+			"frontend.data.set.serializer.type");
 	}
 
 	private FDSSerializer _getFirstAvailableFDSSerializer(
