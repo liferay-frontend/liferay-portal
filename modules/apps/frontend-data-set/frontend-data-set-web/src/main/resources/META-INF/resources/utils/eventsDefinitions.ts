@@ -26,6 +26,7 @@ const EVENTS = {
 	DISPLAY_UPDATED: 'fds-display-updated',
 	IFRAME_LOADED,
 	IS_LOADING_MODAL,
+	OPEN_FOLDER: 'fds-open-folder',
 	OPEN_MODAL,
 	OPEN_MODAL_FROM_IFRAME,
 	OPEN_SIDE_PANEL,

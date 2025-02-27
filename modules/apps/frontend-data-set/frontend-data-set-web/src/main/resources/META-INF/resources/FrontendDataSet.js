@@ -584,7 +584,10 @@ const FrontendDataSet = ({
 				}
 				setDataLoading(false);
 			}
+			Liferay.on(EVENTS.OPEN_FOLDER, openFolder);
 		});
+
+		return () => Liferay.detach(EVENTS.OPEN_FOLDER, openFolder);
 	}, [apiURL, isMounted, requestData, setDataLoading]);
 
 	useEffect(() => {
