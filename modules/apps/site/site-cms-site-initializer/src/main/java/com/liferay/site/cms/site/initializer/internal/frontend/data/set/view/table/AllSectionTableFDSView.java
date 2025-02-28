@@ -32,7 +32,12 @@ public class AllSectionTableFDSView extends BaseTableFDSView {
 			_fdsTableSchemaBuilderFactory.create();
 
 		return fdsTableSchemaBuilder.add(
-			"title", "title"
+			"title", "title",
+			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
+				"navigationLink"
+			).setSortable(
+				true
+			)
 		).add(
 			"description", "description"
 		).add(
