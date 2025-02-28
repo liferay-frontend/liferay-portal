@@ -88,7 +88,7 @@ export const INTERNAL_CELL_RENDERERS: Array<IInternalRenderer> = [
 	},
 	{
 		component: NavigationLinkRenderer,
-		label: Liferay.Language.get('link'),
+		label: Liferay.Language.get('navigation-link'),
 		name: 'navigationLink',
 		type: 'internal',
 	},
