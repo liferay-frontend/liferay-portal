@@ -46,9 +46,9 @@ export async function loadData({
 	additionalAPIURLParameters?: string;
 	apiURL: string;
 	currentURL?: string;
-	delta: number;
+	delta?: number;
 	odataFiltersStrings?: Array<string>;
-	page: number;
+	page?: number;
 	searchParam?: string;
 	sorts?: TSort[];
 }) {
@@ -80,7 +80,7 @@ export async function loadData({
 	}
 
 	url.searchParams.append('page', page.toString());
-	url.searchParams.append('pageSize', delta.toString());
+	delta && url.searchParams.append('pageSize', delta.toString());
 
 	if (searchParam) {
 		url.searchParams.append('search', searchParam);

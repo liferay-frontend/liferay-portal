@@ -5,24 +5,38 @@
 
 import React from 'react';
 
-import {IInlineEditingSettings, IItemsActions, ISchema} from '.';
+import {IInlineEditingSettings, IItemsActions, IModalConfig, ISchema} from '.';
 
 export interface IFrontendDataSetContext {
 	actionParameterName?: string | null;
 	apiURL?: string;
 	appURL?: string;
-	applyItemInlineUpdates: Function;
-	createInlineItem: Function;
+	applyItemInlineUpdates: (itemKey: number) => Promise<any> | void;
+	createInlineItem: () => Promise<void> | void;
 	customDataRenderers?: Array<any>;
 	customRenderers?: {
 		tableCell?: Array<TRenderer>;
 		views?: Array<TRenderer>;
 	};
-	executeAsyncItemAction: Function;
+	executeAsyncItemAction: ({
+		errorMessage,
+		method,
+		requestBody,
+		setActionItemLoading,
+		successMessage,
+		url,
+	}: {
+		errorMessage: string;
+		method: string;
+		requestBody?: string;
+		setActionItemLoading?: Function;
+		successMessage?: string;
+		url: string;
+	}) => Promise<void> | void;
 	formId?: string;
 	formName?: string;
-	highlightItems: Function;
-	highlightedItemsValue?: string;
+	highlightItems: (value: any) => void;
+	highlightedItemsValue?: Array<string>;
 	id?: string;
 	inlineAddingSettings?: {
 		apiURL?: string;
@@ -30,8 +44,8 @@ export interface IFrontendDataSetContext {
 	};
 	inlineEditingSettings?: IInlineEditingSettings;
 	itemsActions?: Array<IItemsActions>;
-	itemsChanges?: Array<any>;
-	loadData: Function;
+	itemsChanges?: any;
+	loadData: () => Promise<any> | void;
 	modalId?: string;
 	namespace?: string;
 	nestedItemsKey?: string;
@@ -42,28 +56,49 @@ export interface IFrontendDataSetContext {
 		itemKey,
 		items,
 	}: {
-		itemKey?: string;
+		itemKey: string;
 		items: Array<any>;
 	}) => void;
 	onSearch: ({query}: {query: string}) => void;
-	onSelect: Function;
-	openFolder: Function;
-	openModal: Function;
-	openSidePanel: Function;
+	onSelect?: ({selectedItems}: {selectedItems: Array<any>}) => void;
+	openFolder: ({item}: {item: any}) => void;
+	openModal: (config: IModalConfig) => void;
+	openSidePanel: (config: IModalConfig) => void;
 	portletId?: string;
 	searchParam?: string;
-	selectItems: Function;
+	selectItems: (value: any) => void;
 	selectable?: boolean;
 	selectedItemsKey?: string;
 	selectedItemsValue?: Array<any>;
 	selectionType?: string;
+	showBulkActionsManagementBar?: boolean;
+	showBulkActionsManagementBarActions?: boolean;
 	sidePanelId?: string;
 	sorts?: Array<TRenderer>;
 	style?: string;
-	toggleItemInlineEdit: Function;
+	toggleItemInlineEdit: (itemKey: number) => void;
 	uniformActionsDisplay?: boolean;
-	updateDataSetItems: Function;
-	updateItem: Function;
+	updateDataSetItems: ({
+		items,
+		lastPage,
+		page,
+		pageSize,
+		totalCount,
+	}: IDataSetData) => void;
+	updateItem: (
+		itemKey: string,
+		property: string,
+		valuePath: string,
+		value: any
+	) => void;
+}
+
+export interface IDataSetData {
+	items: Array<any>;
+	lastPage: number;
+	page: number;
+	pageSize?: number;
+	totalCount: number;
 }
 
 export interface IHTMLElementBuilder {
@@ -91,7 +126,7 @@ export interface IInternalRenderer {
 
 export type TRenderer = IClientExtensionRenderer | IInternalRenderer;
 
-const FrontendDataSetContext = React.createContext({
+const FrontendDataSetContext = React.createContext<IFrontendDataSetContext>({
 	applyItemInlineUpdates: () => {},
 	createInlineItem: () => {},
 	executeAsyncItemAction: () => {},
@@ -111,6 +146,6 @@ const FrontendDataSetContext = React.createContext({
 	toggleItemInlineEdit: () => {},
 	updateDataSetItems: () => {},
 	updateItem: () => {},
-} as IFrontendDataSetContext);
+});
 
 export default FrontendDataSetContext;
