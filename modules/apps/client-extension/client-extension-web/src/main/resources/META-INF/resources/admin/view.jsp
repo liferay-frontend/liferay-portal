@@ -15,6 +15,7 @@ ClientExtensionAdminDisplayContext clientExtensionAdminDisplayContext = (ClientE
 	actionParameterName="externalReferenceCode"
 	creationMenu="<%= clientExtensionAdminDisplayContext.getCreationMenu() %>"
 	dataProviderKey="<%= ClientExtensionAdminFDSNames.CLIENT_EXTENSION_TYPES %>"
+	fluidSize="xxl"
 	id="<%= ClientExtensionAdminFDSNames.CLIENT_EXTENSION_TYPES %>"
 	itemsPerPage="<%= 10 %>"
 	selectedItemsKey="externalReferenceCode"
