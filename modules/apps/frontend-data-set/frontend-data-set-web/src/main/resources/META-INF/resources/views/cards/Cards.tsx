@@ -11,10 +11,10 @@ import FrontendDataSetContext, {
 	IFrontendDataSetContext,
 } from '../../FrontendDataSetContext';
 import {
-	DisplayType,
 	ICardLabelSchema,
 	ICardSchema,
 	IItemsActions,
+	TDisplayType,
 } from '../../index';
 import filterItemActions from '../../utils/actionItems/filterItemActions';
 import formatActionURL from '../../utils/actionItems/formatActionURL';
@@ -64,7 +64,7 @@ const Card = ({item, schema}: {item: any; schema: ICardSchema}) => {
 	const getLabels = (
 		item: any
 	): Array<{
-		displayType: DisplayType;
+		displayType: TDisplayType;
 		value: string;
 	}> => {
 		if (!schema.labels || !Array.isArray(schema.labels)) {
