@@ -116,15 +116,16 @@ const Cards = ({items, schema}: {items: Array<any>; schema: ICardSchema}) => {
 			<div className="row">
 				{items.map((item, index) => {
 					return (
-						<div
-							className="col-md-3"
-							key={index}
-						>
-							<Card item={item} schema={schema} key={
-								selectedItemsKey
-									? item[selectedItemsKey]
-									: getRandomId()
-							}/>
+						<div className="col-md-3" key={index}>
+							<Card
+								item={item}
+								key={
+									selectedItemsKey
+										? item[selectedItemsKey]
+										: getRandomId()
+								}
+								schema={schema}
+							/>
 						</div>
 					);
 				})}

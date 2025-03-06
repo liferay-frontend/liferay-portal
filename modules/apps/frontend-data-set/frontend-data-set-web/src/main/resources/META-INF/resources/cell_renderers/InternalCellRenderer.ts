@@ -27,8 +27,8 @@ import LabelRenderer from './LabelRenderer';
 // @ts-ignore
 
 import LinkRenderer from './LinkRenderer';
-
 import NavigationLinkRenderer from './NavigationLinkRenderer';
+
 // @ts-ignore
 
 import QuantitySelectorRenderer from './QuantitySelectorRenderer';
