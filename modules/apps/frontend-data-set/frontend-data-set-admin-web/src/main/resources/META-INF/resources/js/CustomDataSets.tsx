@@ -677,6 +677,7 @@ const CustomDataSets = ({
 					image: '/states/empty_state.svg',
 					title: Liferay.Language.get('no-data-sets-created'),
 				}}
+				fluidSize="xxl"
 				id={`${namespace}CustomDataSets`}
 				itemsActions={[
 					{

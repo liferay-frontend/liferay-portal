@@ -467,6 +467,7 @@ const SystemDataSets = ({
 					image: '/states/empty_state.svg',
 					title: Liferay.Language.get('no-system-data-sets-created'),
 				}}
+				fluidSize="xxl"
 				id="CreatedSystemDataSets"
 				itemsActions={[
 					{
