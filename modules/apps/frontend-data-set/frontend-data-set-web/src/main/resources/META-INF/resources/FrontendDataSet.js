@@ -550,6 +550,22 @@ const FrontendDataSet = ({
 		});
 	};
 
+	const openFolder = useCallback(
+		({item}) => {
+			const fullUrl = apiURL.startsWith('/')
+				? Liferay.ThemeDisplay.getPortalURL() +
+					Liferay.ThemeDisplay.getPathContext() +
+					apiURL
+				: apiURL;
+
+			const newApiURL = new URL(fullUrl);
+			newApiURL.searchParams.set('entryClassNames', item.entryClassName);
+
+			setApiURL(newApiURL.toString());
+		},
+		[apiURL]
+	);
+
 	useEffect(() => {
 		if (!apiURL) {
 			return;
@@ -588,7 +604,7 @@ const FrontendDataSet = ({
 		});
 
 		return () => Liferay.detach(EVENTS.OPEN_FOLDER, openFolder);
-	}, [apiURL, isMounted, requestData, setDataLoading]);
+	}, [apiURL, isMounted, openFolder, requestData, setDataLoading]);
 
 	useEffect(() => {
 		function handleRefreshFromTheOutside(event) {
@@ -811,19 +827,6 @@ const FrontendDataSet = ({
 			...itemsChanges,
 			[itemKey]: itemChanges,
 		});
-	}
-
-	function openFolder({item}) {
-		const fullUrl = apiURL.startsWith('/')
-			? Liferay.ThemeDisplay.getPortalURL() +
-				Liferay.ThemeDisplay.getPathContext() +
-				apiURL
-			: apiURL;
-
-		const newApiURL = new URL(fullUrl);
-		newApiURL.searchParams.set('entryClassNames', item.entryClassName);
-
-		setApiURL(newApiURL.toString());
 	}
 
 	function toggleItemInlineEdit(itemKey) {
