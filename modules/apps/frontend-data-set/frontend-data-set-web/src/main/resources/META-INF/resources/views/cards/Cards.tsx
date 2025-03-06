@@ -118,7 +118,7 @@ const Cards = ({items, schema}: {items: Array<any>; schema: ICardSchema}) => {
 				{items.map((item) => {
 					return (
 						<div
-							className="col-md-3"
+							className="col-md-4 col-sm-6 col-xl-3 col-xxxl-2"
 							key={
 								selectedItemsKey
 									? item[selectedItemsKey]
