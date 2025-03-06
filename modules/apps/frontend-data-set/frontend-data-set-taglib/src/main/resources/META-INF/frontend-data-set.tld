@@ -65,6 +65,11 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>fluidSize</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>formId</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -229,6 +234,11 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<type>java.util.List</type>
+		</attribute>
+		<attribute>
+			<name>fluidSize</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
 			<name>formId</name>

@@ -15,6 +15,7 @@ function ManagementBar({
 	creationMenu,
 	deselectItems,
 	fluid,
+	fluidSize,
 	items,
 	selectItems,
 	selectedItems,
@@ -39,7 +40,13 @@ function ManagementBar({
 	}
 
 	return (
-		<>
+		<div
+			className={
+				fluid && fluidSize
+					? `container-fluid container-fluid-max-${fluidSize}`
+					: ''
+			}
+		>
 			{selectionType === 'multiple' && (
 				<BulkActions
 					bulkActions={bulkActions}
@@ -65,7 +72,7 @@ function ManagementBar({
 			)}
 
 			<ActiveFiltersBar disabled={!!selectedItemsValue.length} />
-		</>
+		</div>
 	);
 }
 
@@ -84,6 +91,7 @@ ManagementBar.propTypes = {
 		secondaryItems: PropTypes.array,
 	}),
 	fluid: PropTypes.bool,
+	fluidSize: PropTypes.string,
 	items: PropTypes.array.isRequired,
 	selectItems: PropTypes.func.isRequired,
 	selectedItems: PropTypes.array,

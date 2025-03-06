@@ -91,6 +91,10 @@ public class HeadlessDisplayTag extends BaseDisplayTag {
 		return _fdsSortItemList;
 	}
 
+	public String getFluidSize() {
+		return _fluidSize;
+	}
+
 	public String getFormId() {
 		return _formId;
 	}
@@ -177,6 +181,10 @@ public class HeadlessDisplayTag extends BaseDisplayTag {
 		_fdsSortItemList = fdsSortItemList;
 	}
 
+	public void setFluidSize(String fluidSize) {
+		_fluidSize = fluidSize;
+	}
+
 	public void setFormId(String formId) {
 		_formId = formId;
 	}
@@ -252,6 +260,7 @@ public class HeadlessDisplayTag extends BaseDisplayTag {
 		_fdsFilters = new ArrayList<>();
 		_fdsSortItemList = new FDSSortItemList();
 		_filtersJSONArray = null;
+		_fluidSize = null;
 		_formId = null;
 		_formName = null;
 		_nestedItemsKey = null;
@@ -290,6 +299,8 @@ public class HeadlessDisplayTag extends BaseDisplayTag {
 				"customViewsEnabled", _customViewsEnabled
 			).put(
 				"filters", _filtersJSONArray
+			).put(
+				"fluidSize", _validateDataAttribute(_fluidSize)
 			).put(
 				"formId", _validateDataAttribute(_formId)
 			).put(
@@ -368,6 +379,7 @@ public class HeadlessDisplayTag extends BaseDisplayTag {
 	private List<FDSFilter> _fdsFilters = new ArrayList<>();
 	private FDSSortItemList _fdsSortItemList = new FDSSortItemList();
 	private JSONArray _filtersJSONArray;
+	private String _fluidSize;
 	private String _formId;
 	private String _formName;
 	private String _nestedItemsKey;

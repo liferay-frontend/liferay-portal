@@ -54,6 +54,7 @@ const FrontendDataSet = ({
 	customViewsEnabled,
 	emptyState,
 	filters: initialFilters,
+	fluidSize,
 	formId,
 	formName,
 	header,
@@ -613,6 +614,7 @@ const FrontendDataSet = ({
 				creationMenu={creationMenu}
 				deselectItems={(items) => deselectItems(items)}
 				fluid={style === 'fluid'}
+				fluidSize={fluidSize}
 				items={items}
 				selectItems={(items) => selectItems(items)}
 				selectedItems={selectedItems}
@@ -1029,7 +1031,14 @@ const FrontendDataSet = ({
 							<div className="data-set data-set-fluid">
 								{managementBar}
 
-								<div className="container-fluid mt-3">
+								<div
+									className={`mt-3 ${
+										!fluidSize
+											? ''
+											: 'container-fluid container-fluid-max-' +
+												fluidSize
+									}`}
+								>
 									{view}
 
 									{paginationComponent}

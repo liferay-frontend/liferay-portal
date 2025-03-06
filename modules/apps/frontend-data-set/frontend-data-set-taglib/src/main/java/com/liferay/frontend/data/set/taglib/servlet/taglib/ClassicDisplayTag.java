@@ -128,6 +128,10 @@ public class ClassicDisplayTag extends BaseDisplayTag {
 		return _fdsSortItemList;
 	}
 
+	public String getFluidSize() {
+		return _fluidSize;
+	}
+
 	public String getFormId() {
 		return _formId;
 	}
@@ -206,6 +210,10 @@ public class ClassicDisplayTag extends BaseDisplayTag {
 		_fdsSortItemList = fdsSortItemList;
 	}
 
+	public void setFluidSize(String fluidSize) {
+		_fluidSize = fluidSize;
+	}
+
 	public void setFormId(String formId) {
 		_formId = formId;
 	}
@@ -280,6 +288,7 @@ public class ClassicDisplayTag extends BaseDisplayTag {
 		_dataProviderKey = null;
 		_deltaParam = null;
 		_fdsSortItemList = new FDSSortItemList();
+		_fluidSize = null;
 		_formId = null;
 		_formName = null;
 		_nestedItemsKey = null;
@@ -316,6 +325,8 @@ public class ClassicDisplayTag extends BaseDisplayTag {
 				"currentURL", PortalUtil.getCurrentURL(getRequest())
 			).put(
 				"dataProviderKey", _dataProviderKey
+			).put(
+				"fluidSize", _toNullOrObject(_fluidSize)
 			).put(
 				"formId", _toNullOrObject(_formId)
 			).put(
@@ -385,6 +396,7 @@ public class ClassicDisplayTag extends BaseDisplayTag {
 	private String _dataProviderKey;
 	private String _deltaParam;
 	private FDSSortItemList _fdsSortItemList = new FDSSortItemList();
+	private String _fluidSize;
 	private String _formId;
 	private String _formName;
 	private String _nestedItemsKey;

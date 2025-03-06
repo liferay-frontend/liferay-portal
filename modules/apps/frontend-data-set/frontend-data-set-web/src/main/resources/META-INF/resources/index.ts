@@ -20,6 +20,7 @@ export declare function FrontendDataSet({
 	customViewsEnabled,
 	emptyState,
 	filters,
+	fluidSize,
 	formId,
 	formName,
 	header,
@@ -202,6 +203,7 @@ export interface IFrontendDataSetProps {
 		defaultBodyContent?: object;
 	};
 	filters?: any;
+	fluidSize?: 'md' | 'lg' | 'sm' | 'xl' | 'xxl' | 'xxxl' | undefined;
 	formId?: string;
 	formName?: string;
 	header?: {
