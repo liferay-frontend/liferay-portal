@@ -114,11 +114,19 @@ const Cards = ({items, schema}: {items: Array<any>; schema: ICardSchema}) => {
 				style === 'default' && 'px-3 pt-4'
 			)}
 		>
-			<div className="row">
+			<style>{`
+				@container card-view (min-width: 280px) {
+					.cards-section {
+						grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+					}
+				}
+			`}</style>
+
+			<div className="cards-section">
 				{items.map((item) => {
 					return (
 						<div
-							className="col-md-4 col-sm-6 col-xl-3 col-xxxl-2"
+							className="card-wrapper"
 							key={
 								selectedItemsKey
 									? item[selectedItemsKey]

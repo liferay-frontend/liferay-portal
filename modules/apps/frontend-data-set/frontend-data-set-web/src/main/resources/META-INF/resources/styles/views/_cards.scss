@@ -1,0 +1,21 @@
+.cards-container {
+	// stylelint-disable-next-line property-no-unknown
+	container: card-view / inline-size;
+	padding: 1rem;
+}
+
+.cards-section {
+	display: grid;
+	gap: 1rem;
+	grid-template-columns: 1fr;
+}
+
+.cards-section > * {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+._card-wrapper {
+	max-width: 100%;
+}
