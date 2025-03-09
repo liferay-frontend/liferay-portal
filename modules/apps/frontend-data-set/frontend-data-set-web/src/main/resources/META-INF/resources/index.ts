@@ -120,6 +120,7 @@ export interface IItemActionsData {
 	confirmationMessage?: string;
 	disableHeader?: boolean;
 	errorMessage?: string;
+	filters?: IItemActionsDataFilter[];
 	id?: string | number;
 	method?: 'delete' | 'get' | 'patch' | 'post';
 	permissionKey?: string;
@@ -128,6 +129,11 @@ export interface IItemActionsData {
 	status?: ModalStatus;
 	successMessage?: string;
 	title?: string;
+}
+
+export interface IItemActionsDataFilter {
+	key: string;
+	value: string;
 }
 
 export interface IQuickActions extends IBaseActions {
