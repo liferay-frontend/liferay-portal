@@ -89,7 +89,7 @@ const Card = ({item, schema}: {item: any; schema: ICardSchema}) => {
 
 			return [
 				{
-					displayType: displayType!,
+					displayType: displayType || DisplayType.UNSTYLED,
 					value,
 				},
 			];
