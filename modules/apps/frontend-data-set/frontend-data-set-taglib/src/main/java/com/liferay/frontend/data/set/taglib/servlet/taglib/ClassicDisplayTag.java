@@ -136,6 +136,10 @@ public class ClassicDisplayTag extends BaseDisplayTag {
 		return _formName;
 	}
 
+	public String[] getHighlightedBulkActionDropdownItemIds() {
+		return _highlightedBulkActionDropdownItemIds;
+	}
+
 	public String getNestedItemsKey() {
 		return _nestedItemsKey;
 	}
@@ -212,6 +216,13 @@ public class ClassicDisplayTag extends BaseDisplayTag {
 
 	public void setFormName(String formName) {
 		_formName = formName;
+	}
+
+	public void setHighlightedBulkActionDropdownItemIds(
+		String[] highlightedBulkActionDropdownItemIds) {
+
+		_highlightedBulkActionDropdownItemIds =
+			highlightedBulkActionDropdownItemIds;
 	}
 
 	public void setNestedItemsKey(String nestedItemsKey) {
@@ -321,6 +332,9 @@ public class ClassicDisplayTag extends BaseDisplayTag {
 			).put(
 				"formName", _toNullOrObject(_formName)
 			).put(
+				"highlightedBulkActionIds",
+				_highlightedBulkActionDropdownItemIds
+			).put(
 				"id", getId()
 			).put(
 				"nestedItemsKey", _toNullOrObject(_nestedItemsKey)
@@ -387,6 +401,7 @@ public class ClassicDisplayTag extends BaseDisplayTag {
 	private FDSSortItemList _fdsSortItemList = new FDSSortItemList();
 	private String _formId;
 	private String _formName;
+	private String[] _highlightedBulkActionDropdownItemIds;
 	private String _nestedItemsKey;
 	private String _nestedItemsReferenceKey;
 	private String _selectedItemsKey;

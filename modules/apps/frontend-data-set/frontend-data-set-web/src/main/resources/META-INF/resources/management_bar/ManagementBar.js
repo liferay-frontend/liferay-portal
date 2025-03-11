@@ -16,6 +16,7 @@ function ManagementBar({
 	creationMenu,
 	deselectItems,
 	fluid,
+	highlightedBulkActionIds,
 	items,
 	onBulkActionsClear,
 	selectItems,
@@ -48,6 +49,7 @@ function ManagementBar({
 						bulkActions={bulkActions}
 						fluid={fluid}
 						handleCheckboxClick={handleCheckboxClick}
+						highlightedBulkActionIds={highlightedBulkActionIds}
 						items={items}
 						onClear={onBulkActionsClear}
 						pageSelectedItemsValue={pageSelectedItemsValue}

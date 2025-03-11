@@ -99,6 +99,10 @@ public class HeadlessDisplayTag extends BaseDisplayTag {
 		return _formName;
 	}
 
+	public String[] getHighlightedBulkActionDropdownItemIds() {
+		return _highlightedBulkActionDropdownItemIds;
+	}
+
 	public String getNestedItemsKey() {
 		return _nestedItemsKey;
 	}
@@ -183,6 +187,13 @@ public class HeadlessDisplayTag extends BaseDisplayTag {
 
 	public void setFormName(String formName) {
 		_formName = formName;
+	}
+
+	public void setHighlightedBulkActionDropdownItemIds(
+		String[] highlightedBulkActionDropdownItemIds) {
+
+		_highlightedBulkActionDropdownItemIds =
+			highlightedBulkActionDropdownItemIds;
 	}
 
 	public void setNestedItemsKey(String nestedItemsKey) {
@@ -295,6 +306,9 @@ public class HeadlessDisplayTag extends BaseDisplayTag {
 			).put(
 				"formName", _validateDataAttribute(_formName)
 			).put(
+				"highlightedBulkActionIds",
+				_highlightedBulkActionDropdownItemIds
+			).put(
 				"id", getId()
 			).put(
 				"itemsActions", _fdsActionDropdownItems
@@ -370,6 +384,7 @@ public class HeadlessDisplayTag extends BaseDisplayTag {
 	private JSONArray _filtersJSONArray;
 	private String _formId;
 	private String _formName;
+	private String[] _highlightedBulkActionDropdownItemIds;
 	private String _nestedItemsKey;
 	private String _nestedItemsReferenceKey;
 	private String _selectedItemsKey;

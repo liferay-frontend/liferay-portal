@@ -57,6 +57,7 @@ const FrontendDataSet = ({
 	formId,
 	formName,
 	header,
+	highlightedBulkActionIds,
 	id,
 	inlineAddingSettings,
 	inlineEditingSettings,
@@ -613,6 +614,7 @@ const FrontendDataSet = ({
 				creationMenu={creationMenu}
 				deselectItems={(items) => deselectItems(items)}
 				fluid={style === 'fluid'}
+				highlightedBulkActionIds={highlightedBulkActionIds}
 				items={items}
 				onBulkActionsClear={() => deselectItems(selectedItemsValue)}
 				selectItems={(items) => selectItems(items)}

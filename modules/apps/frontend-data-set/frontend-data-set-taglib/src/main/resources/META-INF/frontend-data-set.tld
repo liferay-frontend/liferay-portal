@@ -73,6 +73,11 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>highlightedBulkActionDropdownItemIds</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>id</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -237,6 +242,11 @@
 		</attribute>
 		<attribute>
 			<name>formName</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>highlightedBulkActionDropdownItemIds</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
