@@ -23,6 +23,7 @@ FDSSampleDisplayContext fdsSampleDisplayContext = (FDSSampleDisplayContext)reque
 	fdsActionDropdownItems="<%= fdsSampleDisplayContext.getFDSActionDropdownItems() %>"
 	fdsSortItemList="<%= fdsSampleDisplayContext.getFDSSortItemList() %>"
 	formId="fm"
+	highlightedBulkActionDropdownItemIds="<%= fdsSampleDisplayContext.getHighlightedBulkActionDropdownItemIds() %>"
 	id="<%= FDSSampleFDSNames.ADVANCED %>"
 	itemsPerPage="<%= 10 %>"
 	propsTransformer="{AdvancedPropsTransformer} from frontend-data-set-sample-web"

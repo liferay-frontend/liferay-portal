@@ -157,6 +157,10 @@ public class FDSSampleDisplayContext {
 		).build();
 	}
 
+	public String[] getHighlightedBulkActionDropdownItemIds() {
+		return new String[] {"sampleBulkAction"};
+	}
+
 	private final FDSRequestHelper _fdsRequestHelper;
 	private final RenderResponse _renderResponse;
 
