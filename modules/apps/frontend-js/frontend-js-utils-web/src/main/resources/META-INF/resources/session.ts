@@ -30,7 +30,7 @@ class Session {
 		secure: boolean;
 	};
 	private _sessionState: TSessionState;
-	private _intervalId?: number;
+	private _intervalId?: number | NodeJS.Timeout;
 	private _initTimestamp?: string;
 	private _warningLength: number;
 	private _initPageTitle: string;
@@ -239,7 +239,7 @@ class Session {
 				message: this._warningText,
 				type: 'warning',
 				...toastDefaultConfig,
-			});
+			} as any);
 
 			const toastComponent = Liferay.component(TOAST_ID);
 
@@ -371,13 +371,13 @@ class Session {
 		this._sessionState = newVal;
 	}
 
-	async openToast(...args: OpenToastProps) {
+	async openToast(args: OpenToastProps) {
 		const {openToast} = await import(
 			Liferay.ThemeDisplay.getPathContext() +
 				'/o/frontend-js-components-web/__liferay__/index.js'
 		);
 
-		openToast(...args);
+		openToast(args);
 	}
 
 	destructor() {
