@@ -194,18 +194,16 @@ function BulkActions({
 											)}
 								</span>
 
-								{Liferay.FeatureFlags['LPD-42570'] && (
-									<ClayLink
-										className="ml-3"
-										href="#"
-										onClick={(event) => {
-											event.preventDefault();
-											onClear();
-										}}
-									>
-										{Liferay.Language.get('clear')}
-									</ClayLink>
-								)}
+								<ClayLink
+									className="ml-3"
+									href="#"
+									onClick={(event) => {
+										event.preventDefault();
+										onClear();
+									}}
+								>
+									{Liferay.Language.get('clear')}
+								</ClayLink>
 
 								<ClayLink
 									className="ml-3"
