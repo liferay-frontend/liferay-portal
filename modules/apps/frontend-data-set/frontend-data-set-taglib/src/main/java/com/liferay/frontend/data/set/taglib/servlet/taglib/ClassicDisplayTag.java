@@ -293,6 +293,7 @@ public class ClassicDisplayTag extends BaseDisplayTag {
 		_fdsSortItemList = new FDSSortItemList();
 		_formId = null;
 		_formName = null;
+		_highlightedBulkActionDropdownItemIds = null;
 		_nestedItemsKey = null;
 		_nestedItemsReferenceKey = null;
 		_selectedItemsKey = null;

@@ -265,6 +265,7 @@ public class HeadlessDisplayTag extends BaseDisplayTag {
 		_filtersJSONArray = null;
 		_formId = null;
 		_formName = null;
+		_highlightedBulkActionDropdownItemIds = null;
 		_nestedItemsKey = null;
 		_nestedItemsReferenceKey = null;
 		_selectedItemsKey = null;
