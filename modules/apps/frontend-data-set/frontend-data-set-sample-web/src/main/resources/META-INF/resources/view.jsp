@@ -12,6 +12,7 @@ String navigation = ParamUtil.getString(request, "navigation", "advanced");
 %>
 
 <clay:navigation-bar
+	cssClass="container-fluid-max-xl c-ml-auto c-mr-auto"
 	navigationItems='<%=
 		new JSPNavigationItemList(pageContext) {
 			{
