@@ -45,6 +45,7 @@ import '../../css/ckeditor5/editor.scss';
 import ItemSelector from './plugins/ItemSelector';
 import advancedClassicEditorConfig from './presets/advancedClassicEditorConfig';
 import basicClassicEditorConfig from './presets/basicClassicEditorConfig';
+import StickyToolbarConfig from './utils/stickyToolbarConfig';
 import {ClassicEditorConfig, EClassicEditorConfigPreset} from './utils/types';
 
 const ClassicEditor = ({
@@ -106,6 +107,33 @@ const ClassicEditor = ({
 		return <></>;
 	}
 
+	const calculateStickyToolbarSettings = (editor: BaseClassicEditor) => {
+		let hasStickyToolbar = false;
+
+		Object.keys(StickyToolbarConfig).forEach((namespace) => {
+			const portletWrapper = document.getElementById(
+				`p_p_id${namespace}`
+			);
+			if (portletWrapper) {
+				hasStickyToolbar = true;
+				editor.ui.viewportOffset =
+					StickyToolbarConfig[namespace].viewportOffset;
+			}
+		});
+
+		if (!hasStickyToolbar) {
+			const hasControlMenu = document.querySelector(
+				'.control-menu-container'
+			);
+
+			if (!hasControlMenu) {
+				editor.ui.viewportOffset = {
+					top: 0,
+				};
+			}
+		}
+	};
+
 	return (
 		<div className={`lfr-ck ${className ? className : ''}`}>
 			<CKEditor
@@ -128,14 +156,7 @@ const ClassicEditor = ({
 						item.tooltipPosition = 'n';
 					});
 
-					const hasControlMenu = document.querySelector(
-						'.control-menu-container'
-					);
-					if (!hasControlMenu) {
-						editor.ui.viewportOffset = {
-							top: 0,
-						};
-					}
+					calculateStickyToolbarSettings(editor);
 
 					onReady && onReady(editor);
 				}}
