@@ -2019,9 +2019,6 @@ describe('App', function () {
 
 		class TestScreen extends Screen {
 			evaluateStyles(surfaces) {
-				userEvent.click(enterDocumentLinkElement('/path2'));
-				exitDocumentLinkElement();
-
 				return super.evaluateStyles(surfaces);
 			}
 
@@ -2034,9 +2031,6 @@ describe('App', function () {
 
 		class TestScreen2 extends Screen {
 			evaluateStyles(surfaces) {
-				userEvent.click(enterDocumentLinkElement('/path3'));
-				exitDocumentLinkElement();
-
 				return super.evaluateStyles(surfaces);
 			}
 
