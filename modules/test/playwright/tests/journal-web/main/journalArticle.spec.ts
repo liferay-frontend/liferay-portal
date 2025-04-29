@@ -4,6 +4,7 @@
  */
 
 import {APIResponse, expect as baseExpect, mergeTests} from '@playwright/test';
+import path from 'path';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {applicationsMenuPageTest} from '../../../fixtures/applicationsMenuPageTest';
@@ -1917,5 +1918,155 @@ baseTest(
 
 			await waitForAlert(page);
 		}
+	}
+);
+
+baseTest(
+	'LPD-53880: when changing the image via "Image Properties" the image and URL is changed',
+	{
+		tag: '@LPD-53880',
+	},
+	async ({apiHelpers, journalEditArticlePage, page, site}) => {
+		await baseTest.step('Create web content article', async () => {
+			const basicWebContentStructureId =
+				await getBasicWebContentStructureId(apiHelpers);
+
+			const title = getRandomString();
+
+			await apiHelpers.jsonWebServicesJournal.addWebContent({
+				ddmStructureId: basicWebContentStructureId,
+				groupId: site.id,
+				titleMap: {en_US: title},
+			});
+
+			await journalEditArticlePage.goto({siteUrl: site.friendlyUrlPath});
+		});
+
+		await baseTest.step('Insert first image into the editor', async () => {
+			const fieldsSheet = page.getByRole('group', {name: 'Fields'});
+
+			await journalEditArticlePage.content.waitFor();
+
+			const editor = fieldsSheet.getByTestId('content');
+
+			expect(editor).toBeVisible();
+
+			const imageButton = page.getByTestId('content').getByLabel('Image');
+			const iframe = page.frameLocator('iframe[title="Select Item"]');
+
+			const dropzone = iframe.getByText('Drag & Drop Your Images or');
+
+			await clickAndExpectToBeVisible({
+				target: dropzone,
+				timeout: 2000,
+				trigger: imageButton,
+			});
+
+			const fileChooserPromise = page.waitForEvent('filechooser');
+
+			await dropzone.click();
+
+			const fileChooser = await fileChooserPromise;
+
+			await fileChooser.setFiles(
+				path.join(__dirname, '/dependencies/image1.jpg')
+			);
+
+			await iframe
+				.getByRole('button', {exact: true, name: 'Add'})
+				.click();
+		});
+
+		await baseTest.step(
+			'Verify image1 is present in the editor',
+			async () => {
+				await journalEditArticlePage.content.waitFor();
+
+				const imageInEditor = page
+					.getByRole('textbox', {name: 'Content'})
+					.frameLocator('iframe[title="editor"]')
+					.locator('img')
+					.first();
+
+				await expect(imageInEditor).toBeVisible();
+
+				await imageInEditor.dblclick();
+
+				const urlInput = page.getByLabel('URL', {exact: true});
+
+				await expect(urlInput).toBeVisible();
+
+				const urlInputValue = await urlInput.inputValue();
+
+				const includesImage1 = urlInputValue.includes('image1');
+
+				expect(includesImage1).toBeTruthy();
+			}
+		);
+
+		await baseTest.step(
+			'Replace with second image via Browse Server',
+			async () => {
+				const browseServerButton = page.getByLabel('Browse Server');
+
+				const iframe = page.frameLocator('iframe[title="Select Item"]');
+
+				const dropzone = iframe.getByText('Drag & Drop Your Images or');
+
+				await clickAndExpectToBeVisible({
+					target: dropzone,
+					timeout: 2000,
+					trigger: browseServerButton,
+				});
+
+				const fileChooserPromise2 = page.waitForEvent('filechooser');
+				await dropzone.click();
+
+				const fileChooser = await fileChooserPromise2;
+
+				await fileChooser.setFiles(
+					path.join(__dirname, '/dependencies/image2.jpeg')
+				);
+
+				await iframe
+					.getByRole('button', {exact: true, name: 'Add'})
+					.click();
+
+				const urlInput = page.getByLabel('URL', {exact: true});
+
+				await expect(urlInput).toBeVisible();
+
+				const urlInputValue = await urlInput.inputValue();
+
+				const includesImage = urlInputValue.includes('image2');
+
+				expect(includesImage).toBeTruthy();
+
+				const okButton = page.getByRole('button', {name: 'OK'});
+
+				await okButton.click();
+			}
+		);
+
+		await baseTest.step(
+			'Verify image was successfully changed',
+			async () => {
+				await journalEditArticlePage.content.waitFor();
+
+				const updatedImageInEditor = page
+					.getByRole('textbox', {name: 'Content'})
+					.frameLocator('iframe[title="editor"]')
+					.locator('img')
+					.first();
+
+				await expect(updatedImageInEditor).toBeVisible();
+
+				const imageSrc = await updatedImageInEditor.getAttribute('src');
+
+				expect(imageSrc).toContain('image2');
+
+				expect(imageSrc).not.toContain('image1');
+			}
+		);
 	}
 );
