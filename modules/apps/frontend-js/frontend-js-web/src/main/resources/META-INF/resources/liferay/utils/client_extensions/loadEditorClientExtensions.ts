@@ -7,6 +7,7 @@ import loadClientExtensions from './loadClientExtensions';
 
 interface IConfig {
 	editorTransformerURLs: Array<string>;
+	[key: string]: any;
 }
 
 /**
@@ -25,11 +26,11 @@ function deepCloneWithFunctions<T>(sourceObj: T, hash = new WeakMap()): T {
 		return sourceObj;
 	}
 
-	if (hash.has(sourceObj as object)) {
+	if (hash.has(sourceObj as unknown as object)) {
 
 		// Handle circular references
 
-		return hash.get(sourceObj as object) as T;
+		return hash.get(sourceObj as unknown as object) as T;
 	}
 
 	if (sourceObj instanceof Date) {
@@ -47,7 +48,7 @@ function deepCloneWithFunctions<T>(sourceObj: T, hash = new WeakMap()): T {
 	// Store the clone in the hash map before recursively cloning properties
 	// to handle circular references.
 
-	hash.set(sourceObj as object, clone);
+	hash.set(sourceObj as unknown as object, clone);
 
 	for (const key in sourceObj) {
 		if (Object.prototype.hasOwnProperty.call(sourceObj, key)) {
