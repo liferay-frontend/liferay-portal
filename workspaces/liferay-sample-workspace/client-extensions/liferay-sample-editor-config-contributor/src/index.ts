@@ -10,6 +10,24 @@ import {
 
 const editorConfigTransformer: EditorConfigTransformer<any> = (config) => {
 
+	// CKEditor 5
+
+	if (config.editorVersion && config.editorVersion === 5) {
+		const source = 'sourceEditing';
+		const separator = '|';
+
+		const updatedConfig = {
+			...config,
+			config: {
+				toolbar: {
+					items: config.toolbar.items.push(separator, source),
+				},
+			},
+		};
+
+		return updatedConfig;
+	}
+
 	// Alloy Editor
 
 	const toolbars: any = config.toolbars;
