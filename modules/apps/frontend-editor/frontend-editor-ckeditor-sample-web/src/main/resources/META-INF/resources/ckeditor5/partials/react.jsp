@@ -16,6 +16,8 @@ CKEditorSampleDisplayContext ckEditorSampleDisplayContext = (CKEditorSampleDispl
 	props='<%=
 		HashMapBuilder.<String, Object>put(
 			"editorConfig", ckEditorSampleDisplayContext.getCKEditor5ClassicEditorConfig()
+		).put(
+			"editorTransformerURLs", ckEditorSampleDisplayContext.getEditorTransformerURLsJSONArray()
 		).build()
 	%>'
 />
