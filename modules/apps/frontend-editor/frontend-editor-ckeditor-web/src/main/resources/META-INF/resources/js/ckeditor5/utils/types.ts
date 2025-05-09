@@ -10,6 +10,8 @@ export enum EClassicEditorConfigPreset {
 	ADVANCED = 'advanced',
 }
 export interface ClassicEditorConfig extends EditorConfig {
+	editorTransformerURLs?: Array<string>;
+	editorVersion?: number;
 	filebrowserImageBrowseUrl?: string;
 	filebrowserVideoBrowseUrl?: string;
 	itemSelectorEventName?: string;

@@ -4,6 +4,7 @@
  */
 
 import {CKEditor} from '@ckeditor/ckeditor5-react';
+import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {
 	Alignment,
 	BlockQuote,
@@ -39,7 +40,8 @@ import {
 	TableToolbar,
 	Underline,
 } from 'ckeditor5';
-import React from 'react';
+import {loadEditorClientExtensions} from 'frontend-js-web';
+import React, {useEffect, useRef, useState} from 'react';
 
 import '../../css/ckeditor5/editor.scss';
 import ItemSelector from './plugins/ItemSelector';
@@ -61,7 +63,11 @@ const ClassicEditor = ({
 	onChange?: (event: EventInfo, editor: Editor) => void;
 	onReady?: (editor: Editor) => void;
 }) => {
+	const [loading, setLoading] = useState(true);
+	const firstRenderRef = useRef(true);
+
 	const defaultConfig: ClassicEditorConfig = {
+		editorVersion: 5,
 		plugins: [
 			Alignment,
 			BlockQuote,
@@ -102,20 +108,52 @@ const ClassicEditor = ({
 		},
 	};
 
+	const initialConfig = {
+		...defaultConfig,
+		...(config?.preset === EClassicEditorConfigPreset.ADVANCED
+			? advancedClassicEditorConfig
+			: basicClassicEditorConfig),
+		...config,
+	};
+
+	const [editorConfig, setEditorConfig] = useState(initialConfig);
+
+	useEffect(() => {
+		if (firstRenderRef.current) {
+			firstRenderRef.current = false;
+		}
+		else {
+			return;
+		}
+
+		if (!editorConfig || !editorConfig.editorTransformerURLs) {
+			setLoading(false);
+
+			return;
+		}
+
+		loadEditorClientExtensions({
+			config: editorConfig,
+			onLoad: ({transformedConfig}: any) => {
+				setEditorConfig(() => transformedConfig);
+
+				setLoading(false);
+			},
+		});
+	}, [editorConfig]);
+
 	if (!Liferay.FeatureFlags['LPD-11235']) {
+		setLoading(false);
+
 		return <></>;
 	}
 
-	return (
+	return loading ? (
+		<ClayLoadingIndicator />
+	) : (
 		<div className={`lfr-ck ${className ? className : ''}`}>
 			<CKEditor
-				config={{
-					...defaultConfig,
-					...(config?.preset === EClassicEditorConfigPreset.ADVANCED
-						? advancedClassicEditorConfig
-						: basicClassicEditorConfig),
-					...config,
-				}}
+				config={editorConfig}
 				data={data}
 				editor={BaseClassicEditor}
 				onChange={onChange}
