@@ -9,10 +9,12 @@
 <%@ include file="/init.jsp" %>
 
 <%
-java.lang.String className = GetterUtil.getString((java.lang.String)request.getAttribute("liferay-ddm:template-renderer:className"));
-java.util.Map<java.lang.String, java.lang.Object> contextObjects = (java.util.Map<java.lang.String, java.lang.Object>)request.getAttribute("liferay-ddm:template-renderer:contextObjects");
-java.lang.String displayStyle = GetterUtil.getString((java.lang.String)request.getAttribute("liferay-ddm:template-renderer:displayStyle"));
-java.util.List<?> entries = (java.util.List<?>)request.getAttribute("liferay-ddm:template-renderer:entries");
+String className = GetterUtil.getString((String)request.getAttribute("liferay-ddm:template-renderer:className"));
+Map<String, Object> contextObjects = (Map<String, Object>)request.getAttribute("liferay-ddm:template-renderer:contextObjects");
+String displayStyle = GetterUtil.getString((String)request.getAttribute("liferay-ddm:template-renderer:displayStyle"));
+long displayStyleGroupId = GetterUtil.getLong(String.valueOf(request.getAttribute("liferay-ddm:template-renderer:displayStyleGroupId")));
+List<?> entries = (List<?>)request.getAttribute("liferay-ddm:template-renderer:entries");
+Map<String, Object> dynamicAttributes = (Map<String, Object>)request.getAttribute("liferay-ddm:template-renderer:dynamicAttributes");
 %>
 
 <%@ include file="/template_renderer/init-ext.jspf" %>
