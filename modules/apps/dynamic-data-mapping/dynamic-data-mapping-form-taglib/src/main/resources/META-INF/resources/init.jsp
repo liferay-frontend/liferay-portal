@@ -12,8 +12,11 @@ page import="com.liferay.portal.kernel.util.GetterUtil" %><%@
 page import="com.liferay.portal.kernel.util.StringUtil" %>
 
 <%@ page import="java.util.ArrayList" %><%@
-page import="java.util.HashMap" %><%@
-page import="java.util.Map" %>
+page import="java.util.HashMap" %>
+
+<%
+_initJSONFactoryUtil();
+%>
 
 <%!
 private static ArrayList<Object> _toArrayList(Object obj) {
@@ -41,8 +44,4 @@ private static Object _deserialize(Object obj) {
 
 	return null;
 }
-%>
-
-<%
-_initJSONFactoryUtil();
 %>

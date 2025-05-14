@@ -18,7 +18,6 @@ java.lang.String icon = GetterUtil.getString((java.lang.String)request.getAttrib
 java.lang.String label = GetterUtil.getString((java.lang.String)request.getAttribute("liferay-ddm:template-selector:label"), "display-template");
 java.lang.String refreshURL = GetterUtil.getString((java.lang.String)request.getAttribute("liferay-ddm:template-selector:refreshURL"));
 boolean showEmptyOption = GetterUtil.getBoolean(String.valueOf(request.getAttribute("liferay-ddm:template-selector:showEmptyOption")));
-Map<String, Object> dynamicAttributes = (Map<String, Object>)request.getAttribute("liferay-ddm:template-selector:dynamicAttributes");
 %>
 
 <%@ include file="/template_selector/init-ext.jspf" %>
