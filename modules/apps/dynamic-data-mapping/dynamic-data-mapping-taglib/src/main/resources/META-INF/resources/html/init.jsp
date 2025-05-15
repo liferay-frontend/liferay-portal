@@ -10,15 +10,12 @@
 
 <%
 boolean checkRequired = GetterUtil.getBoolean(String.valueOf(request.getAttribute("liferay-ddm:html:checkRequired")), true);
-long classNameId = GetterUtil.getLong(String.valueOf(request.getAttribute("liferay-ddm:html:classNameId")));
-long classPK = GetterUtil.getLong(String.valueOf(request.getAttribute("liferay-ddm:html:classPK")));
 DDMFormValues ddmFormValues = (DDMFormValues)request.getAttribute("liferay-ddm:html:ddmFormValues");
 Locale defaultEditLocale = (Locale)request.getAttribute("liferay-ddm:html:defaultEditLocale");
 Locale defaultLocale = (Locale)request.getAttribute("liferay-ddm:html:defaultLocale");
 String documentLibrarySelectorURL = GetterUtil.getString((String)request.getAttribute("liferay-ddm:html:documentLibrarySelectorURL"));
 String fieldsNamespace = GetterUtil.getString((String)request.getAttribute("liferay-ddm:html:fieldsNamespace"));
 long groupId = GetterUtil.getLong(String.valueOf(request.getAttribute("liferay-ddm:html:groupId")));
-boolean ignoreRequestValue = GetterUtil.getBoolean(String.valueOf(request.getAttribute("liferay-ddm:html:ignoreRequestValue")));
 String imageSelectorURL = GetterUtil.getString((String)request.getAttribute("liferay-ddm:html:imageSelectorURL"));
 String layoutSelectorURL = GetterUtil.getString((String)request.getAttribute("liferay-ddm:html:layoutSelectorURL"));
 boolean localizable = GetterUtil.getBoolean(String.valueOf(request.getAttribute("liferay-ddm:html:localizable")), true);
@@ -28,7 +25,6 @@ Locale requestedLocale = (Locale)request.getAttribute("liferay-ddm:html:requeste
 boolean showEmptyFieldLabel = GetterUtil.getBoolean(String.valueOf(request.getAttribute("liferay-ddm:html:showEmptyFieldLabel")), true);
 boolean showLanguageSelector = GetterUtil.getBoolean(String.valueOf(request.getAttribute("liferay-ddm:html:showLanguageSelector")), true);
 boolean synchronousFormSubmission = GetterUtil.getBoolean(String.valueOf(request.getAttribute("liferay-ddm:html:synchronousFormSubmission")), true);
-Map<String, Object> dynamicAttributes = (Map<String, Object>)request.getAttribute("liferay-ddm:html:dynamicAttributes");
 %>
 
 <%@ include file="/html/init-ext.jspf" %>

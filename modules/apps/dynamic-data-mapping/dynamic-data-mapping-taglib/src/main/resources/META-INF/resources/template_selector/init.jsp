@@ -9,8 +9,6 @@
 <%@ include file="/init.jsp" %>
 
 <%
-String className = GetterUtil.getString((String)request.getAttribute("liferay-ddm:template-selector:className"));
-String defaultDisplayStyle = GetterUtil.getString((String)request.getAttribute("liferay-ddm:template-selector:defaultDisplayStyle"), com.liferay.petra.string.StringPool.BLANK);
 String displayStyle = GetterUtil.getString((String)request.getAttribute("liferay-ddm:template-selector:displayStyle"));
 long displayStyleGroupId = GetterUtil.getLong(String.valueOf(request.getAttribute("liferay-ddm:template-selector:displayStyleGroupId")));
 List<String> displayStyles = (List<String>)request.getAttribute("liferay-ddm:template-selector:displayStyles");
@@ -18,7 +16,6 @@ String icon = GetterUtil.getString((String)request.getAttribute("liferay-ddm:tem
 String label = GetterUtil.getString((String)request.getAttribute("liferay-ddm:template-selector:label"), "display-template");
 String refreshURL = GetterUtil.getString((String)request.getAttribute("liferay-ddm:template-selector:refreshURL"));
 boolean showEmptyOption = GetterUtil.getBoolean(String.valueOf(request.getAttribute("liferay-ddm:template-selector:showEmptyOption")));
-Map<String, Object> dynamicAttributes = (Map<String, Object>)request.getAttribute("liferay-ddm:template-selector:dynamicAttributes");
 %>
 
 <%@ include file="/template_selector/init-ext.jspf" %>
