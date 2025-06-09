@@ -214,6 +214,7 @@ function Body({
 
 		if (success) {
 			let formData: any = {
+				entityFieldType: selectedField?.type,
 				fieldName: selectedField?.name,
 				include: includeMode === 'include',
 				label_i18n: i18nFilterLabels,

@@ -987,6 +987,10 @@ public class CustomFDSSerializer
 		).put(
 			"entityFieldType",
 			() -> {
+				if (Validator.isNotNull(properties.get("entityFieldType"))) {
+					return properties.get("entityFieldType");
+				}
+
 				if (_isCollection(
 						String.valueOf(properties.get("fieldName")),
 						sourceType)) {
