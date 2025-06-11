@@ -8,11 +8,15 @@ package com.liferay.frontend.js.web.internal.servlet.filter;
 import com.liferay.frontend.js.web.internal.frontend.resource.FrontendResource;
 import com.liferay.frontend.js.web.internal.frontend.resource.handler.FrontendResourceRequestHandler;
 import com.liferay.frontend.js.web.internal.frontend.resource.handler.HashedFileFrontendResourceRequestHandler;
+import com.liferay.frontend.js.web.internal.frontend.resource.handler.LanguageFrontendResourceRequestHandler;
 import com.liferay.frontend.js.web.internal.hashed.files.HashedFilesRegistry;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.Portal;
@@ -102,6 +106,10 @@ public class FrontendResourceFilter extends BasePortalFilter {
 				ContentTypes.TEXT_JAVASCRIPT, ".js", _hashedFilesRegistry,
 				86400, "esModulesMaxAge", _portal, false,
 				"sendNoCacheForESModules", _serviceTrackerMap));
+		_frontendResourceRequestHandlers.add(
+			new LanguageFrontendResourceRequestHandler(
+				_configurationProvider, _jsonFactory, _language, _portal,
+				_serviceTrackerMap));
 	}
 
 	@Deactivate
@@ -206,9 +214,18 @@ public class FrontendResourceFilter extends BasePortalFilter {
 		}
 	}
 
+	@Reference
+	private ConfigurationProvider _configurationProvider;
+
 	private final List<FrontendResourceRequestHandler>
 		_frontendResourceRequestHandlers = new ArrayList<>();
 	private HashedFilesRegistry _hashedFilesRegistry;
+
+	@Reference
+	private JSONFactory _jsonFactory;
+
+	@Reference
+	private Language _language;
 
 	@Reference
 	private Portal _portal;
