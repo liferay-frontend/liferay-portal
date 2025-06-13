@@ -115,7 +115,7 @@ function getOdataString({
 
 	const quotedSelectedItems = selectedItems.map((item) =>
 		entityFieldType === EEntityFieldType.INTEGER
-			?  Number(item.value)
+			? Number(item.value)
 			: `'${item.value}'`
 	);
 
