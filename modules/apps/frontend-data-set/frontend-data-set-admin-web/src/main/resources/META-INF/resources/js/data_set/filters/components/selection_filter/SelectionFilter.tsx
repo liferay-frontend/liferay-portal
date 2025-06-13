@@ -17,6 +17,7 @@ import React, {useState} from 'react';
 import CheckboxMultiSelect from '../../../../components/CheckboxMultiSelect';
 import RequiredMark from '../../../../components/RequiredMark';
 import {
+	EFieldType,
 	ESelectionFilterSourceType,
 	IField,
 	IFilter,
@@ -81,12 +82,20 @@ function Body({
 
 	const [multiple, setMultiple] = useState(filter?.multiple ?? true);
 	const [picklists, setPicklists] = useState<IPickList[]>();
-	const [preselectedValueInput, setPreselectedValueInput] = useState('');
+	const [preselectedValueInput, setPreselectedValueInput] = useState<
+		string | number
+	>('');
 	const [preselectedValues, setPreselectedValues] = useState<TItem[]>(
 		JSON.parse(filter?.preselectedValues || '[]')
 	);
 	const [selectedField, setSelectedField] = useState<IField | undefined>(
-		filter ? {label: filter.fieldName, name: filter.fieldName} : undefined
+		filter
+			? {
+					entityFieldType: filter.entityFieldType,
+					label: filter.fieldName,
+					name: filter.fieldName,
+				}
+			: undefined
 	);
 	const [source, setSource] = useState<string | undefined>(filter?.source);
 	const [sourceType, setSourceType] = useState(filter?.sourceType);
@@ -214,7 +223,7 @@ function Body({
 
 		if (success) {
 			let formData: any = {
-				entityFieldType: selectedField?.type,
+				entityFieldType: selectedField?.entityFieldType,
 				fieldName: selectedField?.name,
 				include: includeMode === 'include',
 				label_i18n: i18nFilterLabels,
@@ -222,7 +231,11 @@ function Body({
 				preselectedValues: JSON.stringify(
 					preselectedValues.map((item: any) => ({
 						label: item.label,
-						value: item.value,
+						value:
+							selectedField?.entityFieldType ===
+							EFieldType.INTEGER
+								? Number(item.value)
+								: item.value,
 					}))
 				),
 				source,

@@ -128,6 +128,8 @@ function getValidFields({
 				});
 			}
 
+			field.entityFieldType = type;
+
 			fields.push(field);
 		});
 

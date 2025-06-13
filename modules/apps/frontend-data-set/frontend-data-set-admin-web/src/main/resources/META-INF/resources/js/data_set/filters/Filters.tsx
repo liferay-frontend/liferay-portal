@@ -255,6 +255,17 @@ function Filters({
 		getFilters();
 	}, [dataSet]);
 
+	const updateEntityFieldType = ({item}: {item: IFilter}): string => {
+		let entityFieldType = '';
+		visit(fields, (field: IFieldTreeItem) => {
+			if (field.name === item.fieldName && field.entityFieldType) {
+				entityFieldType = field.entityFieldType;
+			}
+		});
+
+		return entityFieldType;
+	};
+
 	const updateFiltersOrder = async ({
 		filtersOrder,
 	}: {
@@ -426,6 +437,7 @@ function Filters({
 			noFilterClientExtensionsAvailableModal();
 		}
 		else {
+			item.entityFieldType = updateEntityFieldType({item});
 			setActiveMode(FILTER_MODE.EDITION);
 			setActiveFilter(item);
 		}
