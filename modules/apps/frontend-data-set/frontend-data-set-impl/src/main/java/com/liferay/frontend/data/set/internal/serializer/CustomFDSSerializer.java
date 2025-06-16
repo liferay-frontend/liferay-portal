@@ -895,7 +895,14 @@ public class CustomFDSSerializer
 		return JSONUtil.put(
 			"clientExtensionFilterURL", fdsFilterCET.getURL()
 		).put(
-			"entityFieldType", properties.get("entityFieldType")
+			"entityFieldType",
+			() -> {
+				if (Validator.isNotNull(properties.get("entityFieldType"))) {
+					return properties.get("entityFieldType");
+				}
+
+				return FDSEntityFieldTypes.STRING;
+			}
 		).put(
 			"id", fieldName
 		).put(
