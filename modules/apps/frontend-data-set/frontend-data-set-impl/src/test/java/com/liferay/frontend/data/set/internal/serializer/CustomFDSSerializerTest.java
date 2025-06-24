@@ -563,6 +563,8 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 		_mockSerializeFilters(
 			FDS_NAMES[0],
 			HashMapBuilder.<String, Object>put(
+				"entityFieldType", FDSEntityFieldTypes.INTEGER
+			).put(
 				"fieldName", FIELD_NAMES[0]
 			).put(
 				"include", true
@@ -602,7 +604,7 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 				).put(
 					"autocompleteEnabled", true
 				).put(
-					"entityFieldType", "string"
+					"entityFieldType", FDSEntityFieldTypes.INTEGER
 				).put(
 					"id", FIELD_NAMES[0]
 				).put(
