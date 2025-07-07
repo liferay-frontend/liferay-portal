@@ -295,7 +295,7 @@ export default function UndoRedo({
 			step.selectedLanguageId
 		);
 
-		if (!Liferay.FeatureFlags['LPD-51378']) {
+		if (!Liferay.FeatureFlags['LPD-11235']) {
 			setTimeout(
 				() =>
 					descriptionInputComponent.updateInput(
