@@ -372,7 +372,7 @@ function Table(props: IDataSetSectionProps & {title?: string}) {
 
 	const getFDSFields = async () => {
 		const response = await fetch(
-			`${API_URL.TABLE_SECTIONS}?filter=(${OBJECT_RELATIONSHIP.DATA_SET_TABLE_SECTIONS_ID} eq '${dataSet.id}')&nestedFields=${OBJECT_RELATIONSHIP.DATA_SET_TABLE_SECTIONS}&sort=dateCreated:asc`,
+			`${API_URL.TABLE_SECTIONS}?filter=(${OBJECT_RELATIONSHIP.DATA_SET_TABLE_SECTIONS_ID} eq '${dataSet.id}')&nestedFields=${OBJECT_RELATIONSHIP.DATA_SET_TABLE_SECTIONS}&pageSize=100&sort=dateCreated:asc`,
 			{
 				headers: DEFAULT_FETCH_HEADERS,
 			}
