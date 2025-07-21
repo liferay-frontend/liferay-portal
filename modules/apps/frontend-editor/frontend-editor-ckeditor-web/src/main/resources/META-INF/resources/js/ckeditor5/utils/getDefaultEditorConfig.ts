@@ -39,6 +39,7 @@ import {
 } from 'ckeditor5';
 import {sub} from 'frontend-js-web';
 
+import IconsModifier from '../plugins/IconsModifier';
 import ItemSelector from '../plugins/ItemSelector';
 import {EEditorConfigPreset, EEditorVariant} from './types';
 
@@ -70,7 +71,7 @@ const getDefaultEditorConfig = ({
 
 	if (preset === EEditorConfigPreset.BASIC) {
 		const basicEditorConfig: EditorConfig = {
-			plugins: basicPlugins,
+			plugins: [...basicPlugins, IconsModifier],
 			toolbar: {
 				items: [
 					'undo',
@@ -124,6 +125,11 @@ const getDefaultEditorConfig = ({
 	if (editorVariant === EEditorVariant.CLASSIC) {
 		advancedPlugins.push(SourceEditing);
 	}
+
+	// Add IconsModifier as the last plugin in array. That way it will
+	// initialize last, and be able to modify all other plugin instances.
+
+	advancedPlugins.push(IconsModifier);
 
 	const toolbarItems = [
 		'undo',
