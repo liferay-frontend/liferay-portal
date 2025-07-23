@@ -100,7 +100,7 @@ ManagementBar.propTypes = {
 	selectedItems: PropTypes.array,
 	selectedItemsKey: PropTypes.string,
 	selectedItemsValue: PropTypes.array,
-	selectionType: PropTypes.oneOf(['single', 'multiple']),
+	selectionType: PropTypes.oneOf(['single', 'multiple', 'none']),
 	showSearch: PropTypes.bool,
 	showSelectAll: PropTypes.bool,
 	total: PropTypes.number,

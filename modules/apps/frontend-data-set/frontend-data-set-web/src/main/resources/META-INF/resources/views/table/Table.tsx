@@ -161,12 +161,12 @@ const Row = ({
 	onItemSelectionChange: Function;
 	selectionType?: string;
 }) => {
-	const {itemsChanges, selectedItemsKey, updateItem} = useContext(
+	const {itemsChanges, selectable, selectedItemsKey, updateItem} = useContext(
 		FrontendDataSetContext
 	);
 
 	const SelectionComponent =
-		selectionType === 'multiple' ? ClayCheckbox : ClayRadio;
+		selectable && selectionType === 'multiple' ? ClayCheckbox : ClayRadio;
 
 	const id = item[selectedItemsKey ?? 'id'];
 
@@ -218,7 +218,7 @@ const Row = ({
 								key={`${id}:select`}
 								textValue={Liferay.Language.get('select-item')}
 							>
-								{!item.editable && (
+								{!item.editable && SelectionComponent && (
 									<SelectionComponent
 										checked={active}
 										onChange={() =>

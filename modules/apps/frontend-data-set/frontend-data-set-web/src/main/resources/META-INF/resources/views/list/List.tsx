@@ -84,7 +84,7 @@ const ListItem = forwardRef<HTMLLIElement, any>(
 			schema;
 
 		const SelectionInput =
-			selectionType === 'single' ? ClayRadio : ClayCheckbox;
+			selectable && selectionType === 'single' ? ClayRadio : ClayCheckbox;
 
 		const itemId = item[selectedItemsKey || 'id'];
 

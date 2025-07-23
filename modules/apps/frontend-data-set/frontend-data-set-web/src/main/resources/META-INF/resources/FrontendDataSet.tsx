@@ -126,7 +126,7 @@ const FrontendDataSetContent = ({
 	portletId,
 	selectedItems: initialSelectedItemsValues,
 	selectedItemsKey = 'id',
-	selectionType = 'multiple',
+	selectionType = 'none',
 	showBulkActionsManagementBar = true,
 	showBulkActionsManagementBarActions = true,
 	showManagementBar = true,
@@ -1158,9 +1158,8 @@ const FrontendDataSetContent = ({
 		}
 	};
 
-	const selectable = Boolean(
-		selectedItemsKey && (bulkActions?.length || selectionType === 'single')
-	);
+	const selectable =
+		selectionType === 'multiple' || selectionType === 'single';
 
 	const {className} = useFDSDrop({
 		targetDropRef: dataSetWrapperRef,

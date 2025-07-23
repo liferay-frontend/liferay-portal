@@ -173,7 +173,8 @@ const Card = forwardRef<HTMLDivElement, any>(
 					}
 				: undefined,
 			onSelectChange: selectable ? () => undefined : undefined,
-			selectableType: selectionType === 'single' ? 'radio' : 'checkbox',
+			selectableType:
+				selectable && selectionType === 'single' ? 'radio' : 'checkbox',
 			selected:
 				selectable &&
 				!!selectedItemsValue?.find(
