@@ -75,7 +75,7 @@ function ManagementBar({
 				/>
 			)}
 
-			<ActiveFiltersBar disabled={!!selectedItemsValue.length} />
+			<ActiveFiltersBar disabled={!!selectedItemsValue.length && mode === 'normal'} />
 		</>
 	);
 }
