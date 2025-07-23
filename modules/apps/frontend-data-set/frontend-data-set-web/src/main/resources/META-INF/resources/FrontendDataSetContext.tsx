@@ -50,6 +50,7 @@ export interface IFrontendDataSetContext {
 	itemsChanges?: {[key: string]: any};
 	loadData: Function;
 	modalId?: string;
+	mode?: string;
 	namespace?: string;
 	nestedItemsKey?: string;
 	nestedItemsReferenceKey?: string;

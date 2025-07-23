@@ -114,6 +114,7 @@ const FrontendDataSetContent = ({
 	inlineEditingSettings,
 	items: itemsProp,
 	itemsActions,
+	mode = 'normal',
 	namespace,
 	nestedItemsKey,
 	nestedItemsReferenceKey,
@@ -477,17 +478,20 @@ const FrontendDataSetContent = ({
 		}
 	}, [itemsProp]);
 
-	function deselectItems(value: any) {
-		if (Array.isArray(value)) {
-			return setSelectedItemsValue(
-				selectedItemsValue.filter((item) => !value.includes(item))
-			);
-		}
+	const deselectItems = useCallback(
+		(value: any) => {
+			if (Array.isArray(value)) {
+				return setSelectedItemsValue(
+					selectedItemsValue.filter((item) => !value.includes(item))
+				);
+			}
 
-		setSelectedItemsValue(
-			selectedItemsValue.filter((item) => item !== value)
-		);
-	}
+			setSelectedItemsValue(
+				selectedItemsValue.filter((item) => item !== value)
+			);
+		},
+		[selectedItemsValue]
+	);
 
 	function selectItems({
 		trigger,
@@ -756,6 +760,12 @@ const FrontendDataSetContent = ({
 		};
 	}, [id, refreshData]);
 
+	useEffect(() => {
+		Liferay.on(EVENTS.CLEAR_SELECTION, () =>
+			deselectItems(selectedItemsValue)
+		);
+	}, [deselectItems, selectedItemsValue]);
+
 	const managementBar = showManagementBar ? (
 		<div className="management-bar-wrapper">
 			<ManagementBar
@@ -770,6 +780,7 @@ const FrontendDataSetContent = ({
 				}}
 				fluid={style === 'fluid'}
 				items={items}
+				mode={mode}
 				onBulkActionsClear={() => {
 					deselectItems(selectedItemsValue);
 
@@ -1190,6 +1201,7 @@ const FrontendDataSetContent = ({
 				itemsChanges,
 				loadData: refreshData,
 				modalId: dataSetSupportModalIdRef.current,
+				mode,
 				namespace,
 				nestedItemsKey,
 				nestedItemsReferenceKey,

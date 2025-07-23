@@ -16,6 +16,7 @@ function ManagementBar({
 	deselectItems,
 	fluid,
 	items,
+	mode,
 	onBulkActionsClear,
 	onSelectAll,
 	selectItems,
@@ -43,7 +44,7 @@ function ManagementBar({
 
 	return (
 		<>
-			{selectionType === 'multiple' && (
+			{mode === 'normal' && selectionType === 'multiple' && (
 				<BulkActions
 					bulkActions={bulkActions}
 					deselectItems={deselectItems}
@@ -62,11 +63,14 @@ function ManagementBar({
 				/>
 			)}
 
-			{(!selectedItemsValue.length || selectionType === 'single') && (
+			{(mode === 'delegated' ||
+				!selectedItemsValue.length ||
+				selectionType === 'single') && (
 				<NavBar
 					creationMenu={creationMenu}
 					handleCheckboxClick={handleCheckboxClick}
 					items={items}
+					pageSelectedItemsValue={pageSelectedItemsValue}
 					showSearch={showSearch}
 				/>
 			)}
@@ -93,6 +97,7 @@ ManagementBar.propTypes = {
 	deselectItems: PropTypes.func.isRequired,
 	fluid: PropTypes.bool,
 	items: PropTypes.array.isRequired,
+	mode: PropTypes.string,
 	onBulkActionsClear: PropTypes.func.isRequired,
 	onSelectAll: PropTypes.func.isRequired,
 	pageSelectedItemsValue: PropTypes.array,

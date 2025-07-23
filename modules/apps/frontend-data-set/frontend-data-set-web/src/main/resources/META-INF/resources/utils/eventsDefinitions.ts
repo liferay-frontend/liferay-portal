@@ -4,6 +4,7 @@
  */
 
 export const AUTOCOMPLETE_VALUE_UPDATED = 'autocomplete-updated';
+export const CLEAR_SELECTION = 'fds-clear-selection';
 export const CLOSE_MODAL = 'close-modal';
 export const CLOSE_SIDE_PANEL = 'close-side-panel';
 export const CURRENT_PRODUCT_STATUS_CHANGED = 'current-product-status-changed';
@@ -19,6 +20,7 @@ export const SIDE_PANEL_CLOSED = 'side-panel-closed';
 const EVENTS = {
 	ACTION_PERFORMED: 'fds-action-performed',
 	AUTOCOMPLETE_VALUE_UPDATED,
+	CLEAR_SELECTION,
 	CLOSE_MODAL,
 	CLOSE_SIDE_PANEL,
 	CURRENT_PRODUCT_STATUS_CHANGED,

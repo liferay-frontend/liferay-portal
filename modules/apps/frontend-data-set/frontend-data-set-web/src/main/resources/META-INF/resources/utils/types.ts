@@ -294,6 +294,7 @@ export interface IFrontendDataSetProps {
 	inlineEditingSettings?: IInlineEditingSettings;
 	items?: any[];
 	itemsActions?: IItemsActions[];
+	mode?: 'delegated' | 'normal';
 	namespace?: string;
 	nestedItemsKey?: string;
 	nestedItemsReferenceKey?: string;
