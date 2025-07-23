@@ -20,6 +20,12 @@ ReactFDSDisplayContext reactFDSDisplayContext = new ReactFDSDisplayContext(reque
 			).put(
 				"id", FDSSampleFDSNames.REACT
 			).put(
+				"mode", "delegated"
+			).put(
+				"selectedItemsKey", "id"
+			).put(
+				"selectionType", "multiple"
+			).put(
 				"style", "fluid"
 			).put(
 				"views", reactFDSDisplayContext.getViews()

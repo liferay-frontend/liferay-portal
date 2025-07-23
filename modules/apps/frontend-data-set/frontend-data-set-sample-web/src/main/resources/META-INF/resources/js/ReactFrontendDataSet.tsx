@@ -3,8 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import Button from '@clayui/button';
+import Icon from '@clayui/icon';
 import {
 	DisplayType,
+	FDS_EVENT,
 	FrontendDataSet,
 	IFrontendDataSetProps,
 } from '@liferay/frontend-data-set-web';
@@ -61,7 +64,24 @@ const ReactFrontendDataSet = (props: IFrontendDataSetProps) => {
 
 	props.views.push(listView);
 
-	return <FrontendDataSet {...props} />;
+	return (
+		<>
+			<Button
+				displayType="danger"
+				onClick={() => {
+					Liferay.fire(FDS_EVENT.CLEAR_SELECTION);
+				}}
+				size="sm"
+			>
+				<span className="inline-item inline-item-before">
+					<Icon symbol="trash" />
+				</span>
+				Clear selection
+			</Button>
+
+			<FrontendDataSet {...props} />
+		</>
+	);
 };
 
 export default ReactFrontendDataSet;
