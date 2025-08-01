@@ -154,7 +154,7 @@ const Actions = ({dataSet, namespace, spritemap}: IDataSetSectionProps) => {
 
 		const type = activeTab === 0 ? EActionType.ITEM : EActionType.CREATION;
 
-		const url = `${createAPIURL(dataSet.id, RESOURCES.ACTIONS)}?filter=(type eq '${type}')&nestedFields=${OBJECT_RELATIONSHIP.DATA_SET_ACTIONS}&sort=dateCreated:asc`;
+		const url = `${createAPIURL(dataSet.id, RESOURCES.ACTIONS)}?nestedFields=${OBJECT_RELATIONSHIP.DATA_SET_ACTIONS}&sort=dateCreated:asc`;
 
 		if (activeTab === 0) {
 			setActiveSection(SECTIONS.ITEM_ACTIONS);
@@ -177,7 +177,9 @@ const Actions = ({dataSet, namespace, spritemap}: IDataSetSectionProps) => {
 
 		const responseJSON = await response.json();
 
-		const storedActions: IAction[] = responseJSON.items;
+		const storedActions: IAction[] = (responseJSON.items || []).filter(
+			(action: IAction) => action.type === type
+		);
 
 		const actionTypeOrder =
 			activeTab === 0 ? 'itemActionsOrder' : 'creationActionsOrder';
