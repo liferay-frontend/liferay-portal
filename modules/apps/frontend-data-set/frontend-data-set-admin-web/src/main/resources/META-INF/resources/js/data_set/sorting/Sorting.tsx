@@ -18,11 +18,13 @@ import React, {useCallback, useEffect, useState} from 'react';
 import OrderableTable from '../../components/OrderableTable';
 import RequiredMark from '../../components/RequiredMark';
 import Toggle from '../../components/Toggle';
+import {createAPIURL} from '../../utils/apiURLFactory';
 import {
 	API_URL,
 	DEFAULT_FETCH_HEADERS,
 	FUZZY_OPTIONS,
 	OBJECT_RELATIONSHIP,
+	RESOURCES,
 } from '../../utils/constants';
 import openDefaultFailureToast from '../../utils/openDefaultFailureToast';
 import openDefaultSuccessToast from '../../utils/openDefaultSuccessToast';
@@ -493,13 +495,11 @@ const Sorting = ({
 		setLoading(true);
 
 		const response = await fetch(
-			`${API_URL.SORTS}?filter=(${OBJECT_RELATIONSHIP.DATA_SET_SORTS_ID} eq '${dataSet.id}')&nestedFields=${OBJECT_RELATIONSHIP.DATA_SET_SORTS}&sort=dateCreated:asc`,
+			`${createAPIURL(dataSet.id, RESOURCES.SORTS)}?nestedFields=${
+				OBJECT_RELATIONSHIP.DATA_SET_SORTS
+			}&sort=dateCreated:asc`,
 			{
-				headers: {
-					'Accept': 'application/json',
-					'Accept-Language':
-						Liferay.ThemeDisplay.getBCP47LanguageId(),
-				},
+				headers: DEFAULT_FETCH_HEADERS,
 			}
 		);
 

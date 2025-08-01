@@ -14,10 +14,12 @@ import React, {useEffect, useState} from 'react';
 
 import '../../../../css/CardsVisualizationMode.scss';
 import AddDataSourceFieldsModalContent from '../../../components/AddDataSourceFieldsModalContent';
+import {createAPIURL} from '../../../utils/apiURLFactory';
 import {
 	API_URL,
 	DEFAULT_FETCH_HEADERS,
 	OBJECT_RELATIONSHIP,
+	RESOURCES,
 } from '../../../utils/constants';
 import openDefaultFailureToast from '../../../utils/openDefaultFailureToast';
 import openDefaultSuccessToast from '../../../utils/openDefaultSuccessToast';
@@ -57,7 +59,7 @@ export default function Cards(props: IDataSetSectionProps) {
 
 	const getFDSCardsSections = async () => {
 		const response = await fetch(
-			`${API_URL.CARDS_SECTIONS}?filter=(${OBJECT_RELATIONSHIP.DATA_SET_CARDS_SECTIONS_ERC} eq '${dataSet.externalReferenceCode}')`,
+			createAPIURL(dataSet.id, RESOURCES.CARDS_SECTIONS),
 			{headers: DEFAULT_FETCH_HEADERS}
 		);
 
