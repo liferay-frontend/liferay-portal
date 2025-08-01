@@ -16,6 +16,7 @@ import {
 	API_URL,
 	DEFAULT_FETCH_HEADERS,
 	OBJECT_RELATIONSHIP,
+	PAGE_SIZE,
 	RESOURCES,
 } from '../../utils/constants';
 import openDefaultFailureToast from '../../utils/openDefaultFailureToast';
@@ -154,7 +155,10 @@ const Actions = ({dataSet, namespace, spritemap}: IDataSetSectionProps) => {
 
 		const type = activeTab === 0 ? EActionType.ITEM : EActionType.CREATION;
 
-		const url = `${createAPIURL(dataSet.id, RESOURCES.ACTIONS)}?nestedFields=${OBJECT_RELATIONSHIP.DATA_SET_ACTIONS}&sort=dateCreated:asc`;
+		const url = `${createAPIURL(dataSet.id, RESOURCES.ACTIONS)}
+			?nestedFields=${OBJECT_RELATIONSHIP.DATA_SET_ACTIONS}
+			&pageSize=${PAGE_SIZE}
+			&sort=dateCreated:asc`;
 
 		if (activeTab === 0) {
 			setActiveSection(SECTIONS.ITEM_ACTIONS);

@@ -24,6 +24,7 @@ import {
 	DEFAULT_FETCH_HEADERS,
 	FUZZY_OPTIONS,
 	OBJECT_RELATIONSHIP,
+	PAGE_SIZE,
 	RESOURCES,
 } from '../../utils/constants';
 import openDefaultFailureToast from '../../utils/openDefaultFailureToast';
@@ -495,9 +496,10 @@ const Sorting = ({
 		setLoading(true);
 
 		const response = await fetch(
-			`${createAPIURL(dataSet.id, RESOURCES.SORTS)}?nestedFields=${
-				OBJECT_RELATIONSHIP.DATA_SET_SORTS
-			}&sort=dateCreated:asc`,
+			`${createAPIURL(dataSet.id, RESOURCES.SORTS)}
+				?nestedFields=${OBJECT_RELATIONSHIP.DATA_SET_SORTS}
+				&pageSize=${PAGE_SIZE}
+				&sort=dateCreated:asc`,
 			{
 				headers: DEFAULT_FETCH_HEADERS,
 			}
