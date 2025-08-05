@@ -132,6 +132,30 @@ public class ObjectEntryRelatedObjectsResourceImpl
 	}
 
 	@Override
+	public Object
+			getByExternalReferenceCodeCurrentExternalReferenceCodeObjectRelationshipName(
+				String currentExternalReferenceCode,
+				String objectRelationshipName, Pagination pagination)
+		throws Exception {
+
+		DefaultObjectEntryManager defaultObjectEntryManager =
+			DefaultObjectEntryManagerProvider.provide(
+				_objectEntryManagerRegistry.getObjectEntryManager(
+					_objectDefinition.getStorageType()));
+
+		ObjectRelationship objectRelationship =
+			_objectRelationshipLocalService.getObjectRelationship(
+				_objectDefinition.getObjectDefinitionId(),
+				objectRelationshipName);
+
+		return defaultObjectEntryManager.getObjectEntryRelatedObjectEntries(
+			_getDTOConverterContext(null), currentExternalReferenceCode,
+			_objectDefinition, objectRelationshipName, pagination,
+			_objectDefinitionLocalService.getObjectDefinition(
+				objectRelationship.getObjectDefinitionId2()));
+	}
+
+	@Override
 	public Page<Object> getCurrentObjectEntriesObjectRelationshipNamePage(
 			Long currentObjectEntryId, String objectRelationshipName,
 			Pagination pagination)
