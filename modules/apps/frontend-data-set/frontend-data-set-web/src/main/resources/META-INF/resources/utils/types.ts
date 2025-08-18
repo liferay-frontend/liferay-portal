@@ -249,6 +249,7 @@ export interface IView {
 export interface IFileDropSettings {
 	enabled: boolean;
 	isDropTarget: ({item}: {item: any}) => boolean;
+	onFileDrop?: (droppedItem: any, dropTarget?: any) => void;
 }
 
 export interface IFrontendDataSetProps {

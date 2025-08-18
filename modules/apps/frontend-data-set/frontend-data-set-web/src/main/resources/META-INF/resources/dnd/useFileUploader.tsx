@@ -43,43 +43,50 @@ const useFileUploader = ({
 			return;
 		}
 
-		const ModalBody = () => {
+		if (fileDropSettings.onFileDrop) {
+			fileDropSettings.onFileDrop(droppedFiles, dropTarget);
+		}
+		else {
+			const ModalBody = () => {
 
-			// @ts-ignore
+				// @ts-ignore
 
-			const label = (file) =>
-				`'${file.name}' of size '${file.size}' and type '${file.type}'`;
+				const label = (file) =>
+					`'${file.name}' of size '${file.size}' and type '${file.type}'`;
 
-			return (
-				<div>
-					{droppedFiles.map((file) => (
+				return (
+					<div>
+						{droppedFiles.map((file) => (
 
-						// @ts-ignore
+							// @ts-ignore
 
-						<li key={file.name}>{label(file)}</li>
-					))}
+							<li key={file.name}>{label(file)}</li>
+						))}
 
-					{dropTarget ? (
-						<span>
-							Dropped on item{' '}
+						{dropTarget ? (
+							<span>
+								Dropped on item{' '}
 
-							{getSelectedItemValue({
-								item: dropTarget,
-								path: selectedItemsKey,
-							})}
-						</span>
-					) : (
-						<span>Dropped on the FDS, no specific drop target</span>
-					)}
-				</div>
-			);
-		};
+								{getSelectedItemValue({
+									item: dropTarget,
+									path: selectedItemsKey,
+								})}
+							</span>
+						) : (
+							<span>
+								Dropped on the FDS, no specific drop target
+							</span>
+						)}
+					</div>
+				);
+			};
 
-		openModal({
-			bodyComponent: ModalBody,
-			size: 'lg',
-			title: Liferay.Language.get('files'),
-		});
+			openModal({
+				bodyComponent: ModalBody,
+				size: 'lg',
+				title: Liferay.Language.get('files'),
+			});
+		}
 	}, [droppedFiles, dropTarget, fileDropSettings, selectedItemsKey]);
 
 	return {onFileDrop};
