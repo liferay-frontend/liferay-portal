@@ -20,7 +20,9 @@ import org.osgi.framework.Bundle;
 
 /**
  * @author Iván Zaera Avellón
+ * @deprecated As of Cavanaugh (7.4.x), use {@link com.liferay.portal.url.builder.WebContextStylesheetAbsolutePortalURLBuilder} instead
  */
+@Deprecated
 public class BundleStylesheetAbsolutePortalURLBuilderImpl
 	extends BaseBundleResourceAbsolutePortalURLBuilderImpl
 		<BundleStylesheetAbsolutePortalURLBuilder>

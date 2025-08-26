@@ -51,13 +51,16 @@ public interface AbsolutePortalURLBuilder {
 		Bundle bundle, String relativeURL);
 
 	/**
-	 * Returns a URL builder for bundle stylesheets.
+	 * Returns a URL builder for a CSS stylesheet that uses old style URLs (with
+	 * minifierType parameters) that were not infinitely cacheable.
 	 *
+	 * @deprecated As of Cavanaugh (7.4.x), use {@link AbsolutePortalURLBuilder#forWebContextStylesheet(String, String)} instead
 	 * @param  bundle the bundle that contains the resource
 	 * @param  relativeURL the stylesheets relative URL
 	 * @return a URL builder for module stylesheets
 	 * @review
 	 */
+	@Deprecated
 	public BundleStylesheetAbsolutePortalURLBuilder forBundleStylesheet(
 		Bundle bundle, String relativeURL);
 
@@ -120,5 +123,17 @@ public interface AbsolutePortalURLBuilder {
 	 * @return a URL builder for API requests
 	 */
 	public ServletAbsolutePortalURLBuilder forServlet(String requestURL);
+
+	/**
+	 * Returns a URL builder for a CSS stylesheet that uses hashified URLs when
+	 * possible and can be infinitely cached.
+	 *
+	 * @param  webContextPath the context path where the stylesheet lives
+	 * @param  stylesheetPath the module path (e.g. /clay_admin.css)
+	 * @return a URL builder
+	 * @review
+	 */
+	public WebContextStylesheetAbsolutePortalURLBuilder forWebContextStylesheet(
+		String webContextPath, String stylesheetPath);
 
 }

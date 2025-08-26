@@ -19,7 +19,9 @@ import com.liferay.portal.url.builder.facet.PathProxyAwareAbsolutePortalURLBuild
  * </p>
  *
  * @author Iván Zaera Avellón
+ * @deprecated As of Cavanaugh (7.4.x), use {@link WebContextStylesheetAbsolutePortalURLBuilder} instead
  */
+@Deprecated
 public interface BundleStylesheetAbsolutePortalURLBuilder
 	extends BuildableAbsolutePortalURLBuilder,
 			CacheAwareAbsolutePortalURLBuilder
