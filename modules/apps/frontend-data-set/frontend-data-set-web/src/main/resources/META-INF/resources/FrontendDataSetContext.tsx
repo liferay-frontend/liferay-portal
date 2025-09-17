@@ -6,7 +6,6 @@
 import React from 'react';
 
 import {
-	EStateInURLSettings,
 	IDataSetData,
 	IInlineEditingSettings,
 	IItemsActions,
