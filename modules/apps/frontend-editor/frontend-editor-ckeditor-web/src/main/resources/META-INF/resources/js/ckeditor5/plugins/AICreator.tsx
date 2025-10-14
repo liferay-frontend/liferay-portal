@@ -3,9 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {ButtonView, Command, Config, Plugin} from 'ckeditor5';
 import {openModal} from 'frontend-js-components-web';
 
+// @ts-ignore
+
+import {ButtonView, Command, Config, Plugin} from '../../index';
 import getIcon from '../utils/getIcon';
 import {LiferayEditorConfig} from '../utils/types';
 
@@ -25,6 +27,9 @@ const ON_CLICK_POPOVER_CONTENT = `
 
 class AICreator extends Plugin {
 	init() {
+
+		// @ts-ignore
+
 		const editor = this.editor;
 
 		let aiCreatorButton: HTMLElement | null = null;
@@ -98,6 +103,9 @@ class AICreator extends Plugin {
 				closeModalHandler.detach();
 
 				if (event.text) {
+
+					// @ts-ignore
+
 					editor.model.change((writer) => {
 						let insertPosition =
 							editor.model.document.selection.getFirstPosition();
@@ -164,8 +172,17 @@ class AICreator extends Plugin {
 
 			buttonView.on('render', () => {
 				aiCreatorButton = buttonView.element!;
+
+				// @ts-ignore
+
 				aiCreatorButton.classList.add('lfr-portal-tooltip');
+
+				// @ts-ignore
+
 				aiCreatorButton.removeAttribute('aria-labelledby');
+
+				// @ts-ignore
+
 				aiCreatorButton.setAttribute(
 					'aria-label',
 					Liferay.Language.get('create-ai-content')

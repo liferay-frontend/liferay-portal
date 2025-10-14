@@ -3,14 +3,19 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {ButtonView, Command, Config, Plugin} from 'ckeditor5';
 import {openSelectionModal} from 'frontend-js-components-web';
 
+// @ts-ignore
+
+import {ButtonView, Command, Config, Plugin} from '../../index';
 import getIcon from '../utils/getIcon';
 import {LiferayEditorConfig} from '../utils/types';
 
 class ItemSelector extends Plugin {
 	init() {
+
+		// @ts-ignore
+
 		const editor = this.editor;
 
 		const commandName = 'itemSelectorCommand';

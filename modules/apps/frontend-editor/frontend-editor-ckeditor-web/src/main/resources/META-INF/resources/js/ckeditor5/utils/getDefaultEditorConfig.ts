@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+// @ts-nocheck
+
+import {sub} from 'frontend-js-web';
+
 import {
 	Alignment,
 	BlockQuote,
@@ -38,13 +42,13 @@ import {
 	TableProperties,
 	TableToolbar,
 	Underline,
-} from 'ckeditor5';
-import {sub} from 'frontend-js-web';
-
+} from '../../index';
 import AICreator from '../plugins/AICreator';
 import HeadlessItemSelector from '../plugins/HeadlessItemSelector';
 import ItemSelector from '../plugins/ItemSelector';
 import {EEditorConfigPreset, EEditorVariant} from './types';
+
+// @ts-check
 
 const getDefaultEditorConfig = ({
 	editorVariant,

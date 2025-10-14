@@ -3,11 +3,15 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {ButtonView, Plugin} from 'ckeditor5';
-import {getIcon} from 'frontend-editor-ckeditor-web';
+// @ts-ignore
+
+import {ButtonView, Plugin, getIcon} from 'frontend-editor-ckeditor-web';
 
 class Timestamp extends Plugin {
 	init() {
+
+		// @ts-ignore
+
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add('timestamp', () => {
@@ -20,6 +24,8 @@ class Timestamp extends Plugin {
 
 			button.on('execute', () => {
 				const now = new Date();
+
+				// @ts-ignore
 
 				editor.model.change((writer) => {
 					editor.model.insertContent(

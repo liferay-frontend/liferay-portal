@@ -5,8 +5,10 @@
 
 import {IFrontendDataSetProps} from '@liferay/frontend-data-set-web';
 import {openItemSelectorModal} from '@liferay/frontend-js-item-selector-web';
-import {ButtonView, Command, Plugin} from 'ckeditor5';
 
+// @ts-ignore
+
+import {ButtonView, Command, Plugin} from '../../index';
 import getIcon from '../utils/getIcon';
 
 const FDS_PROPS: IFrontendDataSetProps = {
@@ -112,6 +114,9 @@ interface IVideoSelectedItem {
 
 class HeadlessItemSelector extends Plugin {
 	init() {
+
+		// @ts-ignore
+
 		const editor = this.editor;
 
 		const commandName = 'headlessItemSelectorCommand';

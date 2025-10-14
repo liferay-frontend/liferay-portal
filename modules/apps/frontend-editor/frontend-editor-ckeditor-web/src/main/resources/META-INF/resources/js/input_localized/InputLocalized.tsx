@@ -4,7 +4,6 @@
  */
 
 import {useLiferayState} from '@liferay/frontend-js-state-web/react';
-import {EventInfo} from 'ckeditor5';
 import {
 	TranslationAdminSelector,
 	Translations,
@@ -15,6 +14,10 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 import ClassicEditor from '../ckeditor5/ClassicEditor';
 import {LiferayEditorConfig, TEditor} from '../ckeditor5/utils/types';
+
+// @ts-ignore
+
+import {EventInfo} from '../index';
 
 interface IInputLocalizedProps extends Translations {
 	adminMode?: boolean;
@@ -348,6 +351,9 @@ function InputLocalized({
 				<ClassicEditor
 					config={{
 						...editorConfig,
+
+						// @ts-ignore
+
 						language: {
 							content: selectedLanguageId?.split('_')[0],
 						},
