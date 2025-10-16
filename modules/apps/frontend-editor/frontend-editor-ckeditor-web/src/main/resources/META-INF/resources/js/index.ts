@@ -66,6 +66,8 @@ export * from '@ckeditor/ckeditor5-watchdog/dist/index.js';
 export * from '@ckeditor/ckeditor5-widget/dist/index.js';
 export * from '@ckeditor/ckeditor5-word-count/dist/index.js';
 
+export * from '@ckeditor/ckeditor5-source-editing-enhanced/dist/index.js';
+
 export {default as BalloonEditor} from './ckeditor4/BalloonEditor';
 export {default as ClassicEditor} from './ckeditor4/ClassicEditor';
 export {Editor} from './ckeditor4/Editor';

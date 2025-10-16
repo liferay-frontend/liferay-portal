@@ -42,6 +42,10 @@ public class CKEditor5JSImportMapsContributor
 		writer.write("\"ckeditor5\" : \"");
 		writer.write(esModuleAbsolutePortalURLBuilder.build());
 		writer.write(StringPool.QUOTE);
+		writer.write(StringPool.COMMA);
+		writer.write("\"ckeditor5-premium-features\" : \"");
+		writer.write(esModuleAbsolutePortalURLBuilder.build());
+		writer.write(StringPool.QUOTE);
 	}
 
 	@Override
