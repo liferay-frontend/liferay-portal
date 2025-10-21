@@ -44,79 +44,80 @@ export default function PicklistOptions() {
 					)}
 				</h3>
 			</div>
-
-			<FrontendDataSet
-				bulkActions={[
-					{icon: 'trash', label: Liferay.Language.get('delete')},
-				]}
-				creationMenu={{
-					primaryItems: [
+			<div className="mx-n2">
+				<FrontendDataSet
+					bulkActions={[
+						{icon: 'trash', label: Liferay.Language.get('delete')},
+					]}
+					creationMenu={{
+						primaryItems: [
+							{
+								label: Liferay.Language.get('add-new'),
+								onClick: () => setModalVisible(true),
+							},
+						],
+					}}
+					emptyState={{
+						description: Liferay.Language.get(
+							'fortunately-it-is-very-easy-to-add-new-ones'
+						),
+						image: '/states/cms_empty_state_picklist_options.svg',
+						title: Liferay.Language.get('there-are-no-options-yet'),
+					}}
+					id="optionList"
+					items={toItems(options)}
+					itemsActions={[
 						{
-							label: Liferay.Language.get('add-new'),
-							onClick: () => setModalVisible(true),
+							icon: 'pencil',
+							label: Liferay.Language.get('edit'),
+							onClick: ({itemData}: {itemData: Option}) => {
+								setSelectedOption(itemData);
+								setModalVisible(true);
+							},
+							type: 'item',
 						},
-					],
-				}}
-				emptyState={{
-					description: Liferay.Language.get(
-						'fortunately-it-is-very-easy-to-add-new-ones'
-					),
-					image: '/states/cms_empty_state_picklist_options.svg',
-					title: Liferay.Language.get('there-are-no-options-yet'),
-				}}
-				id="optionList"
-				items={toItems(options)}
-				itemsActions={[
-					{
-						icon: 'pencil',
-						label: Liferay.Language.get('edit'),
-						onClick: ({itemData}: {itemData: Option}) => {
-							setSelectedOption(itemData);
-							setModalVisible(true);
+						{
+							icon: 'trash',
+							label: Liferay.Language.get('delete'),
+							onClick: ({itemData}: {itemData: Option}) =>
+								removeOptions([itemData.erc]),
+							type: 'item',
 						},
-						type: 'item',
-					},
-					{
-						icon: 'trash',
-						label: Liferay.Language.get('delete'),
-						onClick: ({itemData}: {itemData: Option}) =>
-							removeOptions([itemData.erc]),
-						type: 'item',
-					},
-				]}
-				onBulkActionItemClick={({
-					selectedData,
-				}: {
-					selectedData: {keyValues: string[]};
-				}) => {
-					removeOptions(selectedData.keyValues);
-				}}
-				selectionType="multiple"
-				style="fluid"
-				views={[
-					{
-						contentRenderer: 'table',
-						name: 'table',
-						schema: {
-							fields: [
-								{
-									fieldName: 'name',
-									label: 'Name',
-									sortable: true,
-								},
-								{
-									fieldName: 'key',
-									label: 'Key',
-								},
-								{
-									fieldName: 'erc',
-									label: 'ERC',
-								},
-							],
+					]}
+					onBulkActionItemClick={({
+						selectedData,
+					}: {
+						selectedData: {keyValues: string[]};
+					}) => {
+						removeOptions(selectedData.keyValues);
+					}}
+					selectionType="multiple"
+					style="fluid"
+					views={[
+						{
+							contentRenderer: 'table',
+							name: 'table',
+							schema: {
+								fields: [
+									{
+										fieldName: 'name',
+										label: 'Name',
+										sortable: true,
+									},
+									{
+										fieldName: 'key',
+										label: 'Key',
+									},
+									{
+										fieldName: 'erc',
+										label: 'ERC',
+									},
+								],
+							},
 						},
-					},
-				]}
-			/>
+					]}
+				/>
+			</div>
 		</>
 	);
 }
