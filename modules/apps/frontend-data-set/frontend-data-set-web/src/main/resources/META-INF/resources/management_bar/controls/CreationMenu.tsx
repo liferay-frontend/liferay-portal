@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
+import ClayButton, {ButtonProps, ClayButtonWithIcon} from '@clayui/button';
 import ClayDropDown from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import {LinkOrButton} from '@clayui/shared';
@@ -21,7 +21,11 @@ const MEDIUM_BREAKPOINT = 768;
 
 const DropdownTrigger = React.forwardRef(
 	(
-		{inEmptyState, ...otherProps}: {inEmptyState: boolean},
+		{
+			inEmptyState,
+			size,
+			...otherProps
+		}: {inEmptyState: boolean; size: ButtonProps['size']},
 		ref: Ref<HTMLButtonElement>
 	) => {
 		const {width} = useWindowSize();
@@ -34,6 +38,7 @@ const DropdownTrigger = React.forwardRef(
 					data-testid="fdsCreationActionButton"
 					displayType={inEmptyState ? 'secondary' : 'primary'}
 					ref={ref}
+					size={size}
 				>
 					<span className="inline-item-before">
 						{Liferay.Language.get('new')}
@@ -64,9 +69,11 @@ const DropdownTrigger = React.forwardRef(
 const DropDown = ({
 	inEmptyState,
 	primaryItems,
+	size = 'regular',
 }: {
 	inEmptyState: boolean;
 	primaryItems: Array<ICreationActionItem>;
+	size?: ButtonProps['size'];
 }) => {
 	const frontendDataSetContext = useContext(FrontendDataSetContext);
 
@@ -78,7 +85,9 @@ const DropDown = ({
 		<ClayDropDown
 			active={active}
 			onActiveChange={setActive}
-			trigger={<DropdownTrigger inEmptyState={inEmptyState} />}
+			trigger={
+				<DropdownTrigger inEmptyState={inEmptyState} size={size} />
+			}
 		>
 			<ClayDropDown.ItemList>
 				{primaryItems.map((item, i) => (
@@ -115,9 +124,11 @@ const DropDown = ({
 function CreationButton({
 	firstItem,
 	inEmptyState,
+	size,
 }: {
 	firstItem: ICreationActionItem;
 	inEmptyState: boolean;
+	size: ButtonProps['size'];
 }) {
 	const frontendDataSetContext = useContext(FrontendDataSetContext);
 
@@ -165,7 +176,11 @@ function CreationButton({
 	}
 
 	return inEmptyState ? (
-		<LinkOrButton {...sharedProps} className="btn btn-secondary">
+		<LinkOrButton
+			{...sharedProps}
+			className="btn btn-secondary"
+			size={size}
+		>
 			{firstItem.label}
 
 			{newTabIcon}
@@ -185,6 +200,7 @@ function CreationButton({
 				['nav-btn-monospaced']: isMobile,
 				['px-3']: !isMobile,
 			})}
+			size={size}
 			title={firstItem.label}
 		>
 			{isMobile ? (
@@ -201,9 +217,11 @@ function CreationButton({
 function CreationMenu({
 	inEmptyState,
 	primaryItems,
+	size,
 }: {
 	inEmptyState: boolean;
 	primaryItems: Array<ICreationActionItem>;
+	size: ButtonProps['size'];
 }) {
 	if (primaryItems?.length === 0) {
 		return null;
@@ -220,11 +238,13 @@ function CreationMenu({
 					<DropDown
 						inEmptyState={inEmptyState}
 						primaryItems={primaryItems}
+						size={size}
 					/>
 				) : (
 					<CreationButton
 						firstItem={primaryItems[0]}
 						inEmptyState={inEmptyState}
+						size={size}
 					/>
 				)}
 			</li>

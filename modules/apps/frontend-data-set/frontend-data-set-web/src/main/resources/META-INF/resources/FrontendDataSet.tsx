@@ -147,6 +147,7 @@ const FrontendDataSetContent = ({
 	style = 'default',
 	uniformActionsDisplay,
 	views,
+	small,
 }: IFrontendDataSetProps) => {
 	const fdsRef = useRef(null);
 	const dataSetWrapperRef: RefObject<HTMLDivElement> = useRef(null);
@@ -1322,7 +1323,11 @@ const FrontendDataSetContent = ({
 			showManagementBarInEmptyState);
 
 	const managementBar = showManagementToolbar ? (
-		<div className="management-bar-wrapper">
+		<div
+			className={classNames('management-bar-wrapper', {
+				'management-bar-wrapper-sm': small,
+			})}
+		>
 			<ManagementBar
 				bulkActions={bulkActions}
 				creationMenu={creationMenu}
@@ -1420,6 +1425,7 @@ const FrontendDataSetContent = ({
 						filters={filters}
 						onClearFilters={onClearFilters}
 						searchParam={searchParam}
+						small={small}
 					/>
 				)}
 			</div>

@@ -340,6 +340,7 @@ export interface IFrontendDataSetProps {
 	showSearch?: boolean;
 	showSelectAll?: boolean;
 	sidePanelId?: string;
+	small?: boolean;
 	sorts?: TSort[];
 	style?: 'default' | 'fluid' | 'stacked';
 	uniformActionsDisplay?: boolean;

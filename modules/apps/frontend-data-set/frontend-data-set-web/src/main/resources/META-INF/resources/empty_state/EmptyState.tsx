@@ -16,6 +16,7 @@ interface IEmptyStateProps {
 	filters: any[];
 	onClearFilters: () => void;
 	searchParam: string;
+	small?: boolean;
 }
 
 const DEFAULT_SEARCH_STATE_IMAGE = '/states/search_state.svg';
@@ -31,7 +32,9 @@ const EmptyState = ({
 	filters,
 	onClearFilters,
 	searchParam,
+	small,
 }: IEmptyStateProps) => {
+	const buttonSize = small ? 'sm' : 'regular';
 	const hasActiveFilters = filters.some((filter: any) => filter.active);
 	const hasSearch = !!searchParam;
 
@@ -51,11 +54,16 @@ const EmptyState = ({
 					config?.imageReducedMotion ??
 						DEFAULT_SEARCH_STATE_REDUCED_MOTION_IMAGE
 				)}
+				small={small}
 				title={
 					config?.title ?? Liferay.Language.get('no-results-found')
 				}
 			>
-				<ClayButton displayType="secondary" onClick={onClearFilters}>
+				<ClayButton
+					displayType="secondary"
+					onClick={onClearFilters}
+					size={buttonSize}
+				>
 					{Liferay.Language.get('clear-search-and-filters')}
 				</ClayButton>
 			</ClayEmptyState>
@@ -75,11 +83,16 @@ const EmptyState = ({
 					config?.imageReducedMotion ??
 						DEFAULT_SEARCH_STATE_REDUCED_MOTION_IMAGE
 				)}
+				small={small}
 				title={
 					config?.title ?? Liferay.Language.get('no-results-found')
 				}
 			>
-				<ClayButton displayType="secondary" onClick={onClearFilters}>
+				<ClayButton
+					displayType="secondary"
+					onClick={onClearFilters}
+					size={buttonSize}
+				>
 					{Liferay.Language.get('clear-filters')}
 				</ClayButton>
 			</ClayEmptyState>
@@ -99,11 +112,16 @@ const EmptyState = ({
 					config?.imageReducedMotion ??
 						DEFAULT_SEARCH_STATE_REDUCED_MOTION_IMAGE
 				)}
+				small={small}
 				title={
 					config?.title ?? Liferay.Language.get('no-results-found')
 				}
 			>
-				<ClayButton displayType="secondary" onClick={onClearFilters}>
+				<ClayButton
+					displayType="secondary"
+					onClick={onClearFilters}
+					size={buttonSize}
+				>
 					{Liferay.Language.get('clear-search')}
 				</ClayButton>
 			</ClayEmptyState>
@@ -123,12 +141,19 @@ const EmptyState = ({
 				emptyStateConfiguration?.imageReducedMotion ??
 					DEFAULT_SEARCH_STATE_REDUCED_MOTION_IMAGE
 			)}
+			small={small}
 			title={
 				emptyStateConfiguration?.title ??
 				Liferay.Language.get('no-results-found')
 			}
 		>
-			{creationMenu && <CreationMenu {...creationMenu} inEmptyState />}
+			{creationMenu && (
+				<CreationMenu
+					{...creationMenu}
+					inEmptyState
+					size={buttonSize}
+				/>
+			)}
 		</ClayEmptyState>
 	);
 };
