@@ -17,6 +17,7 @@ export interface IViewsContext {
 	modifiedFields: any;
 	paginationDelta: any;
 	sorts: Array<any>;
+	viewUpdated: boolean;
 	views: Array<any>;
 	visibleFieldNames: any;
 }
@@ -27,22 +28,21 @@ export type TViewsContextDispatch = (
 		| ((dispatch: TViewsContextDispatch) => void)
 ) => void;
 
-const initialState: IViewsContext = {
-	activeCustomViewId: null,
-	activeView: null,
-	customViews: {},
-	customViewsEnabled: false,
-	filters: [],
-	filtersGroups: [],
-	modifiedFields: {},
-	paginationDelta: null,
-	sorts: [],
-	views: [],
-	visibleFieldNames: {},
-};
-
-const ViewsContext = createContext<[IViewsContext, TViewsContextDispatch]>([
-	initialState,
+const ViewsContext = createContext<[IViewsContext, any]>([
+	{
+		activeCustomViewId: null,
+		activeView: null,
+		customViews: {},
+		customViewsEnabled: false,
+		filters: [],
+		filtersGroups: [],
+		modifiedFields: {},
+		paginationDelta: null,
+		sorts: [],
+		viewUpdated: false,
+		views: [],
+		visibleFieldNames: {},
+	},
 	() => {},
 ]);
 
