@@ -168,6 +168,10 @@ function ActionLinkRenderer({
 		);
 	}
 
+	function shouldShowIcon(value: number | string): boolean {
+		return value === null || value === undefined || value === '';
+	}
+
 	return (
 		<div className="table-list-title">
 			<ClayLink
@@ -198,10 +202,11 @@ function ActionLinkRenderer({
 							}
 				}
 			>
-				{value ||
-					(currentAction.icon && (
-						<ClayIcon symbol={currentAction.icon} />
-					))}
+				{shouldShowIcon(value)
+					? currentAction.icon && (
+							<ClayIcon symbol={currentAction.icon} />
+						)
+					: value}
 			</ClayLink>
 		</div>
 	);
