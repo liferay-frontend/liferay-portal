@@ -10,7 +10,7 @@ import {IFilter} from '../management_bar/controls/filters/Filter';
 export interface IViewsContext {
 	activeCustomViewId: null | string;
 	activeView: any;
-	customViews: any;
+	customViews: Array<ICustomView>;
 	customViewsEnabled: boolean;
 	filters: IFilter[];
 	filtersGroups: Array<any>;
@@ -22,17 +22,25 @@ export interface IViewsContext {
 	visibleFieldNames: any;
 }
 
-export type TViewsContextDispatch = (
-	params:
-		| {type: string; value: any}
-		| ((dispatch: TViewsContextDispatch) => void)
-) => void;
+export interface ICustomView {
+	customViewConfig?: any;
+	customViewERC: string;
+	customViewLabel: string;
+}
+
+export type TViewsContextDispatch = ({
+	type,
+	value,
+}: {
+	type: string;
+	value: any;
+}) => void;
 
 const ViewsContext = createContext<[IViewsContext, any]>([
 	{
 		activeCustomViewId: null,
 		activeView: null,
-		customViews: {},
+		customViews: [],
 		customViewsEnabled: false,
 		filters: [],
 		filtersGroups: [],
