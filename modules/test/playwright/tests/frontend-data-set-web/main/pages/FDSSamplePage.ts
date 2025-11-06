@@ -9,6 +9,7 @@ import {ApiHelpers} from '../../../../helpers/ApiHelpers';
 import {liferayConfig} from '../../../../liferay.config';
 import getRandomString from '../../../../utils/getRandomString';
 import {EFDSVisualizationMode, waitForFDS} from '../../../../utils/waitFor';
+import getFragmentDefinition from '../../../layout-content-page-editor-web/main/utils/getFragmentDefinition';
 import getPageDefinition from '../../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import getWidgetDefinition from '../../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 
@@ -81,9 +82,11 @@ export class FDSSamplePage {
 			activeFiltersToolbarContainer.locator('.search-resume');
 		this.activeFiltersToolbar = {
 			clearButton: activeFiltersToolbarContainer.getByRole('button', {
+				exact: true,
 				name: 'Clear',
 			}),
 			clearSearchButton: searchResume.getByRole('button', {
+				exact: true,
 				name: 'Clear Search',
 			}),
 			container: activeFiltersToolbarContainer,
@@ -347,15 +350,21 @@ export class FDSSamplePage {
 		await expect(navLink).toHaveClass(/active/);
 	}
 
-	async setupFDSSampleWidget({locale = 'en', site}) {
-		const widgetDefinition = getWidgetDefinition({
-			id: getRandomString(),
-			widgetName:
-				'com_liferay_frontend_data_set_sample_web_internal_portlet_FDSSamplePortlet',
-		});
-
+	async setupFDSSampleWidget({fragmentKeys = [], locale = 'en', site}) {
 		const layout = await this.apiHelpers.headlessDelivery.createSitePage({
-			pageDefinition: getPageDefinition([widgetDefinition]),
+			pageDefinition: getPageDefinition([
+				...fragmentKeys.map((fragmentKey) =>
+					getFragmentDefinition({
+						id: getRandomString(),
+						key: fragmentKey,
+					})
+				),
+				getWidgetDefinition({
+					id: getRandomString(),
+					widgetName:
+						'com_liferay_frontend_data_set_sample_web_internal_portlet_FDSSamplePortlet',
+				}),
+			]),
 			siteId: site.id,
 			title: getRandomString(),
 		});
