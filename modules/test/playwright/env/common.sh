@@ -93,7 +93,10 @@ function combine_properties_files {
 function default_set_up {
 	update_portal_ext_properties
 
-	start_default_app_server
+	if [[ "${1}" != "down" ]]
+	then
+	  start_default_app_server
+	fi
 
 	deploy_parent_project_osgi_modules
 
