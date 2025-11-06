@@ -40,6 +40,7 @@ export {
 	IInternalRenderer,
 	IItemsActions,
 	IItemActionsData,
+	ISearchQuery,
 	IView,
 	TOnFileDrop,
 } from './utils/types';

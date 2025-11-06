@@ -7,6 +7,7 @@ import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {ClayPaginationBarWithBasicItems} from '@clayui/pagination-bar';
 import {useControlledState} from '@clayui/shared';
 import {useIsMounted, useThunk} from '@liferay/frontend-js-react-web';
+import {useLiferayState} from '@liferay/frontend-js-state-web/react';
 import classNames from 'classnames';
 import {openToast} from 'frontend-js-components-web';
 import {
@@ -32,6 +33,9 @@ import FDSDndProvider from './dnd/FDSDndProvider';
 import isFileDropEnabled from './utils/isFileDropEnabled';
 
 import './styles/main.scss';
+
+import {State} from '@liferay/frontend-js-state-web';
+
 import DnDContext from './DnDContext';
 import FrontendDataSetContext from './FrontendDataSetContext';
 import useFDSDrop from './dnd/useFDSDrop';
@@ -51,7 +55,7 @@ import Modal from './modal/Modal';
 
 import SidePanel from './side_panel/SidePanel';
 import filterCreationActions from './utils/actionItems/filterCreationActions';
-import {contains} from './utils/configInURL';
+import {contains, readConfigFromURL} from './utils/configInURL';
 import EVENTS from './utils/eventsDefinitions';
 import {activateFilter} from './utils/filters/activateFilter';
 import {deactivateFilter} from './utils/filters/deactivateFilter';
@@ -75,6 +79,7 @@ import {
 	IFrontendDataSetProps,
 	IModalConfig,
 	IRequestOptions,
+	ISearchQuery,
 	ISuccessNotification,
 	ITableSchema,
 	IView,
@@ -84,13 +89,7 @@ import {
 } from './utils/types';
 import useConfigInURL, {useUpdateConfig} from './utils/useConfigInURL';
 import ViewsContext from './views/ViewsContext';
-
-// @ts-ignore
-
 import getViewComponent from './views/getViewComponent';
-
-// @ts-ignore
-
 import viewsReducer, {EViewsActionTypes} from './views/viewsReducer';
 
 const DEFAULT_PAGINATION_DELTA = 20;
@@ -102,6 +101,7 @@ const FrontendDataSetContent = ({
 	additionalAPIURLParameters,
 	apiURL,
 	appURL,
+	atoms,
 	bulkActions = [],
 	configInURLBehavior = EConfigInURLBehavior.PUSH,
 	creationMenu: initialCreationMenu,
@@ -148,8 +148,7 @@ const FrontendDataSetContent = ({
 	uniformActionsDisplay,
 	views,
 }: IFrontendDataSetProps) => {
-	const fdsRef = useRef(null);
-	const dataSetWrapperRef: RefObject<HTMLDivElement> = useRef(null);
+	const {fileDropSettings} = useContext(DnDContext);
 
 	const [getActiveSorts, updateActiveSorts] = useConfigInURL({
 		configInURLBehavior,
@@ -356,6 +355,14 @@ const FrontendDataSetContent = ({
 		id,
 	});
 
+	const [globalSearchQueryValue, setGlobalSearchQueryValue] =
+		useLiferayState<ISearchQuery>(
+			atoms?.searchQuery ??
+				State.atom<ISearchQuery>(`${id}_fdsSearchQuery`, {
+					query: '',
+				})
+		);
+
 	const [componentLoading, setComponentLoading] = useState(false);
 	const [creationMenu, setCreationMenu] = useState(initialCreationMenu);
 	const [dataLoading, setDataLoading] = useState(!!apiURL);
@@ -395,8 +402,6 @@ const FrontendDataSetContent = ({
 	}
 
 	const [total, setTotal] = useState(0);
-
-	const {fileDropSettings} = useContext(DnDContext);
 
 	const isMounted = useIsMounted();
 
@@ -727,28 +732,6 @@ const FrontendDataSetContent = ({
 		sorts,
 	]);
 
-	const onSearch = useCallback(
-		({query}: {query: string}) => {
-			if (apiURL || appURL) {
-				setSearching(true);
-
-				viewsDispatch(updateSearchParam(query));
-			}
-			else {
-				setItems(
-					itemsProp?.length
-						? itemsProp.filter((item) => {
-								return JSON.stringify(
-									Object.values(item)
-								).includes(query);
-							})
-						: []
-				);
-			}
-		},
-		[apiURL, appURL, itemsProp, updateSearchParam, viewsDispatch]
-	);
-
 	const onClearFilters = useCallback(() => {
 		setSearching(true);
 
@@ -758,8 +741,51 @@ const FrontendDataSetContent = ({
 			)
 		);
 
-		onSearch({query: ''});
-	}, [filters, onSearch, updateFilters, viewsDispatch]);
+		setGlobalSearchQueryValue({query: ''});
+	}, [filters, setGlobalSearchQueryValue, updateFilters, viewsDispatch]);
+
+	const [firstRender, setFirstRender] = useState(true);
+
+	useEffect(() => {
+		if (firstRender) {
+			const urlConfig = readConfigFromURL(id);
+
+			setGlobalSearchQueryValue({
+				query: urlConfig?.[EConfigInURLKeys.SEARCH_PARAM] ?? '',
+			});
+
+			setFirstRender(false);
+
+			return;
+		}
+
+		if (apiURL || appURL) {
+			setSearching(true);
+
+			viewsDispatch(updateSearchParam(globalSearchQueryValue.query));
+		}
+		else {
+			setItems(
+				itemsProp?.length
+					? itemsProp.filter((item) => {
+							return JSON.stringify(Object.values(item)).includes(
+								globalSearchQueryValue.query
+							);
+						})
+					: []
+			);
+		}
+	}, [
+		apiURL,
+		appURL,
+		firstRender,
+		globalSearchQueryValue.query,
+		id,
+		itemsProp,
+		setGlobalSearchQueryValue,
+		updateSearchParam,
+		viewsDispatch,
+	]);
 
 	const updateDataSetItems = useCallback(
 		(dataSetData: IDataSetData) => {
@@ -990,6 +1016,8 @@ const FrontendDataSetContent = ({
 			setHighlightedItemsValue(highlightedItemsValue.concat(value));
 		}
 	}
+
+	const dataSetWrapperRef: RefObject<HTMLDivElement> = useRef(null);
 
 	useEffect(() => {
 		if (dataSetWrapperRef.current) {
@@ -1310,6 +1338,8 @@ const FrontendDataSetContent = ({
 			}
 		};
 	}, [configInURLBehavior, handlePopState, id, refreshData]);
+
+	const fdsRef = useRef(null);
 
 	const hasSearch = !!searchParam;
 	const hasActiveFilters = filters.some((filter: any) => filter.active);
@@ -1733,11 +1763,16 @@ const FrontendDataSetContent = ({
 				nestedItemsReferenceKey,
 				onActionDropdownItemClick,
 				onBulkActionItemClick,
+				onClearSearch: () => {
+					setGlobalSearchQueryValue({query: ''});
+				},
 				onInfoPanelToggleButtonClick: () => {
 					setInfoPanelOpen((value) => !value);
 				},
 				onItemsChange,
-				onSearch,
+				onSearch: ({query}) => {
+					setGlobalSearchQueryValue({query});
+				},
 				openModal,
 				openSidePanel,
 				portletId,

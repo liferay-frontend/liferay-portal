@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {Atom} from '@liferay/frontend-js-state-web';
 import {ModalStatus} from 'frontend-js-components-web';
 import React from 'react';
 
@@ -281,6 +282,9 @@ export interface IFrontendDataSetProps {
 	additionalAPIURLParameters?: string;
 	apiURL?: string;
 	appURL?: string;
+	atoms?: {
+		searchQuery?: Atom<ISearchQuery>;
+	};
 	bulkActions?: any[];
 	configInURLBehavior?: EConfigInURLBehavior;
 	creationMenu?: {
@@ -450,3 +454,9 @@ export type IConfigWriter<K extends keyof IConfigInURL> = (
 export type VisibleFieldNames = {
 	[fieldName: string]: boolean;
 };
+
+interface ISearchQuery {
+	query: string;
+}
+
+export type {ISearchQuery};
