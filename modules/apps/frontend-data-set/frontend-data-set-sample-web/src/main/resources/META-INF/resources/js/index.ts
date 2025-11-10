@@ -12,6 +12,7 @@ import EmptyPropsTransformer from './EmptyPropsTransformer';
 import GreenCheckColorTableCell from './GreenCheckColorTableCell';
 import ReactFrontendDataSet from './ReactFrontendDataSet';
 import SingleSelectionPropsTransformer from './SingleSelectionPropsTransformer';
+import Search from './fragments/Search';
 
 export {
 	AdvancedPropsTransformer,
@@ -23,4 +24,5 @@ export {
 	GreenCheckColorTableCell,
 	ReactFrontendDataSet,
 	SingleSelectionPropsTransformer,
+	Search,
 };

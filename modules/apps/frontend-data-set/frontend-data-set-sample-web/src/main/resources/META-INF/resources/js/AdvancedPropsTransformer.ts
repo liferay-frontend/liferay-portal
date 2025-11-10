@@ -11,6 +11,7 @@ import {fetch} from 'frontend-js-web';
 import CustomAuthorTableCell from './CustomAuthorTableCell';
 import SampleInfoPanel from './SampleInfoPanel';
 import dummyUploader from './dummyUploader';
+import {advancedSearchQueryAtom} from './utils/atoms';
 
 import type {
 	ICardSchema,
@@ -122,6 +123,9 @@ export default function propsTransformer({
 
 	return {
 		...otherProps,
+		atoms: {
+			searchQuery: advancedSearchQueryAtom,
+		},
 		customRenderers: {
 			tableCell: [customAuthorTableCellRenderer],
 		},
