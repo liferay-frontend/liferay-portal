@@ -9,7 +9,7 @@ import {apiHelpersTest} from '../../../../../fixtures/apiHelpersTest';
 import {featureFlagsTest} from '../../../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../../fixtures/loginTest';
-import {EFDSVisualizationMode, waitForFDS} from '../../../../../utils/waitFor';
+import {waitForFDS} from '../../../../../utils/waitFor';
 import {fdsSamplePageTest} from '../../fixtures/fdsSamplePageTest';
 
 const test = mergeTests(
@@ -27,7 +27,7 @@ test.beforeEach(async ({fdsSamplePage, page, site}) => {
 
 	await fdsSamplePage.selectTab('Advanced');
 
-	await waitForFDS({page, visualizationMode: EFDSVisualizationMode.TABLE});
+	await waitForFDS({page});
 });
 
 test(
@@ -154,11 +154,9 @@ test(
 
 		await test.step('Check that no filters were found message is displayed', async () => {
 			await test.step('Refresh the page', async () => {
-				await page.reload();
+				await fdsSamplePage.selectTab('Advanced');
 
-				await page
-					.getByText('This is a description for sample 1.')
-					.waitFor();
+				await waitForFDS({page});
 			});
 
 			await test.step('Open filter dropdown', async () => {
@@ -184,11 +182,9 @@ test(
 
 		await test.step('Check selecting a filter', async () => {
 			await test.step('Refresh the page', async () => {
-				await page.reload();
+				await fdsSamplePage.selectTab('Advanced');
 
-				await page
-					.getByText('This is a description for sample 1.')
-					.waitFor();
+				await waitForFDS({page});
 			});
 
 			await test.step('Select "Red" color in the filters dropdown', async () => {
@@ -228,11 +224,9 @@ test(
 
 		await test.step('Check excluding a filter', async () => {
 			await test.step('Refresh the page', async () => {
-				await page.reload();
+				await fdsSamplePage.selectTab('Advanced');
 
-				await page
-					.getByText('This is a description for sample 1.')
-					.waitFor();
+				await waitForFDS({page});
 			});
 
 			await test.step('Check exclude switch for "Blue", "Green", "Yellow" colors', async () => {
@@ -263,11 +257,9 @@ test(
 
 		await test.step('Check editing a filter summary box', async () => {
 			await test.step('Refresh the page', async () => {
-				await page.reload();
+				await fdsSamplePage.selectTab('Advanced');
 
-				await page
-					.getByText('This is a description for sample 1.')
-					.waitFor();
+				await waitForFDS({page});
 			});
 
 			await test.step('Open the "Color" filter summary box', async () => {
@@ -314,11 +306,9 @@ test(
 
 		await test.step('Check filter can be removed using delete button', async () => {
 			await test.step('Refresh the page', async () => {
-				await page.reload();
+				await fdsSamplePage.selectTab('Advanced');
 
-				await page
-					.getByText('This is a description for sample 1.')
-					.waitFor();
+				await waitForFDS({page});
 			});
 
 			await test.step('Open the "Color" filter summary box', async () => {
@@ -349,11 +339,9 @@ test(
 
 		await test.step('Assert the synchronization of the filters', async () => {
 			await test.step('Refresh the page', async () => {
-				await page.reload();
+				await fdsSamplePage.selectTab('Advanced');
 
-				await page
-					.getByText('This is a description for sample 1.')
-					.waitFor();
+				await waitForFDS({page});
 			});
 
 			await test.step('Open the "Color" filter summary box', async () => {
