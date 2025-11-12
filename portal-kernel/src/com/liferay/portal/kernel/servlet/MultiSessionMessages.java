@@ -74,6 +74,10 @@ public class MultiSessionMessages {
 	}
 
 	public static boolean contains(PortletRequest portletRequest, String key) {
+		if (portletRequest == null) {
+			return false;
+		}
+
 		if (SessionMessages.contains(portletRequest, key) ||
 			SessionMessages.contains(
 				PortalUtil.getHttpServletRequest(portletRequest), key)) {
