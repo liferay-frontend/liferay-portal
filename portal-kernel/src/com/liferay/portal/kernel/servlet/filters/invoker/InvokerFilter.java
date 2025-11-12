@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Mika Koivisto
@@ -48,6 +49,8 @@ import java.util.Set;
  * @author Shuyang Zhou
  */
 public class InvokerFilter implements Filter {
+
+	private static AtomicLong _nextId = new AtomicLong(0);
 
 	@Override
 	public void destroy() {
@@ -77,6 +80,12 @@ public class InvokerFilter implements Filter {
 
 		HttpServletRequest httpServletRequest =
 			(HttpServletRequest)servletRequest;
+
+		long id = _nextId.getAndIncrement();
+
+		System.err.println("<<<< " + id);
+		System.err.println("     " + httpServletRequest.getRequestURI());
+		System.err.println("     " + httpServletRequest.getQueryString());
 
 		HttpServletResponse httpServletResponse =
 			(HttpServletResponse)servletResponse;
@@ -116,6 +125,8 @@ public class InvokerFilter implements Filter {
 		}
 		finally {
 			httpServletRequest.removeAttribute(WebKeys.INVOKER_FILTER_URI);
+
+			System.err.println(">>>> " + id);
 		}
 	}
 

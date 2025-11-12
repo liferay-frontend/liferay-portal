@@ -10,6 +10,10 @@
 <%
 Group group = (Group)request.getAttribute("liferay-theme:portlet-messages:group");
 Portlet portlet = (Portlet)request.getAttribute("liferay-theme:portlet-messages:portlet");
+
+if (portlet == null) {
+	return;
+}
 %>
 
 <c:if test="<%= !layout.isTypeControlPanel() %>">
