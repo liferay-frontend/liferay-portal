@@ -652,6 +652,7 @@ const FrontendDataSetContent = ({
 			defaultView: {
 				activeView,
 				filters,
+				modifiedFields: {},
 				paginationDelta,
 				sorts,
 				visibleFieldNames: initialVisibleFieldNames,
