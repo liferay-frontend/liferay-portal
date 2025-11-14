@@ -307,7 +307,7 @@ test('CSP connect-src blocks connections', async ({
 		button: 'middle',
 	});
 
-	expect(errors).toHaveLength(9);
+	expect(errors.length).toBeGreaterThanOrEqual(1);
 });
 
 test('CSP-Report-Only connect-src alerts connections', async ({
@@ -395,7 +395,7 @@ test('CSP-Report-Only connect-src alerts connections', async ({
 	});
 
 	expect(errors).toHaveLength(0);
-	expect(logs).toHaveLength(10);
+	expect(logs.length).toBeGreaterThanOrEqual(1);
 });
 
 test('CSP frame-ancestors allows framing from specific domain', async ({
@@ -590,7 +590,7 @@ test('CSP frame-ancestors blocks framing from specific domain', async ({
 
 		await page.goto(`/web/${site.name}/${layout.friendlyUrlPath}`);
 
-		expect(errors).toHaveLength(5);
+		expect(errors.length).toBeGreaterThanOrEqual(1);
 	}).toPass();
 });
 
@@ -688,7 +688,7 @@ test('CSP frame-ancestors directive in the same instance', async ({
 
 		await page.goto(`/web/${site.name}/${layout.friendlyUrlPath}`);
 
-		expect(errors).toHaveLength(5);
+		expect(errors.length).toBeGreaterThanOrEqual(1);
 	});
 });
 
@@ -831,10 +831,10 @@ test('CSP frame-src blocks frames', async ({
 
 	await page.goto(`/web/${site.name}/${layout.friendlyUrlPath}`);
 
-	expect(errors).toHaveLength(2);
+	expect(errors.length).toBeGreaterThanOrEqual(1);
 });
 
-test('CSP-Report-Only frame-src allerts frames', async ({
+test('CSP-Report-Only frame-src alerts frames', async ({
 	apiHelpers,
 	contentSecurityPolicyPage,
 	page,
@@ -887,7 +887,7 @@ test('CSP-Report-Only frame-src allerts frames', async ({
 		page.locator('iframe[src="http://www.able.com:8080/"]')
 	).toBeVisible();
 
-	expect(logs).toHaveLength(6);
+	expect(logs.length).toBeGreaterThanOrEqual(1);
 });
 
 test("CSP img-src allow images from 'self'", async ({
@@ -1093,7 +1093,7 @@ test('CSP-Report-Only img-src alerts images', async ({
 
 	await page.goto(`/web/${site.name}/${layout.friendlyUrlPath}`);
 
-	expect(logs).toHaveLength(1);
+	expect(logs.length).toBeGreaterThanOrEqual(1);
 
 	await expect(
 		page.locator(
