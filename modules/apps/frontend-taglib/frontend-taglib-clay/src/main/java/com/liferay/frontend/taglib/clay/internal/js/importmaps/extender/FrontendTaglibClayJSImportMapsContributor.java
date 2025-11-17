@@ -5,25 +5,17 @@
 
 package com.liferay.frontend.taglib.clay.internal.js.importmaps.extender;
 
-import com.liferay.frontend.js.importmaps.extender.DynamicJSImportMapsContributor;
-import com.liferay.petra.string.CharPool;
-import com.liferay.petra.string.StringPool;
+import com.liferay.frontend.js.importmaps.extender.JSImportMapsContributor;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.url.builder.AbsolutePortalURLBuilder;
-import com.liferay.portal.url.builder.AbsolutePortalURLBuilderFactory;
-import com.liferay.portal.url.builder.ESModuleAbsolutePortalURLBuilder;
 
-import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.ServletContext;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Writer;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -32,65 +24,34 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Iván Zaera Avellón
  */
-@Component(service = DynamicJSImportMapsContributor.class)
+@Component(service = JSImportMapsContributor.class)
 public class FrontendTaglibClayJSImportMapsContributor
-	implements DynamicJSImportMapsContributor {
+	implements JSImportMapsContributor {
 
 	@Override
-	public void writeGlobalImports(
-			HttpServletRequest httpServletRequest, Writer writer)
-		throws IOException {
-
-		AbsolutePortalURLBuilder absolutePortalURLBuilder =
-			_absolutePortalURLBuilderFactory.getAbsolutePortalURLBuilder(
-				httpServletRequest);
-
-		boolean first = true;
-
-		for (String moduleName : _moduleNames) {
-			String escapedModuleName = StringUtil.replace(
-				moduleName, CharPool.FORWARD_SLASH, CharPool.DOLLAR);
-
-			ESModuleAbsolutePortalURLBuilder esModuleAbsolutePortalURLBuilder =
-				absolutePortalURLBuilder.forESModule(
-					"frontend-taglib-clay",
-					"exports/" + escapedModuleName + ".js");
-
-			if (!first) {
-				writer.write(", ");
-			}
-			else {
-				first = false;
-			}
-
-			writer.write(StringPool.QUOTE);
-			writer.write(moduleName);
-			writer.write("\": \"");
-			writer.write(esModuleAbsolutePortalURLBuilder.build());
-			writer.write(StringPool.QUOTE);
-		}
-	}
-
-	@Override
-	public void writeScopedImports(
-		HttpServletRequest httpServletRequest, Writer writer) {
+	public JSONObject getImportMapsJSONObject() {
+		return _importMapsJSONObject;
 	}
 
 	@Activate
 	protected void activate() throws IOException, JSONException {
+		_importMapsJSONObject = _jsonFactory.createJSONObject();
+
 		JSONObject packageJSONObject = _getPackageJSONObject();
 
 		JSONObject dependenciesJSONObject = packageJSONObject.getJSONObject(
 			"dependencies");
-
-		_moduleNames.clear();
 
 		for (String moduleName : dependenciesJSONObject.keySet()) {
 			if (!moduleName.startsWith("@clayui/")) {
 				continue;
 			}
 
-			_moduleNames.add(moduleName);
+			_importMapsJSONObject.put(
+				moduleName,
+				StringBundler.concat(
+					_servletContext.getContextPath(), "/__liferay__/exports/",
+					moduleName.replaceAll("\\/", "\\$"), ".js"));
 		}
 	}
 
@@ -105,12 +66,15 @@ public class FrontendTaglibClayJSImportMapsContributor
 		}
 	}
 
-	@Reference
-	private AbsolutePortalURLBuilderFactory _absolutePortalURLBuilderFactory;
+	private JSONObject _importMapsJSONObject;
 
 	@Reference
 	private JSONFactory _jsonFactory;
 
-	private final List<String> _moduleNames = new ArrayList<>();
+	@Reference(
+		target = "(osgi.web.symbolicname=com.liferay.frontend.taglib.clay)",
+		unbind = "-"
+	)
+	private ServletContext _servletContext;
 
 }

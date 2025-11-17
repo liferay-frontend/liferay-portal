@@ -5,52 +5,45 @@
 
 package com.liferay.dynamic.data.mapping.form.field.type.internal.frontend.js.importmaps.extender;
 
-import com.liferay.frontend.js.importmaps.extender.DynamicJSImportMapsContributor;
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.url.builder.AbsolutePortalURLBuilder;
-import com.liferay.portal.url.builder.AbsolutePortalURLBuilderFactory;
-import com.liferay.portal.url.builder.ESModuleAbsolutePortalURLBuilder;
+import com.liferay.frontend.js.importmaps.extender.JSImportMapsContributor;
+import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONObject;
 
-import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.ServletContext;
 
-import java.io.IOException;
-import java.io.Writer;
-
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Álvaro Leal
  */
-@Component(service = DynamicJSImportMapsContributor.class)
+@Component(service = JSImportMapsContributor.class)
 public class DynamicDataMappingFormFieldTypeJSImportMapsContributor
-	implements DynamicJSImportMapsContributor {
+	implements JSImportMapsContributor {
 
 	@Override
-	public void writeGlobalImports(
-			HttpServletRequest httpServletRequest, Writer writer)
-		throws IOException {
-
-		AbsolutePortalURLBuilder absolutePortalURLBuilder =
-			_absolutePortalURLBuilderFactory.getAbsolutePortalURLBuilder(
-				httpServletRequest);
-
-		ESModuleAbsolutePortalURLBuilder esModuleAbsolutePortalURLBuilder =
-			absolutePortalURLBuilder.forESModule(
-				"dynamic-data-mapping-form-field-type", "api.js");
-
-		writer.write(
-			"\"@liferay/dynamic-data-mapping-form-field-type/api\" : \"");
-		writer.write(esModuleAbsolutePortalURLBuilder.build());
-		writer.write(StringPool.QUOTE);
+	public JSONObject getImportMapsJSONObject() {
+		return _importMapsJSONObject;
 	}
 
-	@Override
-	public void writeScopedImports(
-		HttpServletRequest httpServletRequest, Writer writer) {
+	@Activate
+	protected void activate() {
+		_importMapsJSONObject = _jsonFactory.createJSONObject();
+
+		_importMapsJSONObject.put(
+			"@liferay/dynamic-data-mapping-form-field-type/api",
+			_servletContext.getContextPath() + "/__liferay__/api.js");
 	}
+
+	private JSONObject _importMapsJSONObject;
 
 	@Reference
-	private AbsolutePortalURLBuilderFactory _absolutePortalURLBuilderFactory;
+	private JSONFactory _jsonFactory;
+
+	@Reference(
+		target = "(osgi.web.symbolicname=com.liferay.dynamic.data.mapping.form.field.type)"
+	)
+	private ServletContext _servletContext;
 
 }

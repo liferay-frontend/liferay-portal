@@ -5,50 +5,41 @@
 
 package com.liferay.fragment.internal.js.importmaps.extender;
 
-import com.liferay.frontend.js.importmaps.extender.DynamicJSImportMapsContributor;
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.url.builder.AbsolutePortalURLBuilder;
-import com.liferay.portal.url.builder.AbsolutePortalURLBuilderFactory;
-import com.liferay.portal.url.builder.ESModuleAbsolutePortalURLBuilder;
+import com.liferay.frontend.js.importmaps.extender.JSImportMapsContributor;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 
-import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.ServletContext;
 
-import java.io.IOException;
-import java.io.Writer;
-
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Víctor Galán
  */
-@Component(service = DynamicJSImportMapsContributor.class)
+@Component(service = JSImportMapsContributor.class)
 public class FragmentImplJSImportMapsContributor
-	implements DynamicJSImportMapsContributor {
+	implements JSImportMapsContributor {
 
 	@Override
-	public void writeGlobalImports(
-			HttpServletRequest httpServletRequest, Writer writer)
-		throws IOException {
-
-		AbsolutePortalURLBuilder absolutePortalURLBuilder =
-			_absolutePortalURLBuilderFactory.getAbsolutePortalURLBuilder(
-				httpServletRequest);
-
-		ESModuleAbsolutePortalURLBuilder esModuleAbsolutePortalURLBuilder =
-			absolutePortalURLBuilder.forESModule("fragment-impl", "api.js");
-
-		writer.write("\"@liferay/fragment-impl/api\" : \"");
-		writer.write(esModuleAbsolutePortalURLBuilder.build());
-		writer.write(StringPool.QUOTE);
+	public JSONObject getImportMapsJSONObject() {
+		return _importMapsJSONObject;
 	}
 
-	@Override
-	public void writeScopedImports(
-		HttpServletRequest httpServletRequest, Writer writer) {
+	@Activate
+	protected void activate() {
+		_importMapsJSONObject = JSONUtil.put(
+			"@liferay/fragment-impl/api",
+			_servletContext.getContextPath() + "/__liferay__/api.js");
 	}
 
-	@Reference
-	private AbsolutePortalURLBuilderFactory _absolutePortalURLBuilderFactory;
+	private JSONObject _importMapsJSONObject;
+
+	@Reference(
+		target = "(osgi.web.symbolicname=com.liferay.fragment.impl)",
+		unbind = "-"
+	)
+	private ServletContext _servletContext;
 
 }
