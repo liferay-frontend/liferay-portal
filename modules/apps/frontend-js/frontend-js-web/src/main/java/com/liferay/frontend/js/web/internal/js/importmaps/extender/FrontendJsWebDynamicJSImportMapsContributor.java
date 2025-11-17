@@ -7,7 +7,6 @@ package com.liferay.frontend.js.web.internal.js.importmaps.extender;
 
 import com.liferay.frontend.js.importmaps.extender.DynamicJSImportMapsContributor;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesRegistry;
 import com.liferay.portal.kernel.util.Portal;
 
@@ -31,12 +30,7 @@ public class FrontendJsWebDynamicJSImportMapsContributor
 			HttpServletRequest httpServletRequest, Writer writer)
 		throws IOException {
 
-		String cdnHost = _getCDNHost(httpServletRequest);
-
-		writer.write("\"@liferay/language/\": \"");
-		writer.write(cdnHost);
-		writer.write(_portal.getPathContext(httpServletRequest));
-		writer.write("/o/js/language/\"");
+		writer.write("\"@liferay/language/\": \"/o/js/language/\"");
 
 		_hashedFilesRegistry.forEach(
 			(unhashedFileURI, hashedFileURI) -> {
@@ -48,13 +42,11 @@ public class FrontendJsWebDynamicJSImportMapsContributor
 					writer.write(", \"");
 					writer.write(unhashedFileURI);
 					writer.write("\": \"");
-					writer.write(cdnHost);
-					writer.write(_portal.getPathContext(httpServletRequest));
 					writer.write(hashedFileURI);
 					writer.write(StringPool.QUOTE);
 				}
-				catch (Exception exception) {
-					throw new RuntimeException(exception);
+				catch (IOException ioException) {
+					throw new RuntimeException(ioException);
 				}
 			});
 	}
@@ -63,15 +55,6 @@ public class FrontendJsWebDynamicJSImportMapsContributor
 	public void writeScopedImports(
 			HttpServletRequest httpServletRequest, Writer writer)
 		throws IOException {
-	}
-
-	private String _getCDNHost(HttpServletRequest httpServletRequest) {
-		try {
-			return _portal.getCDNHost(httpServletRequest);
-		}
-		catch (PortalException portalException) {
-			throw new RuntimeException(portalException);
-		}
 	}
 
 	@Reference
