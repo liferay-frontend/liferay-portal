@@ -3,11 +3,14 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {test} from '@playwright/test';
+import {mergeTests} from '@playwright/test';
 
+import {loginTest} from "../../../fixtures/loginTest";
 import {liferayConfig} from '../../../liferay.config';
 import testImportMapsPattern from '../util/testImportMapsPattern';
 import testScriptTagsPattern from '../util/testScriptTagsPattern';
+
+const test = mergeTests(loginTest());
 
 test('JavaScript URLs honor proxy', {tag: '@LPD-66044'}, async ({page}) => {
 	await page.goto(liferayConfig.environment.baseUrl);
