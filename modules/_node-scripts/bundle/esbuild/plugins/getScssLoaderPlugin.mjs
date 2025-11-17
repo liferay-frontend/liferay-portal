@@ -8,7 +8,6 @@ import path from 'path';
 
 import {BUILD_SASS_CACHE_PATH, SRC_PATH} from '../../../util/constants.mjs';
 import extractFileHash from '../../util/extractFileHash.mjs';
-import getCSSLoadJavaScript from '../../util/getCSSLoadJavaScript.mjs';
 
 /**
  * This plugin transforms `import from` statements for .scss files into JavaScript code that inserts
@@ -51,11 +50,25 @@ export default function getScssLoaderPlugin(projectWebContextPath) {
 						.join(path.posix.sep)
 						.replace(/\.scss$/, '');
 
+					const contents = `
+const link = document.createElement('link');
+link.setAttribute('rel', 'stylesheet');
+link.setAttribute('type', 'text/css');
+link.setAttribute(
+	'href', 
+	Liferay.ThemeDisplay.getPathContext() +
+		'/o${projectWebContextPath}/${cssBaseURI}' +
+		(document.dir === 'rtl' ? '_rtl' : '') +
+		'.(${hash}).css'
+);
+if (Liferay.CSP) {
+	link.setAttribute('nonce', Liferay.CSP.nonce);
+}
+document.querySelector('head').appendChild(link);
+`;
+
 					return {
-						contents: getCSSLoadJavaScript(
-							projectWebContextPath,
-							`${cssBaseURI}.(${hash}).css`
-						),
+						contents,
 						loader: 'js',
 					};
 				}
