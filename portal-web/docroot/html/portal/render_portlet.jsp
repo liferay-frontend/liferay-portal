@@ -12,6 +12,9 @@ String cmd = ParamUtil.getString(request, Constants.CMD);
 
 Portlet portlet = (Portlet)request.getAttribute(WebKeys.RENDER_PORTLET);
 
+System.err.println("render_portlet.jsp: " + portlet);
+System.err.println("           request: " + request);
+
 String portletId = portlet.getPortletId();
 String rootPortletId = portlet.getRootPortletId();
 String instanceId = portlet.getInstanceId();

@@ -1,4 +1,4 @@
-<%--
+<%@ page import="java.util.Enumeration" %><%--
 /**
  * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
@@ -58,6 +58,43 @@ Portlet portlet = (Portlet)request.getAttribute("liferay-theme:portlet-messages:
 		</c:choose>
 	</c:if>
 </c:if>
+
+<%
+	System.err.println("renderRequest: " + renderRequest);
+	if (renderRequest == null) {
+		System.err.println("<<<< RENDER REQUEST IS NULL !!!!");
+
+		System.err.println("request = " + request);
+		System.err.println("requestURL = " + request.getRequestURL());
+		System.err.println("getRequestURI = " + request.getRequestURI());
+		System.err.println("getQueryString = " + request.getQueryString());
+
+		HttpServletRequest originalServletRequest =
+			PortalUtil.getOriginalServletRequest(request);
+
+		System.err.println("original.request = " + originalServletRequest);
+		System.err.println("original.requestURL = " + originalServletRequest.getRequestURL());
+		System.err.println("original.getRequestURI = " + originalServletRequest.getRequestURI());
+		System.err.println("original.getQueryString = " + originalServletRequest.getQueryString());
+
+
+		System.err.println("request attributes");
+		Enumeration<String> attributeNames = request.getAttributeNames();
+		while(attributeNames.hasMoreElements()) {
+			String attributeName = attributeNames.nextElement();
+
+			System.err.println(attributeName + " = " + request.getAttribute(attributeName));
+		}
+
+		System.err.println("stack trace");
+		StackTraceElement[] stackTraceElements = new Exception("stack trace exception").getStackTrace();
+		for (StackTraceElement stackTraceElement : stackTraceElements) {
+			System.err.println(stackTraceElement.toString());
+		}
+
+		System.err.println(">>>>");
+	}
+%>
 
 <c:if test='<%= MultiSessionMessages.contains(renderRequest, "requestProcessed") && !MultiSessionMessages.contains(renderRequest, portlet.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_SUCCESS_MESSAGE) %>'>
 

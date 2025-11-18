@@ -852,6 +852,10 @@ public class PortletContainerImpl implements PortletContainer {
 
 		httpServletRequest.setAttribute(WebKeys.RENDER_PORTLET, portlet);
 
+		System.err.println("     renderPortlet: " + portlet.getPortletId());
+		System.err.println("             phase: " + lifecycle);
+		System.err.println("httpServletRequest: " + httpServletRequest);
+
 		String path = (String)httpServletRequest.getAttribute(
 			WebKeys.RENDER_PATH);
 

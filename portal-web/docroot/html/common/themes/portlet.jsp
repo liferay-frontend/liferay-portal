@@ -14,6 +14,9 @@ String tilesPortletContent = GetterUtil.getString(request.getAttribute(WebKeys.P
 
 Portlet portlet = (Portlet)request.getAttribute(WebKeys.RENDER_PORTLET);
 
+System.err.println("portlet.jsp: " + portlet);
+System.err.println("    request: " + request);
+
 LiferayRenderResponse liferayRenderResponse = (LiferayRenderResponse)LiferayPortletUtil.getLiferayPortletResponse(renderResponse);
 
 // Portlet title

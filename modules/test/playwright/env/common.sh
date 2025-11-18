@@ -93,6 +93,10 @@ function combine_properties_files {
 function default_set_up {
 	update_portal_ext_properties
 
+  echo '<<<< portal-ext.properties'
+	cat $(get_tomcat_portal_ext_properties_file)
+  echo '>>>>>>>>>>>>>>>>>>>>>>>>>>'
+
 	if [[ "${1}" != "down" ]]
 	then
 	  start_default_app_server
