@@ -12,6 +12,7 @@ export interface IViewsContext {
 	activeView: any;
 	customViews: Array<ICustomView>;
 	customViewsEnabled: boolean;
+	defaultView?: any;
 	filters: IFilter[];
 	filtersGroups: Array<any>;
 	modifiedFields: any;
