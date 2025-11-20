@@ -8,25 +8,25 @@ import {createContext} from 'react';
 import {IFilter} from '../management_bar/controls/filters/Filter';
 
 export interface IViewsContext {
-	activeCustomViewId: null | string;
+	activeSnapshotId: null | string;
 	activeView: any;
-	customViews: Array<ICustomView>;
-	customViewsEnabled: boolean;
 	defaultView?: any;
 	filters: IFilter[];
 	filtersGroups: Array<any>;
 	modifiedFields: any;
 	paginationDelta: any;
+	snapshots: Array<ISnapshot>;
+	snapshotsEnabled: boolean;
 	sorts: Array<any>;
 	viewUpdated: boolean;
 	views: Array<any>;
 	visibleFieldNames: any;
 }
 
-export interface ICustomView {
-	customViewConfig?: any;
-	customViewERC: string;
-	customViewLabel: string;
+export interface ISnapshot {
+	snapshotConfig?: any;
+	snapshotERC: string;
+	snapshotLabel: string;
 }
 
 export type TViewsContextDispatch = ({
@@ -39,14 +39,14 @@ export type TViewsContextDispatch = ({
 
 const ViewsContext = createContext<[IViewsContext, any]>([
 	{
-		activeCustomViewId: null,
+		activeSnapshotId: null,
 		activeView: null,
-		customViews: [],
-		customViewsEnabled: false,
 		filters: [],
 		filtersGroups: [],
 		modifiedFields: {},
 		paginationDelta: null,
+		snapshots: [],
+		snapshotsEnabled: false,
 		sorts: [],
 		viewUpdated: false,
 		views: [],
