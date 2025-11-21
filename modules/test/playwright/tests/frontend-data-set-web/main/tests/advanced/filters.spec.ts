@@ -192,6 +192,11 @@ test(
 				await page
 					.locator('.dropdown-menu')
 					.getByRole('button', {name: 'Show Results'})
+					.or(
+						page
+							.locator('.dropdown-menu')
+							.getByRole('button', {name: 'Add Filter'})
+					)
 					.click();
 
 				await page
