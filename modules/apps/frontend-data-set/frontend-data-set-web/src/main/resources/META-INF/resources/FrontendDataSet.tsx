@@ -647,7 +647,7 @@ const FrontendDataSetContent = ({
 			activeView,
 			defaultView: {
 				activeView,
-				filters,
+				filters: JSON.parse(JSON.stringify(filters)),
 				modifiedFields: {},
 				paginationDelta,
 				sorts,
@@ -1049,7 +1049,9 @@ const FrontendDataSetContent = ({
 				type: EViewsActionTypes.UPDATE_FILTERS,
 				value: updateFilterActivation({
 					newFilters: activeFilters,
-					oldFilters: filters,
+					oldFilters: filters.map((filter: any) =>
+						JSON.parse(JSON.stringify(filter))
+					),
 				}),
 			});
 		}
@@ -1612,12 +1614,14 @@ const FrontendDataSetContent = ({
 		if (value === 'DEFAULT_VIEW') {
 			updateConfig({
 				[EConfigInURLKeys.ACTIVE_FILTERS]: updateFilterActivation({
-					newFilters: getFilters(),
-					oldFilters: defaultView.filters,
+					newFilters: defaultView.filters.filter(
+						(filter: any) => filter.active
+					),
+					oldFilters: filters,
 				}),
 				[EConfigInURLKeys.ACTIVE_SORTS]: updateSortsActivation({
-					newSorts: getActiveSorts(),
-					oldSorts: defaultView.sorts,
+					newSorts: defaultView.sorts,
+					oldSorts: sorts,
 				}),
 				[EConfigInURLKeys.DELTA]: {...defaultView.paginationDelta},
 				[EConfigInURLKeys.VIEW_NAME]: {...defaultView.activeView.name},
@@ -1637,12 +1641,14 @@ const FrontendDataSetContent = ({
 
 			updateConfig({
 				[EConfigInURLKeys.ACTIVE_FILTERS]: updateFilterActivation({
-					newFilters: getFilters(),
-					oldFilters: snapshot.snapshotConfig.filters,
+					newFilters: snapshot.snapshotConfig.filters.filter(
+						(filter: any) => filter.active
+					),
+					oldFilters: filters,
 				}),
 				[EConfigInURLKeys.ACTIVE_SORTS]: updateSortsActivation({
-					newSorts: getActiveSorts(),
-					oldSorts: snapshot.snapshotConfig.sorts,
+					newSorts: snapshot.snapshotConfig.sorts,
+					oldSorts: sorts,
 				}),
 				[EConfigInURLKeys.DELTA]:
 					snapshot.snapshotConfig.paginationDelta,
