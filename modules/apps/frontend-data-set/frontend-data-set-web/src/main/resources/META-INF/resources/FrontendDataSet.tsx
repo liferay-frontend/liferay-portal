@@ -1624,7 +1624,7 @@ const FrontendDataSetContent = ({
 					newFilters: defaultView.filters.filter(
 						(filter: any) => filter.active
 					),
-					oldFilters: filters,
+					oldFilters: JSON.parse(JSON.stringify(filters)),
 				}),
 				[EConfigInURLKeys.ACTIVE_SORTS]: updateSortsActivation({
 					newSorts: defaultView.sorts,
@@ -1647,7 +1647,7 @@ const FrontendDataSetContent = ({
 					newFilters: snapshot.configuration.filters.filter(
 						(filter: any) => filter.active
 					),
-					oldFilters: filters,
+					oldFilters: JSON.parse(JSON.stringify(filters)),
 				}),
 				[EConfigInURLKeys.ACTIVE_SORTS]: updateSortsActivation({
 					newSorts: snapshot.configuration.sorts,
