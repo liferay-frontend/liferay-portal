@@ -8,7 +8,7 @@ import {createContext} from 'react';
 import {IFilter} from '../management_bar/controls/filters/Filter';
 
 export interface IViewsContext {
-	activeSnapshotId: null | string;
+	activeSnapshotERC: null | string;
 	activeView: any;
 	defaultView?: any;
 	filters: IFilter[];
@@ -39,7 +39,7 @@ export type TViewsContextDispatch = ({
 
 const ViewsContext = createContext<[IViewsContext, any]>([
 	{
-		activeSnapshotId: null,
+		activeSnapshotERC: null,
 		activeView: null,
 		filters: [],
 		filtersGroups: [],
