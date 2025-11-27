@@ -1568,12 +1568,12 @@
 			"system": true
 		},
 		{
-			"externalReferenceCode": "L_DATA_SET_SNAPSHOT_FDS_CONFIG",
+			"externalReferenceCode": "L_DATA_SET_SNAPSHOT",
 			"label": {
-				"en_US": "Data Set Snapshot FDS Config"
+				"en_US": "Data Set Snapshot"
 			},
 			"modifiable": true,
-			"name": "DataSetSnapshotFDSConfig",
+			"name": "DataSetSnapshot",
 			"objectFields": [
 				{
 					"DBType": "Boolean",
@@ -1658,7 +1658,7 @@
 			],
 			"panelCategoryKey": "",
 			"pluralLabel": {
-				"en_US": "Data Set Snapshot FDS Configs"
+				"en_US": "Data Set Snapshots"
 			},
 			"portlet": false,
 			"scope": "company",

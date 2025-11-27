@@ -147,11 +147,11 @@ const SnapshotsControls = () => {
 
 		if (!snapshotERC) {
 			method = 'POST';
-			url = `/o/data-set-admin/snapshot-fds-configs`;
+			url = `/o/data-set-admin/snapshots`;
 		}
 		else {
 			method = 'PATCH';
-			url = `/o/data-set-admin/snapshot-fds-configs/by-external-reference-code/${snapshotERC}`;
+			url = `/o/data-set-admin/snapshots/by-external-reference-code/${snapshotERC}`;
 		}
 
 		const externalReferenceCode = snapshotERC ?? getRandomId();
@@ -247,7 +247,7 @@ const SnapshotsControls = () => {
 		label: string;
 		processClose: Function;
 	}) => {
-		const url = `/o/data-set-admin/snapshot-fds-configs/by-external-reference-code/${activeSnapshot.erc}`;
+		const url = `/o/data-set-admin/snapshots/by-external-reference-code/${activeSnapshot.erc}`;
 
 		fetch(url, {
 			body: JSON.stringify({
@@ -319,7 +319,7 @@ const SnapshotsControls = () => {
 	};
 
 	const deleteSnapshot = ({snapshotERC}: {snapshotERC: string}) => {
-		const url = `/o/data-set-admin/snapshot-fds-configs/by-external-reference-code/${snapshotERC}`;
+		const url = `/o/data-set-admin/snapshots/by-external-reference-code/${snapshotERC}`;
 
 		fetch(url, {
 			method: 'DELETE',

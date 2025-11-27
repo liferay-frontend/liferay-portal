@@ -69,7 +69,7 @@ public abstract class BaseFDSSerializer {
 			ObjectDefinition objectDefinition =
 				objectDefinitionLocalService.fetchObjectDefinition(
 					PortalUtil.getCompanyId(httpServletRequest),
-					"DataSetSnapshotFDSConfig");
+					"DataSetSnapshot");
 
 			ObjectEntryManager objectEntryManager =
 				DefaultObjectEntryManagerProvider.provide(

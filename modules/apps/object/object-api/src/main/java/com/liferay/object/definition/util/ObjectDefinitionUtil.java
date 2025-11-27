@@ -155,7 +155,7 @@ public class ObjectDefinitionUtil {
 		).put(
 			"DataSetSelectionFilter", "/data-set-admin/selection-filters"
 		).put(
-			"DataSetSnapshotFDSConfig", "/data-set-admin/snapshot-fds-configs"
+			"DataSetSnapshot", "/data-set-admin/snapshots"
 		).put(
 			"DataSetSort", "/data-set-admin/sorts"
 		).put(
