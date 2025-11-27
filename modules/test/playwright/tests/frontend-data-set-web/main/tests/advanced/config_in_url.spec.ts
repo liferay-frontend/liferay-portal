@@ -29,6 +29,7 @@ const test = mergeTests(
 	fdsSamplePageTest,
 	frontendSPAInfrastructureConfigurationTest,
 	featureFlagsTest({
+		'LPD-10683': {enabled: true},
 		'LPD-22473': {enabled: true},
 		'LPS-178052': {enabled: true},
 	}),
@@ -621,7 +622,8 @@ for (const spaConfiguration of spaConfigurations) {
 				});
 
 				await test.step('Check forward navigation', async () => {
-					await page.goForward();
+					await page.goForward({waitUntil: 'domcontentloaded'});
+
 					await checkView(EFDSVisualizationMode.TABLE);
 					await checkDelta(40);
 					await assertNoActiveFiltersInURL(
