@@ -935,7 +935,7 @@ const FrontendDataSetContent = ({
 				},
 			},
 		]);
-	}, [initialFilters, views, updateFilters, viewsDispatch]);
+	}, [initialFilters, views, viewsDispatch]);
 
 	useEffect(() => {
 		if (itemsProp) {
@@ -1663,7 +1663,7 @@ const FrontendDataSetContent = ({
 
 			viewsDispatch({
 				type: EViewsActionTypes.UPDATE_ACTIVE_SNAPSHOT,
-				value,
+				value: snapshot,
 			});
 		}
 	};

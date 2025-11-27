@@ -120,28 +120,20 @@ const viewsActions: TViewsActions = {
 		};
 	},
 	[EViewsActionTypes.UPDATE_ACTIVE_SNAPSHOT]: (state, value) => {
-		const {defaultView, snapshots} = state;
+		const {defaultView} = state;
 
-		const activeSnapshot = snapshots.find(
-			(view: ISnapshot) => view.erc === value
-		);
-
-		if (!activeSnapshot) {
-			return state;
+		if (!value.configuration.activeView) {
+			value.configuration.activeView = defaultView.activeView;
 		}
 
-		if (!activeSnapshot.configuration.activeView) {
-			activeSnapshot.configuration.activeView = defaultView.activeView;
-		}
-
-		activeSnapshot.configuration.activeView.component =
-			getViewComponent(activeSnapshot.configuration.activeView) ??
+		value.configuration.activeView.component =
+			getViewComponent(value.configuration.activeView) ??
 			getViewComponent(defaultView.activeView);
 
 		return {
 			...state,
-			...activeSnapshot.configuration,
-			activeSnapshotERC: value,
+			...value.configuration,
+			activeSnapshotERC: value.erc,
 			viewUpdated: false,
 		};
 	},
