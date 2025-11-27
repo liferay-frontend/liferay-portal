@@ -426,6 +426,7 @@ const FrontendDataSetContent = ({
 						filter.type === 'selection' && filter.items?.length
 							? {
 									...filter.selectedData,
+									exclude: newFilter.selectedData.exclude,
 									selectedItems:
 										newFilter.selectedData.selectedItems.map(
 											(newItem: any) => {
