@@ -29,6 +29,7 @@ import React, {
 
 import DragLayer from './dnd/DragLayer';
 import FDSDndProvider from './dnd/FDSDndProvider';
+import deepClone from './utils/deepClone';
 import isFileDropEnabled from './utils/isFileDropEnabled';
 
 import './styles/main.scss';
@@ -647,7 +648,7 @@ const FrontendDataSetContent = ({
 			activeView,
 			defaultView: {
 				activeView,
-				filters: JSON.parse(JSON.stringify(filters)),
+				filters: deepClone(filters),
 				modifiedFields: {},
 				paginationDelta,
 				sorts,
@@ -1052,9 +1053,7 @@ const FrontendDataSetContent = ({
 				type: EViewsActionTypes.UPDATE_FILTERS,
 				value: updateFilterActivation({
 					newFilters: activeFilters,
-					oldFilters: filters.map((filter: any) =>
-						JSON.parse(JSON.stringify(filter))
-					),
+					oldFilters: deepClone(filters),
 				}),
 			});
 		}
@@ -1614,8 +1613,8 @@ const FrontendDataSetContent = ({
 	}
 
 	const handleSnapshotChange = ({defaultView, snapshots, value}: any) => {
-		const snapshot = snapshots.find(
-			(view: ISnapshot) => view.erc === value
+		const snapshot = deepClone(
+			snapshots.find((view: ISnapshot) => view.erc === value)
 		);
 
 		if (!snapshot || value === 'DEFAULT_VIEW') {
@@ -1624,7 +1623,7 @@ const FrontendDataSetContent = ({
 					newFilters: defaultView.filters.filter(
 						(filter: any) => filter.active
 					),
-					oldFilters: JSON.parse(JSON.stringify(filters)),
+					oldFilters: deepClone(filters),
 				}),
 				[EConfigInURLKeys.ACTIVE_SORTS]: updateSortsActivation({
 					newSorts: defaultView.sorts,
@@ -1647,7 +1646,7 @@ const FrontendDataSetContent = ({
 					newFilters: snapshot.configuration.filters.filter(
 						(filter: any) => filter.active
 					),
-					oldFilters: JSON.parse(JSON.stringify(filters)),
+					oldFilters: deepClone(filters),
 				}),
 				[EConfigInURLKeys.ACTIVE_SORTS]: updateSortsActivation({
 					newSorts: snapshot.configuration.sorts,

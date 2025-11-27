@@ -3,8 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import deepClone from '../deepClone';
+
 export function deactivateFilter(filter: any) {
-	const updatedFilter = JSON.parse(JSON.stringify(filter));
+	const updatedFilter = deepClone(filter);
 
 	updatedFilter.active = false;
 	updatedFilter.odataFilterString = undefined;
