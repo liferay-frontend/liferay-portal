@@ -4,6 +4,7 @@
  */
 
 import {FILTER_IMPLEMENTATIONS} from '../../management_bar/controls/filters/Filter';
+import deepClone from '../deepClone';
 
 export function activateFilter({
 	filter,
@@ -12,19 +13,22 @@ export function activateFilter({
 	filter: any;
 	selectedData?: any;
 }) {
-	filter.active = true;
+	const updatedFilter = deepClone(filter);
+
+	updatedFilter.active = true;
 
 	if (selectedData) {
-		filter.selectedData = selectedData;
+		updatedFilter.selectedData = selectedData;
 	}
 
-	const filterType: keyof typeof FILTER_IMPLEMENTATIONS = filter.type;
+	const filterType: keyof typeof FILTER_IMPLEMENTATIONS = updatedFilter.type;
 
 	const filterImplementation = FILTER_IMPLEMENTATIONS[filterType];
 
-	filter.odataFilterString = filterImplementation.getOdataString(filter);
-	filter.selectedItemsLabel =
-		filterImplementation.getSelectedItemsLabel(filter);
+	updatedFilter.odataFilterString =
+		filterImplementation.getOdataString(updatedFilter);
+	updatedFilter.selectedItemsLabel =
+		filterImplementation.getSelectedItemsLabel(updatedFilter);
 
-	return filter;
+	return updatedFilter;
 }

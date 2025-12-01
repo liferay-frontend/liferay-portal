@@ -501,6 +501,13 @@ const FrontendDataSetContent = ({
 	};
 
 	const getInitialViewsState = () => {
+		const defaultSnapshot: any = {
+			modifiedFields: {},
+			paginationDelta:
+				showPagination &&
+				(pagination?.initialDelta || DEFAULT_PAGINATION_DELTA),
+		};
+
 		const customInternalViews =
 			customRenderers?.views?.map((customRenderer: TRenderer) => ({
 
@@ -522,6 +529,11 @@ const FrontendDataSetContent = ({
 			) ||
 			views[0] ||
 			(customInternalViews?.length && customInternalViews[0]);
+
+		defaultSnapshot.activeView = {
+			component: getViewComponent(initialActiveView as IView),
+			...initialActiveView,
+		};
 
 		let initialVisibleFieldNames = {};
 
@@ -545,6 +557,8 @@ const FrontendDataSetContent = ({
 		}
 
 		const visibleFieldNames = getVisibleFields();
+
+		defaultSnapshot.visibleFieldNames = initialVisibleFieldNames;
 
 		let saveVisibleFieldNames = false;
 
@@ -577,29 +591,30 @@ const FrontendDataSetContent = ({
 			...initialActiveView,
 		};
 
+		defaultSnapshot.filters = initialFilters
+			? initialFilters.map((filter) => {
+					const preloadedData = filter.preloadedData;
+
+					if (preloadedData) {
+						return activateFilter({
+							filter,
+							selectedData: preloadedData,
+						});
+					}
+
+					return {...filter};
+				})
+			: [];
+
 		const filters = initialFilters
 			? updateFilterActivation({
 					newFilters: getFilters(),
-					oldFilters: initialFilters.map((filter) => {
-						const preloadedData = filter.preloadedData;
-
-						if (preloadedData) {
-							filter = activateFilter({
-								filter,
-								selectedData: preloadedData,
-							});
-						}
-
-						return filter;
-					}),
+					oldFilters: defaultSnapshot.filters,
 				})
 			: [];
 
 		const paginationDelta =
-			showPagination &&
-			(getDelta() ||
-				pagination?.initialDelta ||
-				DEFAULT_PAGINATION_DELTA);
+			showPagination && (getDelta() || defaultSnapshot.paginationDelta);
 
 		const pageNumber =
 			getPageNumber() ||
@@ -607,6 +622,8 @@ const FrontendDataSetContent = ({
 			DEFAULT_PAGINATION_PAGE_NUMBER;
 
 		const searchParam = getSearchParam();
+
+		defaultSnapshot.sorts = sortsProp;
 
 		const sorts = updateSortsActivation({
 			newSorts: getActiveSorts(),
@@ -647,14 +664,7 @@ const FrontendDataSetContent = ({
 
 		return {
 			activeView,
-			defaultSnapshot: {
-				activeView,
-				filters: deepClone(filters),
-				modifiedFields: {},
-				paginationDelta,
-				sorts,
-				visibleFieldNames: initialVisibleFieldNames,
-			},
+			defaultSnapshot,
 			filters,
 			filtersGroups,
 			modifiedFields: {},
@@ -670,10 +680,7 @@ const FrontendDataSetContent = ({
 	};
 
 	const [viewsState, viewsDispatch] = useThunk(
-		useReducer(
-			viewsReducer,
-			getInitialViewsState(),
-		)
+		useReducer(viewsReducer, getInitialViewsState())
 	);
 
 	const {
@@ -1593,22 +1600,10 @@ const FrontendDataSetContent = ({
 	}
 
 	const handleSnapshotChange = ({defaultSnapshot, snapshots, value}: any) => {
-		const snapshot = deepClone(
-			snapshots.find((view: ISnapshot) => view.erc === value)
-		);
-
-		if (!snapshot || value === 'DEFAULT_VIEW') {
+		if (value === 'DEFAULT_VIEW') {
 			updateConfig({
-				[EConfigInURLKeys.ACTIVE_FILTERS]: updateFilterActivation({
-					newFilters: defaultSnapshot.filters.filter(
-						(filter: any) => filter.active
-					),
-					oldFilters: deepClone(filters),
-				}),
-				[EConfigInURLKeys.ACTIVE_SORTS]: updateSortsActivation({
-					newSorts: defaultSnapshot.sorts,
-					oldSorts: sorts,
-				}),
+				[EConfigInURLKeys.ACTIVE_FILTERS]: defaultSnapshot.filters,
+				[EConfigInURLKeys.ACTIVE_SORTS]: defaultSnapshot.sorts,
 				[EConfigInURLKeys.DELTA]: {...defaultSnapshot.paginationDelta},
 				[EConfigInURLKeys.VIEW_NAME]: {
 					...defaultSnapshot.activeView.name,
@@ -1623,6 +1618,10 @@ const FrontendDataSetContent = ({
 			});
 		}
 		else {
+			const snapshot = deepClone(
+				snapshots.find((view: ISnapshot) => view.erc === value)
+			);
+
 			updateConfig({
 				[EConfigInURLKeys.ACTIVE_FILTERS]: updateFilterActivation({
 					newFilters: snapshot.configuration.filters.filter(
