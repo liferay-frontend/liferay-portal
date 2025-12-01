@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import deepClone from '../utils/deepClone';
 import {IView} from '../utils/types';
 import {ISnapshot} from './ViewsContext';
 import getViewComponent from './getViewComponent';
@@ -78,7 +79,7 @@ const viewsActions: TViewsActions = {
 		}, state);
 	},
 	[EViewsActionTypes.DELETE_SNAPSHOT]: (state, value) => {
-		const {defaultView, snapshots} = state;
+		const {defaultSnapshot, snapshots} = state;
 
 		const remainingSnapshots = snapshots.filter(
 			(snapshot: ISnapshot) => snapshot.erc !== value.snapshotERC
@@ -86,7 +87,7 @@ const viewsActions: TViewsActions = {
 
 		return {
 			...state,
-			...defaultView,
+			...defaultSnapshot,
 			activeSnapshotERC: null,
 			snapshots: remainingSnapshots,
 			viewUpdated: false,
@@ -110,25 +111,25 @@ const viewsActions: TViewsActions = {
 		};
 	},
 	[EViewsActionTypes.RESET_TO_DEFAULT_SNAPSHOT]: (state) => {
-		const {defaultView} = state;
+		const {defaultSnapshot} = state;
 
 		return {
 			...state,
-			...defaultView,
+			...defaultSnapshot,
 			activeSnapshotERC: null,
 			viewUpdated: false,
 		};
 	},
 	[EViewsActionTypes.UPDATE_ACTIVE_SNAPSHOT]: (state, value) => {
-		const {defaultView} = state;
+		const {defaultSnapshot} = state;
 
 		if (!value.configuration.activeView) {
-			value.configuration.activeView = defaultView.activeView;
+			value.configuration.activeView = defaultSnapshot.activeView;
 		}
 
 		value.configuration.activeView.component =
 			getViewComponent(value.configuration.activeView) ??
-			getViewComponent(defaultView.activeView);
+			getViewComponent(defaultSnapshot.activeView);
 
 		return {
 			...state,
@@ -162,25 +163,26 @@ const viewsActions: TViewsActions = {
 		};
 	},
 	[EViewsActionTypes.UPDATE_FILTERS_CX]: (state, value) => {
-		const {defaultView} = state;
-
-		defaultView.filters = JSON.parse(JSON.stringify(value));
+		const {defaultSnapshot} = state;
 
 		return {
 			...state,
-			defaultView,
+			defaultSnapshot: {...defaultSnapshot, filters: deepClone(value)},
 			filters: value,
 		};
 	},
 	[EViewsActionTypes.UPDATE_FIELD]: (state, value) => {
-		const {defaultView, modifiedFields} = state;
+		const {defaultSnapshot, modifiedFields} = state;
 
 		const {name} = value;
 
 		const fieldAttributes = modifiedFields[name] ?? {};
 
-		if (!defaultView.modifiedFields[name]) {
-			defaultView.modifiedFields[name] = {...fieldAttributes, ...value};
+		if (!defaultSnapshot.modifiedFields[name]) {
+			defaultSnapshot.modifiedFields[name] = {
+				...fieldAttributes,
+				...value,
+			};
 		}
 
 		return {
@@ -275,7 +277,7 @@ const viewsReducer = (
 		return viewsActions[type](state, value);
 	}
 
-	return state;
+	return deepClone(state);
 };
 
 export default viewsReducer;

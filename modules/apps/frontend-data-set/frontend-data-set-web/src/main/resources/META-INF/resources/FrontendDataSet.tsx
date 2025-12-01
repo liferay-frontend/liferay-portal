@@ -647,7 +647,7 @@ const FrontendDataSetContent = ({
 
 		return {
 			activeView,
-			defaultView: {
+			defaultSnapshot: {
 				activeView,
 				filters: deepClone(filters),
 				modifiedFields: {},
@@ -674,7 +674,7 @@ const FrontendDataSetContent = ({
 			viewsReducer,
 			{
 				activeView: {},
-				defaultView: {
+				defaultSnapshot: {
 					activeView: {},
 					filters: [],
 					modifiedFields: {},
@@ -1613,7 +1613,7 @@ const FrontendDataSetContent = ({
 		});
 	}
 
-	const handleSnapshotChange = ({defaultView, snapshots, value}: any) => {
+	const handleSnapshotChange = ({defaultSnapshot, snapshots, value}: any) => {
 		const snapshot = deepClone(
 			snapshots.find((view: ISnapshot) => view.erc === value)
 		);
@@ -1621,19 +1621,21 @@ const FrontendDataSetContent = ({
 		if (!snapshot || value === 'DEFAULT_VIEW') {
 			updateConfig({
 				[EConfigInURLKeys.ACTIVE_FILTERS]: updateFilterActivation({
-					newFilters: defaultView.filters.filter(
+					newFilters: defaultSnapshot.filters.filter(
 						(filter: any) => filter.active
 					),
 					oldFilters: deepClone(filters),
 				}),
 				[EConfigInURLKeys.ACTIVE_SORTS]: updateSortsActivation({
-					newSorts: defaultView.sorts,
+					newSorts: defaultSnapshot.sorts,
 					oldSorts: sorts,
 				}),
-				[EConfigInURLKeys.DELTA]: {...defaultView.paginationDelta},
-				[EConfigInURLKeys.VIEW_NAME]: {...defaultView.activeView.name},
+				[EConfigInURLKeys.DELTA]: {...defaultSnapshot.paginationDelta},
+				[EConfigInURLKeys.VIEW_NAME]: {
+					...defaultSnapshot.activeView.name,
+				},
 				[EConfigInURLKeys.VISIBLE_FIELDS]: {
-					...defaultView.visibleFieldNames,
+					...defaultSnapshot.visibleFieldNames,
 				},
 			});
 

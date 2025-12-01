@@ -10,7 +10,7 @@ import {IFilter} from '../management_bar/controls/filters/Filter';
 export interface IViewsContext {
 	activeSnapshotERC: null | string;
 	activeView: any;
-	defaultView?: any;
+	defaultSnapshot?: any;
 	filters: IFilter[];
 	filtersGroups: Array<any>;
 	modifiedFields: any;

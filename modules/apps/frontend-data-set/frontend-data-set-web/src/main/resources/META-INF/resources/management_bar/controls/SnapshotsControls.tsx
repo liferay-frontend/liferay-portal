@@ -83,7 +83,7 @@ const SnapshotsControls = () => {
 		{
 			activeSnapshotERC,
 			activeView,
-			defaultView,
+			defaultSnapshot,
 			filters,
 			paginationDelta,
 			snapshots,
@@ -96,7 +96,7 @@ const SnapshotsControls = () => {
 
 	const [actionsDropdownActive, setActionsDropdownActive] = useState(false);
 
-	const defaultSnapshot = {
+	const defaultSnapshotItem = {
 		erc: DEFAULT_VIEW_ID,
 		label: Liferay.Language.get('default-view'),
 	};
@@ -107,7 +107,7 @@ const SnapshotsControls = () => {
 			snapshots.find(
 				(view: ISnapshot) => view.erc === activeSnapshotERC
 			)) ||
-		defaultSnapshot;
+		defaultSnapshotItem;
 
 	const labelInputRef = useRef() as React.MutableRefObject<HTMLInputElement>;
 
@@ -389,7 +389,7 @@ const SnapshotsControls = () => {
 	};
 
 	const handleSelectionChange = (value: React.Key) => {
-		handleSnapshotChange({defaultView, snapshots, value});
+		handleSnapshotChange({defaultSnapshot, snapshots, value});
 	};
 
 	return (
@@ -397,7 +397,7 @@ const SnapshotsControls = () => {
 			<ManagementToolbar.Item>
 				<Picker
 					as={SnapshotsControlsTrigger}
-					items={[defaultSnapshot, ...snapshots]}
+					items={[defaultSnapshotItem, ...snapshots]}
 					messages={{
 						itemDescribedby: Liferay.Language.get(
 							'you-are-currently-on-a-text-element,-inside-of-a-list-box'
