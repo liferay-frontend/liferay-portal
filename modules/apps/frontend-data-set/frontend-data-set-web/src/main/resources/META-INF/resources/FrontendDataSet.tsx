@@ -7,11 +7,13 @@ import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {ClayPaginationBarWithBasicItems} from '@clayui/pagination-bar';
 import {useControlledState} from '@clayui/shared';
 import {useIsMounted, useThunk} from '@liferay/frontend-js-react-web';
+import {useLiferayState} from '@liferay/frontend-js-state-web/react';
 import classNames from 'classnames';
 import {openToast} from 'frontend-js-components-web';
 import {
 	ClientExtensionDefinition,
 	ClientExtensionResolution,
+	deepClone,
 	fetch,
 	getObjectValueFromPath,
 	loadClientExtensions,
@@ -32,6 +34,9 @@ import FDSDndProvider from './dnd/FDSDndProvider';
 import isFileDropEnabled from './utils/isFileDropEnabled';
 
 import './styles/main.scss';
+
+import {State} from '@liferay/frontend-js-state-web';
+
 import DnDContext from './DnDContext';
 import FrontendDataSetContext from './FrontendDataSetContext';
 import useFDSDrop from './dnd/useFDSDrop';
@@ -42,6 +47,7 @@ import {InfoPanel} from './info_panel/InfoPanel';
 // @ts-ignore
 
 import ManagementBar from './management_bar/ManagementBar';
+import {FILTER_IMPLEMENTATIONS} from './management_bar/controls/filters/Filter';
 
 // @ts-ignore
 
@@ -69,8 +75,10 @@ import {saveViewSettings} from './utils/saveViewSettings';
 import {
 	EConfigInURLBehavior,
 	EConfigInURLKeys,
+	IBaseFilterState,
 	IConfigInURL,
 	IDataSetData,
+	IFDSState,
 	IField,
 	IFrontendDataSetProps,
 	IModalConfig,
@@ -84,13 +92,7 @@ import {
 } from './utils/types';
 import useConfigInURL, {useUpdateConfig} from './utils/useConfigInURL';
 import ViewsContext from './views/ViewsContext';
-
-// @ts-ignore
-
 import getViewComponent from './views/getViewComponent';
-
-// @ts-ignore
-
 import viewsReducer, {EViewsActionTypes} from './views/viewsReducer';
 
 const DEFAULT_PAGINATION_DELTA = 20;
@@ -102,6 +104,7 @@ const FrontendDataSetContent = ({
 	additionalAPIURLParameters,
 	apiURL,
 	appURL,
+	atom,
 	bulkActions = [],
 	configInURLBehavior = EConfigInURLBehavior.PUSH,
 	creationMenu: initialCreationMenu,
@@ -149,8 +152,7 @@ const FrontendDataSetContent = ({
 	uniformActionsDisplay,
 	views,
 }: IFrontendDataSetProps) => {
-	const fdsRef = useRef(null);
-	const dataSetWrapperRef: RefObject<HTMLDivElement> = useRef(null);
+	const {fileDropSettings} = useContext(DnDContext);
 
 	const [getActiveSorts, updateActiveSorts] = useConfigInURL({
 		configInURLBehavior,
@@ -357,6 +359,25 @@ const FrontendDataSetContent = ({
 		id,
 	});
 
+	const [globalFDSStateValue, setGlobalFDSStateValue] =
+		useLiferayState<IFDSState>(
+			atom ??
+				State.atom<IFDSState>(`${id}_fdsState`, {
+					filters: [],
+					search: {query: ''},
+				})
+		);
+
+	const [globalFDSStateInitialized, setGlobalFDSStateInitialized] =
+		useState(false);
+	const [filterClientExtensionsLoaded, setFilterClientExtensionsLoaded] =
+		useState(false);
+	const [filterClientExtensionsLoading, setFilterClientExtensionsLoading] =
+		useState(false);
+	const [cellClientExtensionsLoading, setCellClientExtensionsLoading] =
+		useState(false);
+	const [cellClientExtensionsLoaded, setCellClientExtensionsLoaded] =
+		useState(false);
 	const [componentLoading, setComponentLoading] = useState(false);
 	const [creationMenu, setCreationMenu] = useState(initialCreationMenu);
 	const [dataLoading, setDataLoading] = useState(!!apiURL);
@@ -396,8 +417,6 @@ const FrontendDataSetContent = ({
 	}
 
 	const [total, setTotal] = useState(0);
-
-	const {fileDropSettings} = useContext(DnDContext);
 
 	const isMounted = useIsMounted();
 
@@ -729,39 +748,98 @@ const FrontendDataSetContent = ({
 		sorts,
 	]);
 
-	const onSearch = useCallback(
-		({query}: {query: string}) => {
-			if (apiURL || appURL) {
-				setSearching(true);
-
-				viewsDispatch(updateSearchParam(query));
-			}
-			else {
-				setItems(
-					itemsProp?.length
-						? itemsProp.filter((item) => {
-								return JSON.stringify(
-									Object.values(item)
-								).includes(query);
-							})
-						: []
-				);
-			}
-		},
-		[apiURL, appURL, itemsProp, updateSearchParam, viewsDispatch]
-	);
-
 	const onClearFilters = useCallback(() => {
-		setSearching(true);
+		setGlobalFDSStateValue({
+			...globalFDSStateValue,
+			filters: filters.map((filter: any) => deactivateFilter(filter)),
+			search: {query: ''},
+		});
+	}, [filters, globalFDSStateValue, setGlobalFDSStateValue]);
 
-		viewsDispatch(
-			updateFilters(
-				filters.map((filter: any) => deactivateFilter(filter))
-			)
+	useEffect(() => {
+		if (
+			globalFDSStateInitialized ||
+			!filterClientExtensionsLoaded ||
+			!cellClientExtensionsLoaded
+		) {
+			return;
+		}
+
+		setGlobalFDSStateValue({
+			filters,
+			search: {
+				query: searchParam ?? '',
+			},
+		});
+
+		setGlobalFDSStateInitialized(true);
+	}, [
+		cellClientExtensionsLoaded,
+		filterClientExtensionsLoaded,
+		filters,
+		globalFDSStateInitialized,
+		searchParam,
+		setGlobalFDSStateValue,
+	]);
+
+	useEffect(() => {
+		if (!globalFDSStateInitialized) {
+			return;
+		}
+
+		const unfrozenGlobalFDSStateValue = deepClone(
+			globalFDSStateValue as IFDSState
 		);
 
-		onSearch({query: ''});
-	}, [filters, onSearch, updateFilters, viewsDispatch]);
+		if (apiURL || appURL) {
+			setSearching(true);
+
+			viewsDispatch(
+				updateSearchParam(unfrozenGlobalFDSStateValue.search.query)
+			);
+		}
+		else {
+			setItems(
+				itemsProp?.length
+					? itemsProp.filter((item) => {
+							return JSON.stringify(Object.values(item)).includes(
+								unfrozenGlobalFDSStateValue.search.query
+							);
+						})
+					: []
+			);
+		}
+
+		const resolvedFilters = unfrozenGlobalFDSStateValue.filters.map(
+			(filter: IBaseFilterState) => {
+				if (!filter.active) {
+					return filter;
+				}
+
+				const filterImplementation =
+					FILTER_IMPLEMENTATIONS[filter.type];
+
+				return {
+					...filter,
+					odataFilterString:
+						filterImplementation.getOdataString(filter),
+					selectedItemsLabel:
+						filterImplementation.getSelectedItemsLabel(filter),
+				};
+			}
+		);
+
+		viewsDispatch(updateFilters(resolvedFilters));
+	}, [
+		apiURL,
+		appURL,
+		globalFDSStateInitialized,
+		globalFDSStateValue,
+		itemsProp,
+		updateFilters,
+		updateSearchParam,
+		viewsDispatch,
+	]);
 
 	const updateDataSetItems = useCallback(
 		(dataSetData: IDataSetData) => {
@@ -793,16 +871,72 @@ const FrontendDataSetContent = ({
 	);
 
 	useEffect(() => {
+		const filterClientExtensionDefinitions = initialFilters
+			? initialFilters
+					.filter((filter) => filter.clientExtensionFilterURL)
+					.map((filter) => ({
+						context: filter,
+						importDeclaration: `default from ${filter.clientExtensionFilterURL}`,
+					}))
+			: [];
+
+		if (filterClientExtensionDefinitions.length) {
+			setFilterClientExtensionsLoading(true);
+		}
+		else {
+			setFilterClientExtensionsLoaded(true);
+		}
+
+		const cellClientExtensionDefinitions = views.reduce(
+			(
+				clientExtensionDefinitions: Array<
+					ClientExtensionDefinition<any>
+				>,
+				view: IView
+			) => {
+				if (view.schema && 'fields' in view.schema) {
+					if (!view.schema.fields.length) {
+						return clientExtensionDefinitions;
+					}
+
+					const clientExtensionFields = view.schema.fields.filter(
+						(field: IField) =>
+							!!field.contentRendererClientExtension
+					);
+
+					for (const field of clientExtensionFields) {
+						clientExtensionDefinitions.push({
+							context: field,
+							importDeclaration: field.contentRendererModuleURL,
+						});
+					}
+
+					return clientExtensionDefinitions;
+				}
+				else {
+					return [];
+				}
+			},
+			[]
+		);
+
+		if (cellClientExtensionDefinitions.length) {
+			setCellClientExtensionsLoading(true);
+		}
+		else {
+			setCellClientExtensionsLoaded(true);
+		}
+
+		if (
+			!filterClientExtensionDefinitions.length &&
+			!cellClientExtensionDefinitions.length
+		) {
+			return;
+		}
+
 		loadClientExtensions([
 			{
-				clientExtensionDefinitions: initialFilters
-					? initialFilters
-							.filter((filter) => filter.clientExtensionFilterURL)
-							.map((filter) => ({
-								context: filter,
-								importDeclaration: `default from ${filter.clientExtensionFilterURL}`,
-							}))
-					: [],
+				clientExtensionDefinitions: filterClientExtensionDefinitions,
 				onLoad: (
 					resolutions: Array<ClientExtensionResolution<any>>
 				) => {
@@ -833,43 +967,13 @@ const FrontendDataSetContent = ({
 					});
 
 					viewsDispatch(updateFilters(newFilters || []));
+
+					setFilterClientExtensionsLoading(false);
+					setFilterClientExtensionsLoaded(true);
 				},
 			},
 			{
-				clientExtensionDefinitions: views.reduce(
-					(
-						clientExtensionDefinitions: Array<
-							ClientExtensionDefinition<any>
-						>,
-						view: IView
-					) => {
-						if (view.schema && 'fields' in view.schema) {
-							if (!view.schema.fields.length) {
-								return clientExtensionDefinitions;
-							}
-
-							const clientExtensionFields =
-								view.schema.fields.filter(
-									(field: IField) =>
-										!!field.contentRendererClientExtension
-								);
-
-							for (const field of clientExtensionFields) {
-								clientExtensionDefinitions.push({
-									context: field,
-									importDeclaration:
-										field.contentRendererModuleURL,
-								});
-							}
-
-							return clientExtensionDefinitions;
-						}
-						else {
-							return [];
-						}
-					},
-					[]
-				),
+				clientExtensionDefinitions: cellClientExtensionDefinitions,
 				onLoad: (
 					resolutions: Array<ClientExtensionResolution<any>>
 				) => {
@@ -896,10 +1000,13 @@ const FrontendDataSetContent = ({
 							},
 						});
 					});
+
+					setCellClientExtensionsLoading(false);
+					setCellClientExtensionsLoaded(true);
 				},
 			},
 		]);
-	}, [initialFilters, views, updateFilters, viewsDispatch]);
+	}, [initialFilters, updateFilters, views, viewsDispatch]);
 
 	useEffect(() => {
 		if (itemsProp) {
@@ -992,6 +1099,8 @@ const FrontendDataSetContent = ({
 			setHighlightedItemsValue(highlightedItemsValue.concat(value));
 		}
 	}
+
+	const dataSetWrapperRef: RefObject<HTMLDivElement> = useRef(null);
 
 	useEffect(() => {
 		if (dataSetWrapperRef.current) {
@@ -1312,6 +1421,8 @@ const FrontendDataSetContent = ({
 			}
 		};
 	}, [configInURLBehavior, handlePopState, id, refreshData]);
+
+	const fdsRef = useRef(null);
 
 	const hasSearch = !!searchParam;
 	const hasActiveFilters = filters.some((filter: any) => filter.active);
@@ -1736,11 +1847,51 @@ const FrontendDataSetContent = ({
 				nestedItemsReferenceKey,
 				onActionDropdownItemClick,
 				onBulkActionItemClick,
+				onClearResultsBar: () => {
+					setGlobalFDSStateValue({
+						...globalFDSStateValue,
+						filters: filters.map((filter: IBaseFilterState) =>
+							deactivateFilter(filter)
+						),
+						search: {
+							query: '',
+						},
+					});
+				},
+				onClearSearch: () => {
+					setGlobalFDSStateValue({
+						...(globalFDSStateValue as IFDSState),
+						search: {
+							query: '',
+						},
+					});
+				},
+				onFilterChange: ({
+					changedFilter,
+				}: {
+					changedFilter: IBaseFilterState;
+				}) => {
+					setGlobalFDSStateValue({
+						...globalFDSStateValue,
+						filters: filters.map((filter: IBaseFilterState) =>
+							filter.id === changedFilter.id
+								? changedFilter
+								: filter
+						),
+					});
+				},
 				onInfoPanelToggleButtonClick: () => {
 					setInfoPanelOpen((value) => !value);
 				},
 				onItemsChange,
-				onSearch,
+				onSearch: ({query}) => {
+					setGlobalFDSStateValue({
+						...(globalFDSStateValue as IFDSState),
+						search: {
+							query,
+						},
+					});
+				},
 				openModal,
 				openSidePanel,
 				portletId,
@@ -1773,72 +1924,77 @@ const FrontendDataSetContent = ({
 					<DragLayer dataSetWrapperRef={dataSetWrapperRef} />
 				)}
 
-				<div className="fds" ref={fdsRef}>
-					<Modal
-						id={dataSetSupportModalIdRef.current}
-						onClose={refreshData}
-					/>
-
-					{!sidePanelId && (
-						<SidePanel
-							id={dataSetSupportSidePanelIdRef.current}
-							onAfterSubmit={refreshData}
+				{filterClientExtensionsLoading ||
+				cellClientExtensionsLoading ? (
+					<ClayLoadingIndicator className="my-7" />
+				) : (
+					<div className="fds" ref={fdsRef}>
+						<Modal
+							id={dataSetSupportModalIdRef.current}
+							onClose={refreshData}
 						/>
-					)}
 
-					{infoPanelComponent && (
-						<InfoPanel
-							className="fds-info-panel"
-							component={infoPanelComponent}
-							containerRef={fdsRef}
-							id={dataSetSupportInfoPanelIdRef.current}
-							onOpenChange={setInfoPanelOpen}
-							open={infoPanelOpen}
-						/>
-					)}
-
-					<div
-						className={classNames(
-							`data-set-wrapper visualization-mode-${activeView.contentRenderer}`,
-							className,
-							selectable
-						)}
-						data-testid={`visualization-mode-${activeView.name}`}
-						ref={dataSetWrapperRef}
-					>
-						{style === 'default' && (
-							<div className="data-set data-set-inline">
-								{managementBar}
-
-								{view}
-
-								{paginationComponent}
-							</div>
+						{!sidePanelId && (
+							<SidePanel
+								id={dataSetSupportSidePanelIdRef.current}
+								onAfterSubmit={refreshData}
+							/>
 						)}
 
-						{style === 'stacked' && (
-							<div className="data-set data-set-stacked">
-								{managementBar}
-
-								{view}
-
-								{paginationComponent}
-							</div>
+						{infoPanelComponent && (
+							<InfoPanel
+								className="fds-info-panel"
+								component={infoPanelComponent}
+								containerRef={fdsRef}
+								id={dataSetSupportInfoPanelIdRef.current}
+								onOpenChange={setInfoPanelOpen}
+								open={infoPanelOpen}
+							/>
 						)}
 
-						{style === 'fluid' && (
-							<div className="data-set data-set-fluid">
-								{managementBar}
+						<div
+							className={classNames(
+								`data-set-wrapper visualization-mode-${activeView.contentRenderer}`,
+								className,
+								selectable
+							)}
+							data-testid={`visualization-mode-${activeView.name}`}
+							ref={dataSetWrapperRef}
+						>
+							{style === 'default' && (
+								<div className="data-set data-set-inline">
+									{managementBar}
 
-								<div className="container-fluid mt-3">
 									{view}
 
 									{paginationComponent}
 								</div>
-							</div>
-						)}
+							)}
+
+							{style === 'stacked' && (
+								<div className="data-set data-set-stacked">
+									{managementBar}
+
+									{view}
+
+									{paginationComponent}
+								</div>
+							)}
+
+							{style === 'fluid' && (
+								<div className="data-set data-set-fluid">
+									{managementBar}
+
+									<div className="container-fluid mt-3">
+										{view}
+
+										{paginationComponent}
+									</div>
+								</div>
+							)}
+						</div>
 					</div>
-				</div>
+				)}
 			</ViewsContext.Provider>
 		</FrontendDataSetContext.Provider>
 	);

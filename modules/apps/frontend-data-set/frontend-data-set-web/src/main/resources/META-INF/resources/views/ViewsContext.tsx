@@ -5,14 +5,14 @@
 
 import {createContext} from 'react';
 
-import {IFilter} from '../management_bar/controls/filters/Filter';
+import {TFilterState} from '../utils/types';
 
 export interface IViewsContext {
 	activeCustomViewId: null | string;
 	activeView: any;
 	customViews: any;
 	customViewsEnabled: boolean;
-	filters: IFilter[];
+	filters: Array<TFilterState>;
 	filtersGroups: Array<any>;
 	modifiedFields: any;
 	paginationDelta: any;

@@ -63,6 +63,9 @@ export interface IFrontendDataSetContext {
 	nestedItemsReferenceKey?: string;
 	onActionDropdownItemClick: Function;
 	onBulkActionItemClick: Function;
+	onClearResultsBar: () => void;
+	onClearSearch: () => void;
+	onFilterChange: Function;
 	onInfoPanelToggleButtonClick: Function;
 	onItemsChange: ({itemKey, items}: {itemKey: string; items: any}) => void;
 	onSearch: ({query}: {query: string}) => void;
@@ -110,6 +113,7 @@ const FrontendDataSetContext = React.createContext({
 	loadData: () => {},
 	onActionDropdownItemClick: () => {},
 	onBulkActionItemClick: () => {},
+	onFilterChange: () => {},
 	onInfoPanelToggleButtonClick: () => {},
 	onItemsChange: () => {},
 	onSearch: () => {},

@@ -8,6 +8,7 @@ import ClayDropDown from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import React, {useContext, useMemo, useState} from 'react';
 
+import {IClientExtensionFilterState} from '../../../utils/types';
 import ViewsContext, {
 	IViewsContext,
 	TViewsContextDispatch,
@@ -23,7 +24,16 @@ const FiltersDropdown = () => {
 
 	const validFilters = useMemo(
 		() =>
-			filters.filter((filter) => !filter.clientExtensionResolutionError),
+			filters.filter((filter) => {
+				if (filter.type !== 'clientExtension') {
+					return true;
+				}
+
+				const clientExtensionFilter =
+					filter as IClientExtensionFilterState;
+
+				return !clientExtensionFilter.clientExtensionResolutionError;
+			}),
 		[filters]
 	);
 
@@ -31,7 +41,7 @@ const FiltersDropdown = () => {
 		return filtersGroups?.map((group) => ({
 			children: group.filters
 				.map((filterId: string) =>
-					validFilters.find((f) => f.id === filterId)
+					validFilters.find((filter) => filter.id === filterId)
 				)
 				.filter(Boolean),
 			label: group.label,
