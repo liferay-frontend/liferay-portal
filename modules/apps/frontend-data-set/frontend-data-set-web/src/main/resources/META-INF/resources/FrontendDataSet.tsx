@@ -23,6 +23,7 @@ import React, {
 	useCallback,
 	useContext,
 	useEffect,
+	useMemo,
 	useReducer,
 	useRef,
 	useState,
@@ -500,6 +501,27 @@ const FrontendDataSetContent = ({
 		];
 	};
 
+	const initialActiveFilters = useMemo(() => {
+		return initialFilters
+			? updateFilterActivation({
+					newFilters: getFilters(),
+					oldFilters: initialFilters.map((filter) => {
+						const preloadedData = deepClone(filter.preloadedData);
+						if (preloadedData) {
+							filter = activateFilter({
+								filter,
+								selectedData: preloadedData,
+							});
+						}
+
+						return filter;
+					}),
+				})
+			: [];
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [initialFilters]);
+
 	const getInitialViewsState = () => {
 		const defaultSnapshot: any = {
 			modifiedFields: {},
@@ -591,25 +613,12 @@ const FrontendDataSetContent = ({
 			...initialActiveView,
 		};
 
-		defaultSnapshot.filters = initialFilters
-			? initialFilters.map((filter) => {
-					const preloadedData = filter.preloadedData;
-
-					if (preloadedData) {
-						return activateFilter({
-							filter,
-							selectedData: preloadedData,
-						});
-					}
-
-					return {...filter};
-				})
-			: [];
+		defaultSnapshot.filters = deepClone(initialActiveFilters);
 
 		const filters = initialFilters
 			? updateFilterActivation({
 					newFilters: getFilters(),
-					oldFilters: defaultSnapshot.filters,
+					oldFilters: initialActiveFilters,
 				})
 			: [];
 
@@ -814,8 +823,8 @@ const FrontendDataSetContent = ({
 	useEffect(() => {
 		loadClientExtensions([
 			{
-				clientExtensionDefinitions: initialFilters
-					? initialFilters
+				clientExtensionDefinitions: initialActiveFilters
+					? initialActiveFilters
 							.filter((filter) => filter.clientExtensionFilterURL)
 							.map((filter) => ({
 								context: filter,
@@ -825,7 +834,7 @@ const FrontendDataSetContent = ({
 				onLoad: (
 					resolutions: Array<ClientExtensionResolution<any>>
 				) => {
-					const newFilters = initialFilters?.map((filter) => {
+					const newFilters = initialActiveFilters?.map((filter) => {
 						const resolution = resolutions.find(
 							(resolution: ClientExtensionResolution<any>) =>
 								resolution.context.clientExtensionFilterURL ===
@@ -921,7 +930,7 @@ const FrontendDataSetContent = ({
 				},
 			},
 		]);
-	}, [initialFilters, views, viewsDispatch]);
+	}, [initialActiveFilters, views, viewsDispatch]);
 
 	useEffect(() => {
 		if (itemsProp) {
