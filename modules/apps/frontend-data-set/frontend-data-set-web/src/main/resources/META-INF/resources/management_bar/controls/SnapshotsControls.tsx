@@ -179,7 +179,11 @@ const SnapshotsControls = () => {
 		})
 			.then((response) => {
 				if (!response.ok) {
-					return [];
+					return response
+						.json()
+						.then((jsonResponse) =>
+							Promise.reject(new Error(jsonResponse.title))
+						);
 				}
 
 				const responseJSON = response.json();
