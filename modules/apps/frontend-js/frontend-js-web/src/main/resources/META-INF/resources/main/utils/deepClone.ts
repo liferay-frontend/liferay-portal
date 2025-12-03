@@ -22,7 +22,7 @@ export default function deepClone(object: any) {
 		return new RegExp(object.source, object.flags);
 	}
 
-	if (typeof object === 'object') {
+	if (object && typeof object === 'object') {
 		const newObject: Record<string, any> = {};
 
 		Object.keys(object).forEach((key) => {
