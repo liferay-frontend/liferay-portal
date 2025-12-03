@@ -480,11 +480,6 @@ export interface IClientExtensionFilterState extends IBaseFilterState {
 	clientExtensionResolutionError?: string;
 }
 
-interface IDateFilterState extends IBaseFilterState {
-	max: string;
-	min: string;
-}
-
 interface ISelectionFilterStateItem {
 	label: string;
 	value: string;
@@ -502,15 +497,9 @@ interface ISelectionFilterState extends IBaseFilterState {
 		selectedItems: Array<ISelectionFilterStateItem>;
 	};
 }
-
-type TFilterState =
-	| IClientExtensionFilterState
-	| IDateFilterState
-	| ISelectionFilterState;
-
 interface IFDSState {
-	filters: Array<TFilterState>;
+	filters: Array<IBaseFilterState>;
 	search: ISearch;
 }
 
-export type {IFDSState, ISelectionFilterState, TFilterState};
+export type {IFDSState, ISelectionFilterState};

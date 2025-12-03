@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-export function deactivateFilter(filter: any) {
+import {IBaseFilterState} from '../types';
+
+export function deactivateFilter(filter: IBaseFilterState) {
 	filter.active = false;
 	filter.odataFilterString = undefined;
 	filter.selectedData = undefined;
