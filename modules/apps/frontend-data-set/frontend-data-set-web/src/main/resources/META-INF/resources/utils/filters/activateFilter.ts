@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {deepClone} from 'frontend-js-web';
+
 import {FILTER_IMPLEMENTATIONS} from '../../management_bar/controls/filters/Filter';
-import deepClone from '../deepClone';
 
 export function activateFilter({
 	filter,

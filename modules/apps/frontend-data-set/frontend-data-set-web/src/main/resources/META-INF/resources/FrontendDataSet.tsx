@@ -12,6 +12,7 @@ import {openToast} from 'frontend-js-components-web';
 import {
 	ClientExtensionDefinition,
 	ClientExtensionResolution,
+	deepClone,
 	fetch,
 	getObjectValueFromPath,
 	loadClientExtensions,
@@ -29,7 +30,6 @@ import React, {
 
 import DragLayer from './dnd/DragLayer';
 import FDSDndProvider from './dnd/FDSDndProvider';
-import deepClone from './utils/deepClone';
 import isFileDropEnabled from './utils/isFileDropEnabled';
 
 import './styles/main.scss';

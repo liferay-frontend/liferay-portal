@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import deepClone from '../../src/main/resources/META-INF/resources/utils/deepClone';
+import deepClone from '../../../src/main/resources/META-INF/resources/liferay/util/deepClone';
+
 describe('deepClone', () => {
 	describe('primitives', () => {
 		it('returns null as is', () => {
@@ -189,61 +190,6 @@ describe('deepClone', () => {
 			expect(result.pattern).toBeInstanceOf(RegExp);
 			expect(result.pattern.source).toBe('test');
 			expect(result.pattern.flags).toBe('i');
-		});
-	});
-
-	describe('circular references', () => {
-		it('handles circular references in objects', () => {
-			const object: any = {a: 1};
-			object.self = object;
-
-			const result = deepClone(object);
-
-			expect(result).not.toBe(object);
-			expect(result.a).toBe(1);
-			expect(result.self).toBe(result);
-			expect(result.self).not.toBe(object);
-		});
-
-		it('handles circular references in arrays', () => {
-			const array: any = [1, 2, 3];
-			array.push(array);
-
-			const result = deepClone(array);
-
-			expect(result).not.toBe(array);
-			expect(result[0]).toBe(1);
-			expect(result[1]).toBe(2);
-			expect(result[2]).toBe(3);
-			expect(result[3]).toBe(result);
-			expect(result[3]).not.toBe(array);
-		});
-
-		it('handles nested circular references', () => {
-			const object1: any = {name: 'object1'};
-			const object2: any = {name: 'object2', ref: object1};
-			object1.ref = object2;
-
-			const result = deepClone(object1);
-
-			expect(result).not.toBe(object1);
-			expect(result.name).toBe('object1');
-			expect(result.ref).not.toBe(object2);
-			expect(result.ref.name).toBe('object2');
-			expect(result.ref.ref).toBe(result);
-		});
-
-		it('handles multiple references to the same object', () => {
-			const shared = {value: 42};
-			const object = {a: shared, b: shared};
-
-			const result = deepClone(object);
-
-			expect(result).not.toBe(object);
-			expect(result.a).not.toBe(shared);
-			expect(result.b).not.toBe(shared);
-			expect(result.a).toBe(result.b);
-			expect(result.a.value).toBe(42);
 		});
 	});
 

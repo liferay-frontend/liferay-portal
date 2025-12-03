@@ -81,6 +81,14 @@ export function decodeUpdateString(
 ): object;
 
 /**
+ * Deep clones an object, including its function members (by reference).
+ * Handles Primitives, Dates, and RegExps.
+ * @param object The object to clone.
+ * @returns A deep clone of the object.
+ */
+export function deepClone(object: any): any;
+
+/**
  * Listens to the specified event on the given DOM element, but only calls the
  * given callback listener when it's triggered by elements that match the
  * given selector or target element.

@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import deepClone from '../utils/deepClone';
+import {deepClone} from 'frontend-js-web';
+
 import {IView} from '../utils/types';
 import {ISnapshot} from './ViewsContext';
 import getViewComponent from './getViewComponent';
