@@ -853,8 +853,6 @@ export function setSessionValue(
 	options?: {useHttpSession: boolean}
 ): Promise<any>;
 
-export function isReducedMotion(): boolean;
-
 /**
  * Client Extensions API
  */
