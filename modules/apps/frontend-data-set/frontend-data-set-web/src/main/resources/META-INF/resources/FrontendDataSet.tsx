@@ -359,14 +359,13 @@ const FrontendDataSetContent = ({
 		id,
 	});
 
-	const [globalFDSStateValue, setGlobalFDSStateValue] =
-		useLiferayState<IFDSState>(
-			atom ??
-				State.atom<IFDSState>(`${id}_fdsState`, {
-					filters: [],
-					search: {query: ''},
-				})
-		);
+	const [globalFDSState, setGlobalFDSState] = useLiferayState<IFDSState>(
+		atom ??
+			State.atom<IFDSState>(`${id}_fdsState`, {
+				filters: [],
+				search: {query: ''},
+			})
+	);
 
 	const [globalFDSStateInitialized, setGlobalFDSStateInitialized] =
 		useState(false);
@@ -749,12 +748,16 @@ const FrontendDataSetContent = ({
 	]);
 
 	const onClearFilters = useCallback(() => {
-		setGlobalFDSStateValue({
-			...globalFDSStateValue,
-			filters: filters.map((filter: any) => deactivateFilter(filter)),
+		const unfrozenAdvancedFDSState: IFDSState = deepClone(globalFDSState);
+
+		setGlobalFDSState({
+			...unfrozenAdvancedFDSState,
+			filters: unfrozenAdvancedFDSState.filters.map((filter) =>
+				deactivateFilter(filter)
+			),
 			search: {query: ''},
 		});
-	}, [filters, globalFDSStateValue, setGlobalFDSStateValue]);
+	}, [globalFDSState, setGlobalFDSState]);
 
 	useEffect(() => {
 		if (
@@ -765,7 +768,7 @@ const FrontendDataSetContent = ({
 			return;
 		}
 
-		setGlobalFDSStateValue({
+		setGlobalFDSState({
 			filters,
 			search: {
 				query: searchParam ?? '',
@@ -779,7 +782,7 @@ const FrontendDataSetContent = ({
 		filters,
 		globalFDSStateInitialized,
 		searchParam,
-		setGlobalFDSStateValue,
+		setGlobalFDSState,
 	]);
 
 	useEffect(() => {
@@ -788,7 +791,7 @@ const FrontendDataSetContent = ({
 		}
 
 		const unfrozenGlobalFDSStateValue = deepClone(
-			globalFDSStateValue as IFDSState
+			globalFDSState as IFDSState
 		);
 
 		if (apiURL || appURL) {
@@ -834,7 +837,7 @@ const FrontendDataSetContent = ({
 		apiURL,
 		appURL,
 		globalFDSStateInitialized,
-		globalFDSStateValue,
+		globalFDSState,
 		itemsProp,
 		updateFilters,
 		updateSearchParam,
@@ -1848,10 +1851,13 @@ const FrontendDataSetContent = ({
 				onActionDropdownItemClick,
 				onBulkActionItemClick,
 				onClearResultsBar: () => {
-					setGlobalFDSStateValue({
-						...globalFDSStateValue,
-						filters: filters.map((filter: IBaseFilterState) =>
-							deactivateFilter(filter)
+					const unfrozenAdvancedFDSState: IFDSState =
+						deepClone(globalFDSState);
+
+					setGlobalFDSState({
+						...unfrozenAdvancedFDSState,
+						filters: unfrozenAdvancedFDSState.filters.map(
+							(filter) => deactivateFilter(filter)
 						),
 						search: {
 							query: '',
@@ -1859,8 +1865,11 @@ const FrontendDataSetContent = ({
 					});
 				},
 				onClearSearch: () => {
-					setGlobalFDSStateValue({
-						...(globalFDSStateValue as IFDSState),
+					const unfrozenAdvancedFDSState: IFDSState =
+						deepClone(globalFDSState);
+
+					setGlobalFDSState({
+						...unfrozenAdvancedFDSState,
 						search: {
 							query: '',
 						},
@@ -1871,12 +1880,16 @@ const FrontendDataSetContent = ({
 				}: {
 					changedFilter: IBaseFilterState;
 				}) => {
-					setGlobalFDSStateValue({
-						...globalFDSStateValue,
-						filters: filters.map((filter: IBaseFilterState) =>
-							filter.id === changedFilter.id
-								? changedFilter
-								: filter
+					const unfrozenAdvancedFDSState: IFDSState =
+						deepClone(globalFDSState);
+
+					setGlobalFDSState({
+						...unfrozenAdvancedFDSState,
+						filters: unfrozenAdvancedFDSState.filters.map(
+							(filter) =>
+								filter.id === changedFilter.id
+									? changedFilter
+									: filter
 						),
 					});
 				},
@@ -1885,8 +1898,11 @@ const FrontendDataSetContent = ({
 				},
 				onItemsChange,
 				onSearch: ({query}) => {
-					setGlobalFDSStateValue({
-						...(globalFDSStateValue as IFDSState),
+					const unfrozenAdvancedFDSState: IFDSState =
+						deepClone(globalFDSState);
+
+					setGlobalFDSState({
+						...unfrozenAdvancedFDSState,
 						search: {
 							query,
 						},
