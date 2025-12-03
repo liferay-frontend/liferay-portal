@@ -12,39 +12,21 @@ import {
 } from '@liferay/frontend-data-set-web';
 import {useLiferayState} from '@liferay/frontend-js-state-web/react';
 import {deepClone} from 'frontend-js-web';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 
 import {advancedFDSAtom} from '../utils/atoms';
 
 const Filters = () => {
-	const [advancedGlobalFDSStateValue, setAdvancedGlobalFDSStateValue] =
+	const [advancedFDSState, setAdvancedFDSState] =
 		useLiferayState<IFDSState>(advancedFDSAtom);
 
-	const unfrozenFDSState = deepClone(
-		advancedGlobalFDSStateValue as IFDSState
+	const unfrozenAdvancedFDSState: IFDSState = deepClone(
+		advancedFDSState as IFDSState
 	);
 
-	const colorFilter = unfrozenFDSState.filters.find(
+	const colorFilter = unfrozenAdvancedFDSState.filters.find(
 		(filter: IBaseFilterState) => filter.id === 'color'
 	);
-
-	const [active, setActive] = useState(colorFilter?.active ?? false);
-	const [exclude, setExclude] = useState(
-		(colorFilter?.selectedData?.exclude as boolean) ?? false
-	);
-
-	useEffect(() => {
-		const colorFilter = advancedGlobalFDSStateValue.filters.find(
-			(filter) => filter.id === 'color'
-		);
-
-		if (!colorFilter) {
-			return;
-		}
-
-		setActive(colorFilter.active ?? false);
-		setExclude((colorFilter.selectedData?.exclude as boolean) ?? false);
-	}, [advancedGlobalFDSStateValue]);
 
 	return (
 		<ClayLayout.ContainerFluid className="pt-2">
@@ -60,9 +42,9 @@ const Filters = () => {
 						disabled={Boolean(!colorFilter?.selectedData)}
 						label="Active"
 						onToggle={(value) => {
-							setAdvancedGlobalFDSStateValue({
-								...unfrozenFDSState,
-								filters: unfrozenFDSState.filters.map(
+							setAdvancedFDSState({
+								...unfrozenAdvancedFDSState,
+								filters: unfrozenAdvancedFDSState.filters.map(
 									(filter: IBaseFilterState) => {
 										if (filter.id === 'color') {
 											return {...filter, active: value};
@@ -72,10 +54,8 @@ const Filters = () => {
 									}
 								),
 							});
-
-							setActive(value);
 						}}
-						toggled={active}
+						toggled={colorFilter?.active ?? false}
 					/>
 				</ClayInput.GroupItem>
 
@@ -86,9 +66,9 @@ const Filters = () => {
 						disabled={Boolean(!colorFilter?.selectedData)}
 						label="Exclude"
 						onToggle={(value) => {
-							setAdvancedGlobalFDSStateValue({
-								...unfrozenFDSState,
-								filters: unfrozenFDSState.filters.map(
+							setAdvancedFDSState({
+								...unfrozenAdvancedFDSState,
+								filters: unfrozenAdvancedFDSState.filters.map(
 									(filter: IBaseFilterState) => {
 										if (filter.id === 'color') {
 											return {
@@ -104,10 +84,11 @@ const Filters = () => {
 									}
 								),
 							});
-
-							setExclude(value);
 						}}
-						toggled={exclude}
+						toggled={
+							(colorFilter?.selectedData?.exclude as boolean) ??
+							false
+						}
 					/>
 				</ClayInput.GroupItem>
 			</ClayInput.Group>

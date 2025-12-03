@@ -13,16 +13,14 @@ import React, {useEffect, useState} from 'react';
 import {advancedFDSAtom} from '../utils/atoms';
 
 const Search = () => {
-	const [advancedGlobalFDSStateValue, setAdvancedGlobalFDSStateValue] =
+	const [advancedFDSState, setAdvancedFDSState] =
 		useLiferayState<IFDSState>(advancedFDSAtom);
 
-	const [query, setQuery] = useState(
-		advancedGlobalFDSStateValue.search.query ?? ''
-	);
+	const [query, setQuery] = useState(advancedFDSState.search.query ?? '');
 
 	useEffect(() => {
-		setQuery(advancedGlobalFDSStateValue.search.query);
-	}, [advancedGlobalFDSStateValue]);
+		setQuery(advancedFDSState.search.query);
+	}, [advancedFDSState]);
 
 	return (
 		<ClayLayout.ContainerFluid>
@@ -41,8 +39,8 @@ const Search = () => {
 					<ClayButton
 						data-qa-id="searchFDSSampleButton"
 						onClick={() => {
-							setAdvancedGlobalFDSStateValue({
-								...(advancedGlobalFDSStateValue as IFDSState),
+							setAdvancedFDSState({
+								...(advancedFDSState as IFDSState),
 								search: {query},
 							});
 						}}
