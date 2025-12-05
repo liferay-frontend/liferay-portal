@@ -23,7 +23,6 @@ import React, {
 	useCallback,
 	useContext,
 	useEffect,
-	useMemo,
 	useReducer,
 	useRef,
 	useState,
@@ -360,6 +359,14 @@ const FrontendDataSetContent = ({
 		id,
 	});
 
+	const [cellClientExtensionsLoading, setCellClientExtensionsLoading] =
+		useState(false);
+	const [cellClientExtensionsLoaded, setCellClientExtensionsLoaded] =
+		useState(false);
+	const [filterClientExtensionsLoaded, setFilterClientExtensionsLoaded] =
+		useState(false);
+	const [filterClientExtensionsLoading, setFilterClientExtensionsLoading] =
+		useState(false);
 	const [componentLoading, setComponentLoading] = useState(false);
 	const [creationMenu, setCreationMenu] = useState(initialCreationMenu);
 	const [dataLoading, setDataLoading] = useState(!!apiURL);
@@ -501,27 +508,6 @@ const FrontendDataSetContent = ({
 		];
 	};
 
-	const initialActiveFilters = useMemo(() => {
-		return initialFilters
-			? updateFilterActivation({
-					newFilters: getFilters(),
-					oldFilters: initialFilters.map((filter) => {
-						const preloadedData = deepClone(filter.preloadedData);
-						if (preloadedData) {
-							filter = activateFilter({
-								filter,
-								selectedData: preloadedData,
-							});
-						}
-
-						return filter;
-					}),
-				})
-			: [];
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [initialFilters]);
-
 	const getInitialViewsState = () => {
 		const defaultSnapshot: any = {
 			modifiedFields: {},
@@ -613,12 +599,24 @@ const FrontendDataSetContent = ({
 			...initialActiveView,
 		};
 
-		defaultSnapshot.filters = deepClone(initialActiveFilters);
+		defaultSnapshot.filters =
+			initialFilters &&
+			initialFilters.map((filter) => {
+				const preloadedData = deepClone(filter.preloadedData);
+				if (preloadedData) {
+					filter = activateFilter({
+						filter,
+						selectedData: preloadedData,
+					});
+				}
+
+				return filter;
+			});
 
 		const filters = initialFilters
 			? updateFilterActivation({
 					newFilters: getFilters(),
-					oldFilters: initialActiveFilters,
+					oldFilters: deepClone(defaultSnapshot.filters),
 				})
 			: [];
 
@@ -821,20 +819,84 @@ const FrontendDataSetContent = ({
 	);
 
 	useEffect(() => {
+		const filterClientExtensionDefinitions = filters
+			? filters
+					.filter((filter: any) => filter.clientExtensionFilterURL)
+					.map((filter: any) => ({
+						context: filter,
+						importDeclaration: `default from ${filter.clientExtensionFilterURL}`,
+					}))
+			: [];
+
+		if (
+			!filterClientExtensionsLoaded &&
+			filterClientExtensionDefinitions.length
+		) {
+			setFilterClientExtensionsLoading(true);
+		}
+		else {
+			setFilterClientExtensionsLoaded(true);
+		}
+
+		const cellClientExtensionDefinitions = views.reduce(
+			(
+				clientExtensionDefinitions: Array<
+					ClientExtensionDefinition<any>
+				>,
+				view: IView
+			) => {
+				if (view.schema && 'fields' in view.schema) {
+					if (!view.schema.fields.length) {
+						return clientExtensionDefinitions;
+					}
+
+					const clientExtensionFields = view.schema.fields.filter(
+						(field: IField) =>
+							!!field.contentRendererClientExtension
+					);
+
+					for (const field of clientExtensionFields) {
+						clientExtensionDefinitions.push({
+							context: field,
+							importDeclaration: field.contentRendererModuleURL,
+						});
+					}
+
+					return clientExtensionDefinitions;
+				}
+				else {
+					return [];
+				}
+			},
+			[]
+		);
+
+		if (
+			!cellClientExtensionsLoaded &&
+			cellClientExtensionDefinitions.length
+		) {
+			setCellClientExtensionsLoading(true);
+		}
+		else {
+			setCellClientExtensionsLoaded(true);
+		}
+
+		if (
+			(!filterClientExtensionDefinitions.length &&
+				!cellClientExtensionDefinitions.length) ||
+			cellClientExtensionsLoaded ||
+			filterClientExtensionsLoaded
+		) {
+			return;
+		}
+
 		loadClientExtensions([
 			{
-				clientExtensionDefinitions: initialActiveFilters
-					? initialActiveFilters
-							.filter((filter) => filter.clientExtensionFilterURL)
-							.map((filter) => ({
-								context: filter,
-								importDeclaration: `default from ${filter.clientExtensionFilterURL}`,
-							}))
-					: [],
+				clientExtensionDefinitions: filterClientExtensionDefinitions,
 				onLoad: (
 					resolutions: Array<ClientExtensionResolution<any>>
 				) => {
-					const newFilters = initialActiveFilters?.map((filter) => {
+					const newFilters = filters?.map((filter: any) => {
 						const resolution = resolutions.find(
 							(resolution: ClientExtensionResolution<any>) =>
 								resolution.context.clientExtensionFilterURL ===
@@ -864,43 +926,13 @@ const FrontendDataSetContent = ({
 						type: 'UPDATE_FILTERS_CX',
 						value: newFilters,
 					});
+
+					setFilterClientExtensionsLoading(false);
+					setFilterClientExtensionsLoaded(true);
 				},
 			},
 			{
-				clientExtensionDefinitions: views.reduce(
-					(
-						clientExtensionDefinitions: Array<
-							ClientExtensionDefinition<any>
-						>,
-						view: IView
-					) => {
-						if (view.schema && 'fields' in view.schema) {
-							if (!view.schema.fields.length) {
-								return clientExtensionDefinitions;
-							}
-
-							const clientExtensionFields =
-								view.schema.fields.filter(
-									(field: IField) =>
-										!!field.contentRendererClientExtension
-								);
-
-							for (const field of clientExtensionFields) {
-								clientExtensionDefinitions.push({
-									context: field,
-									importDeclaration:
-										field.contentRendererModuleURL,
-								});
-							}
-
-							return clientExtensionDefinitions;
-						}
-						else {
-							return [];
-						}
-					},
-					[]
-				),
+				clientExtensionDefinitions: cellClientExtensionDefinitions,
 				onLoad: (
 					resolutions: Array<ClientExtensionResolution<any>>
 				) => {
@@ -926,11 +958,20 @@ const FrontendDataSetContent = ({
 								name: field.fieldName,
 							},
 						});
+
+						setCellClientExtensionsLoading(false);
+						setCellClientExtensionsLoaded(true);
 					});
 				},
 			},
 		]);
-	}, [initialActiveFilters, views, viewsDispatch]);
+	}, [
+		cellClientExtensionsLoaded,
+		filterClientExtensionsLoaded,
+		filters,
+		views,
+		viewsDispatch,
+	]);
 
 	useEffect(() => {
 		if (itemsProp) {
@@ -1855,72 +1896,77 @@ const FrontendDataSetContent = ({
 					<DragLayer dataSetWrapperRef={dataSetWrapperRef} />
 				)}
 
-				<div className="fds" ref={fdsRef}>
-					<Modal
-						id={dataSetSupportModalIdRef.current}
-						onClose={refreshData}
-					/>
-
-					{!sidePanelId && (
-						<SidePanel
-							id={dataSetSupportSidePanelIdRef.current}
-							onAfterSubmit={refreshData}
+				{filterClientExtensionsLoading ||
+				cellClientExtensionsLoading ? (
+					<ClayLoadingIndicator className="my-7" />
+				) : (
+					<div className="fds" ref={fdsRef}>
+						<Modal
+							id={dataSetSupportModalIdRef.current}
+							onClose={refreshData}
 						/>
-					)}
 
-					{infoPanelComponent && (
-						<InfoPanel
-							className="fds-info-panel"
-							component={infoPanelComponent}
-							containerRef={fdsRef}
-							id={dataSetSupportInfoPanelIdRef.current}
-							onOpenChange={setInfoPanelOpen}
-							open={infoPanelOpen}
-						/>
-					)}
-
-					<div
-						className={classNames(
-							`data-set-wrapper visualization-mode-${activeView.contentRenderer}`,
-							className,
-							selectable
-						)}
-						data-testid={`visualization-mode-${activeView.name}`}
-						ref={dataSetWrapperRef}
-					>
-						{style === 'default' && (
-							<div className="data-set data-set-inline">
-								{managementBar}
-
-								{view}
-
-								{paginationComponent}
-							</div>
+						{!sidePanelId && (
+							<SidePanel
+								id={dataSetSupportSidePanelIdRef.current}
+								onAfterSubmit={refreshData}
+							/>
 						)}
 
-						{style === 'stacked' && (
-							<div className="data-set data-set-stacked">
-								{managementBar}
-
-								{view}
-
-								{paginationComponent}
-							</div>
+						{infoPanelComponent && (
+							<InfoPanel
+								className="fds-info-panel"
+								component={infoPanelComponent}
+								containerRef={fdsRef}
+								id={dataSetSupportInfoPanelIdRef.current}
+								onOpenChange={setInfoPanelOpen}
+								open={infoPanelOpen}
+							/>
 						)}
 
-						{style === 'fluid' && (
-							<div className="data-set data-set-fluid">
-								{managementBar}
+						<div
+							className={classNames(
+								`data-set-wrapper visualization-mode-${activeView.contentRenderer}`,
+								className,
+								selectable
+							)}
+							data-testid={`visualization-mode-${activeView.name}`}
+							ref={dataSetWrapperRef}
+						>
+							{style === 'default' && (
+								<div className="data-set data-set-inline">
+									{managementBar}
 
-								<div className="container-fluid mt-3">
 									{view}
 
 									{paginationComponent}
 								</div>
-							</div>
-						)}
+							)}
+
+							{style === 'stacked' && (
+								<div className="data-set data-set-stacked">
+									{managementBar}
+
+									{view}
+
+									{paginationComponent}
+								</div>
+							)}
+
+							{style === 'fluid' && (
+								<div className="data-set data-set-fluid">
+									{managementBar}
+
+									<div className="container-fluid mt-3">
+										{view}
+
+										{paginationComponent}
+									</div>
+								</div>
+							)}
+						</div>
 					</div>
-				</div>
+				)}
 			</ViewsContext.Provider>
 		</FrontendDataSetContext.Provider>
 	);
