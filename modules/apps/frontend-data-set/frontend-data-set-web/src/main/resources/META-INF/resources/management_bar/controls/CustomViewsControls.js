@@ -47,6 +47,7 @@ const CustomViewsControlsTrigger = React.forwardRef(
 const CustomViewsControls = () => {
 	const {
 		appURL,
+		globalFDSState,
 		id: fdsName,
 		namespace,
 		portletId,
@@ -56,7 +57,6 @@ const CustomViewsControls = () => {
 			activeCustomViewId,
 			activeView,
 			customViews,
-			filters,
 			paginationDelta,
 			sorts,
 			viewUpdated,
@@ -110,7 +110,7 @@ const CustomViewsControls = () => {
 		const viewState = {
 			activeView,
 			customViewLabel: label ?? customViews[id].customViewLabel,
-			filters,
+			filters: globalFDSState.filters,
 			paginationDelta,
 			sorts,
 			visibleFieldNames,

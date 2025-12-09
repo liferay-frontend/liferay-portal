@@ -8,7 +8,6 @@ import {sub} from 'frontend-js-web';
 import React, {useContext} from 'react';
 
 import FrontendDataSetContext from '../../FrontendDataSetContext';
-import ViewsContext from '../../views/ViewsContext';
 import FilterResume from './filters/FilterResume';
 import SearchResume from './filters/SearchResume';
 
@@ -21,14 +20,13 @@ function ResultsBar({
 	disabled: boolean;
 	total: number;
 }) {
-	const {onClearResultsBar, searchParam, searching} = useContext(
-		FrontendDataSetContext
-	);
-	const [{filters}] = useContext(ViewsContext);
-
+	const {globalFDSState, onClearResultsBar, searchParam, searching} =
+		useContext(FrontendDataSetContext);
 	const searchActive = Boolean(searchParam?.trim());
 
-	const activeFilters = filters.filter((filter) => filter.active);
+	const activeFilters = globalFDSState.filters.filter(
+		(filter) => filter.active
+	);
 
 	return activeFilters.length || searchActive ? (
 		<div
@@ -67,8 +65,8 @@ function ResultsBar({
 									return (
 										<FilterResume
 											disabled={disabled}
+											filter={filter}
 											key={filter.id}
-											{...filter}
 										/>
 									);
 								})}

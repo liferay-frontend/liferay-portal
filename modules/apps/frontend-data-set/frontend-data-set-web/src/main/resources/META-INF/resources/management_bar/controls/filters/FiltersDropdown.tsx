@@ -8,6 +8,7 @@ import ClayDropDown from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import React, {useContext, useMemo, useState} from 'react';
 
+import FrontendDataSetContext from '../../../FrontendDataSetContext';
 import {IClientExtensionFilterState} from '../../../utils/types';
 import ViewsContext, {
 	IViewsContext,
@@ -16,7 +17,9 @@ import ViewsContext, {
 import Filter, {IFilter} from './Filter';
 
 const FiltersDropdown = () => {
-	const [{filters, filtersGroups}]: [IViewsContext, TViewsContextDispatch] =
+	const {globalFDSState} = useContext(FrontendDataSetContext);
+
+	const [{filtersGroups}]: [IViewsContext, TViewsContextDispatch] =
 		useContext(ViewsContext);
 
 	const [active, setActive] = useState(false);
@@ -24,7 +27,7 @@ const FiltersDropdown = () => {
 
 	const validFilters = useMemo(
 		() =>
-			filters.filter((filter) => {
+			globalFDSState.filters.filter((filter) => {
 				if (filter.type !== 'clientExtension') {
 					return true;
 				}
@@ -34,7 +37,7 @@ const FiltersDropdown = () => {
 
 				return !clientExtensionFilter.clientExtensionResolutionError;
 			}),
-		[filters]
+		[globalFDSState.filters]
 	);
 
 	const groupedFilters = useMemo(() => {

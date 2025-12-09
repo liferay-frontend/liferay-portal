@@ -11,26 +11,23 @@ import React, {useContext, useState} from 'react';
 
 import FrontendDataSetContext from '../../../FrontendDataSetContext';
 import {deactivateFilter} from '../../../utils/filters/deactivateFilter';
-import ViewsContext from '../../../views/ViewsContext';
-import Filter from './Filter';
+import {IBaseFilterState} from '../../../utils/types';
+import Filter, {FILTER_IMPLEMENTATIONS} from './Filter';
 
-interface IFilterResume {
-	clientExtensionResolutionError?: string;
+function FilterResume({
+	disabled,
+	filter,
+}: {
 	disabled: boolean;
-	id: string;
-	label: string;
-	moduleURL?: string;
-	selectedItemsLabel: string;
-	type: 'clientExtension' | 'dateRange' | 'selection';
-}
+	filter: IBaseFilterState;
+}) {
+	const {id, label, type} = filter;
 
-function FilterResume(props: IFilterResume) {
-	const {disabled, label, selectedItemsLabel} = props;
-
-	const {onFilterChange} = useContext(FrontendDataSetContext);
-	const [{filters}] = useContext(ViewsContext);
+	const {globalFDSState, onFilterChange} = useContext(FrontendDataSetContext);
 
 	const [open, setOpen] = useState(false);
+
+	const filterImplementation = FILTER_IMPLEMENTATIONS[type];
 
 	const button = (
 		<ClayButton
@@ -50,7 +47,11 @@ function FilterResume(props: IFilterResume) {
 			</span>
 
 			<span className="label-section">
-				{label}: <strong>{selectedItemsLabel}</strong>
+				<span>{`${label}: `}</span>
+
+				<strong>
+					{filterImplementation.getSelectedItemsLabel(filter)}
+				</strong>
 			</span>
 		</ClayButton>
 	);
@@ -63,20 +64,20 @@ function FilterResume(props: IFilterResume) {
 				onActiveChange={setOpen}
 				trigger={button}
 			>
-				<li className="dropdown-subheader">{props.label}</li>
+				<li className="dropdown-subheader">{label}</li>
 
-				<Filter {...props} onClose={() => setOpen(false)} />
+				<Filter {...filter} onClose={() => setOpen(false)} />
 			</ClayDropDown>
 
 			<ClayButton
 				aria-label={Liferay.Language.get('remove-filter')}
 				className="filter-resume-close"
-				disabled={props.disabled}
+				disabled={disabled}
 				displayType="secondary"
 				monospaced
 				onClick={() => {
-					const filter = filters.find(
-						(filter) => filter.id === props.id
+					const filter = globalFDSState.filters.find(
+						(filter) => filter.id === id
 					);
 
 					if (!filter) {
@@ -93,7 +94,7 @@ function FilterResume(props: IFilterResume) {
 		</ClayButton.Group>
 	);
 
-	return props.disabled ? button : dropDownButtonGroup;
+	return disabled ? button : dropDownButtonGroup;
 }
 
 export default FilterResume;

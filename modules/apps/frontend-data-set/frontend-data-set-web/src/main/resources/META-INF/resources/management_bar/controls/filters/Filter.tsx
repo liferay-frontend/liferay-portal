@@ -8,7 +8,6 @@ import {loadModule} from 'frontend-js-web';
 import React, {ReactElement, useContext, useEffect, useState} from 'react';
 
 import FrontendDataSetContext from '../../../FrontendDataSetContext';
-import ViewsContext from '../../../views/ViewsContext';
 
 // @ts-ignore
 
@@ -74,8 +73,7 @@ const FILTER_IMPLEMENTATIONS = {
 };
 
 const Filter = ({id, moduleURL, onClose, type, ...otherProps}: IFilter) => {
-	const {onFilterChange} = useContext(FrontendDataSetContext);
-	const [{filters}] = useContext(ViewsContext);
+	const {globalFDSState, onFilterChange} = useContext(FrontendDataSetContext);
 
 	const filterImplementation = FILTER_IMPLEMENTATIONS[type];
 
@@ -104,15 +102,27 @@ const Filter = ({id, moduleURL, onClose, type, ...otherProps}: IFilter) => {
 			);
 		}
 
-		const changedFilter = {
-			...filters.find(
+		const filter = {
+			...globalFDSState.filters.find(
 				(filter: FilterConfiguration) => filter.id === filterId
 			),
 			selectedData,
 			...otherProps,
 		};
 
-		onFilterChange({changedFilter});
+		const resolvedFilter = {
+			...filter,
+			odataFilterString: filterImplementation.getOdataString(
+				filter as any
+			),
+			selectedItemsLabel: filterImplementation.getSelectedItemsLabel(
+				filter as any
+			),
+		};
+
+		onFilterChange({
+			changedFilter: resolvedFilter,
+		});
 	};
 
 	return Component ? (

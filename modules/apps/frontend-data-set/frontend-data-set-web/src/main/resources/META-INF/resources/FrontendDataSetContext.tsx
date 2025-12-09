@@ -9,6 +9,7 @@ import {
 	EConfigInURLKeys,
 	IConfigInURLUpdaterThunk,
 	IDataSetData,
+	IFDSState,
 	IInlineEditingSettings,
 	IItemsActions,
 	TRenderer,
@@ -43,6 +44,7 @@ export interface IFrontendDataSetContext {
 	}) => Promise<void>;
 	formId?: string;
 	formName?: string;
+	globalFDSState: IFDSState;
 	hideManagementBarInEmptyState?: boolean;
 	highlightItems: Function;
 	highlightedItemsValue?: Array<string>;

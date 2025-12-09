@@ -47,7 +47,6 @@ import {InfoPanel} from './info_panel/InfoPanel';
 // @ts-ignore
 
 import ManagementBar from './management_bar/ManagementBar';
-import {FILTER_IMPLEMENTATIONS} from './management_bar/controls/filters/Filter';
 
 // @ts-ignore
 
@@ -57,7 +56,7 @@ import Modal from './modal/Modal';
 
 import SidePanel from './side_panel/SidePanel';
 import filterCreationActions from './utils/actionItems/filterCreationActions';
-import {contains} from './utils/configInURL';
+import {contains, readConfigFromURL} from './utils/configInURL';
 import EVENTS from './utils/eventsDefinitions';
 import {activateFilter} from './utils/filters/activateFilter';
 import {deactivateFilter} from './utils/filters/deactivateFilter';
@@ -83,6 +82,7 @@ import {
 	IFrontendDataSetProps,
 	IModalConfig,
 	IRequestOptions,
+	ISelectionFilterState,
 	ISuccessNotification,
 	ITableSchema,
 	IView,
@@ -354,7 +354,7 @@ const FrontendDataSetContent = ({
 		},
 	});
 
-	const updateConfig = useUpdateConfig({
+	const updateConfigInURL = useUpdateConfig({
 		configInURLBehavior,
 		id,
 	});
@@ -423,42 +423,45 @@ const FrontendDataSetContent = ({
 		newFilters,
 		oldFilters,
 	}: {
-		newFilters: Array<any> | undefined;
-		oldFilters: Array<any>;
-	}): Array<any> => {
+		newFilters: Array<IBaseFilterState> | undefined;
+		oldFilters: Array<IBaseFilterState>;
+	}): Array<IBaseFilterState> => {
 		if (!newFilters) {
 			return oldFilters;
 		}
 
-		return oldFilters?.map((filter: any): any => {
+		return oldFilters?.map((filter: IBaseFilterState): IBaseFilterState => {
 			const newFilter = newFilters.find(
-				(newFilter: any) => newFilter.id === filter.id
+				(newFilter) => newFilter.id === filter.id
 			);
 
 			if (newFilter) {
 				return activateFilter({
 					filter,
 					selectedData:
-						filter.type === 'selection' && filter.items?.length
+						filter.type === 'selection' &&
+						(filter as ISelectionFilterState).items?.length
 							? {
 									...filter.selectedData,
-									selectedItems:
-										newFilter.selectedData.selectedItems.map(
-											(newItem: any) => {
-												const selectedItem =
-													filter.items.find(
-														(item: any) =>
-															item.value ===
-															newItem.value
-													);
+									...newFilter.selectedData,
+									selectedItems: (
+										newFilter as ISelectionFilterState
+									).selectedData?.selectedItems.map(
+										(newItem) => {
+											const selectedItem = (
+												filter as ISelectionFilterState
+											).items.find(
+												(item: any) =>
+													item.value === newItem.value
+											);
 
-												if (selectedItem) {
-													return selectedItem;
-												}
-
-												return newItem;
+											if (selectedItem) {
+												return selectedItem;
 											}
-										),
+
+											return newItem;
+										}
+									),
 								}
 							: {
 									...filter.selectedData,
@@ -592,24 +595,6 @@ const FrontendDataSetContent = ({
 			...initialActiveView,
 		};
 
-		const filters = initialFilters
-			? updateFilterActivation({
-					newFilters: getFilters(),
-					oldFilters: initialFilters.map((filter) => {
-						const preloadedData = filter.preloadedData;
-
-						if (preloadedData) {
-							filter = activateFilter({
-								filter,
-								selectedData: preloadedData,
-							});
-						}
-
-						return filter;
-					}),
-				})
-			: [];
-
 		const paginationDelta =
 			showPagination &&
 			(getDelta() ||
@@ -631,8 +616,7 @@ const FrontendDataSetContent = ({
 		// viewsDispatch is not available here, so we can't use state in url
 		// setters at this point. hook does the job
 
-		updateConfig({
-			[EConfigInURLKeys.ACTIVE_FILTERS]: filters,
+		updateConfigInURL({
 			[EConfigInURLKeys.ACTIVE_SORTS]: sorts,
 			[EConfigInURLKeys.DELTA]: paginationDelta,
 			[EConfigInURLKeys.PAGE_NUMBER]: pageNumber,
@@ -661,12 +645,10 @@ const FrontendDataSetContent = ({
 			customViewsEnabled,
 			defaultView: {
 				activeView,
-				filters,
 				paginationDelta,
 				sorts,
 				visibleFieldNames: initialVisibleFieldNames,
 			},
-			filters,
 			filtersGroups,
 			modifiedFields: {},
 			pageNumber,
@@ -682,14 +664,7 @@ const FrontendDataSetContent = ({
 		useReducer(viewsReducer, getInitialViewsState())
 	);
 
-	const {
-		activeView,
-		filters,
-		pageNumber,
-		paginationDelta,
-		searchParam,
-		sorts,
-	} = viewsState;
+	const {activeView, pageNumber, paginationDelta, sorts} = viewsState;
 
 	const handleDeltaChange = useCallback(
 		(delta: number) => {
@@ -710,7 +685,9 @@ const FrontendDataSetContent = ({
 			return;
 		}
 
-		const activeFiltersOdataStrings = filters.reduce(
+		const unfrozenGlobalFDSState: IFDSState = deepClone(globalFDSState);
+
+		const activeFiltersOdataStrings = unfrozenGlobalFDSState.filters.reduce(
 
 			// Difficult to type filter as it is a mix of filters from FDS and FILTER_IMPLEMENTATIONS<T>
 
@@ -733,28 +710,29 @@ const FrontendDataSetContent = ({
 			delta: paginationDelta,
 			odataFiltersStrings: activeFiltersOdataStrings,
 			page: pageNumber,
-			searchParam,
+			searchParam: unfrozenGlobalFDSState.search.query,
 			sorts: activeSorts,
 		});
 	}, [
 		additionalAPIURLParameters,
 		apiURL,
 		currentURL,
-		paginationDelta,
-		filters,
+		globalFDSState,
 		pageNumber,
-		searchParam,
+		paginationDelta,
 		sorts,
 	]);
 
 	const onClearFilters = useCallback(() => {
-		const unfrozenAdvancedFDSState: IFDSState = deepClone(globalFDSState);
+		const unfrozenGlobalFDSState: IFDSState = deepClone(globalFDSState);
+
+		const filters = unfrozenGlobalFDSState.filters.map((filter) =>
+			deactivateFilter(filter)
+		);
 
 		setGlobalFDSState({
-			...unfrozenAdvancedFDSState,
-			filters: unfrozenAdvancedFDSState.filters.map((filter) =>
-				deactivateFilter(filter)
-			),
+			...unfrozenGlobalFDSState,
+			filters,
 			search: {query: ''},
 		});
 	}, [globalFDSState, setGlobalFDSState]);
@@ -768,21 +746,11 @@ const FrontendDataSetContent = ({
 			return;
 		}
 
-		setGlobalFDSState({
-			filters,
-			search: {
-				query: searchParam ?? '',
-			},
-		});
-
 		setGlobalFDSStateInitialized(true);
 	}, [
 		cellClientExtensionsLoaded,
 		filterClientExtensionsLoaded,
-		filters,
 		globalFDSStateInitialized,
-		searchParam,
-		setGlobalFDSState,
 	]);
 
 	useEffect(() => {
@@ -790,59 +758,14 @@ const FrontendDataSetContent = ({
 			return;
 		}
 
-		const unfrozenGlobalFDSStateValue = deepClone(
-			globalFDSState as IFDSState
-		);
+		const unfrozenGlobalFDSState = deepClone(globalFDSState);
 
-		if (apiURL || appURL) {
-			setSearching(true);
-
-			viewsDispatch(
-				updateSearchParam(unfrozenGlobalFDSStateValue.search.query)
-			);
-		}
-		else {
-			setItems(
-				itemsProp?.length
-					? itemsProp.filter((item) => {
-							return JSON.stringify(Object.values(item)).includes(
-								unfrozenGlobalFDSStateValue.search.query
-							);
-						})
-					: []
-			);
-		}
-
-		const resolvedFilters = unfrozenGlobalFDSStateValue.filters.map(
-			(filter: IBaseFilterState) => {
-				if (!filter.active) {
-					return filter;
-				}
-
-				const filterImplementation =
-					FILTER_IMPLEMENTATIONS[filter.type];
-
-				return {
-					...filter,
-					odataFilterString:
-						filterImplementation.getOdataString(filter),
-					selectedItemsLabel:
-						filterImplementation.getSelectedItemsLabel(filter),
-				};
-			}
-		);
-
-		viewsDispatch(updateFilters(resolvedFilters));
-	}, [
-		apiURL,
-		appURL,
-		globalFDSStateInitialized,
-		globalFDSState,
-		itemsProp,
-		updateFilters,
-		updateSearchParam,
-		viewsDispatch,
-	]);
+		updateConfigInURL({
+			[EConfigInURLKeys.ACTIVE_FILTERS]: unfrozenGlobalFDSState.filters,
+			[EConfigInURLKeys.SEARCH_PARAM]:
+				unfrozenGlobalFDSState.search.query,
+		});
+	}, [globalFDSState, globalFDSStateInitialized, updateConfigInURL]);
 
 	const updateDataSetItems = useCallback(
 		(dataSetData: IDataSetData) => {
@@ -874,6 +797,51 @@ const FrontendDataSetContent = ({
 	);
 
 	useEffect(() => {
+		if (
+			globalFDSStateInitialized ||
+			filterClientExtensionsLoading ||
+			filterClientExtensionsLoaded ||
+			cellClientExtensionsLoading ||
+			cellClientExtensionsLoaded
+		) {
+			return;
+		}
+
+		const preloadFilters = (
+			filters: Array<IBaseFilterState> | undefined
+		): Array<IBaseFilterState> => {
+			if (!filters) {
+				return [];
+			}
+
+			const configInURL: Partial<IConfigInURL> | null =
+				readConfigFromURL(id);
+
+			const urlFilters = configInURL?.[EConfigInURLKeys.ACTIVE_FILTERS];
+
+			if (urlFilters) {
+				return updateFilterActivation({
+					newFilters: urlFilters,
+					oldFilters: filters,
+				});
+			}
+
+			return (
+				filters.map((filter) => {
+					const preloadedData = filter.preloadedData;
+
+					if (preloadedData) {
+						filter = activateFilter({
+							filter,
+							selectedData: preloadedData,
+						});
+					}
+
+					return filter;
+				}) || []
+			);
+		};
+
 		const filterClientExtensionDefinitions = initialFilters
 			? initialFilters
 					.filter((filter) => filter.clientExtensionFilterURL)
@@ -888,6 +856,11 @@ const FrontendDataSetContent = ({
 		}
 		else {
 			setFilterClientExtensionsLoaded(true);
+
+			setGlobalFDSState({
+				...globalFDSState,
+				filters: preloadFilters(initialFilters),
+			});
 		}
 
 		const cellClientExtensionDefinitions = views.reduce(
@@ -943,33 +916,38 @@ const FrontendDataSetContent = ({
 				onLoad: (
 					resolutions: Array<ClientExtensionResolution<any>>
 				) => {
-					const newFilters = initialFilters?.map((filter) => {
-						const resolution = resolutions.find(
-							(resolution: ClientExtensionResolution<any>) =>
-								resolution.context.clientExtensionFilterURL ===
-								filter.clientExtensionFilterURL
-						);
+					const newFilters: Array<IBaseFilterState> =
+						initialFilters?.map((filter) => {
+							const resolution = resolutions.find(
+								(resolution: ClientExtensionResolution<any>) =>
+									resolution.context
+										.clientExtensionFilterURL ===
+									filter.clientExtensionFilterURL
+							);
 
-						if (resolution) {
-							if (resolution.error) {
+							if (resolution) {
+								if (resolution.error) {
+									return {
+										...filter,
+										clientExtensionResolutionError:
+											resolution.error,
+									};
+								}
+
 								return {
 									...filter,
-									clientExtensionResolutionError:
-										resolution.error,
+									clientExtensionFilterImplementation:
+										resolution.binding,
 								};
 							}
 
-							return {
-								...filter,
-								clientExtensionFilterImplementation:
-									resolution.binding,
-							};
-						}
+							return filter;
+						}) || [];
 
-						return filter;
+					setGlobalFDSState({
+						...globalFDSState,
+						filters: preloadFilters(newFilters),
 					});
-
-					viewsDispatch(updateFilters(newFilters || []));
 
 					setFilterClientExtensionsLoading(false);
 					setFilterClientExtensionsLoaded(true);
@@ -1009,7 +987,19 @@ const FrontendDataSetContent = ({
 				},
 			},
 		]);
-	}, [initialFilters, updateFilters, views, viewsDispatch]);
+	}, [
+		cellClientExtensionsLoaded,
+		cellClientExtensionsLoading,
+		filterClientExtensionsLoaded,
+		filterClientExtensionsLoading,
+		globalFDSState,
+		globalFDSStateInitialized,
+		id,
+		initialFilters,
+		setGlobalFDSState,
+		views,
+		viewsDispatch,
+	]);
 
 	useEffect(() => {
 		if (itemsProp) {
@@ -1125,12 +1115,14 @@ const FrontendDataSetContent = ({
 
 		const activeFilters = getFilters();
 
+		const unfrozenGlobalFDSState: IFDSState = deepClone(globalFDSState);
+
 		if (activeFilters) {
 			stateUpdates.push({
 				type: EViewsActionTypes.UPDATE_FILTERS,
 				value: updateFilterActivation({
 					newFilters: activeFilters,
-					oldFilters: filters,
+					oldFilters: unfrozenGlobalFDSState.filters,
 				}),
 			});
 		}
@@ -1210,14 +1202,14 @@ const FrontendDataSetContent = ({
 		}
 	}, [
 		appURL,
-		filters,
-		getFilters,
 		getActiveSorts,
 		getDelta,
+		getFilters,
 		getPageNumber,
 		getSearchParam,
 		getView,
 		getVisibleFields,
+		globalFDSState,
 		id,
 		paginationDelta,
 		portletId,
@@ -1334,18 +1326,7 @@ const FrontendDataSetContent = ({
 	};
 
 	useEffect(() => {
-		if (!apiURL) {
-			return;
-		}
-
-		const clientExtensionFiltersLoading = filters.some(
-			(filter: any) =>
-				filter.clientExtensionFilterURL &&
-				!filter.clientExtensionFilterImplementation &&
-				!filter.clientExtensionResolutionError
-		);
-
-		if (clientExtensionFiltersLoading) {
+		if (!apiURL || !globalFDSStateInitialized) {
 			return;
 		}
 
@@ -1383,11 +1364,9 @@ const FrontendDataSetContent = ({
 		});
 	}, [
 		apiURL,
-		filters,
+		globalFDSStateInitialized,
 		isMounted,
 		requestData,
-		setDataLoading,
-		setSearching,
 		updateDataSetItems,
 	]);
 
@@ -1427,8 +1406,10 @@ const FrontendDataSetContent = ({
 
 	const fdsRef = useRef(null);
 
-	const hasSearch = !!searchParam;
-	const hasActiveFilters = filters.some((filter: any) => filter.active);
+	const hasSearch = !!globalFDSState.search.query;
+	const hasActiveFilters = globalFDSState.filters.some(
+		(filter) => filter.active
+	);
 
 	const showManagementToolbar =
 		showManagementBar &&
@@ -1533,9 +1514,7 @@ const FrontendDataSetContent = ({
 					<EmptyState
 						creationMenu={creationMenu}
 						emptyStateConfiguration={emptyState}
-						filters={filters}
 						onClearFilters={onClearFilters}
-						searchParam={searchParam}
 					/>
 				)}
 			</div>
@@ -1819,6 +1798,8 @@ const FrontendDataSetContent = ({
 		targetDropRef: dataSetWrapperRef,
 	});
 
+	const unfrozenGlobalFDSState: IFDSState = deepClone(globalFDSState);
+
 	return (
 		<FrontendDataSetContext.Provider
 			value={{
@@ -1833,6 +1814,7 @@ const FrontendDataSetContent = ({
 				executeAsyncItemAction,
 				formId,
 				formName,
+				globalFDSState: unfrozenGlobalFDSState,
 				hideManagementBarInEmptyState,
 				highlightItems,
 				highlightedItemsValue,
@@ -1851,25 +1833,23 @@ const FrontendDataSetContent = ({
 				onActionDropdownItemClick,
 				onBulkActionItemClick,
 				onClearResultsBar: () => {
-					const unfrozenAdvancedFDSState: IFDSState =
-						deepClone(globalFDSState);
+					updateSearchParam('');
+
+					const filters = unfrozenGlobalFDSState.filters.map(
+						(filter) => deactivateFilter(filter)
+					);
 
 					setGlobalFDSState({
-						...unfrozenAdvancedFDSState,
-						filters: unfrozenAdvancedFDSState.filters.map(
-							(filter) => deactivateFilter(filter)
-						),
+						...unfrozenGlobalFDSState,
+						filters,
 						search: {
 							query: '',
 						},
 					});
 				},
 				onClearSearch: () => {
-					const unfrozenAdvancedFDSState: IFDSState =
-						deepClone(globalFDSState);
-
 					setGlobalFDSState({
-						...unfrozenAdvancedFDSState,
+						...unfrozenGlobalFDSState,
 						search: {
 							query: '',
 						},
@@ -1880,17 +1860,16 @@ const FrontendDataSetContent = ({
 				}: {
 					changedFilter: IBaseFilterState;
 				}) => {
-					const unfrozenAdvancedFDSState: IFDSState =
-						deepClone(globalFDSState);
+					const filters = unfrozenGlobalFDSState.filters.map(
+						(filter) =>
+							filter.id === changedFilter.id
+								? changedFilter
+								: filter
+					);
 
 					setGlobalFDSState({
-						...unfrozenAdvancedFDSState,
-						filters: unfrozenAdvancedFDSState.filters.map(
-							(filter) =>
-								filter.id === changedFilter.id
-									? changedFilter
-									: filter
-						),
+						...unfrozenGlobalFDSState,
+						filters,
 					});
 				},
 				onInfoPanelToggleButtonClick: () => {
@@ -1898,11 +1877,8 @@ const FrontendDataSetContent = ({
 				},
 				onItemsChange,
 				onSearch: ({query}) => {
-					const unfrozenAdvancedFDSState: IFDSState =
-						deepClone(globalFDSState);
-
 					setGlobalFDSState({
-						...unfrozenAdvancedFDSState,
+						...unfrozenGlobalFDSState,
 						search: {
 							query,
 						},
@@ -1911,7 +1887,7 @@ const FrontendDataSetContent = ({
 				openModal,
 				openSidePanel,
 				portletId,
-				searchParam,
+				searchParam: unfrozenGlobalFDSState.search.query,
 				searching,
 				selectable,
 				selectedItems,
