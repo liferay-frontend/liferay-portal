@@ -5,13 +5,13 @@
 
 import {createContext} from 'react';
 
-import {IFilter} from '../management_bar/controls/filters/Filter';
+import {IBaseFilterState} from '../utils/types';
 
 export interface IViewsContext {
 	activeSnapshotERC: null | string;
 	activeView: any;
 	defaultSnapshot?: any;
-	filters: IFilter[];
+	filters: Array<IBaseFilterState>;
 	filtersGroups: Array<any>;
 	modifiedFields: any;
 	paginationDelta: any;
