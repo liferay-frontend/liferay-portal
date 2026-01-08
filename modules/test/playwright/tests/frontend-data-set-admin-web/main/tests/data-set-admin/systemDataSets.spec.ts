@@ -536,7 +536,12 @@ test(
 			};
 
 			await assertFilterEntries('Advanced Sample', [
-				['Client Extension', 'id', 'Client Extension Filter', true],
+				[
+					'Client Extension',
+					'clientExtension',
+					'Client Extension Filter',
+					true,
+				],
 				['Invalid', 'invalid', 'Client Extension Filter', true],
 				['Date Range', 'date', 'Date Filter', true],
 				['Color', 'color', 'System Filter', false],
