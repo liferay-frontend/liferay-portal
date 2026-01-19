@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import ClayAlert from '@clayui/alert';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {ClayPaginationBarWithBasicItems} from '@clayui/pagination-bar';
 import {useControlledState} from '@clayui/shared';
@@ -130,6 +131,7 @@ const FrontendDataSetContent = ({
 	actionParameterName,
 	activeViewSettings,
 	additionalAPIURLParameters,
+	alertProps,
 	apiURL,
 	appURL,
 	atom,
@@ -165,6 +167,7 @@ const FrontendDataSetContent = ({
 	selectedItems: externalSelectedItems,
 	selectedItemsKey = 'id',
 	selectionType,
+	showAlert,
 	showBulkActionsManagementBar = true,
 	showBulkActionsManagementBarActions = true,
 	showManagementBar = true,
@@ -396,6 +399,7 @@ const FrontendDataSetContent = ({
 
 	const [globalFDSStateInitialized, setGlobalFDSStateInitialized] =
 		useState(false);
+	const [allItemsSelectedActive, setAllItemsSelectedActive] = useState(false);
 	const [cellClientExtensionsLoaded, setCellClientExtensionsLoaded] =
 		useState(false);
 	const [cellClientExtensionsLoading, setCellClientExtensionsLoading] =
@@ -420,8 +424,6 @@ const FrontendDataSetContent = ({
 	const [searching, setSearching] = useState(!!apiURL);
 	const [items, setItems] = useState(itemsProp || []);
 	const [itemsChanges, setItemsChanges] = useState<{[key: string]: any}>({});
-
-	const [allItemsSelectedActive, setAllItemsSelectedActive] = useState(false);
 
 	const [selectedItems = [], setSelectedItems] = useControlledState({
 		defaultName: 'selectedItems',
@@ -1535,6 +1537,28 @@ const FrontendDataSetContent = ({
 		</div>
 	) : null;
 
+	const alertComponent =
+		alertProps && showAlert ? (
+			<div
+				className={classNames(
+					'container-fluid align-items-center alert-bar',
+					style === 'fluid' && 'px-0'
+				)}
+			>
+				<ClayAlert
+					{...alertProps}
+					onClose={alertProps?.onClose}
+					variant="stripe"
+				>
+					{alertProps?.content}
+
+					{!alertProps?.actions && alertProps?.buttons && (
+						<>{alertProps?.buttons}</>
+					)}
+				</ClayAlert>
+			</div>
+		) : null;
+
 	const view =
 		!dataLoading && !componentLoading ? (
 			<div className="data-set-content-wrapper">
@@ -2099,6 +2123,8 @@ const FrontendDataSetContent = ({
 								<div className="data-set data-set-inline">
 									{managementBar}
 
+									{alertComponent}
+
 									{view}
 
 									{paginationComponent}
@@ -2109,6 +2135,8 @@ const FrontendDataSetContent = ({
 								<div className="data-set data-set-stacked">
 									{managementBar}
 
+									{alertComponent}
+
 									{view}
 
 									{paginationComponent}
@@ -2118,6 +2146,8 @@ const FrontendDataSetContent = ({
 							{style === 'fluid' && (
 								<div className="data-set data-set-fluid">
 									{managementBar}
+
+									{alertComponent}
 
 									<div className="container-fluid mt-3">
 										{view}

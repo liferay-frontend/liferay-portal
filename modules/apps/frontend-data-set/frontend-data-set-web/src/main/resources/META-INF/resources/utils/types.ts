@@ -4,6 +4,7 @@
  */
 
 import {Atom} from '@liferay/frontend-js-state-web';
+import {IClayAlertProps} from '@clayui/alert';
 import {ModalStatus} from 'frontend-js-components-web';
 import React from 'react';
 
@@ -104,6 +105,14 @@ export interface IBaseActions {
 	actions: IItemsActions[];
 	itemData: any;
 	itemId: number | string;
+}
+
+interface IBulkActionItem {
+	href: string;
+	icon: string;
+	label: string;
+	method?: string;
+	target: 'modal' | 'sidePanel';
 }
 
 export interface ICreationActionItem {
@@ -280,14 +289,20 @@ export interface IFileDropSettings {
 	onFileDrop?: TOnFileDrop;
 }
 
+export interface IFDSAlertProps extends IClayAlertProps {
+	buttons?: React.ReactNode;
+	content?: string;
+}
+
 export interface IFrontendDataSetProps {
 	actionParameterName?: string;
 	activeViewSettings?: string;
 	additionalAPIURLParameters?: string;
+	alertProps?: IFDSAlertProps;
 	apiURL?: string;
 	appURL?: string;
 	atom?: Atom<IFDSState>;
-	bulkActions?: any[];
+	bulkActions?: Array<IBulkActionItem>;
 	configInURLBehavior?: EConfigInURLBehavior;
 	creationMenu?: {
 		loadData?: Function;
@@ -338,6 +353,7 @@ export interface IFrontendDataSetProps {
 	selectedItems?: any[];
 	selectedItemsKey?: string | undefined;
 	selectionType?: 'single' | 'multiple';
+	showAlert?: boolean;
 	showBulkActionsManagementBar?: boolean;
 	showBulkActionsManagementBarActions?: boolean;
 	showManagementBar?: boolean;
@@ -357,6 +373,30 @@ export interface IFrontendDataSetProps {
 
 export interface IInfoPanelComponent {
 	items?: Array<any>;
+}
+
+export interface IManagementBarProps {
+	bulkActions?: Array<IBulkActionItem>;
+	creationMenu?: {
+		primaryItems: Array<ICreationActionItem>;
+		secondaryItems?: any[];
+	};
+	dataLoading: boolean;
+	deselectItems: Function;
+	fluid: boolean;
+	items: Array<any>;
+	onBulkActionsClear: Function;
+	onSelectAll: Function;
+	pageSelectedItemsValue?: Array<any>;
+	selectItems: Function;
+	selectedItems?: Array<any>;
+	selectedItemsKey: string;
+	selectedItemsValue: Array<any>;
+	selectionType?: 'multiple' | 'single';
+	showNavBarWhenSelected?: boolean;
+	showSearch?: boolean;
+	showSelectAll?: boolean;
+	total?: number;
 }
 
 export interface IModalConfig {
