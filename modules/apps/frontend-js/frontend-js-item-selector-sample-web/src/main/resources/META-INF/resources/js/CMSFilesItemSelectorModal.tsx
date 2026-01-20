@@ -4,7 +4,7 @@
  */
 
 import ClayButton from '@clayui/button';
-import {IView} from '@liferay/frontend-data-set-web';
+import {IFrontendDataSetProps, IView} from '@liferay/frontend-data-set-web';
 import {
 	IItemSelectorModalProps,
 	ItemSelectorModal,
@@ -52,7 +52,44 @@ function CMSFilesItemSelectorModal({
 	const [folderStructure, setFolderStructure] = useState<
 		{folderId: string; folderName: string}[]
 	>([]);
+	const [currentFdsProps, setCurrentFdsProps] = useState(fdsProps);
+	const [showAlert, setShowAlert] = useState<boolean>(true);
+
 	const [url, setURL] = useState(CMS_ROOT_FILES_URL);
+
+	const onAlertActionClick = () =>
+		fdsProps &&
+		setCurrentFdsProps({
+			...fdsProps,
+			additionalAPIURLParameters: `sort=dateCreated:asc&t=${Date.now()}`,
+			filters: [],
+			sorts: [],
+		});
+
+	const alertProps: IFrontendDataSetProps['alertProps'] = {
+		buttons: (
+			<ClayButton.Group className="pl-3" spaced>
+				<ClayButton
+					displayType="info"
+					onClick={() => {
+						onAlertActionClick();
+						setShowAlert(false);
+					}}
+					size="sm"
+				>
+					{Liferay.Language.get('reload')}
+				</ClayButton>
+
+				<ClayButton alert onClick={() => setShowAlert(false)} size="sm">
+					{Liferay.Language.get('dismiss')}
+				</ClayButton>
+			</ClayButton.Group>
+		),
+		content: 'This is the info message',
+		displayType: 'info',
+		onClose: () => setShowAlert(false),
+		title: Liferay.Language.get('info'),
+	};
 
 	function onChildFolderClick({
 		folderId,
@@ -103,11 +140,12 @@ function CMSFilesItemSelectorModal({
 					: undefined
 			}
 			fdsProps={{
+				alertProps,
 				pagination: {
 					deltas: [{label: 20}, {label: 40}, {label: 60}],
 					initialDelta: 20,
 				},
-				...fdsProps,
+				...currentFdsProps,
 				customRenderers: {
 					tableCell: [
 						{
@@ -150,6 +188,7 @@ function CMSFilesItemSelectorModal({
 					},
 				],
 				id: `itemSelectorModal-cms-${uuidv4()}`,
+				showAlert,
 				views: [
 					{
 						contentRenderer: 'cards',
