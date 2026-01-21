@@ -289,8 +289,17 @@ export interface IFileDropSettings {
 	onFileDrop?: TOnFileDrop;
 }
 
-export interface IFDSAlertProps extends IClayAlertProps {
+export interface IFDSAlertProps extends Omit<IClayAlertProps, 'actions'> {
+
+	/**
+	 * React component to render alert actions. It is a replacement of original ClayAlert
+	 * actions to allow using 'stripe' variant inlining action buttons
+	 */
 	buttons?: React.ReactNode;
+
+	/**
+	 * Text content of the Alert
+	 */
 	content?: string;
 }
 

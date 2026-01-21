@@ -1552,9 +1552,7 @@ const FrontendDataSetContent = ({
 				>
 					{alertProps?.content}
 
-					{!alertProps?.actions && alertProps?.buttons && (
-						<>{alertProps?.buttons}</>
-					)}
+					{alertProps?.buttons && <>{alertProps?.buttons}</>}
 				</ClayAlert>
 			</div>
 		) : null;
