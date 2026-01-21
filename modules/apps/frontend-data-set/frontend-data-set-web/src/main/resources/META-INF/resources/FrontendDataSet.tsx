@@ -1545,10 +1545,7 @@ const FrontendDataSetContent = ({
 					style === 'fluid' && 'px-0'
 				)}
 			>
-				<ClayAlert
-					{...alertProps}
-					variant="stripe"
-				>
+				<ClayAlert {...alertProps} variant="stripe">
 					{alertProps?.content}
 
 					{alertProps?.buttons && <>{alertProps?.buttons}</>}
