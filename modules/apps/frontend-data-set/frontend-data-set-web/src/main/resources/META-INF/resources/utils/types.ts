@@ -391,13 +391,13 @@ export interface IManagementBarProps {
 		secondaryItems?: any[];
 	};
 	dataLoading: boolean;
-	deselectItems: Function;
+	deselectItems: (value: any) => void;
 	fluid: boolean;
 	items: Array<any>;
-	onBulkActionsClear: Function;
-	onSelectAll: Function;
+	onBulkActionsClear: () => void;
+	onSelectAll: (value: boolean) => void;
 	pageSelectedItemsValue?: Array<any>;
-	selectItems: Function;
+	selectItems: (value: any) => void;
 	selectedItems?: Array<any>;
 	selectedItemsKey: string;
 	selectedItemsValue: Array<any>;

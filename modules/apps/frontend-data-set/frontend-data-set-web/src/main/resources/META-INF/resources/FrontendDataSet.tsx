@@ -1547,7 +1547,6 @@ const FrontendDataSetContent = ({
 			>
 				<ClayAlert
 					{...alertProps}
-					onClose={alertProps?.onClose}
 					variant="stripe"
 				>
 					{alertProps?.content}
