@@ -4,7 +4,11 @@
  */
 
 import ClayButton from '@clayui/button';
-import {IFrontendDataSetProps, IView} from '@liferay/frontend-data-set-web';
+import {
+	EConfigInURLBehavior,
+	IFrontendDataSetProps,
+	IView,
+} from '@liferay/frontend-data-set-web';
 import {
 	IItemSelectorModalProps,
 	ItemSelectorModal,
@@ -52,16 +56,15 @@ function CMSFilesItemSelectorModal({
 	const [folderStructure, setFolderStructure] = useState<
 		{folderId: string; folderName: string}[]
 	>([]);
-	const [currentFdsProps, setCurrentFdsProps] = useState(fdsProps);
+	const [currentFdsProps, setCurrentFdsProps] = useState(fdsProps || {});
 	const [showAlert, setShowAlert] = useState<boolean>(true);
 
 	const [url, setURL] = useState(CMS_ROOT_FILES_URL);
 
 	const onAlertActionClick = () =>
-		fdsProps &&
 		setCurrentFdsProps({
 			...fdsProps,
-			additionalAPIURLParameters: `sort=dateCreated:asc&t=${Date.now()}`,
+			additionalAPIURLParameters: `sort=dateCreated:desc&t=${Date.now()}`,
 			filters: [],
 			sorts: [],
 		});
@@ -141,6 +144,7 @@ function CMSFilesItemSelectorModal({
 			}
 			fdsProps={{
 				alertProps,
+				configInURLBehavior: EConfigInURLBehavior.OFF,
 				pagination: {
 					deltas: [{label: 20}, {label: 40}, {label: 60}],
 					initialDelta: 20,
