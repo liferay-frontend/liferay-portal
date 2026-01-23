@@ -22,6 +22,8 @@ export {
 	FDS_NESTED_FIELD_NAME_PARENT_SUFFIX,
 } from './constants';
 
+export {InlineNotification} from './inline_notification/InlineNotification';
+
 export {ACTION_ITEM_TARGETS} from './utils/actionItems/constants';
 
 export {replaceTokens} from './utils/actionItems/formatActionURL';
@@ -46,5 +48,4 @@ export {
 	IView,
 	TOnFileDrop,
 } from './utils/types';
-
 export {Card} from './views/cards/Cards';
