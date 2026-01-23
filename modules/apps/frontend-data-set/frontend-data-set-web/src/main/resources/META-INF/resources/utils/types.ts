@@ -405,7 +405,7 @@ export interface IManagementBarProps {
 	showNavBarWhenSelected?: boolean;
 	showSearch?: boolean;
 	showSelectAll?: boolean;
-	total?: number;
+	total: number;
 }
 
 export interface IModalConfig {
