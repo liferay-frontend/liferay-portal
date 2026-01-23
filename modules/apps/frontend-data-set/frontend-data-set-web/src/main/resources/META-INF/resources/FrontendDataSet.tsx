@@ -651,18 +651,6 @@ const FrontendDataSetContent = ({
 			oldSorts: sortsProp,
 		});
 
-		// viewsDispatch is not available here, so we can't use state in url
-		// setters at this point. hook does the job
-
-		updateConfigInURL({
-			[EConfigInURLKeys.ACTIVE_SORTS]: sorts,
-			[EConfigInURLKeys.DELTA]: paginationDelta,
-			[EConfigInURLKeys.PAGE_NUMBER]: pageNumber,
-			[EConfigInURLKeys.SEARCH_PARAM]: searchParam,
-			[EConfigInURLKeys.VIEW_NAME]: activeView.name,
-			[EConfigInURLKeys.VISIBLE_FIELDS]: initialVisibleFieldNames,
-		});
-
 		const parsedSnapshots = snapshots?.map((snapshot: ISnapshot) => ({
 			...snapshot,
 			configuration: JSON.parse(snapshot.configuration),
@@ -782,14 +770,6 @@ const FrontendDataSetContent = ({
 		if (!globalFDSStateInitialized) {
 			return;
 		}
-
-		const unfrozenGlobalFDSState = deepClone(globalFDSState);
-
-		updateConfigInURL({
-			[EConfigInURLKeys.ACTIVE_FILTERS]: unfrozenGlobalFDSState.filters,
-			[EConfigInURLKeys.SEARCH_PARAM]:
-				unfrozenGlobalFDSState.search.query,
-		});
 
 		if (skipSnapshotsUpdatedChangeRef.current) {
 			skipSnapshotsUpdatedChangeRef.current = false;
