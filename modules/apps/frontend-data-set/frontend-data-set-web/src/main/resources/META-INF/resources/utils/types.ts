@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Atom} from '@liferay/frontend-js-state-web';
 import {IClayAlertProps} from '@clayui/alert';
+import {Atom} from '@liferay/frontend-js-state-web';
 import {ModalStatus} from 'frontend-js-components-web';
 import React from 'react';
 
@@ -108,11 +108,11 @@ export interface IBaseActions {
 }
 
 interface IBulkActionItem {
-	href: string;
-	icon: string;
-	label: string;
+	href?: string;
+	icon?: string;
+	label?: string;
 	method?: string;
-	target: 'modal' | 'sidePanel';
+	target?: 'modal' | 'sidePanel';
 }
 
 export interface ICreationActionItem {
