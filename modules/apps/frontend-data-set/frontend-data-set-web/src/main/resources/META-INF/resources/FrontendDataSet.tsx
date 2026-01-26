@@ -764,7 +764,7 @@ const FrontendDataSetContent = ({
 		const configInURL: Partial<IConfigInURL> | null = readConfigFromURL(id);
 
 		unfrozenGlobalFDSState.filters.forEach((filter: IBaseFilterState) => {
-			if (filter.preloadedData) {
+			if (filter.preloadedData || filter.selectedData) {
 				const preloadedData = JSON.stringify(filter.preloadedData);
 				const selectedData = JSON.stringify(filter.selectedData);
 
@@ -778,12 +778,20 @@ const FrontendDataSetContent = ({
 					updateConfigInURL({
 						[EConfigInURLKeys.ACTIVE_FILTERS]:
 							unfrozenGlobalFDSState.filters,
-						[EConfigInURLKeys.SEARCH_PARAM]:
-							unfrozenGlobalFDSState.search.query,
 					});
 				}
 			}
 		});
+
+		if (
+			(unfrozenGlobalFDSState.search.query || configInURL?.q) &&
+			unfrozenGlobalFDSState.search.query !== configInURL?.q
+		) {
+			updateConfigInURL({
+				[EConfigInURLKeys.SEARCH_PARAM]:
+					unfrozenGlobalFDSState.search.query,
+			});
+		}
 
 		if (skipSnapshotsUpdatedChangeRef.current) {
 			skipSnapshotsUpdatedChangeRef.current = false;
