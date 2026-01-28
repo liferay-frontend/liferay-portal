@@ -1161,7 +1161,7 @@ const FrontendDataSetContent = ({
 		}
 	}, [dataSetWrapperRef]);
 
-	const getInitialActiveFilters = useCallback(() => {
+	const getInitialFilters = useCallback(() => {
 		return initialFilters
 			?.filter((filter: any) => filter.preloadedData)
 			.map((filter: any) => {
@@ -1180,14 +1180,16 @@ const FrontendDataSetContent = ({
 			value: IConfigInURL[keyof IConfigInURL];
 		}> = [];
 
-		const initialActiveFilters = getInitialActiveFilters();
+		const initialFilters = getInitialFilters();
 		const searchParam = getSearchParam();
 		const urlFilters = getFilters();
 
 		const activeFilters = [...(urlFilters || [])];
 
-		if (!urlFilters || urlFilters?.length) {
-			initialActiveFilters?.forEach((initialFilter) => {
+		const initialFiltersRemoved = urlFilters && !urlFilters.length;
+
+		if (!initialFiltersRemoved) {
+			initialFilters?.forEach((initialFilter) => {
 				const isFilterInURL = urlFilters?.some(
 					(urlFilter) => urlFilter.id === initialFilter.id
 				);
@@ -1266,7 +1268,7 @@ const FrontendDataSetContent = ({
 	}, [
 		getActiveSorts,
 		getDelta,
-		getInitialActiveFilters,
+		getInitialFilters,
 		getFilters,
 		getPageNumber,
 		getSearchParam,
