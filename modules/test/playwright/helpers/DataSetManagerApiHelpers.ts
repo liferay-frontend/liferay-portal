@@ -27,6 +27,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		defaultVisualizationMode,
 		description = 'Sample description',
 		erc = 'sampleDataSetERC',
+		keywords,
 		label = DEFAULT_LABEL.DATA_SET,
 		listOfItemsPerPage = '4, 8, 20, 40, 60',
 		restApplication = API_ENDPOINT_PATH,
@@ -40,6 +41,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		defaultVisualizationMode?: string;
 		description?: string;
 		erc?: string;
+		keywords?: Array<string>;
 		label?: string;
 		listOfItemsPerPage?: string;
 		restApplication?: string;
@@ -56,6 +58,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 			defaultVisualizationMode,
 			description,
 			externalReferenceCode: erc,
+			keywords,
 			label,
 			listOfItemsPerPage,
 			restApplication,
@@ -233,6 +236,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 	async createDataSetSelectionFilter({
 		active,
 		dataSetERC = DEFAULT_DATA_SET_ERC,
+		entityFieldType,
 		fieldName,
 		include = true,
 		itemKey,
@@ -245,6 +249,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 	}: {
 		active?: boolean;
 		dataSetERC?: string;
+		entityFieldType?: string;
 		fieldName: string;
 		include?: boolean;
 		itemKey?: string;
@@ -262,6 +267,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 
 		const data = {
 			active,
+			entityFieldType,
 			fieldName,
 			include,
 			itemKey,
@@ -431,6 +437,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		defaultVisualizationMode,
 		erc = DEFAULT_DATA_SET_ERC,
 		filtersOrder,
+		keywords,
 		label,
 		listOfItemsPerPage,
 		showSearch,
@@ -441,6 +448,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		defaultVisualizationMode?: string;
 		erc?: string;
 		filtersOrder?: string;
+		keywords?: Array<string>;
 		label?: string;
 		listOfItemsPerPage?: string;
 		showSearch?: boolean;
@@ -455,6 +463,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 			defaultItemsPerPage,
 			defaultVisualizationMode,
 			filtersOrder,
+			keywords,
 			label,
 			listOfItemsPerPage,
 			showSearch,
