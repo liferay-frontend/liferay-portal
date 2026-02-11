@@ -308,7 +308,6 @@ export interface IFrontendDataSetProps {
 	customDataRenderers?: any;
 	customRenderers?: {
 		tableCell?: Array<TRenderer>;
-		views?: Array<TRenderer>;
 	};
 	defaultSelectedItems?: any[];
 	emptyState?: IEmptyStateConfiguration;
