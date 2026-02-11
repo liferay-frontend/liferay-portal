@@ -112,6 +112,7 @@ export default function TasksFDSPropsTransformer({
 		return {
 			...view,
 			default: false,
+			initialPaginationDelta: 20,
 		};
 	});
 
@@ -119,6 +120,7 @@ export default function TasksFDSPropsTransformer({
 		component: (props: any) => KanbanView({...props}),
 		dataSetId: id,
 		default: false,
+		initialPaginationDelta: -1,
 		label: Liferay.Language.get('kanban'),
 		name: 'kanban',
 		schema: {
@@ -129,6 +131,7 @@ export default function TasksFDSPropsTransformer({
 			symbol: '',
 			title: 'embedded.title',
 		},
+		showPagination: false,
 		thumbnail: 'columns',
 	};
 
