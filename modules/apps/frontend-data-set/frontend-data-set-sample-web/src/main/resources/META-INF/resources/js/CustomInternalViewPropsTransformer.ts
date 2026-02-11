@@ -5,6 +5,7 @@
 
 import {
 	EConfigInURLBehavior,
+	FDS_PAGINATION_DELTA_ALL,
 	IFrontendDataSetProps,
 } from '@liferay/frontend-data-set-web';
 
@@ -29,10 +30,15 @@ export default function propsTransformer({
 				isVisible: (item: any) => item?.color !== 'Green',
 			};
 		}),
+		pagination: {
+			deltas: [{label: 10}, {label: 11}, {label: 12}],
+			initialDelta: 10,
+		},
 		views: [
 			{
 				component: CarouselView,
 				default: true,
+				initialPaginationDelta: FDS_PAGINATION_DELTA_ALL,
 				label: 'My Carousel View',
 				name: 'carouselViewRenderer',
 				schema: {
