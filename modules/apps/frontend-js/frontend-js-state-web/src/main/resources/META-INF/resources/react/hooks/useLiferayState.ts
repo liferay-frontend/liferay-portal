@@ -37,7 +37,13 @@ export default function useLiferayState<T>(
 	return [
 		currentValue,
 		useCallback(
-			(newValue) => State.write(atomOrSelector, deepClone(newValue)),
+			(newValue) => {
+				const currentState = State.read(atomOrSelector);
+
+				if (JSON.stringify(currentState) !== JSON.stringify(newValue)) {
+					State.write(atomOrSelector, deepClone(newValue));
+				}
+			},
 			[atomOrSelector]
 		),
 	];
