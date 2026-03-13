@@ -53,6 +53,7 @@
 		"@ckeditor/ckeditor5-special-characters": "46.0.3",
 		"@ckeditor/ckeditor5-style": "46.0.3",
 		"@ckeditor/ckeditor5-table": "46.0.3",
+		"@ckeditor/ckeditor5-template": "46.0.3",
 		"@ckeditor/ckeditor5-typing": "46.0.3",
 		"@ckeditor/ckeditor5-ui": "46.0.3",
 		"@ckeditor/ckeditor5-undo": "46.0.3",

@@ -9,6 +9,9 @@ declare module '@ckeditor/ckeditor5-core/dist/index.js' {
 declare module '@ckeditor/ckeditor5-fullscreen/dist/index.js' {
 	export * from '@ckeditor/ckeditor5-fullscreen';
 }
+declare module '@ckeditor/ckeditor5-template/dist/index.js' {
+	export * from '@ckeditor/ckeditor5-template';
+}
 declare module '@ckeditor/ckeditor5-ui/dist/index.js' {
 	export * from '@ckeditor/ckeditor5-ui';
 }

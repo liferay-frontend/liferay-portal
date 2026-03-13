@@ -62,6 +62,7 @@ module.exports = {
 		'@ckeditor/ckeditor5-special-characters/dist/index.js',
 		'@ckeditor/ckeditor5-style/dist/index.js',
 		'@ckeditor/ckeditor5-table/dist/index.js',
+		'@ckeditor/ckeditor5-template/dist/index.js',
 		'@ckeditor/ckeditor5-typing/dist/index.js',
 		'@ckeditor/ckeditor5-ui/dist/index.js',
 		'@ckeditor/ckeditor5-undo/dist/index.js',

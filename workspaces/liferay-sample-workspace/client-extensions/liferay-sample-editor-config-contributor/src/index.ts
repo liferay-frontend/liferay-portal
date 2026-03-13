@@ -5,6 +5,7 @@
 
 import {Plugin} from '@ckeditor/ckeditor5-core/dist/index.js';
 import {Fullscreen} from '@ckeditor/ckeditor5-fullscreen/dist/index.js';
+import {Template} from '@ckeditor/ckeditor5-template/dist/index.js';
 import {ButtonView} from '@ckeditor/ckeditor5-ui/dist/index.js';
 import {
 	EditorConfigTransformer,
@@ -81,11 +82,13 @@ const editorConfigTransformer: EditorConfigTransformer<any> = (config) => {
 			// A custom plugin.
 
 			'helloworld',
+
+			'insertTemplate',
 		];
 
 		const updatedConfig = {
 			...config,
-			extraPlugins: [Fullscreen, HelloWorld],
+			extraPlugins: [Fullscreen, HelloWorld, Template],
 			toolbar,
 		};
 

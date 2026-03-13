@@ -159,6 +159,9 @@ declare module '@ckeditor/ckeditor5-style/dist/index.js' {
 declare module '@ckeditor/ckeditor5-table/dist/index.js' {
 	export * from '@ckeditor/ckeditor5-table';
 }
+declare module '@ckeditor/ckeditor5-template/dist/index.js' {
+	export * from '@ckeditor/ckeditor5-template';
+}
 declare module '@ckeditor/ckeditor5-typing/dist/index.js' {
 	export * from '@ckeditor/ckeditor5-typing';
 }

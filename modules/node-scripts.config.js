@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-	hash: '61e3890ddde27095689e4ca414ab5776d0aea19641f5e07a2dd37a6660e3e0b4',
+	hash: '82748c4d0c5273b7984b250de4fd58b0f6f79057cc8836535b90d782af6a3b86',
 	imports: {
 		'@liferay/accessibility-menu-web': [],
 		'@liferay/accessibility-settings-state-web': [],
@@ -373,6 +373,7 @@ module.exports = {
 			'@ckeditor/ckeditor5-special-characters/dist/index.js',
 			'@ckeditor/ckeditor5-style/dist/index.js',
 			'@ckeditor/ckeditor5-table/dist/index.js',
+			'@ckeditor/ckeditor5-template/dist/index.js',
 			'@ckeditor/ckeditor5-typing/dist/index.js',
 			'@ckeditor/ckeditor5-ui/dist/index.js',
 			'@ckeditor/ckeditor5-undo/dist/index.js',
