@@ -6,8 +6,10 @@
 import ClayBadge from '@clayui/badge';
 import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
+import ClayLink from '@clayui/link';
 import ClayPopover, {ALIGN_POSITIONS} from '@clayui/popover';
 import {ClayTooltipProvider} from '@clayui/tooltip';
+import {sub} from 'frontend-js-web';
 import React, {useState} from 'react';
 
 import useId from '../hooks/useId';
@@ -19,21 +21,10 @@ export type Type = 'beta' | 'deprecated' | 'maintenance';
 
 type DisplayType = 'info' | 'warning';
 
-type featureIndicatorNoninteractiveProps = {
-	interactive?: false;
-	learnResourceContext?: any;
-};
-
-type featureIndicatorInteractiveProps = {
-	interactive: true;
-	learnResourceContext: any;
-};
-
-type featureIndicatorProps = (
-	| featureIndicatorNoninteractiveProps
-	| featureIndicatorInteractiveProps
-) & {
+type featureIndicatorProps = {
 	dark?: boolean;
+	interactive?: boolean;
+	learnResourceContext?: any;
 	tooltipAlign?: (typeof ALIGN_POSITIONS)[number];
 	type?: Type;
 };
@@ -52,6 +43,8 @@ export default function FeatureIndicator({
 	let displayType: DisplayType = 'info';
 	let label = Liferay.Language.get('beta');
 	let learnMessageResourceKey = 'beta-features';
+	let linkMessage;
+	let linkUrl;
 	let popoverText = Liferay.Language.get('this-feature-is-in-testing');
 	let popoverTitle = Liferay.Language.get('beta-feature');
 	let symbol = 'info-circle-open';
@@ -118,10 +111,25 @@ export default function FeatureIndicator({
 					>
 						{popoverText + ' '}
 
-						<LearnMessage
-							resource="frontend-js-components-web"
-							resourceKey={learnMessageResourceKey}
-						/>
+						{linkMessage && linkUrl ? (
+							<ClayLink
+								aria-label={sub(
+									Liferay.Language.get('x-opens-new-window'),
+									linkMessage
+								)}
+								className="text-decoration-underline"
+								href={linkUrl}
+								rel="noopener noreferrer"
+								target="_blank"
+							>
+								{linkMessage}
+							</ClayLink>
+						) : learnMessageResourceKey ? (
+							<LearnMessage
+								resource="frontend-js-components-web"
+								resourceKey={learnMessageResourceKey}
+							/>
+						) : null}
 					</ClayPopover>
 				</ClayTooltipProvider>
 			) : (
