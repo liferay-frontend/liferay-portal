@@ -17,9 +17,9 @@ import LearnMessage, {
 	LearnResourcesContext,
 } from '../learn_message/LearnMessage';
 
-export type Type = 'beta' | 'deprecated' | 'maintenance';
+export type Type = 'beta' | 'deprecated' | 'enterprise' | 'maintenance';
 
-type DisplayType = 'info' | 'warning';
+type DisplayType = 'info' | 'primary' | 'warning';
 
 type featureIndicatorProps = {
 	dark?: boolean;
@@ -28,6 +28,8 @@ type featureIndicatorProps = {
 	tooltipAlign?: (typeof ALIGN_POSITIONS)[number];
 	type?: Type;
 };
+
+const ENTERPRISE_URL = 'https://www.liferay.com/en/contact-sales';
 
 export default function FeatureIndicator({
 	dark,
@@ -58,6 +60,19 @@ export default function FeatureIndicator({
 		popoverTitle = Liferay.Language.get('deprecated-feature');
 		symbol = 'warning-full';
 		tooltipTitle = Liferay.Language.get('open-deprecated-definition');
+	}
+
+	if (type === 'enterprise') {
+		displayType = 'primary';
+		label = Liferay.Language.get('enterprise');
+		linkMessage = Liferay.Language.get('get-enterprise-details');
+		linkUrl = ENTERPRISE_URL;
+		popoverText = Liferay.Language.get(
+			'this-feature-is-only-available-on-the-enterprise-subscription'
+		);
+		popoverTitle = Liferay.Language.get('get-more-with-enterprise');
+		symbol = 'crown';
+		tooltipTitle = Liferay.Language.get('open-enterprise-definition');
 	}
 
 	if (type === 'maintenance') {
