@@ -8,8 +8,13 @@ import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayModal, {useModal} from '@clayui/modal';
 import classNames from 'classnames';
 import {navigate} from 'frontend-js-web';
-import PropTypes from 'prop-types';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {
+	ReactNode,
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+} from 'react';
 
 import Iframe, {IframeOnOpen} from './Iframe';
 import StatusMessage from './StatusMessage';
@@ -81,9 +86,10 @@ export interface ModalProps {
 	title?: string;
 	url?: URL | string;
 	zIndex?: number;
+	[key: string]: unknown;
 }
 
-export default function Modal({
+const Modal = ({
 	bodyComponent,
 	bodyHTML,
 	buttons,
@@ -112,7 +118,7 @@ export default function Modal({
 	title,
 	url,
 	zIndex,
-}: ModalProps) {
+}: ModalProps) => {
 	const [loading, setLoading] = useState(true);
 
 	const {observer, onOpenChange, open} = useModal({
@@ -444,49 +450,6 @@ export default function Modal({
 			)}
 		</>
 	);
-}
-
-Modal.propTypes = {
-	bodyHTML: PropTypes.string,
-	buttons: PropTypes.arrayOf(
-		PropTypes.shape({
-			displayType: PropTypes.oneOf([
-				'danger',
-				'info',
-				'link',
-				null,
-				'primary',
-				'secondary',
-				'success',
-				'unstyled',
-				'warning',
-			]),
-			formId: PropTypes.string,
-			id: PropTypes.string,
-			label: PropTypes.string,
-			onClick: PropTypes.func,
-			type: PropTypes.oneOf(['cancel', 'submit']),
-		})
-	),
-	center: PropTypes.bool,
-	containerProps: PropTypes.object,
-	contentComponent: PropTypes.elementType,
-	customEvents: PropTypes.arrayOf(
-		PropTypes.shape({
-			name: PropTypes.string,
-			onEvent: PropTypes.func,
-		})
-	),
-	disableHeader: PropTypes.bool,
-	headerHTML: PropTypes.string,
-	height: PropTypes.string,
-	id: PropTypes.string,
-	iframeProps: PropTypes.object,
-	onClose: PropTypes.func,
-	onOpen: PropTypes.func,
-	role: PropTypes.string,
-	size: PropTypes.oneOf(['full-screen', 'lg', 'md', 'sm']),
-	status: PropTypes.string,
-	title: PropTypes.string,
-	url: PropTypes.string,
 };
+
+export default Modal as () => NonNullable<ReactNode>;
