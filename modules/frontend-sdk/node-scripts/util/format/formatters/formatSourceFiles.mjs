@@ -27,9 +27,14 @@ const EXTENSIONS = ['graphql', 'js', 'jsp', 'jspf', 'mjs', 'scss', 'ts', 'tsx'];
 export default async function formatSourceFiles(check, files) {
 	const start = Date.now();
 
-	const {emitSuppressed} = getNamedArguments({
+	const {emitSuppressed, ignoreJSLinters} = getNamedArguments({
 		emitSuppressed: '--emit-suppressed',
+		ignoreJSLinters: '--ignore-js-linters',
 	});
+
+	if (ignoreJSLinters) {
+		return true;
+	}
 
 	const filePaths = await getFilePaths(files);
 
@@ -56,7 +61,7 @@ export default async function formatSourceFiles(check, files) {
 	print(
 		1,
 		print.subTitle(
-			`> ${check ? 'Checking' : 'Formatting'} ${filePaths.length} source files with SF...\n`
+			`> ${check ? 'Checking' : 'Formatting'} ${filePaths.length} source files with JS linters...\n`
 		)
 	);
 
@@ -107,7 +112,7 @@ export default async function formatSourceFiles(check, files) {
 
 	const results = await Promise.all(resultPromises);
 
-	printDuration(start, 1, 'Formatting with SF');
+	printDuration(start, 1, 'Formatting with JS linters');
 
 	return !results.some((result) => !result);
 }

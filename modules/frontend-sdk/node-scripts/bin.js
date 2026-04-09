@@ -45,7 +45,7 @@ const COMMANDS = {
 		--local-changes parameters.
 `,
 		parameters:
-			'[--check] [--emit-suppressed] [--ignore-typescript] [{--current-branch|--local-changes}]',
+			'[--check] [--emit-suppressed] [--ignore-js-linters] [--ignore-typescript] [{--current-branch|--local-changes}]',
 		script: './format/index.mjs',
 	},
 	'format:file': {
