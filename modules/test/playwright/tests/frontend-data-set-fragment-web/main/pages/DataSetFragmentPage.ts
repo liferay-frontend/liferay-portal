@@ -23,6 +23,7 @@ export class DataSetFragmentPage {
 	readonly filterConfirmButton: Locator;
 	readonly filterResumeButton: Locator;
 	readonly fragmentWidgetSearchInput: Locator;
+	readonly fragmentSelectionArea: Locator;
 	readonly listWrapper: Locator;
 	readonly loadingIndicator: Locator;
 	readonly page: Page;
@@ -76,6 +77,7 @@ export class DataSetFragmentPage {
 			name: /add filter|show results|delete filter/i,
 		});
 		this.filterResumeButton = page.locator('.filter-resume');
+		this.fragmentSelectionArea = page.getByText('Select a data set');
 		this.fragmentWidgetSearchInput = page.getByLabel(
 			'Search Fragments and Widgets'
 		);
@@ -248,13 +250,9 @@ export class DataSetFragmentPage {
 			this.page.getByText('Drag and drop fragments or widgets here.')
 		);
 
-		const fragmentSelectionArea = this.page.getByText(
-			'Select a data set view'
-		);
+		await expect(this.fragmentSelectionArea).toBeVisible();
 
-		await expect(fragmentSelectionArea).toBeVisible();
-
-		await fragmentSelectionArea.click();
+		await this.fragmentSelectionArea.click();
 	}
 
 	async sortBy(columnName: string) {
