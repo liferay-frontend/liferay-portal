@@ -6,6 +6,7 @@
 import childProcess from 'child_process';
 import {execa} from 'execa';
 import fs from 'fs/promises';
+import path from 'path';
 
 import {
 	MODULES_DIR,
@@ -54,11 +55,17 @@ async function updateYarnLock(check) {
 			}
 		}
 
+		const baseYarnLock = await fs.readFile(YARN_LOCK_FILE, 'utf-8');
+
 		await new Promise((resolve, reject) => {
-			const child = childProcess.fork(YARN_SCRIPT_FILE, {
-				cwd: MODULES_DIR,
-				stdio: 'ignore',
-			});
+			const child = childProcess.fork(
+				YARN_SCRIPT_FILE,
+				['--frozen-lockfile', '--offline'],
+				{
+					cwd: MODULES_DIR,
+					stdio: 'inherit',
+				}
+			);
 
 			child.on('exit', (code) => {
 				if (code === 0) {
@@ -78,7 +85,34 @@ async function updateYarnLock(check) {
 
 		const newYarnLock = await fs.readFile(YARN_LOCK_FILE, 'utf-8');
 
-		const modified = newYarnLock !== originalYarnLock;
+		const yarnRc = await fs.readFile(
+			path.join(MODULES_DIR, '.yarnrc'),
+			'utf-8'
+		);
+		console.log(
+			`\n-- YARNRC ------------------------------\n${yarnRc}\n-----------------------------`
+		);
+
+		const modified = newYarnLock != baseYarnLock;
+
+		// const baseLines = baseYarnLock.split('\n');
+		// const newLines = newYarnLock.split('\n');
+		// const modifiedLines = {};
+
+		// for (let i = 0; i < newLines.length; i++) {
+		// 	if (i >= baseLines.length) {
+		// 		break;
+		// 	}
+
+		// 	if (newLines[i] !== baseLines[i]) {
+		// 		modifiedLines[i] = {
+		// 			newLine: newLines[i],
+		// 			baseLine: baseLines[i],
+		// 		};
+
+		// 		modified = true;
+		// 	}
+		// }
 
 		if (check) {
 			await fs.writeFile(YARN_LOCK_FILE, originalYarnLock, 'utf-8');
@@ -90,6 +124,15 @@ async function updateYarnLock(check) {
 					`File 'yarn.lock' needs to be updated using 'yarn install'`,
 					'\n'
 				);
+
+				// for (const [i, {baseLine, newLine}] of Object.entries(
+				// 	modifiedLines
+				// )) {
+				// 	print(
+				// 		3,
+				// 		`${zeroPad(i, 6)}: ${newLine}\n        ${baseLine}`
+				// 	);
+				// }
 
 				checksPassed = false;
 			}
@@ -117,6 +160,14 @@ async function updateYarnLock(check) {
 	}
 
 	return checksPassed;
+}
+
+function zeroPad(str, spaces) {
+	while (str.length < spaces) {
+		str = ` ${str}`;
+	}
+
+	return str;
 }
 
 async function checkInvalidReferences() {
