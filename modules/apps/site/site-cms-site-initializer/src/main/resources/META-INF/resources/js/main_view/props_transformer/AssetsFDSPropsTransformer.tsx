@@ -4,6 +4,7 @@
  */
 
 import {
+	IBulkActionItem,
 	IInternalRenderer,
 	IView,
 	replaceTokens,
@@ -47,6 +48,7 @@ import SimpleActionLinkRenderer from './cell_renderers/SimpleActionLinkRenderer'
 import SpaceRendererWithCache from './cell_renderers/SpaceRendererWithCache';
 import TypeRenderer from './cell_renderers/TypeRenderer';
 import addOnClickToCreationMenuItems from './utils/addOnClickToCreationMenuItems';
+import transformFDSBulkActions from './utils/transformFDSBulkActions';
 import transformViewsItemsProps from './utils/transformViewsItemProps';
 import GalleryView from './views/GalleryView';
 
@@ -142,6 +144,7 @@ export type AdditionalProps = {
 
 export default function AssetsFDSPropsTransformer({
 	additionalProps,
+	bulkActions = [],
 	creationMenu,
 	itemsActions = [],
 	views,
@@ -149,6 +152,7 @@ export default function AssetsFDSPropsTransformer({
 }: {
 	additionalProps: AdditionalProps;
 	apiURL?: string;
+	bulkActions?: Array<IBulkActionItem>;
 	creationMenu: any;
 	id?: string;
 	itemsActions?: any[];
@@ -200,6 +204,7 @@ export default function AssetsFDSPropsTransformer({
 				rootFolder,
 			}),
 		additionalProps: remainingAdditionalProps,
+		bulkActions: transformFDSBulkActions(bulkActions),
 		creationMenu: {
 			...creationMenu,
 			primaryItems: addOnClickToCreationMenuItems(
