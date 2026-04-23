@@ -59,7 +59,7 @@ const FiltersDropdown = () => {
 			.filter(Boolean);
 	}, [groupedFilters, validFilters]);
 
-	const filtersList = groupedFilters
+	const filtersList = groupedFilters?.length
 		? renderableGroupedFilters
 		: validFilters;
 
@@ -123,7 +123,7 @@ const FiltersDropdown = () => {
 
 					{filtersList?.length ? (
 						<ClayDropDown.ItemList items={filtersList}>
-							{groupedFilters
+							{groupedFilters?.length
 								? (group: any) => (
 										<ClayDropDown.Group
 											header={group.label}
