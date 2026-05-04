@@ -6,6 +6,8 @@
 export type {ICollectionProps} from './collection';
 export {FocusTrap} from './focus-trap';
 export {IconSelector} from './icon-selector';
+export {KeyboardArrowsIndicator} from './keyboard-arrows-indicator';
+export type {KeyboardArrowsIndicatorProps} from './keyboard-arrows-indicator';
 export {LanguagePicker} from './language-picker';
 
 export type {Item} from './language-picker';
