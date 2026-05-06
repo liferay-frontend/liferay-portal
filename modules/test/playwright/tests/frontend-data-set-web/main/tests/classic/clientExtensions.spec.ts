@@ -39,24 +39,20 @@ test(
 		const fdsSearchInput = fdsSamplePage.managementToolbar.searchInput;
 		const fdsSearchButton = fdsSamplePage.managementToolbar.searchButton;
 
-		const {url} = await test.step(
-			'Create a page with the FDS Sample widget',
-			async () => fdsSamplePage.setupFDSSampleWidget({site})
-		);
+		const {url} =
+			await test.step('Create a page with the FDS Sample widget', async () =>
+				fdsSamplePage.setupFDSSampleWidget({site}));
 
-		await test.step(
-			'Add the Custom Element 7 widget to the page',
-			async () => {
-				await page.goto(`${url}?p_l_mode=edit`);
+		await test.step('Add the Custom Element 7 widget to the page', async () => {
+			await page.goto(`${url}?p_l_mode=edit`);
 
-				await pageEditorPage.addWidget(
-					'Client Extensions',
-					'Liferay Sample Custom Element 7'
-				);
+			await pageEditorPage.addWidget(
+				'Client Extensions',
+				'Liferay Sample Custom Element 7'
+			);
 
-				await pageEditorPage.publishPage();
-			}
-		);
+			await pageEditorPage.publishPage();
+		});
 
 		await test.step('Switch to the Classic FDS tab', async () => {
 			await page.goto(url);
@@ -66,32 +62,23 @@ test(
 			await waitForFDS({page});
 		});
 
-		await test.step(
-			'Custom Element becomes ready once the FDS atom is registered',
-			async () => {
-				await expect(customElementInput).toBeEnabled();
-				await expect(customElementSearchButton).toBeEnabled();
-			}
-		);
+		await test.step('Custom Element becomes ready once the FDS atom is registered', async () => {
+			await expect(customElementInput).toBeEnabled();
+			await expect(customElementSearchButton).toBeEnabled();
+		});
 
-		await test.step(
-			'Searching from the Custom Element filters the FDS',
-			async () => {
-				await customElementInput.fill('Sample55');
-				await customElementSearchButton.click();
+		await test.step('Searching from the Custom Element reflects in the FDS input', async () => {
+			await customElementInput.fill('Sample55');
+			await customElementSearchButton.click();
 
-				await expect(fdsSearchInput).toHaveValue('Sample55');
-			}
-		);
+			await expect(fdsSearchInput).toHaveValue('Sample55');
+		});
 
-		await test.step(
-			'Searching from the FDS reflects in the Custom Element input',
-			async () => {
-				await fdsSearchInput.fill('Sample22');
-				await fdsSearchButton.click();
+		await test.step('Searching from the FDS reflects in the Custom Element input', async () => {
+			await fdsSearchInput.fill('Sample22');
+			await fdsSearchButton.click();
 
-				await expect(customElementInput).toHaveValue('Sample22');
-			}
-		);
+			await expect(customElementInput).toHaveValue('Sample22');
+		});
 	}
 );
