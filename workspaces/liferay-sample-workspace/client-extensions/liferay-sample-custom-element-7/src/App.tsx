@@ -49,7 +49,15 @@ function App({fdsName}: AppProps) {
 			return;
 		}
 
-		writeAtom(atom, {...readAtom(atom), search: {query}});
+		const currentState = readAtom(atom);
+
+		writeAtom(atom, {
+			...currentState,
+			search: {
+				...currentState.search,
+				query,
+			},
+		});
 	};
 
 	return (
