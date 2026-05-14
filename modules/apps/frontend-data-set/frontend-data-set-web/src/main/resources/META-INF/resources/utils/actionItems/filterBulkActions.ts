@@ -5,6 +5,31 @@
 
 import {IBaseFilterState, IBulkActionItem, IFDSState} from '../types';
 
+const hasPermission = (
+	bulkAction: IBulkActionItem,
+	selectedItems: Array<any>
+): boolean => {
+	if (!bulkAction?.data?.permissionKey) {
+		return true;
+	}
+
+	if (!selectedItems?.length) {
+		return true;
+	}
+
+	const permissionKey = bulkAction.data.permissionKey.toLowerCase();
+
+	return selectedItems.every((item) => {
+		if (!item?.actions) {
+			return false;
+		}
+
+		return Object.keys(item.actions).some(
+			(itemAction) => itemAction.toLowerCase() === permissionKey
+		);
+	});
+};
+
 const filterBulkActions = ({
 	allItemsSelectedActive,
 	bulkActions,
@@ -21,6 +46,10 @@ const filterBulkActions = ({
 	}
 
 	return bulkActions.filter((bulkAction) => {
+		if (!hasPermission(bulkAction, selectedItems)) {
+			return false;
+		}
+
 		return (
 			!bulkAction.isVisible ||
 			bulkAction.isVisible({

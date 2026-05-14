@@ -112,6 +112,7 @@ export interface IBulkActionItem {
 	data?: {
 		highlighted?: boolean;
 		id?: string;
+		permissionKey?: string;
 		size?: string;
 	};
 	href?: string;
