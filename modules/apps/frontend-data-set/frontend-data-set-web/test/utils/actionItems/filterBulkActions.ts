@@ -115,4 +115,93 @@ describe('filterBulkActions', () => {
 			});
 		});
 	});
+
+	describe('when permissionKey is set on the bulk action', () => {
+		const deleteBulkAction: IBulkActionItem = {
+			data: {id: 'delete', permissionKey: 'delete'},
+		};
+
+		it('hides the action when any selected item lacks the permission', () => {
+			const itemsMixedPermissions = [
+				{actions: {delete: {href: '/o/x/1', method: 'DELETE'}}, id: 1},
+				{actions: {get: {href: '/o/x/2', method: 'GET'}}, id: 2},
+			];
+
+			const result = filterBulkActions({
+				allItemsSelectedActive: false,
+				bulkActions: [deleteBulkAction],
+				globalFDSState,
+				selectedItems: itemsMixedPermissions,
+			});
+
+			expect(result).toHaveLength(0);
+		});
+
+		it('hides the action when no selected item has the permission', () => {
+			const itemsWithoutDelete = [
+				{actions: {get: {href: '/o/x/1', method: 'GET'}}, id: 1},
+				{actions: {get: {href: '/o/x/2', method: 'GET'}}, id: 2},
+			];
+
+			const result = filterBulkActions({
+				allItemsSelectedActive: false,
+				bulkActions: [deleteBulkAction],
+				globalFDSState,
+				selectedItems: itemsWithoutDelete,
+			});
+
+			expect(result).toHaveLength(0);
+		});
+
+		it('shows the action regardless of items actions map (backwards compatible)', () => {
+			const bulkActions: IBulkActionItem[] = [
+				{data: {id: 'no-perm-key'}},
+			];
+
+			const result = filterBulkActions({
+				allItemsSelectedActive: false,
+				bulkActions,
+				globalFDSState,
+				selectedItems: [{id: 1}],
+			});
+
+			expect(result).toHaveLength(1);
+		});
+
+		it('shows the action when every selected item has the permission in its actions map', () => {
+			const itemsWithDelete = [
+				{actions: {delete: {href: '/o/x/1', method: 'DELETE'}}, id: 1},
+				{actions: {delete: {href: '/o/x/2', method: 'DELETE'}}, id: 2},
+			];
+
+			const result = filterBulkActions({
+				allItemsSelectedActive: false,
+				bulkActions: [deleteBulkAction],
+				globalFDSState,
+				selectedItems: itemsWithDelete,
+			});
+
+			expect(result).toHaveLength(1);
+		});
+
+		it('still hides the action when permissionKey passes but isVisible returns false', () => {
+			const itemsWithDelete = [
+				{actions: {delete: {href: '/o/x/1', method: 'DELETE'}}, id: 1},
+			];
+
+			const result = filterBulkActions({
+				allItemsSelectedActive: false,
+				bulkActions: [
+					{
+						...deleteBulkAction,
+						isVisible: () => false,
+					},
+				],
+				globalFDSState,
+				selectedItems: itemsWithDelete,
+			});
+
+			expect(result).toHaveLength(0);
+		});
+	});
 });
