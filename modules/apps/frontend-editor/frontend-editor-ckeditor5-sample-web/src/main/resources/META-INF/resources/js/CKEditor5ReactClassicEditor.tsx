@@ -5,6 +5,7 @@
 
 import {Underline} from '@ckeditor/ckeditor5-basic-styles/dist/index.js';
 import {Bookmark} from '@ckeditor/ckeditor5-bookmark/dist/index.js';
+import {WordCount} from '@ckeditor/ckeditor5-word-count/dist/index.js';
 import ClayButton from '@clayui/button';
 import {
 	CKEditor5ClassicEditor as ClassicEditor,
@@ -23,12 +24,20 @@ const CKEditor5ReactClassicEditor = ({
 	editorTransformerURLs?: Array<string>;
 }) => {
 	const [disabled, setDisabled] = useState(false);
+	const [wordCountStats, setWordCountStats] = useState({
+		characters: 0,
+		words: 0,
+	});
 
 	const editorRef = useRef<TEditor>();
 
-	const config: LiferayEditorConfig = {
+	const config: LiferayEditorConfig & {
+		wordCount?: {
+			onUpdate?: (stats: {characters: number; words: number}) => void;
+		};
+	} = {
 		...editorConfig,
-		extraPlugins: [Bookmark, Timestamp],
+		extraPlugins: [Bookmark, Timestamp, WordCount],
 		initialData:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nunc id cursus metus aliquam eleifend mi in nulla. Quam adipiscing vitae proin sagittis nisl rhoncus. Suspendisse faucibus interdum posuere lorem. Nullam ac tortor vitae purus faucibus ornare. Ac felis donec et odio pellentesque diam. Nulla at volutpat diam ut. Posuere urna nec tincidunt praesent semper feugiat nibh. Gravida quis blandit turpis cursus. Proin libero nunc consequat interdum varius. Sollicitudin ac orci phasellus egestas tellus rutrum tellus pellentesque. Neque volutpat ac tincidunt vitae semper quis lectus nulla at. Odio euismod lacinia at quis risus sed vulputate odio ut. Augue lacus viverra vitae congue eu consequat ac. Elementum sagittis vitae et leo duis ut diam. Diam quis enim lobortis scelerisque fermentum dui faucibus. <p><a href="/home">Link to home page</a></p>',
 		removePlugins: [Underline],
@@ -47,6 +56,11 @@ const CKEditor5ReactClassicEditor = ({
 				'headlessImageSelector',
 				'headlessVideoSelector',
 			],
+		},
+		wordCount: {
+			onUpdate: (stats: {characters: number; words: number}) => {
+				setWordCountStats(stats);
+			},
 		},
 	};
 
@@ -94,6 +108,10 @@ const CKEditor5ReactClassicEditor = ({
 							editorRef.current = editor;
 						}}
 					/>
+
+					<div className="mt-1 text-secondary">
+						{`Words: ${wordCountStats.words} | Characters: ${wordCountStats.characters}`}
+					</div>
 				</div>
 			</div>
 		</div>

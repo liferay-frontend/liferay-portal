@@ -15,3 +15,6 @@ declare module '@ckeditor/ckeditor5-core/dist/index.js' {
 declare module '@ckeditor/ckeditor5-ui/dist/index.js' {
 	export * from '@ckeditor/ckeditor5-ui';
 }
+declare module '@ckeditor/ckeditor5-word-count/dist/index.js' {
+	export * from '@ckeditor/ckeditor5-word-count';
+}
