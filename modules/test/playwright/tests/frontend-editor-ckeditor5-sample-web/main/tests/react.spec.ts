@@ -109,6 +109,24 @@ test(
 );
 
 test(
+	'WordCount plugin tracks word and character counts',
+	{tag: '@LPD-89734'},
+	async ({classicPage}) => {
+		await test.step('Word count is visible with initial content', async () => {
+			await expect(classicPage.wordCount).toBeVisible();
+
+			const text = await classicPage.wordCount.innerText();
+
+			const words = Number(text.match(/Words: (\d+)/)?.[1]);
+			const chars = Number(text.match(/Characters: (\d+)/)?.[1]);
+
+			expect(words).toBeGreaterThan(0);
+			expect(chars).toBeGreaterThan(0);
+		});
+	}
+);
+
+test(
 	'Editor can be disabled/enabled',
 	{tag: '@LPD-80293'},
 	async ({classicPage, page}) => {
