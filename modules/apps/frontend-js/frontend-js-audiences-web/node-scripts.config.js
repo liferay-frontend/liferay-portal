@@ -5,4 +5,8 @@
 
 module.exports = {
 	main: './src/main/resources/META-INF/resources/main/index.ts',
+	submodules: {
+		'dxp-custom-attributes':
+			'./src/main/resources/META-INF/resources/dxp-custom-attributes/index.ts',
+	},
 };
