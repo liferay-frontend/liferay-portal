@@ -12,6 +12,13 @@ import GoogleMapsMarker from './GoogleMapsMarker';
 import GoogleMapsSearch from './GoogleMapsSearch';
 
 /**
+ * Zoom level applied when a selected Place result lacks a recommended viewport.
+ * @see https://developers.google.com/maps/documentation/javascript/examples/place-autocomplete-map
+ * @type {number}
+ */
+const FALLBACK_ZOOM = 17;
+
+/**
  * MapGoogleMaps
  * @review
  */
@@ -66,6 +73,32 @@ class MapGoogleMaps extends MapBase {
 		}
 
 		return map;
+	}
+
+	/**
+	 * @inheritDoc
+	 * @review
+	 */
+	_handleSearchButtonClicked({position}) {
+		super._handleSearchButtonClicked({position});
+
+		if (!this._map) {
+			return;
+		}
+
+		if (position.viewport) {
+			this._map.fitBounds(position.viewport);
+		}
+		else {
+			this._map.setZoom(FALLBACK_ZOOM);
+		}
+
+		if (this._searchMarker) {
+			this._searchMarker.setPosition(position.location);
+		}
+		else {
+			this._searchMarker = this.addMarker(position.location);
+		}
 	}
 
 	/**
