@@ -7,7 +7,12 @@ import {Detection} from './detection';
 import {log} from './log';
 import {store} from './store';
 
-import type {AudiencesDefinition, Handler, RetentionType} from './index';
+import type {
+	AudiencesDefinition,
+	Handler,
+	RetentionType,
+	RunHandlersOptions,
+} from './index';
 
 interface HandlersMap {
 	[audienceId: string]: Handler[];
@@ -116,30 +121,60 @@ export function on(audienceId: string, handler: Handler): void {
 	handlers[audienceId].push(handler);
 }
 
-export async function runHandlers(): Promise<void> {
+export async function runHandlers(options?: RunHandlersOptions): Promise<void> {
 	const audienceIds = get();
 
-	for (const audienceId of audienceIds) {
-		if (!handlers[audienceId]) {
-			continue;
+	// Run prioritized audiences first
+
+	if (options?.audiencesRunOrder !== undefined) {
+		for (const audienceId of options.audiencesRunOrder) {
+			if (!audienceIds.has(audienceId)) {
+				continue;
+			}
+
+			await runAudienceHandlers(audienceId);
 		}
 
-		for (const handler of handlers[audienceId]) {
-			const handlerName = handler.name ?? 'anonymous';
+		for (const audienceId of options.audiencesRunOrder) {
+			audienceIds.delete(audienceId);
+		}
+	}
 
-			log(
-				`Running handler '${handlerName}' for audience '${audienceId}'`
+	// Then run the rest
+
+	for (const audienceId of audienceIds) {
+		await runAudienceHandlers(audienceId);
+	}
+
+	// Clear handlers if necessary
+
+	if (options?.clearHandlers ?? true) {
+		const keys = [...Object.keys(handlers)];
+
+		for (const key of keys) {
+			delete handlers[key];
+		}
+	}
+}
+
+async function runAudienceHandlers(audienceId: string): Promise<void> {
+	if (!handlers[audienceId]) {
+		return;
+	}
+
+	for (const handler of handlers[audienceId]) {
+		const handlerName = handler.name ?? 'anonymous';
+
+		log(`Running handler '${handlerName}' for audience '${audienceId}'`);
+
+		try {
+			await handler();
+		}
+		catch (error) {
+			throw new Error(
+				`There was an error running handler '${handlerName}' of audience ` +
+					`'${audienceId}': ${getErrorMessage(error)}`
 			);
-
-			try {
-				await handler();
-			}
-			catch (error) {
-				throw new Error(
-					`There was an error running handler '${handlerName}' of audience ` +
-						`'${audienceId}': ${getErrorMessage(error)}`
-				);
-			}
 		}
 	}
 }

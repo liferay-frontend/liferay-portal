@@ -80,12 +80,26 @@ export interface Handler {
 	(): Promise<void> | void;
 }
 
+export interface RunHandlersOptions {
+
+	/**
+	 * Ordering of audiences for executing handlers. Any audience not in this array will be executed
+	 * after the specified audiences in an indeterminate order.
+	 */
+	audiencesRunOrder?: string[];
+
+	/**
+	 * Whether to remove all registered handlers when finished. Default value is `true`.
+	 */
+	clearHandlers?: boolean;
+}
+
 export interface AudiencesAPI {
 	clear(retentionType?: RetentionType): void;
 	get(): Set<string>;
 	on(audienceId: string, handler: Handler): void;
 	runDetection(audiencesDefinitionURL: string): Promise<void>;
-	runHandlers(): Promise<void>;
+	runHandlers(options?: RunHandlersOptions): Promise<void>;
 	setLogEnabled(enabled: boolean): void;
 }
 
