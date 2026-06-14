@@ -99,6 +99,7 @@ export function useGeolocation({
 	viewMode,
 }) {
 	const mapRef = useRef(null);
+	const onChangeRef = useRef(null);
 
 	useEffect(() => {
 		if (!disabled || viewMode) {
@@ -123,9 +124,12 @@ export function useGeolocation({
 					`#map_${instanceId}`
 				);
 
-				mapRef.current.removeAllListeners('positionChange');
+				onChangeRef.current?.removeListener();
 
-				mapRef.current.on('positionChange', onChange);
+				onChangeRef.current = mapRef.current.on(
+					'positionChange',
+					onChange
+				);
 
 				if (value) {
 					mapRef.current.setCenter(parseJSONValue(value));
@@ -161,9 +165,12 @@ export function useGeolocation({
 
 	useEffect(() => {
 		if (mapRef.current) {
-			mapRef.current.removeAllListeners('positionChange');
+			onChangeRef.current?.removeListener();
 
-			mapRef.current.on('positionChange', onChange);
+			onChangeRef.current = mapRef.current.on(
+				'positionChange',
+				onChange
+			);
 		}
 	}, [onChange]);
 
