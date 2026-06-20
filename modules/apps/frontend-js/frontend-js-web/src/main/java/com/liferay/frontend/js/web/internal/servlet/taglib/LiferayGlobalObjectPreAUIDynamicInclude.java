@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.content.security.policy.ContentSecurityPolicyNo
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlag;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManager;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -30,6 +31,7 @@ import com.liferay.portal.kernel.model.impl.VirtualLayout;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.security.auth.AuthToken;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.permission.LayoutPermission;
 import com.liferay.portal.kernel.servlet.BrowserMetadata;
 import com.liferay.portal.kernel.servlet.PortalWebResourceConstants;
@@ -39,9 +41,11 @@ import com.liferay.portal.kernel.servlet.taglib.DynamicInclude;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.configuration.UploadServletRequestConfigurationProvider;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
+import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.FastDateFormatFactory;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.PrefsProps;
@@ -240,6 +244,63 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 			return ConfigurableUtil.createConfigurable(
 				LiferayGlobalObjectConfiguration.class, Collections.emptyMap());
 		}
+	}
+
+	private boolean _isAdmin(ThemeDisplay themeDisplay) {
+
+		// "Admin" is identity: does Liferay consider the user an
+		// administrator? This is permission based, so it covers omniadmins,
+		// company admins, and organization or site admins of the current
+		// scope - not just the "Administrator" and "Site Administrator" named
+		// roles.
+
+		PermissionChecker permissionChecker =
+			themeDisplay.getPermissionChecker();
+
+		if (!themeDisplay.isSignedIn() || (permissionChecker == null)) {
+			return false;
+		}
+
+		if (permissionChecker.isOmniadmin() ||
+			permissionChecker.isCompanyAdmin() ||
+			permissionChecker.isGroupAdmin(themeDisplay.getScopeGroupId())) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private boolean _isBackOffice(
+		HttpServletRequest httpServletRequest, Layout layout,
+		ThemeDisplay themeDisplay) {
+
+		// "Back office" is context: is the current page an administration
+		// surface? The Control Panel or Site Administration (both control
+		// panel layouts), a standalone CMS or AI Hub page (both use the CMS
+		// theme), or any page open in edit mode (the page editor).
+
+		if (!themeDisplay.isSignedIn()) {
+			return false;
+		}
+
+		if ((layout != null) && layout.isTypeControlPanel()) {
+			return true;
+		}
+
+		if ((themeDisplay.getTheme() != null) &&
+			themeDisplay.getThemeId(
+			).startsWith(
+				"cms"
+			)) {
+
+			return true;
+		}
+
+		String layoutMode = ParamUtil.getString(
+			httpServletRequest, "p_l_mode", Constants.VIEW);
+
+		return layoutMode.equals(Constants.EDIT);
 	}
 
 	private void _renderDisabledMethod(String methodName, StringBundler sb) {
@@ -698,6 +759,16 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 		_renderMethod(
 			"isAddSessionIdToURL", sb, themeDisplay.isAddSessionIdToURL());
 		_renderMethod("isImpersonated", sb, themeDisplay.isImpersonated());
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				themeDisplay.getCompanyId(), "LPD-95483")) {
+
+			_renderMethod("isAdmin", sb, _isAdmin(themeDisplay));
+			_renderMethod(
+				"isBackOffice", sb,
+				_isBackOffice(httpServletRequest, layout, themeDisplay));
+		}
+
 		_renderMethod("isSignedIn", sb, themeDisplay.isSignedIn());
 		_renderMethod(
 			"isStagedPortlet", sb,

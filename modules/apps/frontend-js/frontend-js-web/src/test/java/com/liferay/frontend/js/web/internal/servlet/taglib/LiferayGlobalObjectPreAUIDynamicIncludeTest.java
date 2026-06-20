@@ -15,6 +15,7 @@ import com.liferay.portal.configuration.module.configuration.ConfigurationProvid
 import com.liferay.portal.kernel.content.security.policy.ContentSecurityPolicyNonceProviderUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlag;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManager;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
@@ -51,6 +52,8 @@ import java.util.function.Predicate;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 
 import org.mockito.MockedStatic;
@@ -65,6 +68,8 @@ import org.springframework.mock.web.MockHttpServletResponse;
  */
 public class LiferayGlobalObjectPreAUIDynamicIncludeTest {
 
+	@ClassRule
+	@Rule
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
@@ -72,6 +77,7 @@ public class LiferayGlobalObjectPreAUIDynamicIncludeTest {
 	public void tearDown() {
 		_browserSnifferUtilMockedStatic.close();
 		_contentSecurityPolicyNonceProviderUtilMockedStatic.close();
+		_featureFlagManagerUtilMockedStatic.close();
 		_portalWebResourcesUtilMockedStatic.close();
 		_shutdownUtilMockedStatic.close();
 		_timeMockedStatic.close();
@@ -126,6 +132,35 @@ public class LiferayGlobalObjectPreAUIDynamicIncludeTest {
 			contentAsString.contains(
 				"getRemoteHost: () => {throw new Error('Method getRemoteHost " +
 					"has been disabled in Instance Settings');},\n"));
+	}
+
+	@Test
+	public void testProductExperienceTrackingSignals() throws Exception {
+		LiferayGlobalObjectPreAUIDynamicInclude
+			liferayGlobalObjectPreAUIDynamicInclude =
+				new LiferayGlobalObjectPreAUIDynamicInclude();
+
+		_setUpMocks(liferayGlobalObjectPreAUIDynamicInclude);
+
+		_featureFlagManagerUtilMockedStatic.when(
+			() -> FeatureFlagManagerUtil.isEnabled(
+				Mockito.anyLong(), Mockito.eq("LPD-95483"))
+		).thenReturn(
+			true
+		);
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		liferayGlobalObjectPreAUIDynamicInclude.include(
+			_mockHttpServletRequest(), mockHttpServletResponse,
+			StringPool.BLANK);
+
+		String contentAsString = mockHttpServletResponse.getContentAsString();
+
+		Assert.assertTrue(contentAsString.contains("isAdmin: () => false,"));
+		Assert.assertTrue(
+			contentAsString.contains("isBackOffice: () => false,"));
 	}
 
 	private AuthToken _mockAuthToken() {
@@ -514,6 +549,15 @@ public class LiferayGlobalObjectPreAUIDynamicIncludeTest {
 			StringPool.BLANK
 		);
 
+		// FeatureFlagManagerUtil
+
+		_featureFlagManagerUtilMockedStatic.when(
+			() -> FeatureFlagManagerUtil.isEnabled(
+				Mockito.anyLong(), Mockito.anyString())
+		).thenReturn(
+			false
+		);
+
 		// PortalWebResourcesUtil
 
 		_portalWebResourcesUtilMockedStatic.when(
@@ -579,6 +623,9 @@ public class LiferayGlobalObjectPreAUIDynamicIncludeTest {
 	private final MockedStatic<ContentSecurityPolicyNonceProviderUtil>
 		_contentSecurityPolicyNonceProviderUtilMockedStatic =
 			Mockito.mockStatic(ContentSecurityPolicyNonceProviderUtil.class);
+	private final MockedStatic<FeatureFlagManagerUtil>
+		_featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
+			FeatureFlagManagerUtil.class);
 	private final MockedStatic<PortalWebResourcesUtil>
 		_portalWebResourcesUtilMockedStatic = Mockito.mockStatic(
 			PortalWebResourcesUtil.class);
