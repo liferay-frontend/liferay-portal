@@ -93,9 +93,9 @@ public class ContentSecurityPolicyFilterTest {
 				_isAuthorizedLayoutEditMode(
 					_createHttpServletRequest(Constants.EDIT, layout)));
 
-			// Edit mode request whose layout is not resolvable yet
+			// Edit mode request whose layout is not resolved
 
-			Assert.assertTrue(
+			Assert.assertFalse(
 				_isAuthorizedLayoutEditMode(
 					_createHttpServletRequest(Constants.EDIT, null)));
 		}
