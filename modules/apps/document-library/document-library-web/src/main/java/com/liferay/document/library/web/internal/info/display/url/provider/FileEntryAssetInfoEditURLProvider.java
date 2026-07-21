@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -79,6 +80,16 @@ public class FileEntryAssetInfoEditURLProvider
 					redirect = HttpComponentsUtil.setParameter(
 						_portal.getLayoutRelativeURL(layout, themeDisplay),
 						"p_l_mode", mode);
+
+					if (ParamUtil.getBoolean(
+							_portal.getOriginalServletRequest(
+								httpServletRequest),
+							LayoutConstants.PARAM_CSP_DISABLED)) {
+
+						redirect = HttpComponentsUtil.setParameter(
+							redirect, LayoutConstants.PARAM_CSP_DISABLED,
+							"true");
+					}
 				}
 				catch (Exception exception) {
 					if (_log.isDebugEnabled()) {

@@ -170,7 +170,7 @@ public class ConvertEmptyLayoutMVCActionCommand
 				"p_l_back_url", _getBackURL(actionRequest),
 				"p_l_back_url_title",
 				_language.get(themeDisplay.getLocale(), "pages"), "p_l_mode",
-				Constants.EDIT);
+				Constants.EDIT, LayoutConstants.PARAM_CSP_DISABLED, "true");
 		}
 
 		return PortletURLBuilder.createRenderURL(

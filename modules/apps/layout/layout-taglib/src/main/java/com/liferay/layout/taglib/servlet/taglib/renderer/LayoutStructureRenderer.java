@@ -1518,6 +1518,13 @@ public class LayoutStructureRenderer {
 				ParamUtil.getString(
 					PortalUtil.getOriginalServletRequest(_httpServletRequest),
 					"p_l_mode", Constants.VIEW)));
+		jspWriter.write(
+			"\"><input name=\"p_l_csp_disabled\" type=\"hidden\" value=\"");
+		jspWriter.write(
+			HtmlUtil.escape(
+				ParamUtil.getString(
+					PortalUtil.getOriginalServletRequest(_httpServletRequest),
+					LayoutConstants.PARAM_CSP_DISABLED)));
 		jspWriter.write("\"><input name=\"plid\" type=\"hidden\" value=\"");
 		jspWriter.write(String.valueOf(_themeDisplay.getPlid()));
 		jspWriter.write(

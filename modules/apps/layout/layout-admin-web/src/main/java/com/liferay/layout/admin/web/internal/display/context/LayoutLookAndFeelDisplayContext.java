@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
@@ -163,7 +164,8 @@ public class LayoutLookAndFeelDisplayContext {
 					LanguageUtil.get(
 						_themeDisplay.getLocale(),
 						LayoutScreenNavigationEntryConstants.ENTRY_KEY_DESIGN),
-					"p_l_mode", Constants.EDIT);
+					"p_l_mode", Constants.EDIT,
+					LayoutConstants.PARAM_CSP_DISABLED, "true");
 			}
 		).put(
 			"isReadOnly", _layoutsAdminDisplayContext.isReadOnly()

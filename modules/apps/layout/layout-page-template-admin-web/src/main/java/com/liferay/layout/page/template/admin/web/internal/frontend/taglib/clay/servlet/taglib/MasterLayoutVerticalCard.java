@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
@@ -110,7 +111,8 @@ public class MasterLayoutVerticalCard
 					layout.fetchDraftLayout(), _themeDisplay),
 				"p_l_back_url", _themeDisplay.getURLCurrent(),
 				"p_l_back_url_title", portletDisplay.getPortletDisplayName(),
-				"p_l_mode", Constants.EDIT);
+				"p_l_mode", Constants.EDIT, LayoutConstants.PARAM_CSP_DISABLED,
+				"true");
 		}
 		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {

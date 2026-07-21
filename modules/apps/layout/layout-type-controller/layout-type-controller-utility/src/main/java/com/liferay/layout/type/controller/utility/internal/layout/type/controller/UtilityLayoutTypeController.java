@@ -278,8 +278,9 @@ public class UtilityLayoutTypeController extends BaseLayoutTypeControllerImpl {
 				draftLayout.getName(themeDisplay.getLocale()));
 		}
 
-		return HttpComponentsUtil.addParameter(
-			layoutFullURL, "p_l_mode", Constants.EDIT);
+		return HttpComponentsUtil.addParameters(
+			layoutFullURL, "p_l_mode", Constants.EDIT,
+			LayoutConstants.PARAM_CSP_DISABLED, "true");
 	}
 
 	private boolean _hasUpdatePermissions(

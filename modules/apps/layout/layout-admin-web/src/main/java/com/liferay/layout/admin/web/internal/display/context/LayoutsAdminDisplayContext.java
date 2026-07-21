@@ -2259,10 +2259,17 @@ public class LayoutsAdminDisplayContext {
 	private String _getDraftLayoutURL(Layout layout, String mode)
 		throws Exception {
 
-		return HttpComponentsUtil.addParameters(
+		String draftLayoutURL = HttpComponentsUtil.addParameters(
 			PortalUtil.getLayoutFullURL(getDraftLayout(layout), themeDisplay),
 			"p_l_back_url", _getBackURL(layout), "p_l_back_url_title",
 			LanguageUtil.get(httpServletRequest, "pages"), "p_l_mode", mode);
+
+		if (Objects.equals(mode, Constants.EDIT)) {
+			draftLayoutURL = HttpComponentsUtil.addParameter(
+				draftLayoutURL, LayoutConstants.PARAM_CSP_DISABLED, "true");
+		}
+
+		return draftLayoutURL;
 	}
 
 	private String _getFriendlyURLWarningURL() {

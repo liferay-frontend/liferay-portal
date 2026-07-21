@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -80,9 +81,9 @@ public class CommentUtil {
 			WorkflowUtil.getServiceContextFunction(
 				_getWorkflowAction(actionRequest), actionRequest);
 
-		String notificationRedirect = HttpComponentsUtil.setParameter(
+		String notificationRedirect = HttpComponentsUtil.addParameters(
 			PortalUtil.getLayoutFullURL(themeDisplay), "p_l_mode",
-			Constants.EDIT);
+			Constants.EDIT, LayoutConstants.PARAM_CSP_DISABLED, "true");
 
 		return serviceContextFunction.andThen(
 			serviceContext -> {

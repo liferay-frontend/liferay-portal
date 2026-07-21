@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
@@ -131,7 +132,7 @@ public class AddLayoutUtilityPageEntryMVCActionCommand
 			).buildString(),
 			"p_l_back_url_title",
 			_language.get(themeDisplay.getLocale(), "pages"), "p_l_mode",
-			Constants.EDIT);
+			Constants.EDIT, LayoutConstants.PARAM_CSP_DISABLED, "true");
 	}
 
 	@Reference

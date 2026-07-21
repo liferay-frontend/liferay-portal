@@ -8,6 +8,7 @@ package com.liferay.layout.admin.web.internal.portlet.action;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
@@ -50,6 +51,8 @@ public abstract class BaseAddLayoutMVCActionCommand
 
 		layoutFullURL = HttpComponentsUtil.setParameter(
 			layoutFullURL, "p_l_mode", Constants.EDIT);
+		layoutFullURL = HttpComponentsUtil.setParameter(
+			layoutFullURL, LayoutConstants.PARAM_CSP_DISABLED, "true");
 
 		String backURL = ParamUtil.getString(actionRequest, "backURL");
 

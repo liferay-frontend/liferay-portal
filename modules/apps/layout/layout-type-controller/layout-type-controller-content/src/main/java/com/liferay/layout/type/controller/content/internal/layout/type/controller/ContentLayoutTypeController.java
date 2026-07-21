@@ -411,8 +411,9 @@ public class ContentLayoutTypeController extends BaseLayoutTypeControllerImpl {
 				draftLayout.getName(themeDisplay.getLocale()));
 		}
 
-		layoutFullURL = HttpComponentsUtil.addParameter(
-			layoutFullURL, "p_l_mode", Constants.EDIT);
+		layoutFullURL = HttpComponentsUtil.addParameters(
+			layoutFullURL, "p_l_mode", Constants.EDIT,
+			LayoutConstants.PARAM_CSP_DISABLED, "true");
 
 		long segmentsExperienceId = ParamUtil.getLong(
 			httpServletRequest, "segmentsExperienceId", -1);

@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.portlet.PortalPreferences;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletURLFactory;
@@ -297,6 +298,8 @@ public class SegmentsExperimentProductNavigationControlMenuEntry
 
 		layoutFullURL = HttpComponentsUtil.setParameter(
 			layoutFullURL, "p_l_mode", Constants.EDIT);
+		layoutFullURL = HttpComponentsUtil.setParameter(
+			layoutFullURL, LayoutConstants.PARAM_CSP_DISABLED, "true");
 		layoutFullURL = HttpComponentsUtil.setParameter(
 			layoutFullURL, "redirect", layoutFullURL);
 

@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
@@ -291,7 +292,8 @@ public class LayoutUtilityPageEntryActionDropdownItemsProvider {
 					"p_l_back_url", _themeDisplay.getURLCurrent(),
 					"p_l_back_url_title",
 					portletDisplay.getPortletDisplayName(), "p_l_mode",
-					Constants.EDIT));
+					Constants.EDIT, LayoutConstants.PARAM_CSP_DISABLED,
+					"true"));
 
 			dropdownItem.setIcon("pencil");
 			dropdownItem.setLabel(

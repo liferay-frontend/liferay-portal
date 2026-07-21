@@ -99,7 +99,8 @@ public class LayoutCTDisplayRenderer extends BaseCTDisplayRenderer<Layout> {
 			return HttpComponentsUtil.addParameters(
 				PortalUtil.getLayoutFullURL(
 					layout.fetchDraftLayout(), themeDisplay),
-				"p_l_back_url", currentURL, "p_l_mode", Constants.EDIT);
+				"p_l_back_url", currentURL, "p_l_mode", Constants.EDIT,
+				LayoutConstants.PARAM_CSP_DISABLED, "true");
 		}
 
 		if (layout.isTypePortlet() &&

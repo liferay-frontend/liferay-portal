@@ -1072,7 +1072,7 @@ public class ContentPageEditorDisplayContext {
 	}
 
 	protected String getFragmentEntryActionURL(String action, String command) {
-		return HttpComponentsUtil.addParameter(
+		return HttpComponentsUtil.addParameters(
 			PortletURLBuilder.createActionURL(
 				renderResponse
 			).setActionName(
@@ -1090,7 +1090,8 @@ public class ContentPageEditorDisplayContext {
 					portal.getOriginalServletRequest(httpServletRequest),
 					"p_l_back_url", themeDisplay.getURLCurrent())
 			).buildString(),
-			"p_l_mode", Constants.EDIT);
+			"p_l_mode", Constants.EDIT, LayoutConstants.PARAM_CSP_DISABLED,
+			"true");
 	}
 
 	protected long getGroupId() {
@@ -1991,6 +1992,8 @@ public class ContentPageEditorDisplayContext {
 				"p_l_back_url_title")
 		).setParameter(
 			"p_l_mode", Constants.EDIT
+		).setParameter(
+			LayoutConstants.PARAM_CSP_DISABLED, "true"
 		).setResourceID(
 			resourceID
 		).buildString();

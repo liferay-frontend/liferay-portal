@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
@@ -263,7 +264,8 @@ public class ObjectEntryAssetRenderer
 				GroupConstants.CMS_FRIENDLY_URL,
 				"/edit_content_item?objectEntryId=",
 				_objectEntry.getObjectEntryId(), "&p_l_mode=", Constants.EDIT,
-				"&redirect=", portletURL);
+				"&", LayoutConstants.PARAM_CSP_DISABLED, "=true&redirect=",
+				portletURL);
 		}
 
 		return StringBundler.concat(

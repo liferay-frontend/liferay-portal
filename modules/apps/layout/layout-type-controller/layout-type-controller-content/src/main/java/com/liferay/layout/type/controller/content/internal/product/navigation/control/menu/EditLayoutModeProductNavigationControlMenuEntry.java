@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutRevision;
 import com.liferay.portal.kernel.model.LayoutTypeController;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
@@ -251,7 +252,8 @@ public class EditLayoutModeProductNavigationControlMenuEntry
 				httpServletRequest, layout,
 				_portal.getLayoutFullURL(layout, themeDisplay)),
 			"p_l_back_url_title", layout.getName(themeDisplay.getLocale()),
-			"p_l_mode", Constants.EDIT);
+			"p_l_mode", Constants.EDIT, LayoutConstants.PARAM_CSP_DISABLED,
+			"true");
 
 		return _addSegmentsExperienceId(httpServletRequest, layout, redirect);
 	}

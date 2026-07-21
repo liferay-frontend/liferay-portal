@@ -66,6 +66,7 @@ import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.portlet.FriendlyURLResolver;
 import com.liferay.portal.kernel.portlet.FriendlyURLResolverRegistryUtil;
 import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
@@ -776,7 +777,8 @@ public class ActionUtil {
 			String editURL = HttpComponentsUtil.addParameters(
 				PortalUtil.getLayoutFullURL(
 					layout.fetchDraftLayout(), themeDisplay),
-				"p_l_mode", Constants.EDIT);
+				"p_l_mode", Constants.EDIT, LayoutConstants.PARAM_CSP_DISABLED,
+				"true");
 
 			String backURL = ParamUtil.getString(httpServletRequest, "backURL");
 

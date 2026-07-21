@@ -13,6 +13,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
@@ -82,6 +83,16 @@ public class AssetInfoEditURLProviderImpl implements AssetInfoEditURLProvider {
 					redirect = HttpComponentsUtil.setParameter(
 						_portal.getLayoutRelativeURL(layout, themeDisplay),
 						"p_l_mode", mode);
+
+					if (ParamUtil.getBoolean(
+							_portal.getOriginalServletRequest(
+								httpServletRequest),
+							LayoutConstants.PARAM_CSP_DISABLED)) {
+
+						redirect = HttpComponentsUtil.setParameter(
+							redirect, LayoutConstants.PARAM_CSP_DISABLED,
+							"true");
+					}
 				}
 			}
 

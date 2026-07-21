@@ -25,6 +25,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutPrototype;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
@@ -359,7 +360,8 @@ public class LayoutPageTemplateEntryActionDropdownItemsProvider {
 					PortalUtil.getLayoutFullURL(_draftLayout, _themeDisplay),
 					"p_l_back_url", _themeDisplay.getURLCurrent(),
 					"p_l_back_url_title", portletDisplay.getTitle(), "p_l_mode",
-					Constants.EDIT));
+					Constants.EDIT, LayoutConstants.PARAM_CSP_DISABLED,
+					"true"));
 			dropdownItem.setIcon("pencil");
 			dropdownItem.setLabel(
 				LanguageUtil.get(_httpServletRequest, "edit"));

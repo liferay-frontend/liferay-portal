@@ -9,6 +9,7 @@ import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
 import com.liferay.layout.content.page.editor.web.internal.display.context.EditCollectionConfigurationDisplayContext;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.portlet.LiferayRenderRequest;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.servlet.DynamicServletRequest;
@@ -51,6 +52,8 @@ public class EditCollectionConfigurationMVCRenderCommand
 			(DynamicServletRequest)liferayRenderRequest.getHttpServletRequest();
 
 		dynamicServletRequest.setParameter("p_l_mode", Constants.EDIT);
+		dynamicServletRequest.setParameter(
+			LayoutConstants.PARAM_CSP_DISABLED, "true");
 
 		return "/edit_collection_configuration.jsp";
 	}

@@ -11,6 +11,7 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -125,7 +126,8 @@ public class ViewRoomStrutsAction implements StrutsAction {
 			httpServletResponse.sendRedirect(
 				StringBundler.concat(
 					groupFriendlyURL, "?p_l_back_url=", groupFriendlyURL,
-					"&p_l_mode=edit"));
+					"&p_l_mode=edit&", LayoutConstants.PARAM_CSP_DISABLED,
+					"=true"));
 		}
 		else {
 			httpServletResponse.sendRedirect(groupFriendlyURL);

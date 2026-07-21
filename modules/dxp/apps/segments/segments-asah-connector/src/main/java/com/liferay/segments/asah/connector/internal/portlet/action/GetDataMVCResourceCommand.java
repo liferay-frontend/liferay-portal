@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.PortletURLFactory;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
@@ -314,7 +315,8 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 
 		return HttpComponentsUtil.addParameters(
 			redirect, "p_l_back_url", backURL, "p_l_back_url_title",
-			backURLTitle, "p_l_mode", Constants.EDIT, "redirect", redirect);
+			backURLTitle, "p_l_mode", Constants.EDIT,
+			LayoutConstants.PARAM_CSP_DISABLED, "true", "redirect", redirect);
 	}
 
 	private long _getLiveGroupId(long groupId) throws Exception {

@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.util.Constants;
@@ -73,7 +74,8 @@ public class LayoutUtilityPageEntryVerticalCard extends BaseVerticalCard {
 				PortalUtil.getLayoutFullURL(_draftLayout, themeDisplay),
 				"p_l_back_url", themeDisplay.getURLCurrent(),
 				"p_l_back_url_title", portletDisplay.getPortletDisplayName(),
-				"p_l_mode", Constants.EDIT);
+				"p_l_mode", Constants.EDIT, LayoutConstants.PARAM_CSP_DISABLED,
+				"true");
 		}
 		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {

@@ -11,6 +11,7 @@ import com.liferay.layout.util.template.LayoutConversionResult;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.servlet.MultiSessionMessages;
@@ -68,7 +69,7 @@ public class AddLayoutConversionPreviewMVCActionCommand
 			layoutFullURL = HttpComponentsUtil.addParameters(
 				layoutFullURL, "p_l_back_url", redirect, "p_l_back_url_title",
 				_language.get(themeDisplay.getLocale(), "pages"), "p_l_mode",
-				Constants.EDIT);
+				Constants.EDIT, LayoutConstants.PARAM_CSP_DISABLED, "true");
 
 			MultiSessionMessages.add(
 				actionRequest, "layoutConversionWarningMessages",

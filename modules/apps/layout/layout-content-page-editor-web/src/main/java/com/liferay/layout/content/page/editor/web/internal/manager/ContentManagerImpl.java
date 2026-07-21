@@ -82,6 +82,7 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
@@ -1638,9 +1639,9 @@ public class ContentManagerImpl implements ContentManager {
 		Layout layout = themeDisplay.getLayout();
 
 		try {
-			return HttpComponentsUtil.setParameter(
+			return HttpComponentsUtil.addParameters(
 				_portal.getLayoutRelativeURL(layout, themeDisplay), "p_l_mode",
-				Constants.EDIT);
+				Constants.EDIT, LayoutConstants.PARAM_CSP_DISABLED, "true");
 		}
 		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {
@@ -1656,10 +1657,11 @@ public class ContentManagerImpl implements ContentManager {
 			ThemeDisplay themeDisplay)
 		throws Exception {
 
-		String currentURL = HttpComponentsUtil.addParameter(
+		String currentURL = HttpComponentsUtil.addParameters(
 			_portal.getLayoutRelativeURL(
 				themeDisplay.getLayout(), themeDisplay),
-			"p_l_mode", Constants.EDIT);
+			"p_l_mode", Constants.EDIT, LayoutConstants.PARAM_CSP_DISABLED,
+			"true");
 
 		return HttpComponentsUtil.addParameter(
 			PortletURLBuilder.create(

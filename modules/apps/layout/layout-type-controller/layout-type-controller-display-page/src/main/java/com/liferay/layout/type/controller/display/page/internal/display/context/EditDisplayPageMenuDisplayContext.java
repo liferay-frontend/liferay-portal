@@ -12,6 +12,7 @@ import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
 import com.liferay.layout.display.page.constants.LayoutDisplayPageWebKeys;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
@@ -67,7 +68,8 @@ public class EditDisplayPageMenuDisplayContext {
 						"p_l_back_url_title",
 						_layoutDisplayPageObjectProvider.getTitle(
 							_themeDisplay.getLocale()),
-						"p_l_mode", Constants.EDIT));
+						"p_l_mode", Constants.EDIT,
+						LayoutConstants.PARAM_CSP_DISABLED, "true"));
 
 				dropdownItem.setLabel(
 					LanguageUtil.get(
