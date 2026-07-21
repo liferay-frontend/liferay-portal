@@ -5,8 +5,14 @@
 
 package com.liferay.portal.security.content.security.policy.internal.servlet.filter;
 
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.permission.LayoutPermission;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.content.security.policy.internal.configuration.ContentSecurityPolicyConfiguration;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -36,6 +42,67 @@ public class ContentSecurityPolicyFilterTest {
 	}
 
 	@Test
+	public void testIsAuthorizedLayoutEditMode() throws Exception {
+		Layout layout = Mockito.mock(Layout.class);
+
+		LayoutPermission layoutPermission = Mockito.mock(
+			LayoutPermission.class);
+
+		ReflectionTestUtil.setFieldValue(
+			_contentSecurityPolicyFilter, "_layoutPermission",
+			layoutPermission);
+
+		PermissionChecker permissionChecker = Mockito.mock(
+			PermissionChecker.class);
+
+		PermissionThreadLocal.setPermissionChecker(permissionChecker);
+
+		try {
+
+			// The parameter is not set
+
+			Assert.assertFalse(
+				_isAuthorizedLayoutEditMode(
+					_createHttpServletRequest(false, layout)));
+
+			// The parameter is set for a layout the user can update
+
+			Mockito.when(
+				layoutPermission.containsLayoutUpdatePermission(
+					permissionChecker, layout)
+			).thenReturn(
+				true
+			);
+
+			Assert.assertTrue(
+				_isAuthorizedLayoutEditMode(
+					_createHttpServletRequest(true, layout)));
+
+			// The parameter is set for a layout the user cannot update
+
+			Mockito.when(
+				layoutPermission.containsLayoutUpdatePermission(
+					permissionChecker, layout)
+			).thenReturn(
+				false
+			);
+
+			Assert.assertFalse(
+				_isAuthorizedLayoutEditMode(
+					_createHttpServletRequest(true, layout)));
+
+			// The parameter is set but the layout is not resolvable yet
+
+			Assert.assertTrue(
+				_isAuthorizedLayoutEditMode(
+					_createHttpServletRequest(true, null)));
+		}
+		finally {
+			PermissionThreadLocal.setPermissionChecker(null);
+		}
+	}
+
+	@Test
 	public void testIsExcludedURIPath() {
 		_testIsExcludedURIPath(
 			new String[] {"/group"}, false, null, "/c/portal/layout");
@@ -48,6 +115,35 @@ public class ContentSecurityPolicyFilterTest {
 		_testIsExcludedURIPath(
 			new String[] {"/group"}, true, null, "/group/guest/home");
 		_testIsExcludedURIPath(new String[0], true, null, "/GROUP/guest/home");
+	}
+
+	private HttpServletRequest _createHttpServletRequest(
+		boolean contentSecurityPolicyDisabled, Layout layout) {
+
+		HttpServletRequest httpServletRequest = Mockito.mock(
+			HttpServletRequest.class);
+
+		Mockito.when(
+			httpServletRequest.getParameter(LayoutConstants.PARAM_CSP_DISABLED)
+		).thenReturn(
+			contentSecurityPolicyDisabled ? "true" : null
+		);
+
+		Mockito.when(
+			httpServletRequest.getAttribute(WebKeys.LAYOUT)
+		).thenReturn(
+			layout
+		);
+
+		return httpServletRequest;
+	}
+
+	private boolean _isAuthorizedLayoutEditMode(
+		HttpServletRequest httpServletRequest) {
+
+		return (boolean)ReflectionTestUtil.invoke(
+			_contentSecurityPolicyFilter, "_isAuthorizedLayoutEditMode",
+			new Class<?>[] {HttpServletRequest.class}, httpServletRequest);
 	}
 
 	private void _testIsExcludedURIPath(
