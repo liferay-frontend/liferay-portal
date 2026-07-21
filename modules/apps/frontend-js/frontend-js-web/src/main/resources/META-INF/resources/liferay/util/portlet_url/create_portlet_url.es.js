@@ -35,6 +35,7 @@ export default function createPortletURL(basePortletURL, parameters = {}) {
 		'p_auth_secret',
 		'p_f_id',
 		'p_j_a_id',
+		'p_l_csp_disabled',
 		'p_l_id',
 		'p_l_reset',
 		'p_p_auth',

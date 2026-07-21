@@ -30,6 +30,8 @@ public class LayoutConstants {
 
 	public static final String NAME_CONTROL_PANEL_DEFAULT = "Control Panel";
 
+	public static final String PARAM_CSP_DISABLED = "p_l_csp_disabled";
+
 	public static final String TYPE_ASSET_DISPLAY = "asset_display";
 
 	public static final String TYPE_CONTENT = "content";

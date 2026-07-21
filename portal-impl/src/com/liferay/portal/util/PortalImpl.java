@@ -460,6 +460,7 @@ public class PortalImpl implements Portal {
 
 		_reservedParams.add("p_l_back_url");
 		_reservedParams.add("p_l_back_url_title");
+		_reservedParams.add(LayoutConstants.PARAM_CSP_DISABLED);
 		_reservedParams.add("p_l_id");
 		_reservedParams.add("p_l_mode");
 		_reservedParams.add("p_l_reset");
