@@ -91,9 +91,9 @@ public class ContentSecurityPolicyFilterTest {
 				_isAuthorizedLayoutEditMode(
 					_createHttpServletRequest(true, layout)));
 
-			// The parameter is set but the layout is not resolvable yet
+			// The parameter is set but the layout is not resolved
 
-			Assert.assertTrue(
+			Assert.assertFalse(
 				_isAuthorizedLayoutEditMode(
 					_createHttpServletRequest(true, null)));
 		}
