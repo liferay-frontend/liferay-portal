@@ -19,7 +19,9 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.AuthToken;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.servlet.BrowserMetadata;
 import com.liferay.portal.kernel.servlet.PortalWebResourcesUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -29,6 +31,7 @@ import com.liferay.portal.kernel.util.FastDateFormatFactory;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PrefsProps;
+import com.liferay.portal.kernel.util.ReleaseInfo;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -79,6 +82,7 @@ public class LiferayGlobalObjectPreAUIDynamicIncludeTest {
 		_contentSecurityPolicyNonceProviderUtilMockedStatic.close();
 		_featureFlagManagerUtilMockedStatic.close();
 		_portalWebResourcesUtilMockedStatic.close();
+		_releaseInfoMockedStatic.close();
 		_shutdownUtilMockedStatic.close();
 		_timeMockedStatic.close();
 	}
@@ -132,6 +136,136 @@ public class LiferayGlobalObjectPreAUIDynamicIncludeTest {
 			contentAsString.contains(
 				"getRemoteHost: () => {throw new Error('Method getRemoteHost " +
 					"has been disabled in Instance Settings');},\n"));
+	}
+
+	@Test
+	public void testProductExperienceTrackingDXPVersionForAdmin()
+		throws Exception {
+
+		LiferayGlobalObjectPreAUIDynamicInclude
+			liferayGlobalObjectPreAUIDynamicInclude =
+				new LiferayGlobalObjectPreAUIDynamicInclude();
+
+		_setUpMocks(liferayGlobalObjectPreAUIDynamicInclude);
+
+		_featureFlagManagerUtilMockedStatic.when(
+			() -> FeatureFlagManagerUtil.isEnabled(
+				Mockito.anyLong(), Mockito.eq("LPD-95483"))
+		).thenReturn(
+			true
+		);
+
+		_featureFlagManagerUtilMockedStatic.when(
+			() -> FeatureFlagManagerUtil.isEnabled(
+				Mockito.anyLong(), Mockito.eq("LPD-99129"))
+		).thenReturn(
+			true
+		);
+
+		_releaseInfoMockedStatic.when(
+			ReleaseInfo::getVersionDisplayName
+		).thenReturn(
+			"2026.Q1.11"
+		);
+
+		ThemeDisplay themeDisplay = _mockThemeDisplay();
+
+		Mockito.when(
+			themeDisplay.isSignedIn()
+		).thenReturn(
+			true
+		);
+
+		User user = Mockito.mock(User.class);
+
+		Mockito.when(
+			user.getEmailAddress()
+		).thenReturn(
+			"admin@example.com"
+		);
+
+		Mockito.when(
+			user.getFullName()
+		).thenReturn(
+			"Admin User"
+		);
+
+		Mockito.when(
+			themeDisplay.getUser()
+		).thenReturn(
+			user
+		);
+
+		PermissionChecker permissionChecker = Mockito.mock(
+			PermissionChecker.class);
+
+		Mockito.when(
+			permissionChecker.isOmniadmin()
+		).thenReturn(
+			true
+		);
+
+		Mockito.when(
+			themeDisplay.getPermissionChecker()
+		).thenReturn(
+			permissionChecker
+		);
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, themeDisplay);
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		liferayGlobalObjectPreAUIDynamicInclude.include(
+			mockHttpServletRequest, mockHttpServletResponse, StringPool.BLANK);
+
+		Assert.assertTrue(
+			mockHttpServletResponse.getContentAsString(
+			).contains(
+				"getDXPVersion: () => '2026.Q1.11',"
+			));
+	}
+
+	@Test
+	public void testProductExperienceTrackingDXPVersionNotExposedToRegularUser()
+		throws Exception {
+
+		LiferayGlobalObjectPreAUIDynamicInclude
+			liferayGlobalObjectPreAUIDynamicInclude =
+				new LiferayGlobalObjectPreAUIDynamicInclude();
+
+		_setUpMocks(liferayGlobalObjectPreAUIDynamicInclude);
+
+		_featureFlagManagerUtilMockedStatic.when(
+			() -> FeatureFlagManagerUtil.isEnabled(
+				Mockito.anyLong(), Mockito.eq("LPD-95483"))
+		).thenReturn(
+			true
+		);
+
+		_featureFlagManagerUtilMockedStatic.when(
+			() -> FeatureFlagManagerUtil.isEnabled(
+				Mockito.anyLong(), Mockito.eq("LPD-99129"))
+		).thenReturn(
+			true
+		);
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		liferayGlobalObjectPreAUIDynamicInclude.include(
+			_mockHttpServletRequest(), mockHttpServletResponse,
+			StringPool.BLANK);
+
+		Assert.assertFalse(
+			mockHttpServletResponse.getContentAsString(
+			).contains(
+				"getDXPVersion"
+			));
 	}
 
 	@Test
@@ -629,6 +763,8 @@ public class LiferayGlobalObjectPreAUIDynamicIncludeTest {
 	private final MockedStatic<PortalWebResourcesUtil>
 		_portalWebResourcesUtilMockedStatic = Mockito.mockStatic(
 			PortalWebResourcesUtil.class);
+	private final MockedStatic<ReleaseInfo> _releaseInfoMockedStatic =
+		Mockito.mockStatic(ReleaseInfo.class);
 	private final MockedStatic<ShutdownUtil> _shutdownUtilMockedStatic =
 		Mockito.mockStatic(ShutdownUtil.class);
 	private final MockedStatic<Time> _timeMockedStatic = Mockito.mockStatic(

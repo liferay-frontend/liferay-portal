@@ -51,6 +51,7 @@ import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.PrefsProps;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsValues;
+import com.liferay.portal.kernel.util.ReleaseInfo;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.URLCodec;
@@ -767,6 +768,23 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 			_renderMethod(
 				"isBackOffice", sb,
 				_isBackOffice(httpServletRequest, layout, themeDisplay));
+
+			// "getDXPVersion" exposes the exact server-side release (for
+			// example "2026.Q1.11") so the product experience tracking script
+			// can report it to Pendo as a per-account trait. It is gated on the
+			// permission based admin check (never spoofable through the URL, so
+			// unlike isBackOffice it cannot leak to non-administrators) and
+			// behind its own feature flag. That flag is nested here on purpose:
+			// the version is only exposed while LPD-95483 is also enabled, so
+			// enabling it alone has no effect.
+
+			if (FeatureFlagManagerUtil.isEnabled(
+					themeDisplay.getCompanyId(), "LPD-99129") &&
+				_isAdmin(themeDisplay)) {
+
+				_renderMethod(
+					"getDXPVersion", sb, ReleaseInfo.getVersionDisplayName());
+			}
 		}
 
 		_renderMethod("isSignedIn", sb, themeDisplay.isSignedIn());
