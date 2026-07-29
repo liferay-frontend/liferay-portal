@@ -184,14 +184,26 @@ public abstract class BaseFDSSerializer {
 			for (ObjectEntry objectEntry : page.getItems()) {
 				Map<String, Object> properties = objectEntry.getProperties();
 
-				Object startupViewDataSetSnapshotERC = properties.get(
+				Object dataSetSnapshotERC = properties.get(
 					"dataSetSnapshotERC");
 
-				if (Validator.isNull(startupViewDataSetSnapshotERC)) {
+				if (Validator.isNull(dataSetSnapshotERC)) {
 					return null;
 				}
 
-				return String.valueOf(startupViewDataSetSnapshotERC);
+				Set<String> dataSetSnapshotERCs =
+					_getVisibleDataSetSnapshotERCs(
+						fdsName, httpServletRequest,
+						objectDefinitionLocalService,
+						objectEntryManagerRegistry);
+
+				if (!dataSetSnapshotERCs.contains(
+						String.valueOf(dataSetSnapshotERC))) {
+
+					return null;
+				}
+
+				return String.valueOf(dataSetSnapshotERC);
 			}
 
 			return null;
@@ -276,6 +288,45 @@ public abstract class BaseFDSSerializer {
 		}
 
 		return sharingEntriesClassPKs;
+	}
+
+	private Set<String> _getVisibleDataSetSnapshotERCs(
+			String fdsName, HttpServletRequest httpServletRequest,
+			ObjectDefinitionLocalService objectDefinitionLocalService,
+			ObjectEntryManagerRegistry objectEntryManagerRegistry)
+		throws Exception {
+
+		long companyId = portal.getCompanyId(httpServletRequest);
+
+		ObjectDefinition objectDefinition =
+			objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_DATA_SET_SNAPSHOT", companyId);
+
+		ObjectEntryManager objectEntryManager =
+			DefaultObjectEntryManagerProvider.provide(
+				objectEntryManagerRegistry.getObjectEntryManager(
+					objectDefinition.getCompanyId(),
+					objectDefinition.getStorageType()));
+
+		long userId = portal.getUserId(httpServletRequest);
+
+		Set<Long> sharingEntriesClassPKs = _getSharingEntriesClassPKs(
+			classNameLocalService.getClassNameId(
+				objectDefinition.getClassName()),
+			userId);
+
+		Page<ObjectEntry> page = objectEntryManager.getObjectEntries(
+			companyId, objectDefinition, null, null,
+			new DefaultDTOConverterContext(
+				false, null, null, null, null,
+				LocaleUtil.getMostRelevantLocale(), null, null),
+			_getFilterString(fdsName, sharingEntriesClassPKs, userId), null,
+			null, null);
+
+		return SetUtil.fromCollection(
+			TransformUtil.transform(
+				page.getItems(), ObjectEntry::getExternalReferenceCode));
 	}
 
 	private JSONArray _toJSONArray(List<ObjectEntry> objectEntries)

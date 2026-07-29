@@ -54,13 +54,39 @@ public class DataSetSnapshotStartupViewTest {
 		FrontendDataSetTestUtil.initialize(
 			DataSetSnapshotStartupViewTest.class);
 
-		_objectDefinition =
+		_dataSetSnapshotObjectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_DATA_SET_SNAPSHOT", TestPropsValues.getCompanyId());
+
+		Assert.assertNotNull(_dataSetSnapshotObjectDefinition);
+
+		_dataSetSnapshotStartupViewObjectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
 					"L_DATA_SET_SNAPSHOT_STARTUP_VIEW",
 					TestPropsValues.getCompanyId());
 
-		Assert.assertNotNull(_objectDefinition);
+		Assert.assertNotNull(_dataSetSnapshotStartupViewObjectDefinition);
+	}
+
+	@Test
+	public void testDeleteDataSetSnapshotDeletesStartupView() throws Exception {
+		String fdsName = RandomTestUtil.randomString();
+
+		ObjectEntry dataSetSnapshotObjectEntry = _addDataSetSnapshotObjectEntry(
+			fdsName);
+
+		ObjectEntry dataSetSnapshotStartupViewObjectEntry =
+			_addDataSetSnapshotStartupViewObjectEntry(
+				dataSetSnapshotObjectEntry.getExternalReferenceCode(), fdsName);
+
+		_objectEntryLocalService.deleteObjectEntry(
+			dataSetSnapshotObjectEntry.getObjectEntryId());
+
+		Assert.assertNull(
+			_objectEntryLocalService.fetchObjectEntry(
+				dataSetSnapshotStartupViewObjectEntry.getObjectEntryId()));
 	}
 
 	@Test
@@ -68,16 +94,8 @@ public class DataSetSnapshotStartupViewTest {
 		String dataSetSnapshotERC = RandomTestUtil.randomString();
 		String fdsName = RandomTestUtil.randomString();
 
-		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
-			0, TestPropsValues.getUserId(),
-			_objectDefinition.getObjectDefinitionId(), 0, null,
-			HashMapBuilder.<String, Serializable>put(
-				"dataSetSnapshotERC", dataSetSnapshotERC
-			).put(
-				"fdsName", fdsName
-			).build(),
-			ServiceContextTestUtil.getServiceContext(
-				TestPropsValues.getGroupId(), TestPropsValues.getUserId()));
+		ObjectEntry objectEntry = _addDataSetSnapshotStartupViewObjectEntry(
+			dataSetSnapshotERC, fdsName);
 
 		try {
 			Map<String, Serializable> values = objectEntry.getValues();
@@ -92,7 +110,40 @@ public class DataSetSnapshotStartupViewTest {
 		}
 	}
 
-	private ObjectDefinition _objectDefinition;
+	private ObjectEntry _addDataSetSnapshotObjectEntry(String fdsName)
+		throws Exception {
+
+		return _objectEntryLocalService.addObjectEntry(
+			0, TestPropsValues.getUserId(),
+			_dataSetSnapshotObjectDefinition.getObjectDefinitionId(), 0, null,
+			HashMapBuilder.<String, Serializable>put(
+				"fdsName", fdsName
+			).put(
+				"label", RandomTestUtil.randomString()
+			).build(),
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getGroupId(), TestPropsValues.getUserId()));
+	}
+
+	private ObjectEntry _addDataSetSnapshotStartupViewObjectEntry(
+			String dataSetSnapshotERC, String fdsName)
+		throws Exception {
+
+		return _objectEntryLocalService.addObjectEntry(
+			0, TestPropsValues.getUserId(),
+			_dataSetSnapshotStartupViewObjectDefinition.getObjectDefinitionId(),
+			0, null,
+			HashMapBuilder.<String, Serializable>put(
+				"dataSetSnapshotERC", dataSetSnapshotERC
+			).put(
+				"fdsName", fdsName
+			).build(),
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getGroupId(), TestPropsValues.getUserId()));
+	}
+
+	private ObjectDefinition _dataSetSnapshotObjectDefinition;
+	private ObjectDefinition _dataSetSnapshotStartupViewObjectDefinition;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
