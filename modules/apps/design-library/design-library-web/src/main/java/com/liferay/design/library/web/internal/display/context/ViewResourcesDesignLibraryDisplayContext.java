@@ -13,6 +13,7 @@ import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -77,6 +78,14 @@ public class ViewResourcesDesignLibraryDisplayContext
 		).put(
 			"breadcrumbItems", _getBreadcrumbItemsJSONArray(group)
 		).build();
+	}
+
+	public List<DropdownItem> getBulkActionDropdownItems() {
+		return ListUtil.fromArray(
+			new FDSActionDropdownItem(
+				null, "trash", "delete",
+				LanguageUtil.get(httpServletRequest, "delete"), null, null,
+				null));
 	}
 
 	public Map<String, Object> getEmptyState() {
@@ -235,6 +244,8 @@ public class ViewResourcesDesignLibraryDisplayContext
 				return StyleBookUtil.getFrontendTokenDefinitionProviders(
 					themeDisplay.getCompanyId(), themeDisplay.getLocale());
 			}
+		).put(
+			"groupId", depotGroup.getGroupId()
 		).put(
 			"styleBookNamespace",
 			() -> {

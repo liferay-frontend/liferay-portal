@@ -12,6 +12,7 @@ import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -168,6 +169,26 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 	}
 
 	@Test
+	public void testGetBulkActionDropdownItems() {
+		List<DropdownItem> bulkActionDropdownItems =
+			_viewResourcesDesignLibraryDisplayContext.
+				getBulkActionDropdownItems();
+
+		Assert.assertEquals(
+			bulkActionDropdownItems.toString(), 1,
+			bulkActionDropdownItems.size());
+
+		DropdownItem dropdownItem = bulkActionDropdownItems.get(0);
+
+		Map<String, Object> data = (Map<String, Object>)dropdownItem.get(
+			"data");
+
+		Assert.assertEquals("delete", data.get("id"));
+
+		Assert.assertEquals("trash", dropdownItem.get("icon"));
+	}
+
+	@Test
 	public void testGetFDSActionDropdownItems() throws Exception {
 		_setUpPortletURLMocks();
 
@@ -255,6 +276,8 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 		Assert.assertEquals(
 			manageFragmentEntriesPermission,
 			fdsAdditionalProps.get("canManageFragments"));
+		Assert.assertEquals(
+			Long.valueOf(groupId), fdsAdditionalProps.get("groupId"));
 
 		if (manageFragmentEntriesPermission) {
 			Assert.assertNotNull(

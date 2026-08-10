@@ -32,6 +32,10 @@
 }
 
 .design-library-fds-wrapper--resources {
+	.bulk-actions {
+		margin-right: 1rem;
+	}
+
 	.card-item-first .card-type-asset-icon,
 	.design-library-fds-sticker-stylebook {
 		color: $purple;
@@ -43,6 +47,10 @@
 
 	.design-library-fds-sticker-fragment-set {
 		color: $pink;
+	}
+
+	.management-bar .custom-checkbox {
+		margin-right: 1rem;
 	}
 
 	.navbar {
