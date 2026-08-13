@@ -174,6 +174,25 @@ public class FragmentEntryConfigurationParserTest {
 	}
 
 	@Test
+	@TestInfo("LPD-102157")
+	public void testGetFieldValueDataSetSelectorConfiguration() {
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		JSONObject jsonObject = _getDataSetSelectorFieldValueJSONObject(
+			JSONUtil.put(
+				"externalReferenceCode", externalReferenceCode
+			).toString());
+
+		Assert.assertEquals(
+			externalReferenceCode,
+			jsonObject.getString("externalReferenceCode"));
+
+		jsonObject = _getDataSetSelectorFieldValueJSONObject(StringPool.BLANK);
+
+		Assert.assertEquals(0, jsonObject.length());
+	}
+
+	@Test
 	@TestInfo("LPD-97996")
 	public void testGetFieldValueURLConfiguration() throws Exception {
 		_testGetFieldValueURLConfiguration(
@@ -248,6 +267,28 @@ public class FragmentEntryConfigurationParserTest {
 		ServiceContextThreadLocal.pushServiceContext(serviceContext);
 
 		return serviceContext;
+	}
+
+	private JSONObject _getDataSetSelectorFieldValueJSONObject(String value) {
+		String name = RandomTestUtil.randomString();
+
+		return (JSONObject)_fragmentEntryConfigurationParser.getFieldValue(
+			JSONUtil.put(
+				"fieldSets",
+				JSONUtil.put(
+					JSONUtil.put(
+						"fields",
+						JSONUtil.put(
+							JSONUtil.put(
+								"name", name
+							).put(
+								"type", "dataSetSelector"
+							))))),
+			JSONUtil.put(
+				FragmentEntryProcessorConstants.
+					KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
+				JSONUtil.put(name, value)),
+			name);
 	}
 
 	private ResourceBundle _getResourceBundle(String language) {
