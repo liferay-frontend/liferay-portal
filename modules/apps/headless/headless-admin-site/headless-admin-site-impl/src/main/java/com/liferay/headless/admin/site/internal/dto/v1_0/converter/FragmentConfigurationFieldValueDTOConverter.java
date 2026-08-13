@@ -562,11 +562,11 @@ public class FragmentConfigurationFieldValueDTOConverter
 			return null;
 		}
 
-		return new DataSetReference() {
-			{
-				setExternalReferenceCode(() -> externalReferenceCode);
-			}
-		};
+		DataSetReference dataSetReference = new DataSetReference();
+
+		dataSetReference.setExternalReferenceCode(() -> externalReferenceCode);
+
+		return dataSetReference;
 	}
 
 	private ItemExternalReference _getInfoItemExternalReference(
