@@ -9,8 +9,13 @@ import ClayForm, {ClaySelectWithOption} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
 import ClayPanel from '@clayui/panel';
-import {IDataSet} from '@liferay/frontend-data-set-admin-web';
+import {
+	IDataSet,
+	getDataSetResourceURL,
+} from '@liferay/frontend-data-set-admin-web';
+import {DEFAULT_FETCH_HEADERS} from '@liferay/frontend-data-set-web';
 import {useId} from 'frontend-js-components-web';
+import {fetch} from 'frontend-js-web';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 
 import './DataSetConfigurationFields.scss';
@@ -37,7 +42,7 @@ interface IConfigurationField {
 	values: {
 		apiURLTokenMappings: string;
 		autoResolvedTokenNames: string;
-		itemSelector: IDataSet;
+		dataSet: {externalReferenceCode?: string};
 	};
 }
 
@@ -60,9 +65,46 @@ export default function DataSetConfigurationFields({
 	const mappingSelectId = useId();
 	const fieldInputId = useId();
 
+	const externalReferenceCode = values.dataSet?.externalReferenceCode;
+
+	const [dataSet, setDataSet] = useState<Partial<IDataSet>>({});
+
+	useEffect(() => {
+		if (!externalReferenceCode) {
+			setDataSet({});
+
+			return;
+		}
+
+		if (dataSet.externalReferenceCode === externalReferenceCode) {
+			return;
+		}
+
+		let cancelled = false;
+
+		const getDataSet = async () => {
+			const response = await fetch(
+				getDataSetResourceURL({dataSetERC: externalReferenceCode}),
+				{headers: DEFAULT_FETCH_HEADERS}
+			);
+
+			const responseJSON = await response.json();
+
+			if (!cancelled && responseJSON?.id) {
+				setDataSet(responseJSON);
+			}
+		};
+
+		getDataSet();
+
+		return () => {
+			cancelled = true;
+		};
+	}, [dataSet.externalReferenceCode, externalReferenceCode]);
+
 	const apiURL =
-		(values.itemSelector.restEndpoint || '') +
-		(values.itemSelector.additionalAPIURLParameters || '');
+		(dataSet.restEndpoint || '') +
+		(dataSet.additionalAPIURLParameters || '');
 
 	const tokenKeys = useMemo(() => {
 		const matches = apiURL.match(/{(.*?)}/g) ?? [];
@@ -243,8 +285,20 @@ export default function DataSetConfigurationFields({
 	return (
 		<>
 			<DataSetSelector
-				onChange={(dataSet) => onValueSelect('itemSelector', dataSet)}
-				value={values.itemSelector}
+				onChange={(selectedDataSet) => {
+					setDataSet(selectedDataSet);
+
+					onValueSelect(
+						'dataSet',
+						selectedDataSet.externalReferenceCode
+							? {
+									externalReferenceCode:
+										selectedDataSet.externalReferenceCode,
+								}
+							: {}
+					);
+				}}
+				value={dataSet}
 			/>
 
 			{Liferay.FeatureFlags['LPD-38564'] && !!tokenKeys.length && (

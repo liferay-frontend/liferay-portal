@@ -134,13 +134,13 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 			JSONObject configurationJSONObject = getConfigurationJSONObject(
 				fragmentRendererContext);
 
-			JSONObject itemSelectorJSONObject =
+			JSONObject dataSetJSONObject =
 				(JSONObject)_fragmentEntryConfigurationParser.getFieldValue(
 					configurationJSONObject,
 					fragmentEntryLink.getEditableValuesJSONObject(),
-					fragmentRendererContext.getLocale(), "itemSelector");
+					fragmentRendererContext.getLocale(), "dataSet");
 
-			String externalReferenceCode = itemSelectorJSONObject.getString(
+			String externalReferenceCode = dataSetJSONObject.getString(
 				"externalReferenceCode");
 
 			ObjectEntry dataSetObjectEntry = null;
