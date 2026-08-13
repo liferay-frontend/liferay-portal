@@ -17,6 +17,8 @@ import com.liferay.headless.admin.site.dto.v1_0.ColorPaletteFragmentConfiguratio
 import com.liferay.headless.admin.site.dto.v1_0.ColorPaletteValue;
 import com.liferay.headless.admin.site.dto.v1_0.ColorPickerFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.ContextualMenuNavigationMenuValue;
+import com.liferay.headless.admin.site.dto.v1_0.DataSetFragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.dto.v1_0.DataSetReference;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.HrefURLValue;
 import com.liferay.headless.admin.site.dto.v1_0.ItemExternalReference;
@@ -163,6 +165,19 @@ public class FragmentConfigurationFieldValueDTOConverter
 			return _getColorPickerFragmentConfigurationFieldValue(
 				fragmentConfigurationField,
 				fragmentFragmentConfigurationFieldValue);
+		}
+
+		if (Objects.equals(
+				type, FragmentConfigurationFieldValue.Type.DATA_SET)) {
+
+			if (!(fragmentFragmentConfigurationFieldValue instanceof
+					JSONObject)) {
+
+				return null;
+			}
+
+			return _getDataSetFragmentConfigurationFieldValue(
+				(JSONObject)fragmentFragmentConfigurationFieldValue);
 		}
 
 		if (Objects.equals(type, FragmentConfigurationFieldValue.Type.ITEM)) {
@@ -522,6 +537,36 @@ public class FragmentConfigurationFieldValueDTOConverter
 			() -> NavigationMenuValue.NavigationMenuType.CONTEXTUAL_MENU);
 
 		return contextualMenuNavigationMenuValue;
+	}
+
+	private FragmentConfigurationFieldValue
+		_getDataSetFragmentConfigurationFieldValue(JSONObject jsonObject) {
+
+		DataSetFragmentConfigurationFieldValue
+			dataSetFragmentConfigurationFieldValue =
+				new DataSetFragmentConfigurationFieldValue();
+
+		dataSetFragmentConfigurationFieldValue.setType(
+			() -> FragmentConfigurationFieldValue.Type.DATA_SET);
+		dataSetFragmentConfigurationFieldValue.setValue(
+			() -> _getDataSetReference(jsonObject));
+
+		return dataSetFragmentConfigurationFieldValue;
+	}
+
+	private DataSetReference _getDataSetReference(JSONObject jsonObject) {
+		String externalReferenceCode = jsonObject.getString(
+			"externalReferenceCode");
+
+		if (Validator.isNull(externalReferenceCode)) {
+			return null;
+		}
+
+		return new DataSetReference() {
+			{
+				setExternalReferenceCode(() -> externalReferenceCode);
+			}
+		};
 	}
 
 	private ItemExternalReference _getInfoItemExternalReference(
