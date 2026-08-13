@@ -75,6 +75,8 @@ public class DataSetFragmentEditableValuesUpgradeProcessTest {
 		FragmentEntryLink unconfiguredFragmentEntryLink = _addFragmentEntryLink(
 			JSONUtil.put("externalReferenceCode", StringPool.BLANK),
 			_RENDERER_KEY);
+		FragmentEntryLink legacyUnconfiguredFragmentEntryLink =
+			_addFragmentEntryLink(null, _RENDERER_KEY_LEGACY);
 
 		_runUpgrade();
 
@@ -87,6 +89,9 @@ public class DataSetFragmentEditableValuesUpgradeProcessTest {
 		Assert.assertNull(configurationJSONObject.getJSONObject("dataSet"));
 		Assert.assertNull(
 			configurationJSONObject.getJSONObject("itemSelector"));
+
+		_assertRendererKey(unconfiguredFragmentEntryLink);
+		_assertRendererKey(legacyUnconfiguredFragmentEntryLink);
 	}
 
 	private FragmentEntryLink _addFragmentEntryLink(
@@ -129,6 +134,17 @@ public class DataSetFragmentEditableValuesUpgradeProcessTest {
 			externalReferenceCode,
 			dataSetJSONObject.getString("externalReferenceCode"));
 		Assert.assertEquals(1, dataSetJSONObject.length());
+
+		_assertRendererKey(fragmentEntryLink);
+	}
+
+	private void _assertRendererKey(FragmentEntryLink fragmentEntryLink)
+		throws Exception {
+
+		fragmentEntryLink = _fragmentEntryLinkLocalService.getFragmentEntryLink(
+			fragmentEntryLink.getFragmentEntryLinkId());
+
+		Assert.assertEquals(_RENDERER_KEY, fragmentEntryLink.getRendererKey());
 	}
 
 	private JSONObject _getConfigurationJSONObject(

@@ -16,6 +16,8 @@ import com.liferay.portal.kernel.util.Validator;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import java.util.Objects;
+
 /**
  * @author Juanjo Fernandez
  */
@@ -25,13 +27,15 @@ public class DataSetFragmentEditableValuesUpgradeProcess
 	@Override
 	protected void doUpgrade() throws Exception {
 		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
-				"select ctCollectionId, fragmentEntryLinkId, editableValues " +
-					"from FragmentEntryLink where rendererKey in (?, ?)");
+				"select ctCollectionId, fragmentEntryLinkId, editableValues, " +
+					"rendererKey from FragmentEntryLink where rendererKey in " +
+						"(?, ?)");
 			PreparedStatement preparedStatement2 =
 				AutoBatchPreparedStatementUtil.autoBatch(
 					connection,
-					"update FragmentEntryLink set editableValues = ? where " +
-						"ctCollectionId = ? and fragmentEntryLinkId = ?")) {
+					"update FragmentEntryLink set editableValues = ?, " +
+						"rendererKey = ? where ctCollectionId = ? and " +
+							"fragmentEntryLinkId = ?")) {
 
 			preparedStatement1.setString(1, _RENDERER_KEY);
 			preparedStatement1.setString(2, _RENDERER_KEY_LEGACY);
@@ -42,42 +46,24 @@ public class DataSetFragmentEditableValuesUpgradeProcess
 						JSONFactoryUtil.createJSONObject(
 							resultSet.getString("editableValues"));
 
-					JSONObject configurationJSONObject =
-						editableValuesJSONObject.getJSONObject(
-							FragmentEntryProcessorConstants.
-								KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR);
+					boolean migrated = _migrateConfiguration(
+						editableValuesJSONObject);
 
-					if (configurationJSONObject == null) {
+					if (!migrated &&
+						Objects.equals(
+							resultSet.getString("rendererKey"),
+							_RENDERER_KEY)) {
+
 						continue;
-					}
-
-					JSONObject itemSelectorJSONObject =
-						configurationJSONObject.getJSONObject("itemSelector");
-
-					if (itemSelectorJSONObject == null) {
-						continue;
-					}
-
-					configurationJSONObject.remove("itemSelector");
-
-					String externalReferenceCode =
-						itemSelectorJSONObject.getString(
-							"externalReferenceCode");
-
-					if (Validator.isNotNull(externalReferenceCode)) {
-						configurationJSONObject.put(
-							"dataSet",
-							JSONUtil.put(
-								"externalReferenceCode",
-								externalReferenceCode));
 					}
 
 					preparedStatement2.setString(
 						1, editableValuesJSONObject.toString());
+					preparedStatement2.setString(2, _RENDERER_KEY);
 					preparedStatement2.setLong(
-						2, resultSet.getLong("ctCollectionId"));
+						3, resultSet.getLong("ctCollectionId"));
 					preparedStatement2.setLong(
-						3, resultSet.getLong("fragmentEntryLinkId"));
+						4, resultSet.getLong("fragmentEntryLinkId"));
 
 					preparedStatement2.addBatch();
 				}
@@ -85,6 +71,37 @@ public class DataSetFragmentEditableValuesUpgradeProcess
 
 			preparedStatement2.executeBatch();
 		}
+	}
+
+	private boolean _migrateConfiguration(JSONObject editableValuesJSONObject) {
+		JSONObject configurationJSONObject =
+			editableValuesJSONObject.getJSONObject(
+				FragmentEntryProcessorConstants.
+					KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR);
+
+		if (configurationJSONObject == null) {
+			return false;
+		}
+
+		JSONObject itemSelectorJSONObject =
+			configurationJSONObject.getJSONObject("itemSelector");
+
+		if (itemSelectorJSONObject == null) {
+			return false;
+		}
+
+		configurationJSONObject.remove("itemSelector");
+
+		String externalReferenceCode = itemSelectorJSONObject.getString(
+			"externalReferenceCode");
+
+		if (Validator.isNotNull(externalReferenceCode)) {
+			configurationJSONObject.put(
+				"dataSet",
+				JSONUtil.put("externalReferenceCode", externalReferenceCode));
+		}
+
+		return true;
 	}
 
 	private static final String _RENDERER_KEY =
