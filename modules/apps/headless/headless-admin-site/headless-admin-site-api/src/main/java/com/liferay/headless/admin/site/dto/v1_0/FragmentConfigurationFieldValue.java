@@ -73,6 +73,10 @@ import java.util.function.Supplier;
 			value = ColorPickerFragmentConfigurationFieldValue.class
 		),
 		@JsonSubTypes.Type(
+			name = "DataSet",
+			value = DataSetFragmentConfigurationFieldValue.class
+		),
+		@JsonSubTypes.Type(
 			name = "Item", value = ItemFragmentConfigurationFieldValue.class
 		),
 		@JsonSubTypes.Type(
@@ -118,7 +122,7 @@ public abstract class FragmentConfigurationFieldValue implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The configuration field's type (category, checkbox, collection, colorPalette, colorPicker, item, length, navigationMenu, select, targetCollectionDisplay, text, URL, video)."
+		description = "The configuration field's type (category, checkbox, collection, colorPalette, colorPicker, dataSet, item, length, navigationMenu, select, targetCollectionDisplay, text, URL, video)."
 	)
 	@JsonGetter("type")
 	@Valid
@@ -165,7 +169,7 @@ public abstract class FragmentConfigurationFieldValue implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "The configuration field's type (category, checkbox, collection, colorPalette, colorPicker, item, length, navigationMenu, select, targetCollectionDisplay, text, URL, video)."
+		description = "The configuration field's type (category, checkbox, collection, colorPalette, colorPicker, dataSet, item, length, navigationMenu, select, targetCollectionDisplay, text, URL, video)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	@NotNull
@@ -234,9 +238,10 @@ public abstract class FragmentConfigurationFieldValue implements Serializable {
 
 		CATEGORY("Category"), CHECKBOX("Checkbox"), COLLECTION("Collection"),
 		COLOR_PALETTE("ColorPalette"), COLOR_PICKER("ColorPicker"),
-		ITEM("Item"), LENGTH("Length"), NAVIGATION_MENU("NavigationMenu"),
-		SELECT("Select"), TARGET_COLLECTION_DISPLAY("TargetCollectionDisplay"),
-		TEXT("Text"), URL("URL"), VIDEO("Video");
+		DATA_SET("DataSet"), ITEM("Item"), LENGTH("Length"),
+		NAVIGATION_MENU("NavigationMenu"), SELECT("Select"),
+		TARGET_COLLECTION_DISPLAY("TargetCollectionDisplay"), TEXT("Text"),
+		URL("URL"), VIDEO("Video");
 
 		@JsonCreator
 		public static Type create(String value) {
@@ -360,4 +365,4 @@ public abstract class FragmentConfigurationFieldValue implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1881975231
+// LIFERAY-REST-BUILDER-HASH:1974646296
