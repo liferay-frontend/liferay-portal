@@ -389,7 +389,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo({"LPD-83090", "LPD-85565"})
+	@TestInfo({"LPD-83090", "LPD-85565", "LPD-102157"})
 	public void testPutSitePageSpecificationPageExperiencePageElement()
 		throws Exception {
 
@@ -412,26 +412,6 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 		_testPutSitePageSpecificationPageExperiencePageElementWithFragmentPageElement();
 		_testPutSitePageSpecificationPageExperiencePageElementWithGridPageElement();
 		_testPutSitePageSpecificationPageExperiencePageElementWithWidgetPageElement();
-	}
-
-	@Test
-	@TestInfo("LPD-102157")
-	public void testPutSitePageSpecificationPageExperiencePageElementWithDataSetConfiguration()
-		throws Exception {
-
-		String dataSetFieldName = RandomTestUtil.randomString();
-
-		_testPutSitePageSpecificationPageExperiencePageElementWithFragmentPageElementWithConfiguration(
-			FragmentConfigurationTestUtil.getConfiguration(
-				HashMapBuilder.<String, Map<String, Object>>put(
-					dataSetFieldName,
-					HashMapBuilder.<String, Object>put(
-						"type", "dataSetSelector"
-					).build()
-				).build()),
-			HashMapBuilder.<String, Object>put(
-				dataSetFieldName, RandomTestUtil.randomString()
-			).build());
 	}
 
 	@Override
