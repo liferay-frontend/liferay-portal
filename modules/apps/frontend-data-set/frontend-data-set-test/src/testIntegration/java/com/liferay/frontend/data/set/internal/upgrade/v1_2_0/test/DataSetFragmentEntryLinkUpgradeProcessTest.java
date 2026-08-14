@@ -11,9 +11,11 @@ import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorCons
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -41,7 +43,7 @@ import org.junit.runner.RunWith;
  */
 @FeatureFlag("LPS-164563")
 @RunWith(Arquillian.class)
-public class DataSetFragmentEditableValuesUpgradeProcessTest {
+public class DataSetFragmentEntryLinkUpgradeProcessTest {
 
 	@ClassRule
 	@Rule
@@ -103,7 +105,7 @@ public class DataSetFragmentEditableValuesUpgradeProcessTest {
 		return _fragmentEntryLinkLocalService.addFragmentEntryLink(
 			null, TestPropsValues.getUserId(), _group.getGroupId(), null, null,
 			null, 0, layout.getPlid(), StringPool.BLANK, StringPool.BLANK,
-			StringPool.BLANK, StringPool.BLANK,
+			StringPool.BLANK, _LEGACY_CONFIGURATION,
 			JSONUtil.put(
 				FragmentEntryProcessorConstants.
 					KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
@@ -115,6 +117,30 @@ public class DataSetFragmentEditableValuesUpgradeProcessTest {
 			).toString(),
 			StringPool.BLANK, 0, rendererKey, FragmentConstants.TYPE_COMPONENT,
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+	}
+
+	private void _assertConfiguration(FragmentEntryLink fragmentEntryLink)
+		throws Exception {
+
+		fragmentEntryLink = _fragmentEntryLinkLocalService.getFragmentEntryLink(
+			fragmentEntryLink.getFragmentEntryLinkId());
+
+		JSONObject configurationJSONObject =
+			fragmentEntryLink.getConfigurationJSONObject();
+
+		JSONArray fieldSetsJSONArray = configurationJSONObject.getJSONArray(
+			"fieldSets");
+
+		JSONObject fieldSetJSONObject = fieldSetsJSONArray.getJSONObject(0);
+
+		JSONArray fieldsJSONArray = fieldSetJSONObject.getJSONArray("fields");
+
+		JSONObject fieldJSONObject = fieldsJSONArray.getJSONObject(0);
+
+		Assert.assertEquals("dataSet", fieldJSONObject.getString("name"));
+		Assert.assertEquals(
+			"dataSetSelector", fieldJSONObject.getString("type"));
+		Assert.assertNull(fieldJSONObject.getJSONObject("typeOptions"));
 	}
 
 	private void _assertMigrated(
@@ -136,6 +162,7 @@ public class DataSetFragmentEditableValuesUpgradeProcessTest {
 		Assert.assertEquals(1, dataSetJSONObject.length());
 
 		_assertRendererKey(fragmentEntryLink);
+		_assertConfiguration(fragmentEntryLink);
 	}
 
 	private void _assertRendererKey(FragmentEntryLink fragmentEntryLink)
@@ -166,13 +193,21 @@ public class DataSetFragmentEditableValuesUpgradeProcessTest {
 		UpgradeProcess upgradeProcess = UpgradeTestUtil.getUpgradeStep(
 			_upgradeStepRegistrator,
 			"com.liferay.frontend.data.set.internal.upgrade.v1_2_0." +
-				"DataSetFragmentEditableValuesUpgradeProcess");
+				"DataSetFragmentEntryLinkUpgradeProcess");
 
 		upgradeProcess.upgrade();
 
 		_entityCache.clearCache();
 		_multiVMPool.clear();
 	}
+
+	private static final String _LEGACY_CONFIGURATION = StringBundler.concat(
+		"{\"fieldSets\": [{\"customComponentModule\": ",
+		"\"{DataSetConfigurationFields} from ",
+		"@liferay/frontend-data-set-fragment-web\", \"fields\": [{\"label\": ",
+		"\"Data Set View\", \"name\": \"itemSelector\", \"type\": ",
+		"\"itemSelector\", \"typeOptions\": {\"itemType\": \"FDSView\"}}], ",
+		"\"label\": \"Data Set Options\"}]}");
 
 	private static final String _RENDERER_KEY =
 		"com.liferay.frontend.data.set.fragment.web.internal.fragment." +
