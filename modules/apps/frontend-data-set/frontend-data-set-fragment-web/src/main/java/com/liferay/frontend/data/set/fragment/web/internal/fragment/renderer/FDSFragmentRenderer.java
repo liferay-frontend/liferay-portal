@@ -131,6 +131,10 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 			FragmentEntryLink fragmentEntryLink =
 				fragmentRendererContext.getFragmentEntryLink();
 
+			if (fragmentRendererContext.isEditMode()) {
+				_writeDataSetClassName(fragmentEntryLink);
+			}
+
 			JSONObject configurationJSONObject = getConfigurationJSONObject(
 				fragmentRendererContext);
 
@@ -345,6 +349,36 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 		}
 
 		return tokenNames;
+	}
+
+	private JSONObject _getConfigurationValuesJSONObject(
+		FragmentEntryLink fragmentEntryLink) {
+
+		JSONObject editableValuesJSONObject =
+			fragmentEntryLink.getEditableValuesJSONObject();
+
+		if (editableValuesJSONObject == null) {
+			editableValuesJSONObject = _jsonFactory.createJSONObject();
+
+			fragmentEntryLink.setEditableValues(
+				editableValuesJSONObject.toString());
+		}
+
+		JSONObject configurationValuesJSONObject =
+			editableValuesJSONObject.getJSONObject(
+				FragmentEntryProcessorConstants.
+					KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR);
+
+		if (configurationValuesJSONObject == null) {
+			configurationValuesJSONObject = _jsonFactory.createJSONObject();
+
+			editableValuesJSONObject.put(
+				FragmentEntryProcessorConstants.
+					KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
+				configurationValuesJSONObject);
+		}
+
+		return configurationValuesJSONObject;
 	}
 
 	private String _getExternalReferenceCode(InfoItemDetails infoItemDetails) {
@@ -607,29 +641,8 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 		String externalReferenceCode, FragmentEntryLink fragmentEntryLink,
 		HttpServletRequest httpServletRequest) {
 
-		JSONObject editableValuesJSONObject =
-			fragmentEntryLink.getEditableValuesJSONObject();
-
-		if (editableValuesJSONObject == null) {
-			editableValuesJSONObject = _jsonFactory.createJSONObject();
-
-			fragmentEntryLink.setEditableValues(
-				editableValuesJSONObject.toString());
-		}
-
-		JSONObject configurationJSONObject =
-			editableValuesJSONObject.getJSONObject(
-				FragmentEntryProcessorConstants.
-					KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR);
-
-		if (configurationJSONObject == null) {
-			configurationJSONObject = _jsonFactory.createJSONObject();
-
-			editableValuesJSONObject.put(
-				FragmentEntryProcessorConstants.
-					KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
-				configurationJSONObject);
-		}
+		JSONObject configurationValuesJSONObject =
+			_getConfigurationValuesJSONObject(fragmentEntryLink);
 
 		try {
 			JSONArray jsonArray = JSONUtil.toJSONArray(
@@ -637,7 +650,7 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 					externalReferenceCode, httpServletRequest),
 				autoResolvedTokenName -> autoResolvedTokenName);
 
-			configurationJSONObject.put(
+			configurationValuesJSONObject.put(
 				"autoResolvedTokenNames", jsonArray.toString());
 		}
 		catch (Exception exception) {
@@ -646,6 +659,29 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 					"Unable to write auto resolved token names", exception);
 			}
 		}
+	}
+
+	private void _writeDataSetClassName(FragmentEntryLink fragmentEntryLink) {
+		ObjectDefinition dataSetObjectDefinition =
+			_dataSetObjectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_DATA_SET", fragmentEntryLink.getCompanyId());
+
+		if (dataSetObjectDefinition == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"Unable to get the L_DATA_SET object definition for " +
+						"company " + fragmentEntryLink.getCompanyId());
+			}
+
+			return;
+		}
+
+		JSONObject configurationValuesJSONObject =
+			_getConfigurationValuesJSONObject(fragmentEntryLink);
+
+		configurationValuesJSONObject.put(
+			"dataSetClassName", dataSetObjectDefinition.getClassName());
 	}
 
 	private void _writeDestroyPreviousComponentScript(
