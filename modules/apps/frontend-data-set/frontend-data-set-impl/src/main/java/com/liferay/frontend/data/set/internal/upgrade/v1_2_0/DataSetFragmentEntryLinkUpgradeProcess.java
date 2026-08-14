@@ -92,7 +92,7 @@ public class DataSetFragmentEntryLinkUpgradeProcess extends UpgradeProcess {
 		JSONArray fieldSetsJSONArray = configurationJSONObject.getJSONArray(
 			"fieldSets");
 
-		if (fieldSetsJSONArray == null) {
+		if (JSONUtil.isEmpty(fieldSetsJSONArray)) {
 			return false;
 		}
 
@@ -104,7 +104,7 @@ public class DataSetFragmentEntryLinkUpgradeProcess extends UpgradeProcess {
 			JSONArray fieldsJSONArray = fieldSetJSONObject.getJSONArray(
 				"fields");
 
-			if (fieldsJSONArray == null) {
+			if (JSONUtil.isEmpty(fieldsJSONArray)) {
 				continue;
 			}
 

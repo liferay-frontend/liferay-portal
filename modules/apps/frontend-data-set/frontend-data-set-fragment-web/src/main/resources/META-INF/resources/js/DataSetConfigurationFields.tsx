@@ -83,15 +83,22 @@ export default function DataSetConfigurationFields({
 		let cancelled = false;
 
 		const getDataSet = async () => {
-			const response = await fetch(
-				getDataSetResourceURL({dataSetERC: externalReferenceCode}),
-				{headers: DEFAULT_FETCH_HEADERS}
-			);
+			try {
+				const response = await fetch(
+					getDataSetResourceURL({dataSetERC: externalReferenceCode}),
+					{headers: DEFAULT_FETCH_HEADERS}
+				);
 
-			const responseJSON = await response.json();
+				const responseJSON = await response.json();
 
-			if (!cancelled && responseJSON?.id) {
-				setDataSet(responseJSON);
+				if (!cancelled && responseJSON?.id) {
+					setDataSet(responseJSON);
+				}
+			}
+			catch (error) {
+				if (process.env.NODE_ENV === 'development') {
+					console.error(error);
+				}
 			}
 		};
 
