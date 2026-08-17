@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import getESModuleExportInfo from './getESModuleExportInfo.mjs';
 import getExportedSymbols from './getExportedSymbols.mjs';
 
 /**
@@ -11,12 +12,41 @@ import getExportedSymbols from './getExportedSymbols.mjs';
  * Export bridges are necessary since we need esbuild to export symbols using
  * standard ESM syntax and for that to happen it must be fed an ES module as
  * entry point. If fed a CommonJS one esbuild will refuse to export things as
- * ESM syntax.
+ * ESM syntax. That is still true of esbuild 0.25, and no option changes it.
+ *
+ * What the bridge has to say depends on what it is bridging. An ES module can
+ * be re-exported with `export *`, which leaves the reading of its symbols to
+ * esbuild. A CommonJS module has no statically readable export list, so its
+ * bridge has to name every symbol, which is what getExportedSymbols() is for.
  */
 export default async function getExportBridgeJavaScript(
 	overridenPackageSymbols,
 	moduleName
 ) {
+
+	// An override exists because something about the package cannot be read
+	// automatically, so it keeps the named form even when the target is an ES
+	// module.
+
+	if (!overridenPackageSymbols[moduleName]) {
+		const esModuleExportInfo = await getESModuleExportInfo(moduleName);
+
+		if (esModuleExportInfo) {
+			let source = `
+export * from '${moduleName}';
+`;
+
+			// `export *` deliberately omits `default`, so a module that has one
+			// needs it re-exported on its own.
+
+			if (esModuleExportInfo.hasDefault) {
+				source += `export {default} from '${moduleName}';`;
+			}
+
+			return source;
+		}
+	}
+
 	const symbols = await getExportedSymbols(
 		overridenPackageSymbols,
 		moduleName

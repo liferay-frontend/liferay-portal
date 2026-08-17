@@ -97,17 +97,4 @@ module.exports = {
 		'frontend-editor-ckeditor-web/plugins/DocumentLinkSelector',
 	],
 	main: './src/main/resources/META-INF/resources/js/index.ts',
-	symbols: {
-		'@codemirror/autocomplete': ['*'],
-		'@codemirror/commands': ['*'],
-		'@codemirror/lang-html': ['*'],
-		'@codemirror/lang-markdown': ['*'],
-		'@codemirror/language': ['*'],
-		'@codemirror/state': ['*'],
-		'@codemirror/theme-one-dark': ['*'],
-		'@codemirror/view': ['*'],
-		'frontend-editor-ckeditor-web/plugins/DocumentLinkSelector': [
-			'default',
-		],
-	},
 };

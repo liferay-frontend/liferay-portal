@@ -153,8 +153,40 @@ export default function getLinkerPlugin(
 					}
 					else if (external) {
 
-						// For externals use local import bridges that are
-						// generated on-the-fly (see below).
+						// An ESM import can name the runtime URL directly, the
+						// same way CSS files and submodule exports do above:
+						// esbuild leaves an import of an external module alone,
+						// so `import {useState} from 'react'` comes out as
+						// `import {useState} from '<url>'` and the browser links
+						// it against the export bridge. That also lets esbuild
+						// tree shake the import, which it cannot do through a
+						// re-export of an external module.
+						//
+						// Nothing else can reach an external URL. A CommonJS
+						// `require` has no ESM form for esbuild to emit, so it
+						// falls back to a __require() stub that throws "Dynamic
+						// require of ... is not supported" as soon as it runs.
+						// react-dom requires react that way. Those references
+						// still need a local import bridge, which esbuild can
+						// bundle, and which reaches the URL through a static
+						// import of its own. Anything other than the two ESM
+						// forms takes the bridge, so an unforeseen kind fails
+						// safe.
+
+						if (
+							kind === 'dynamic-import' ||
+							kind === 'import-statement'
+						) {
+							return {
+								external: true,
+								path: getURL(
+									URLType.NPM_EXPORT,
+									urlPrefix,
+									webContextPath,
+									path
+								),
+							};
+						}
 
 						return {
 							path: getImportBridgePath(path),
