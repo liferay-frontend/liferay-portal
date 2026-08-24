@@ -415,6 +415,10 @@ $btn-ai: () !default;
 $btn-ai: map-deep-merge(
 	(
 		box-shadow: c-unset,
+
+		focus: (
+			box-shadow: c-unset,
+		),
 	),
 	$btn-ai
 );
