@@ -188,6 +188,7 @@
 						"colorPalette",
 						"colorPicker",
 						"collectionSelector",
+						"dataSetSelector",
 						"itemSelector",
 						"length",
 						"navigationMenuSelector",

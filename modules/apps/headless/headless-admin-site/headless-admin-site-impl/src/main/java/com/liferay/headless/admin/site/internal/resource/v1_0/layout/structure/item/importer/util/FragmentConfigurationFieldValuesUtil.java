@@ -21,6 +21,8 @@ import com.liferay.headless.admin.site.dto.v1_0.ColorPaletteFragmentConfiguratio
 import com.liferay.headless.admin.site.dto.v1_0.ColorPaletteValue;
 import com.liferay.headless.admin.site.dto.v1_0.ColorPickerFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.ContextualMenuNavigationMenuValue;
+import com.liferay.headless.admin.site.dto.v1_0.DataSetFragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.dto.v1_0.DataSetReference;
 import com.liferay.headless.admin.site.dto.v1_0.DefaultFragmentReference;
 import com.liferay.headless.admin.site.dto.v1_0.FormFragmentInstancePageElementDefinition;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentConfigurationFieldValue;
@@ -251,6 +253,27 @@ public class FragmentConfigurationFieldValuesUtil {
 				fragmentConfigurationField.isLocalizable(),
 				colorPickerFragmentConfigurationFieldValue.getValue(),
 				colorPickerFragmentConfigurationFieldValue.getValue_i18n());
+		}
+
+		if (Objects.equals(
+				fragmentConfigurationFieldValue.getType(),
+				FragmentConfigurationFieldValue.Type.DATA_SET)) {
+
+			DataSetFragmentConfigurationFieldValue
+				dataSetFragmentConfigurationFieldValue =
+					(DataSetFragmentConfigurationFieldValue)
+						fragmentConfigurationFieldValue;
+
+			DataSetReference dataSetReference =
+				dataSetFragmentConfigurationFieldValue.getValue();
+
+			if (dataSetReference == null) {
+				return null;
+			}
+
+			return JSONUtil.put(
+				"externalReferenceCode",
+				dataSetReference.getExternalReferenceCode());
 		}
 
 		if (Objects.equals(

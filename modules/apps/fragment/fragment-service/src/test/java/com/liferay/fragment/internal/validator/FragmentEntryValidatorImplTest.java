@@ -652,6 +652,15 @@ public class FragmentEntryValidatorImplTest {
 	}
 
 	@Test
+	public void testValidateConfigurationValidFieldDataSetSelectorRequired()
+		throws Exception {
+
+		_fragmentEntryValidatorImpl.validateConfiguration(
+			_readJSONObject(
+				"configuration_valid_field_datasetselector_required.json"));
+	}
+
+	@Test
 	public void testValidateConfigurationValidFieldItemSelectorComplete()
 		throws Exception {
 

@@ -14,6 +14,8 @@ import com.liferay.headless.admin.site.client.dto.v1_0.ColorPaletteFragmentConfi
 import com.liferay.headless.admin.site.client.dto.v1_0.ColorPaletteValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.ColorPickerFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.ContextualMenuNavigationMenuValue;
+import com.liferay.headless.admin.site.client.dto.v1_0.DataSetFragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.client.dto.v1_0.DataSetReference;
 import com.liferay.headless.admin.site.client.dto.v1_0.FragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.HrefURLValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.ItemExternalReference;
@@ -231,6 +233,23 @@ public class FragmentConfigurationFieldValueTestUtil {
 	}
 
 	private static FragmentConfigurationFieldValue
+		_getDataSetFragmentConfigurationFieldValue(Object object) {
+
+		return new DataSetFragmentConfigurationFieldValue() {
+			{
+				setType(() -> Type.DATA_SET);
+				setValue(
+					() -> new DataSetReference() {
+						{
+							setExternalReferenceCode(
+								GetterUtil.getString(object));
+						}
+					});
+			}
+		};
+	}
+
+	private static FragmentConfigurationFieldValue
 		_getFragmentConfigurationFieldValue(
 			FragmentConfigurationField fragmentConfigurationField,
 			long scopeGroupId, Object value) {
@@ -262,6 +281,10 @@ public class FragmentConfigurationFieldValueTestUtil {
 		if (Objects.equals(type, "colorPicker")) {
 			return _getColorPickerFragmentConfigurationFieldValue(
 				fragmentConfigurationField.isLocalizable(), value);
+		}
+
+		if (Objects.equals(type, "dataSetSelector")) {
+			return _getDataSetFragmentConfigurationFieldValue(value);
 		}
 
 		if (Objects.equals(type, "itemSelector")) {
@@ -592,12 +615,12 @@ public class FragmentConfigurationFieldValueTestUtil {
 		String href = GetterUtil.getString(map.get("href"), null);
 
 		if (href != null) {
-			return new HrefURLValue() {
-				{
-					setHref(() -> href);
-					setUrlType(() -> UrlType.HREF);
-				}
-			};
+			HrefURLValue hrefURLValue = new HrefURLValue();
+
+			hrefURLValue.setHref(() -> href);
+			hrefURLValue.setUrlType(() -> URLValue.UrlType.HREF);
+
+			return hrefURLValue;
 		}
 
 		ItemExternalReference itemExternalReference =

@@ -92,9 +92,10 @@ public abstract class FragmentConfigurationFieldValue
 
 		CATEGORY("Category"), CHECKBOX("Checkbox"), COLLECTION("Collection"),
 		COLOR_PALETTE("ColorPalette"), COLOR_PICKER("ColorPicker"),
-		ITEM("Item"), LENGTH("Length"), NAVIGATION_MENU("NavigationMenu"),
-		SELECT("Select"), TARGET_COLLECTION_DISPLAY("TargetCollectionDisplay"),
-		TEXT("Text"), URL("URL"), VIDEO("Video");
+		DATA_SET("DataSet"), ITEM("Item"), LENGTH("Length"),
+		NAVIGATION_MENU("NavigationMenu"), SELECT("Select"),
+		TARGET_COLLECTION_DISPLAY("TargetCollectionDisplay"), TEXT("Text"),
+		URL("URL"), VIDEO("Video");
 
 		public static Type create(String value) {
 			for (Type type : values()) {
@@ -126,4 +127,4 @@ public abstract class FragmentConfigurationFieldValue
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1335484489
+// LIFERAY-REST-BUILDER-HASH:-1732654154
