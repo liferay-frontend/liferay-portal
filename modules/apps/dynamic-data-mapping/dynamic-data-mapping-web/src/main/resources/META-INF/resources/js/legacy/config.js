@@ -42,7 +42,6 @@
 							'aui-map',
 							'aui-text-unicode',
 							'json',
-							'liferay-menu',
 							'liferay-translation-manager',
 							'liferay-util-window',
 							'text',
