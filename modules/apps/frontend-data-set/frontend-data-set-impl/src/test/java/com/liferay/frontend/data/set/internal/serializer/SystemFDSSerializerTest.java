@@ -1205,6 +1205,40 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 	}
 
 	@Test
+	public void testSerializeRecentSearches() throws Exception {
+		_registerServices(
+			_registerSystemFDSEntry(
+				SystemFDSEntryFactory.create(
+					FDS_NAMES[0]
+				).withRecentSearches(
+					false
+				)),
+			_registerSystemFDSEntry(
+				SystemFDSEntryFactory.create(
+					FDS_NAMES[1]
+				).withRecentSearches(
+					true
+				)));
+
+		Assert.assertFalse(
+			systemFDSSerializer.serializeRecentSearches(
+				FDS_NAMES[0], httpServletRequest));
+		Assert.assertTrue(
+			systemFDSSerializer.serializeRecentSearches(
+				FDS_NAMES[1], httpServletRequest));
+
+		_unregisterServices();
+
+		_registerServices(_registerSystemFDSEntry(FDS_NAMES[0]));
+
+		Assert.assertFalse(
+			systemFDSSerializer.serializeRecentSearches(
+				FDS_NAMES[0], httpServletRequest));
+
+		_unregisterServices();
+	}
+
+	@Test
 	public void testSerializeSearchAsYouType() throws Exception {
 		_registerServices(
 			_registerSystemFDSEntry(
@@ -2012,6 +2046,15 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 					}
 
 					@Override
+					public boolean getRecentSearches() {
+						if (_recentSearches != null) {
+							return _recentSearches;
+						}
+
+						return SystemFDSEntry.super.getRecentSearches();
+					}
+
+					@Override
 					public String getRESTApplication() {
 						return REST_APPLICATION;
 					}
@@ -2084,6 +2127,14 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 			return this;
 		}
 
+		public SystemFDSEntryWrapper withRecentSearches(
+			boolean recentSearches) {
+
+			_recentSearches = recentSearches;
+
+			return this;
+		}
+
 		public SystemFDSEntryWrapper withSearchAsYouType(
 			boolean searchAsYouType) {
 
@@ -2112,6 +2163,7 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 		private boolean _hideManagementBarInEmptyState;
 		private int[] _listOfItemsPerPage;
 		private String _propsTransformer;
+		private Boolean _recentSearches;
 		private boolean _searchAsYouType;
 		private boolean _showSearch;
 		private boolean _snapshotsEnabled;

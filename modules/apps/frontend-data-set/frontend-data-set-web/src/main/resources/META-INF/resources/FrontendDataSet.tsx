@@ -71,6 +71,7 @@ import {loadData} from './utils/loadData';
 // @ts-ignore
 
 import {logError} from './utils/logError';
+import recentSearches from './utils/recentSearches';
 import {transformAdditionalAPIURLParameters} from './utils/transformAdditionalAPIURLParameters';
 import transformDataSetItems from './utils/transformDataSetItems';
 import {
@@ -140,6 +141,8 @@ const FrontendDataSetContent = ({
 	overrideEmptyResultView,
 	pagination,
 	portletId,
+
+	recentSearches: recentSearchesEnabled = false,
 	searchAsYouType = false,
 	selectedItems: externalSelectedItems,
 	selectedItemsKey = 'id',
@@ -821,6 +824,36 @@ const FrontendDataSetContent = ({
 		viewsDispatch,
 	]);
 
+	// A response is only ever applied when it is the newest one, so the query
+	// held here is the one it answers
+
+	const searchQueryRef = useRef(globalFDSState.search.query);
+
+	searchQueryRef.current = globalFDSState.search.query;
+
+	// A query is only worth remembering once its results are known, so the
+	// history is written where a response is applied rather than when the user
+	// submits. The count comes off that response, because reading it from state
+	// would judge the query by the results of the one before it.
+
+	const recordSearch = useCallback(
+		(totalCount: number) => {
+			const query = (searchQueryRef.current ?? '').trim();
+
+			if (!query || !recentSearchesEnabled) {
+				return;
+			}
+
+			if (totalCount) {
+				recentSearches.add(id, query);
+			}
+			else {
+				recentSearches.remove(id, query);
+			}
+		},
+		[id, recentSearchesEnabled]
+	);
+
 	const updateDataSetItems = useCallback(
 		(dataSetData: IDataSetData) => {
 			const transformedItems = transformDataSetItems(dataSetData.items);
@@ -828,13 +861,15 @@ const FrontendDataSetContent = ({
 			setItems(transformedItems);
 			setTotal(dataSetData.totalCount);
 
+			recordSearch(dataSetData.totalCount);
+
 			if (!dataSetData.items.length && dataSetData.totalCount > 0) {
 				viewsDispatch(updatePageNumber(dataSetData.lastPage));
 			}
 
 			return transformedItems;
 		},
-		[updatePageNumber, viewsDispatch]
+		[recordSearch, updatePageNumber, viewsDispatch]
 	);
 
 	useEffect(() => {
@@ -2171,6 +2206,7 @@ const FrontendDataSetContent = ({
 				openModal,
 				openSidePanel,
 				portletId,
+				recentSearches: recentSearchesEnabled,
 				searchAsYouType,
 				searchParam: unfrozenGlobalFDSState.search.query,
 				searching,
