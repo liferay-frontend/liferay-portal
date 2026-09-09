@@ -15,6 +15,7 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
@@ -41,6 +42,7 @@ import org.junit.runner.RunWith;
  * @author Daniel Sanz
  */
 @FeatureFlag("LPS-164563")
+@DataGuard(scope = DataGuard.Scope.NONE)
 @RunWith(Arquillian.class)
 public class DataSetOrderValuesUpgradeProcessTest {
 
