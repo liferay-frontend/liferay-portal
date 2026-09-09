@@ -48,8 +48,8 @@ import org.junit.runner.RunWith;
 /**
  * @author Juanjo Fernandez
  */
-@FeatureFlag("LPS-164563")
 @DataGuard(scope = DataGuard.Scope.NONE)
+@FeatureFlag("LPS-164563")
 @RunWith(Arquillian.class)
 public class DataSetSnapshotSharingEntryInterpreterTest {
 
