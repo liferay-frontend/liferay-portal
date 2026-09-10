@@ -10,6 +10,7 @@ import com.liferay.headless.admin.site.client.dto.v1_0.CheckboxFragmentConfigura
 import com.liferay.headless.admin.site.client.dto.v1_0.CollectionFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.ColorPaletteFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.ColorPickerFragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.client.dto.v1_0.DataSetFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.FragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.ItemFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.LengthFragmentConfigurationFieldValue;
@@ -92,6 +93,12 @@ public class FragmentConfigurationFieldValueSerDes {
 			if (typeString.equals("ColorPicker")) {
 				return ColorPickerFragmentConfigurationFieldValueSerDes.toJSON(
 					(ColorPickerFragmentConfigurationFieldValue)
+						fragmentConfigurationFieldValue);
+			}
+
+			if (typeString.equals("DataSet")) {
+				return DataSetFragmentConfigurationFieldValueSerDes.toJSON(
+					(DataSetFragmentConfigurationFieldValue)
 						fragmentConfigurationFieldValue);
 			}
 
@@ -235,6 +242,10 @@ public class FragmentConfigurationFieldValueSerDes {
 						json);
 				}
 
+				if (typeString.equals("DataSet")) {
+					return DataSetFragmentConfigurationFieldValue.toDTO(json);
+				}
+
 				if (typeString.equals("Item")) {
 					return ItemFragmentConfigurationFieldValue.toDTO(json);
 				}
@@ -370,4 +381,4 @@ public class FragmentConfigurationFieldValueSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:251765430
+// LIFERAY-REST-BUILDER-HASH:-2128143445

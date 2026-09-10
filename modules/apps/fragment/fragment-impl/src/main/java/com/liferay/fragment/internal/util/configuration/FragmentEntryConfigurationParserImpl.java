@@ -517,6 +517,12 @@ public class FragmentEntryConfigurationParserImpl
 			return _getColorPickerCssVariable(fieldValue);
 		}
 		else if (StringUtil.equalsIgnoreCase(
+					fragmentConfigurationField.getType(), "dataSetSelector")) {
+
+			return _getFieldValue(
+				FragmentConfigurationFieldDataType.OBJECT, parsedValue);
+		}
+		else if (StringUtil.equalsIgnoreCase(
 					fragmentConfigurationField.getType(), "itemSelector")) {
 
 			return _getInfoDisplayObjectEntryJSONObject(parsedValue);

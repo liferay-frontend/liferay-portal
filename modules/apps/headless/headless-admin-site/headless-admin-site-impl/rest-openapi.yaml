@@ -589,6 +589,32 @@ components:
                         The localized custom meta tag's values.
                     type: object
             type: object
+        DataSetFragmentConfigurationFieldValue:
+            allOf:
+                -   $ref: "#/components/schemas/FragmentConfigurationFieldValue"
+                -   properties:
+                        value:
+                            $ref: "#/components/schemas/DataSetReference"
+                            # @review
+                            description:
+                                The value of the fragment configuration field of type data set.
+            # @review
+            description:
+                The value of a fragment configuration field of type data set.
+            type: object
+        DataSetReference:
+            # @review
+            description:
+                A unique reference to a data set which remains constant across environments.
+            properties:
+                externalReferenceCode:
+                    # @review
+                    description:
+                        The data set's external reference code.
+                    type: string
+            required:
+                -   externalReferenceCode
+            type: object
         DateFragmentEditableElementValue:
             allOf:
                 -   $ref: "#/components/schemas/FragmentEditableElementValue"
@@ -1308,6 +1334,7 @@ components:
                     Collection: "#/components/schemas/CollectionFragmentConfigurationFieldValue"
                     ColorPalette: "#/components/schemas/ColorPaletteFragmentConfigurationFieldValue"
                     ColorPicker: "#/components/schemas/ColorPickerFragmentConfigurationFieldValue"
+                    DataSet: "#/components/schemas/DataSetFragmentConfigurationFieldValue"
                     Item: "#/components/schemas/ItemFragmentConfigurationFieldValue"
                     Length: "#/components/schemas/LengthFragmentConfigurationFieldValue"
                     NavigationMenu: "#/components/schemas/NavigationMenuFragmentConfigurationFieldValue"
@@ -1321,8 +1348,8 @@ components:
                 type:
                     # @review
                     description:
-                        The configuration field's type (category, checkbox, collection, colorPalette, colorPicker, item, length, navigationMenu, select, targetCollectionDisplay, text, URL, video).
-                    enum: [Category, Checkbox, Collection, ColorPalette, ColorPicker, Item, Length, NavigationMenu, Select, TargetCollectionDisplay, Text, URL, Video]
+                        The configuration field's type (category, checkbox, collection, colorPalette, colorPicker, dataSet, item, length, navigationMenu, select, targetCollectionDisplay, text, URL, video).
+                    enum: [Category, Checkbox, Collection, ColorPalette, ColorPicker, DataSet, Item, Length, NavigationMenu, Select, TargetCollectionDisplay, Text, URL, Video]
                     type: string
             required:
                 -   type

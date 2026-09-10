@@ -84,6 +84,8 @@ public class FragmentConfigurationTestUtil {
 		).put(
 			"colorPicker", "string"
 		).put(
+			"dataSetSelector", "object"
+		).put(
 			"itemSelector", "object"
 		).put(
 			"length", "string"

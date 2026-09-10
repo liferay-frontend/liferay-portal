@@ -398,7 +398,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo({"LPD-83090", "LPD-85565"})
+	@TestInfo({"LPD-83090", "LPD-85565", "LPD-102157"})
 	public void testPutSitePageSpecificationPageExperiencePageElement()
 		throws Exception {
 
@@ -3500,6 +3500,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 		String collectionFieldName = RandomTestUtil.randomString();
 		String colorPaletteFieldName = RandomTestUtil.randomString();
 		String colorPickerFieldName = RandomTestUtil.randomString();
+		String dataSetFieldName = RandomTestUtil.randomString();
 		String itemFieldName = RandomTestUtil.randomString();
 		String lengthFieldName = RandomTestUtil.randomString();
 		String navigationMenuFieldName = RandomTestUtil.randomString();
@@ -3561,6 +3562,11 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 					colorPickerFieldName,
 					HashMapBuilder.<String, Object>put(
 						"type", "colorPicker"
+					).build()
+				).put(
+					dataSetFieldName,
+					HashMapBuilder.<String, Object>put(
+						"type", "dataSetSelector"
 					).build()
 				).put(
 					itemFieldName,
@@ -3629,6 +3635,8 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 			).put(
 				colorPickerFieldName, RandomTestUtil.randomString()
 			).put(
+				dataSetFieldName, RandomTestUtil.randomString()
+			).put(
 				itemFieldName,
 				HashMapBuilder.put(
 					"item", _getFileEntry(testGroup.getGroupId())
@@ -3693,6 +3701,8 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 				).build()
 			).put(
 				colorPickerFieldName, RandomTestUtil.randomString()
+			).put(
+				dataSetFieldName, RandomTestUtil.randomString()
 			).put(
 				itemFieldName,
 				HashMapBuilder.put(

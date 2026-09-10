@@ -57,6 +57,8 @@ public class FragmentConfigurationFieldValueTypeUtil {
 		).put(
 			"colorPicker", FragmentConfigurationFieldValue.Type.COLOR_PICKER
 		).put(
+			"dataSetSelector", FragmentConfigurationFieldValue.Type.DATA_SET
+		).put(
 			"itemSelector", FragmentConfigurationFieldValue.Type.ITEM
 		).put(
 			"length", FragmentConfigurationFieldValue.Type.LENGTH
