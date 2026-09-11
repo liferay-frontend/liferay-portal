@@ -6,11 +6,16 @@
 import ClayLink from '@clayui/link';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, {useContext} from 'react';
 
+import FrontendDataSetContext from '../FrontendDataSetContext';
+import {getItemLabel} from '../utils/getItemLabel';
+import recentlyVisited from '../utils/recentlyVisited';
+import ViewsContext from '../views/ViewsContext';
 import DefaultContent from './DefaultRenderer';
 
 interface ILinkRendererProps {
+	itemData?: any;
 	options?: {
 		decoration?: React.ComponentProps<typeof ClayLink>['decoration'];
 		displayType?: React.ComponentProps<typeof ClayLink>['displayType'];
@@ -21,7 +26,11 @@ interface ILinkRendererProps {
 	};
 }
 
-function LinkRenderer({options, value}: ILinkRendererProps) {
+function LinkRenderer({itemData, options, value}: ILinkRendererProps) {
+	const {id, searchSuggestionsEnabled} = useContext(FrontendDataSetContext);
+
+	const [{activeView}]: any = useContext(ViewsContext);
+
 	return (
 		<div
 			className={classNames({'table-list-title': !options?.displayType})}
@@ -30,6 +39,18 @@ function LinkRenderer({options, value}: ILinkRendererProps) {
 				decoration={options?.decoration}
 				displayType={options?.displayType}
 				href={value?.href}
+				onClick={() => {
+					if (searchSuggestionsEnabled) {
+						recentlyVisited.add(id, {
+							href: value?.href,
+							label: getItemLabel(itemData, {
+								accessibleNameField:
+									activeView?.schema?.accessibleNameField,
+								fallback: value?.label,
+							}),
+						});
+					}
+				}}
 			>
 				<DefaultContent value={value?.label} />
 			</ClayLink>
