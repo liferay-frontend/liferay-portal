@@ -70,7 +70,11 @@ export default function openSelectionModal<
 	let selectedItem: OpenSelectionModalSelectedItem;
 
 	const select = () => {
-		if (multiple && !selectedItem && iframeWindowObj) {
+		if (!iframeWindowObj) {
+			return;
+		}
+
+		if (multiple && !selectedItem) {
 			const searchContainer =
 				iframeWindowObj.document.querySelector('.searchcontainer');
 
@@ -184,6 +188,7 @@ export default function openSelectionModal<
 				]
 			: undefined,
 		containerProps,
+		disableButtonsOnLoading: multiple,
 		height,
 		id: id || selectEventName,
 		iframeBodyCssClass,
