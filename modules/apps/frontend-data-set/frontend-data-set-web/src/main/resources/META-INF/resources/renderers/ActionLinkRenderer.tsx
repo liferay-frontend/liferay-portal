@@ -14,8 +14,11 @@ import FrontendDataSetContext from '../FrontendDataSetContext';
 import filterItemActions from '../utils/actionItems/filterItemActions';
 import findAction from '../utils/actionItems/findAction';
 import formatActionURL from '../utils/actionItems/formatActionURL';
+import {getItemLabel} from '../utils/getItemLabel';
 import {openPermissionsModal} from '../utils/modals/openPermissionsModal';
+import recentlyVisited from '../utils/recentlyVisited';
 import {EItemActionsType, IItemsActions} from '../utils/types';
+import ViewsContext from '../views/ViewsContext';
 import DefaultContent from './DefaultRenderer';
 
 interface IActionLinkRendererProps {
@@ -48,14 +51,18 @@ function ActionLinkRenderer({
 	const {
 		executeAsyncItemAction,
 		highlightItems,
+		id,
 		infoPanelOpen,
 		onInfoPanelToggleButtonClick,
 		openModal,
 		openSidePanel,
+		searchSuggestionsEnabled,
 		selectable,
 		selectedItemsKey,
 		selectedItemsValue,
 	} = useContext(FrontendDataSetContext);
+
+	const [{activeView}]: any = useContext(ViewsContext);
 
 	if (!actions || !actions.length) {
 		return hasValue(value) ? <DefaultContent value={value} /> : null;
@@ -139,6 +146,10 @@ function ActionLinkRenderer({
 
 				currentAction?.onClick({itemData});
 			}
+
+			if (!event.defaultPrevented) {
+				recordVisit();
+			}
 		};
 
 		if (currentAction?.data?.confirmationMessage) {
@@ -154,6 +165,22 @@ function ActionLinkRenderer({
 		else {
 			doAction();
 		}
+	}
+
+	function recordVisit() {
+		if (!searchSuggestionsEnabled) {
+			return;
+		}
+
+		recentlyVisited.add(id, {
+			href: formattedHref,
+			label: getItemLabel(itemData, {
+				accessibleNameField: activeView?.schema?.accessibleNameField,
+				fallback: showValue
+					? String(value)
+					: currentAction?.accessibleName || currentAction?.label,
+			}),
+		});
 	}
 
 	function isNotALink() {
@@ -191,12 +218,16 @@ function ActionLinkRenderer({
 										message: confirmMessage,
 										onConfirm: (isConfirmed) => {
 											if (formattedHref && isConfirmed) {
+												recordVisit();
+
 												navigate(formattedHref);
 											}
 										},
 									});
 								}
 								else {
+									recordVisit();
+
 									event.stopPropagation();
 								}
 							}

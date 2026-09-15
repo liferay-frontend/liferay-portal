@@ -6,21 +6,25 @@
 import {openConfirmModal} from 'frontend-js-components-web';
 import {navigate} from 'frontend-js-web';
 
+import {getItemLabel} from '../getItemLabel';
 import {openPermissionsModal} from '../modals/openPermissionsModal';
 import {openWorkflowTransitionModal} from '../modals/openWorkflowTransitionModal';
 import {resolveModalSize} from '../modals/resolveModalSize';
+import recentlyVisited from '../recentlyVisited';
 import {IItemsActions} from '../types';
 import {ACTION_ITEM_TARGETS} from './constants';
 import formatActionURL from './formatActionURL';
 
-const {INFO_PANEL, MODAL_PERMISSIONS, MODAL_WORKFLOW_TRANSITION} =
+const {BLANK, INFO_PANEL, LINK, MODAL_PERMISSIONS, MODAL_WORKFLOW_TRANSITION} =
 	ACTION_ITEM_TARGETS;
 
 const handleActionClick = ({
+	accessibleNameField,
 	action,
 	closeMenu,
 	event,
 	executeAsyncItemAction,
+	fdsName,
 	highlightItems,
 	infoPanelOpen,
 	isItemSelected,
@@ -33,13 +37,16 @@ const handleActionClick = ({
 	onItemSelectionChange,
 	openModal,
 	openSidePanel,
+	searchSuggestionsEnabled,
 	setLoading,
 	toggleItemInlineEdit,
 }: {
+	accessibleNameField?: string;
 	action: IItemsActions;
 	closeMenu?: any;
 	event: Event;
 	executeAsyncItemAction: Function;
+	fdsName: string;
 	highlightItems: Function;
 	infoPanelOpen?: boolean;
 	isItemSelected?: boolean;
@@ -52,6 +59,7 @@ const handleActionClick = ({
 	onItemSelectionChange?: Function;
 	openModal: Function;
 	openSidePanel: Function;
+	searchSuggestionsEnabled: boolean;
 	setLoading?: Function;
 	toggleItemInlineEdit: Function;
 }) => {
@@ -152,7 +160,31 @@ const handleActionClick = ({
 			onActionDropdownItemClick(exposedProps);
 		}
 
-		if (target === 'link' && defaultPrevented) {
+		// Following the link and opening a window are the two ways an action
+		// leaves the page for the item, and an action carrying no target at all
+		// is left to the browser, which follows the link as well
+
+		if (
+			searchSuggestionsEnabled &&
+			(!target || target === BLANK || target === LINK)
+		) {
+			recentlyVisited.add(fdsName, {
+
+				// The row is what the user is going back to, so the entry is
+				// named after the item rather than after the action, which
+				// would read as a list of "View Details". A row holds its own
+				// title the way the server sent it, which for a translated
+				// field is a map of locales rather than a string.
+
+				href: url,
+				label: getItemLabel(itemData, {
+					accessibleNameField,
+					fallback: action.label,
+				}),
+			});
+		}
+
+		if (target === LINK && defaultPrevented) {
 			navigate(url);
 		}
 	};
@@ -160,7 +192,7 @@ const handleActionClick = ({
 	if (confirmationMessage) {
 		let defaultPrevented = false;
 
-		if (target === 'link') {
+		if (target === LINK) {
 			event.preventDefault();
 
 			defaultPrevented = true;

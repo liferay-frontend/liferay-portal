@@ -62,8 +62,10 @@ export class FDSSamplePage {
 	readonly resubmitButton: Locator;
 	readonly searchSuggestions: {
 		clearAllButton: Locator;
-		entries: Locator;
 		menu: Locator;
+		recentSearchEntries: Locator;
+		recentlyVisitedEntries: Locator;
+		sectionHeadings: Locator;
 	};
 	readonly sidePanel: Locator;
 	readonly sidePanelFrame: FrameLocator;
@@ -194,13 +196,19 @@ export class FDSSamplePage {
 		const searchSuggestionsMenu = page.locator('.fds-search-suggestions');
 
 		this.searchSuggestions = {
-			clearAllButton: searchSuggestionsMenu.getByRole('button', {
+			clearAllButton: searchSuggestionsMenu.getByRole('menuitem', {
 				name: 'Clear All',
 			}),
-			entries: searchSuggestionsMenu.locator(
-				'.fds-search-suggestions-item'
-			),
 			menu: searchSuggestionsMenu,
+			recentSearchEntries: searchSuggestionsMenu.locator(
+				'.fds-search-suggestions-query-item'
+			),
+			recentlyVisitedEntries: searchSuggestionsMenu.locator(
+				'.fds-search-suggestions-visited-item'
+			),
+			sectionHeadings: searchSuggestionsMenu.locator(
+				'.dropdown-subheader'
+			),
 		};
 
 		this.selectAllCheckbox = page.getByText('Select All');
@@ -368,15 +376,18 @@ export class FDSSamplePage {
 			.filter({hasText: new RegExp(`^${label}:`)});
 	}
 
-	searchSuggestionEntry(query: string) {
-		return this.searchSuggestions.menu.getByRole('menuitem', {
-			exact: true,
-			name: query,
-		});
+	recentSearchEntry(query: string) {
+		return this.searchSuggestions.recentSearchEntries.getByRole(
+			'menuitem',
+			{
+				exact: true,
+				name: query,
+			}
+		);
 	}
 
-	searchSuggestionRemoveButton(query: string) {
-		return this.searchSuggestions.entries
+	recentSearchRemoveButton(query: string) {
+		return this.searchSuggestions.recentSearchEntries
 			.filter({
 				has: this.page.getByRole('menuitem', {
 					exact: true,
@@ -384,6 +395,27 @@ export class FDSSamplePage {
 				}),
 			})
 			.getByRole('menuitem', {name: 'Clear Search'});
+	}
+
+	recentlyVisitedEntry(label: string) {
+		return this.searchSuggestions.recentlyVisitedEntries.getByRole(
+			'menuitem',
+			{
+				exact: true,
+				name: label,
+			}
+		);
+	}
+
+	recentlyVisitedRemoveButton(label: string) {
+		return this.searchSuggestions.recentlyVisitedEntries
+			.filter({
+				has: this.page.getByRole('menuitem', {
+					exact: true,
+					name: label,
+				}),
+			})
+			.getByRole('menuitem', {name: 'Remove'});
 	}
 
 	async search(value: string) {
