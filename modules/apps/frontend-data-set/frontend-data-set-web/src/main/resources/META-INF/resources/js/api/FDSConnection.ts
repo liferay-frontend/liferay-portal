@@ -6,8 +6,10 @@
 import {getFDSAtom, getOrCreateSelector} from './getFDSAtom';
 
 import type {
+	FDSConnectionFilter,
 	FDSConnectionInfo,
 	FDSConnectionOptions,
+	FDSConnectionOwnership,
 	FDSConnectionStatus,
 	FDSState,
 	FDSStateChangeCallback,
@@ -16,19 +18,41 @@ import Atom = Liferay.State.Atom;
 
 const DEFAULT_TIMEOUT = 10000;
 
+const DEFAULT_OWNERSHIP: ReadonlyArray<FDSConnectionOwnership> = ['search'];
+
 interface Subscriptions {
+	restoredConnectionState?: {dispose: () => void};
 	search: {dispose: () => void};
 }
 
+type RestoredConnectionState = Readonly<Record<string, unknown>> | null;
+
 interface Selectors {
+	restoredConnectionState: Liferay.State.Selector<
+		RestoredConnectionState | undefined
+	>;
 	search: Liferay.State.Selector<string>;
 }
 
 export class FDSConnection {
+
+	// The filtering of a data set has one owner at a time, and this is who:
+	// the connection it was granted to, under the name of the data set it
+	// filters. One app may own the filtering of several data sets, and every
+	// data set has at most the one owner, so the data set is what a claim is
+	// keyed by and the connection itself is what answers for it.
+	//
+	// A claim is taken and given back within one turn of the event loop, so
+	// no other connection ever runs in between: a page ends up with a single
+	// owner without any locking.
+
+	private static filteringOwners = new Map<string, FDSConnection>();
 	private static instanceCount = 0;
 
+	private appId?: string;
 	private atom!: Atom<FDSState>;
 	private disconnected = false;
+	private element?: HTMLElement;
 	private fdsName: string;
 	private instanceId: number = ++FDSConnection.instanceCount;
 	private isReady = false;
@@ -36,6 +60,8 @@ export class FDSConnection {
 	private onFDSConnectionInfoChange: (
 		fdsConnectionInfo: FDSConnectionInfo
 	) => void;
+	private requestedOwnership: ReadonlyArray<FDSConnectionOwnership>;
+	private restore?: (connectionState: unknown) => void;
 	private selectors!: Selectors;
 	private subscriptions!: Subscriptions;
 
@@ -47,8 +73,12 @@ export class FDSConnection {
 		) => void,
 		options: FDSConnectionOptions = {}
 	) {
+		this.appId = options.appId;
+		this.element = options.element;
 		this.fdsName = fdsName;
 		this.onFDSConnectionInfoChange = onFDSConnectionInfoChange;
+		this.requestedOwnership = options.owns ?? DEFAULT_OWNERSHIP;
+		this.restore = fdsStateChangeCallback.restore;
 		this.notifyStatus('connecting');
 
 		getFDSAtom(fdsName, {timeout: options.timeout ?? DEFAULT_TIMEOUT})
@@ -60,6 +90,10 @@ export class FDSConnection {
 				this.atom = atom;
 
 				this.selectors = {
+					restoredConnectionState: getOrCreateSelector(
+						`${atom.key}_restoredConnectionState`,
+						(get) => get(atom).restoredConnectionState
+					),
 					search: getOrCreateSelector(
 						`${atom.key}_searchQuery`,
 						(get) => get(atom).search.query
@@ -77,13 +111,34 @@ export class FDSConnection {
 					),
 				};
 
+				// Before the restore below, since a refused connection must
+				// not consume what the URL left for the owner.
+
+				this.acquireFilteringOwnership();
+
 				// initialize consumer's state
+
+				if (this.ownsFiltering()) {
+					this.subscriptions.restoredConnectionState =
+						Liferay.State.subscribe(
+							this.selectors.restoredConnectionState,
+							this.handleRestoredConnectionState
+						);
+
+					const restoredConnectionState = Liferay.State.read(
+						this.selectors.restoredConnectionState
+					);
+
+					if (restoredConnectionState !== undefined) {
+						this.restoreConnectionState(restoredConnectionState);
+					}
+				}
 
 				fdsStateChangeCallback.search(this.getSearch() || '');
 
-				// then inform consumer everything is settled
-
-				this.notifyStatus('ready');
+				this.notifyStatus(
+					this.isFilteringRefused() ? 'refused' : 'ready'
+				);
 			})
 			.catch((error: Error) => {
 				if (this.disconnected) {
@@ -125,10 +180,58 @@ export class FDSConnection {
 		});
 	};
 
+	/**
+	 * Applies the given expressions, replacing whatever a previous call
+	 * passed. The filters the data set declares never reach the request while
+	 * this connection owns the filtering: the consumer owns the whole filter
+	 * expression.
+	 */
+	setFilters = (
+		filters: Array<FDSConnectionFilter>,
+		connectionState?: unknown
+	): void => {
+		if (!this.isReady) {
+			return;
+		}
+
+		if (!this.ownsFiltering()) {
+			this.warn(
+				'Ignored setFilters() for ' +
+					this.fdsName +
+					': ' +
+					(!this.requestedOwnership.includes('filters')
+						? "connect with owns: ['filters'] to take the" +
+							' filtering over'
+						: this.appId
+							? 'another connection owns the filtering'
+							: 'connect with an appId to own the filtering,' +
+								' since what a connection filters by is kept' +
+								' in the URL under it')
+			);
+
+			return;
+		}
+
+		this.writeConnectionFilters(
+			filters.map(({id, odataFilterString}) => ({id, odataFilterString})),
+			connectionState
+		);
+	};
+
+	clearFilters = (): void => {
+		this.setFilters([]);
+	};
+
 	disconnect = (): void => {
 		if (this.disconnected) {
 			return;
 		}
+
+		if (this.ownsFiltering() && this.isReady) {
+			this.releaseFiltering();
+		}
+
+		this.subscriptions?.restoredConnectionState?.dispose();
 		this.subscriptions?.search?.dispose();
 		this.disconnected = true;
 		this.isReady = false;
@@ -136,8 +239,225 @@ export class FDSConnection {
 		this.notifyStatus('disconnected');
 	};
 
+	private restoreConnectionState(
+		restoredConnectionState: RestoredConnectionState
+	): void {
+		const connectionState =
+			restoredConnectionState === null
+				? null
+				: restoredConnectionState[this.appId!] ?? null;
+
+		if (this.restore) {
+			this.restore(connectionState);
+		}
+		else if (connectionState !== null) {
+			this.warn(
+				'Dropped the filters restored for ' +
+					this.fdsName +
+					': connect with a restore state change callback to put' +
+					' them back'
+			);
+		}
+
+		this.dropRestoredConnectionState();
+	}
+
+	private dropRestoredConnectionState(): void {
+		const fdsState = {...Liferay.State.read(this.atom)};
+
+		const remaining = this.withoutOwnKey(fdsState.restoredConnectionState);
+
+		if (remaining) {
+			fdsState.restoredConnectionState = remaining;
+		}
+		else {
+			delete fdsState.restoredConnectionState;
+		}
+
+		Liferay.State.write(this.atom, fdsState);
+	}
+
+	private withoutOwnKey<T extends object>(
+		keyedByAppId: T | null | undefined
+	): T | undefined {
+		if (!keyedByAppId) {
+			return undefined;
+		}
+
+		const remaining = Object.fromEntries(
+			Object.entries(keyedByAppId).filter(
+				([appId]) => appId !== this.appId
+			)
+		);
+
+		return Object.keys(remaining).length ? (remaining as T) : undefined;
+	}
+
+	private handleRestoredConnectionState = (
+		restoredConnectionState: RestoredConnectionState | undefined
+	): void => {
+
+		// Dropping it above sets this to nothing, which comes back here:
+		// there is no consumer left to tell.
+
+		if (restoredConnectionState === undefined) {
+			return;
+		}
+
+		if (
+			restoredConnectionState !== null &&
+			!(this.appId! in restoredConnectionState)
+		) {
+			return;
+		}
+
+		this.restoreConnectionState(restoredConnectionState);
+	};
+
+	private releaseFiltering(): void {
+		FDSConnection.filteringOwners.delete(this.fdsName);
+
+		const fdsState = {...Liferay.State.read(this.atom)};
+
+		delete fdsState.connectionFilters;
+		delete fdsState.filteringOwnerAppId;
+
+		const remaining = this.withoutOwnKey(fdsState.connectionState);
+
+		if (remaining) {
+			fdsState.connectionState = remaining;
+		}
+		else {
+			delete fdsState.connectionState;
+		}
+
+		Liferay.State.write(this.atom, fdsState);
+	}
+
+	private acquireFilteringOwnership(): void {
+		if (!this.requestedOwnership.includes('filters')) {
+			return;
+		}
+
+		if (!this.appId) {
+			this.refuseFiltering(
+				'connect with an appId to own the filtering, since what' +
+					' a connection filters by is kept in the URL under it'
+			);
+
+			return;
+		}
+
+		if (this.isFilteringOwnedByAnotherConnection()) {
+			this.refuseFiltering(
+				'another connection already owns it, and a data set can' +
+					' only have one filtering owner'
+			);
+
+			this.warnFilteringTaken();
+
+			return;
+		}
+
+		FDSConnection.filteringOwners.set(this.fdsName, this);
+
+		const fdsState = {...Liferay.State.read(this.atom)};
+
+		fdsState.filteringOwnerAppId = this.appId;
+
+		delete fdsState.connectionFilters;
+
+		Liferay.State.write(this.atom, fdsState);
+	}
+
+	private ownsFiltering(): boolean {
+		return FDSConnection.filteringOwners.get(this.fdsName) === this;
+	}
+
+	private refuseFiltering(reason: string): void {
+		this.warn(
+			'Refused the filtering of ' +
+				this.fdsName +
+				' to this connection: ' +
+				reason
+		);
+	}
+
+	private isFilteringOwnedByAnotherConnection(): boolean {
+		const owner = FDSConnection.filteringOwners.get(this.fdsName);
+
+		// Nothing asks this after taking the claim today, and this is what
+		// keeps the reclaiming below from tearing down the very connection
+		// that asked.
+
+		if (owner === this) {
+			return false;
+		}
+
+		if (owner) {
+			if (!owner.element || owner.element.isConnected) {
+				return true;
+			}
+
+			owner.disconnect();
+		}
+
+		return Liferay.State.read(this.atom).filteringOwnerAppId !== undefined;
+	}
+
+	private isFilteringRefused(): boolean {
+		return (
+			this.requestedOwnership.includes('filters') && !this.ownsFiltering()
+		);
+	}
+
 	private warn(msg: string): void {
-		console.warn('[FDSConnection', this.instanceId, ']', msg);
+		console.warn(
+			'[FDSConnection',
+			(this.appId ?? 'no-appId') + '#' + this.instanceId,
+			']',
+			msg
+		);
+	}
+
+	private warnFilteringTaken(): void {
+		Liferay.Util.openToast({
+			message: Liferay.Language.get(
+				'another-widget-is-already-filtering-this-data-set'
+			),
+			type: 'warning',
+		});
+	}
+
+	private writeConnectionFilters(
+		connectionFilters: Array<FDSConnectionFilter>,
+		connectionState?: unknown
+	): void {
+		const fdsState = {...Liferay.State.read(this.atom), connectionFilters};
+
+		const remaining = this.withoutOwnKey(fdsState.connectionState);
+
+		// The state read back is deeply readonly, which maps a value the data
+		// set keeps without reading to Readonly<unknown>, and nothing unknown
+		// satisfies that. Saying so here is the whole of it: what a consumer
+		// asks to have remembered is opaque going in and coming out.
+
+		const connectionStates =
+			connectionState === undefined
+				? remaining
+				: {
+						...remaining,
+						[this.appId!]: connectionState as Readonly<unknown>,
+					};
+
+		if (connectionStates) {
+			fdsState.connectionState = connectionStates;
+		}
+		else {
+			delete fdsState.connectionState;
+		}
+
+		Liferay.State.write(this.atom, fdsState);
 	}
 
 	private notifyStatus(status: FDSConnectionStatus): void {

@@ -46,7 +46,6 @@ import {
 	InlineNotification,
 } from './inline_notification/InlineNotification';
 import ManagementBar from './management_bar/ManagementBar';
-import {FILTER_IMPLEMENTATIONS} from './management_bar/controls/filters/Filter';
 
 // @ts-ignore
 
@@ -57,9 +56,12 @@ import Modal from './modal/Modal';
 import SidePanel from './side_panel/SidePanel';
 import filterCreationActions from './utils/actionItems/filterCreationActions';
 import {readConfigFromURL} from './utils/configInURL';
+import {IConnectedFDSState} from './utils/connection/types';
+import {useRestoredConnectionState} from './utils/connection/useRestoredConnectionState';
 import EVENTS from './utils/eventsDefinitions';
 import {activateFilter} from './utils/filters/activateFilter';
 import {deactivateFilter} from './utils/filters/deactivateFilter';
+import {getOdataFiltersStrings} from './utils/filters/getOdataFiltersStrings';
 import {getOrCreateFDSAtom} from './utils/getOrCreateFDSAtom';
 import getRandomId from './utils/getRandomId';
 
@@ -382,6 +384,31 @@ const FrontendDataSetContent = ({
 	const [globalFDSState, setGlobalFDSState] =
 		useLiferayState<IFDSState>(memoizedAtom);
 
+	const {connectionFilters, connectionState, filteringOwnerAppId} =
+		globalFDSState as IConnectedFDSState;
+
+	const [connectionStateOffered, setConnectionStateOffered] = useState(false);
+
+	const {getConnectionState, restored: connectionStateRestored} =
+		useRestoredConnectionState({
+			configInURLBehavior,
+			connectionStateOffered,
+			filteringOwnerAppId,
+			id,
+			onGiveUp: () => {
+				const unfrozenGlobalFDSState: IFDSState =
+					deepClone(globalFDSState);
+
+				delete unfrozenGlobalFDSState.restoredConnectionState;
+
+				setGlobalFDSState(unfrozenGlobalFDSState);
+			},
+			restoredConnectionState: globalFDSState.restoredConnectionState,
+		});
+
+	const filteringDelegated =
+		Boolean(filteringOwnerAppId) || !connectionStateRestored;
+
 	const [globalFDSStateInitialized, setGlobalFDSStateInitialized] =
 		useState(false);
 	const [cellClientExtensionsLoaded, setCellClientExtensionsLoaded] =
@@ -670,17 +697,9 @@ const FrontendDataSetContent = ({
 
 			const unfrozenGlobalFDSState: IFDSState = deepClone(globalFDSState);
 
-			const activeFilters: Array<IBaseFilterState> =
-				unfrozenGlobalFDSState.filters.filter(
-					(filter) => filter.active
-				) || [];
-
-			const activeFiltersOdataStrings = activeFilters.map((filter) => {
-				const filterImplementation =
-					FILTER_IMPLEMENTATIONS[filter.type];
-
-				return filterImplementation.getOdataString(filter);
-			});
+			const activeFiltersOdataStrings = getOdataFiltersStrings(
+				unfrozenGlobalFDSState
+			);
 
 			const activeSorts =
 				sorts.length > 1
@@ -727,22 +746,28 @@ const FrontendDataSetContent = ({
 	const onClearFilters = useCallback(() => {
 		const unfrozenGlobalFDSState: IFDSState = deepClone(globalFDSState);
 
-		const filters = unfrozenGlobalFDSState.filters.map((filter) =>
-			deactivateFilter(filter)
-		);
+		// Delegated filters must survive a clear: the user cannot see them, so
+		// removing them would silently change the results.
+
+		const filters = filteringDelegated
+			? unfrozenGlobalFDSState.filters
+			: unfrozenGlobalFDSState.filters.map((filter) =>
+					deactivateFilter(filter)
+				);
 
 		setGlobalFDSState({
 			...unfrozenGlobalFDSState,
 			filters,
 			search: {query: ''},
 		});
-	}, [globalFDSState, setGlobalFDSState]);
+	}, [filteringDelegated, globalFDSState, setGlobalFDSState]);
 
 	const skipSnapshotsUpdatedChangeRef = useRef(true);
 
 	useEffect(() => {
 		if (
 			globalFDSStateInitialized ||
+			!connectionStateRestored ||
 			!filterClientExtensionsLoaded ||
 			!cellClientExtensionsLoaded
 		) {
@@ -752,6 +777,7 @@ const FrontendDataSetContent = ({
 		setGlobalFDSStateInitialized(true);
 	}, [
 		cellClientExtensionsLoaded,
+		connectionStateRestored,
 		filterClientExtensionsLoaded,
 		globalFDSStateInitialized,
 	]);
@@ -797,6 +823,20 @@ const FrontendDataSetContent = ({
 				globalFDSState.filters as Array<any>;
 		}
 
+		const filteredByConnection = Boolean(
+			connectionFilters?.some(({odataFilterString}) => odataFilterString)
+		);
+
+		const shouldUpdateConnectionState =
+			filteringOwnerAppId &&
+			(filteredByConnection ||
+				configInURL?.[EConfigInURLKeys.CONNECTION_STATE] !== undefined);
+
+		if (shouldUpdateConnectionState) {
+			updateConfig[EConfigInURLKeys.CONNECTION_STATE] =
+				filteredByConnection ? connectionState : undefined;
+		}
+
 		if (shouldUpdateSearch) {
 			updateConfig[EConfigInURLKeys.SEARCH_PARAM] =
 				globalFDSState.search.query;
@@ -816,6 +856,9 @@ const FrontendDataSetContent = ({
 			});
 		}
 	}, [
+		connectionFilters,
+		connectionState,
+		filteringOwnerAppId,
 		globalFDSState,
 		globalFDSStateInitialized,
 		id,
@@ -888,6 +931,8 @@ const FrontendDataSetContent = ({
 
 		const searchParam = getSearchParam();
 
+		const restoredConnectionState = getConnectionState();
+
 		const preloadFilters = (
 			filters: Array<IBaseFilterState> | undefined
 		): Array<IBaseFilterState> => {
@@ -938,9 +983,14 @@ const FrontendDataSetContent = ({
 		else {
 			setFilterClientExtensionsLoaded(true);
 
+			if (restoredConnectionState !== undefined) {
+				setConnectionStateOffered(true);
+			}
+
 			setGlobalFDSState({
 				...globalFDSState,
 				filters: preloadFilters(initialFilters),
+				restoredConnectionState,
 				search: {query: searchParam ?? ''},
 			});
 		}
@@ -1026,9 +1076,14 @@ const FrontendDataSetContent = ({
 							return filter;
 						}) || [];
 
+					if (restoredConnectionState !== undefined) {
+						setConnectionStateOffered(true);
+					}
+
 					setGlobalFDSState({
 						...globalFDSState,
 						filters: preloadFilters(newFilters),
+						restoredConnectionState,
 						search: {query: searchParam ?? ''},
 					});
 
@@ -1075,6 +1130,7 @@ const FrontendDataSetContent = ({
 		cellClientExtensionsLoading,
 		filterClientExtensionsLoaded,
 		filterClientExtensionsLoading,
+		getConnectionState,
 		getSearchParam,
 		globalFDSState,
 		globalFDSStateInitialized,
@@ -1253,8 +1309,19 @@ const FrontendDataSetContent = ({
 			});
 		}
 
+		const urlConnectionState = getConnectionState();
+
+		const restoredConnectionState =
+			filteringOwnerAppId || urlConnectionState !== undefined
+				? urlConnectionState ?? null
+				: undefined;
+
 		if (activeFilters || searchParam) {
 			const unfrozenGlobalFDSState: IFDSState = deepClone(globalFDSState);
+
+			if (restoredConnectionState !== undefined) {
+				setConnectionStateOffered(true);
+			}
 
 			setGlobalFDSState({
 				...unfrozenGlobalFDSState,
@@ -1262,6 +1329,7 @@ const FrontendDataSetContent = ({
 					newFilters: activeFilters,
 					oldFilters: unfrozenGlobalFDSState.filters,
 				}),
+				restoredConnectionState,
 				search: {
 					query: searchParam ?? '',
 				},
@@ -1319,7 +1387,9 @@ const FrontendDataSetContent = ({
 			});
 		}
 	}, [
+		filteringOwnerAppId,
 		getActiveSorts,
+		getConnectionState,
 		getDelta,
 		getFilters,
 		getPageNumber,
@@ -1615,6 +1685,7 @@ const FrontendDataSetContent = ({
 				selectedItemsKey={selectedItemsKey}
 				selectedItemsValue={selectedItemsValue}
 				selectionType={selectionType}
+				showFilters={!filteringDelegated}
 				showNavBarWhenSelected={showNavBarWhenSelected}
 				showSearch={showSearch}
 				showSelectAll={showSelectAll}
@@ -2114,9 +2185,11 @@ const FrontendDataSetContent = ({
 				onActionDropdownItemClick,
 				onBulkActionItemClick,
 				onClearResultsBar: () => {
-					const filters = unfrozenGlobalFDSState.filters.map(
-						(filter) => deactivateFilter(filter)
-					);
+					const filters = filteringDelegated
+						? unfrozenGlobalFDSState.filters
+						: unfrozenGlobalFDSState.filters.map((filter) =>
+								deactivateFilter(filter)
+							);
 
 					setGlobalFDSState({
 						...unfrozenGlobalFDSState,
