@@ -51,7 +51,7 @@ if (Validator.isNull(icon)) {
 		</c:otherwise>
 	</c:choose>
 
-	<aui:script position="inline" use="liferay-menu">
+	<aui:script position="inline">
 		Liferay.Menu.register('<%= id %>');
 	</aui:script>
 
