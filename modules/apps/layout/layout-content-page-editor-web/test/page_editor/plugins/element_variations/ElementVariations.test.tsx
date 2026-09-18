@@ -270,6 +270,49 @@ describe('ElementVariations', () => {
 		expect(screen.getByText('Other Variation')).toBeInTheDocument();
 	});
 
+	it('filters the values of a category with the search field', async () => {
+		renderElementVariations({elementVariations: ELEMENT_VARIATIONS});
+
+		loadPreview();
+
+		expect(await screen.findByText('My Variation')).toBeInTheDocument();
+
+		await userEvent.click(screen.getByRole('button', {name: 'filter'}));
+		await userEvent.click(screen.getByText('audience'));
+
+		expect(screen.getByLabelText('Loyal Customers')).toBeInTheDocument();
+		expect(screen.getByLabelText('New Visitors')).toBeInTheDocument();
+
+		await userEvent.type(
+			screen.getByRole('textbox', {name: 'search'}),
+			'Visitors'
+		);
+
+		expect(
+			screen.queryByLabelText('Loyal Customers')
+		).not.toBeInTheDocument();
+		expect(screen.getByLabelText('New Visitors')).toBeInTheDocument();
+	});
+
+	it('clears the search when entering a category', async () => {
+		renderElementVariations({elementVariations: ELEMENT_VARIATIONS});
+
+		loadPreview();
+
+		expect(await screen.findByText('My Variation')).toBeInTheDocument();
+
+		await userEvent.click(screen.getByRole('button', {name: 'filter'}));
+		await userEvent.type(
+			screen.getByRole('textbox', {name: 'search'}),
+			'audience'
+		);
+		await userEvent.click(screen.getByText('audience'));
+
+		expect(screen.getByRole('textbox', {name: 'search'})).toHaveValue('');
+		expect(screen.getByLabelText('Loyal Customers')).toBeInTheDocument();
+		expect(screen.getByLabelText('New Visitors')).toBeInTheDocument();
+	});
+
 	it('does not show the results bar until a filter is added', async () => {
 		renderElementVariations({elementVariations: ELEMENT_VARIATIONS});
 
@@ -341,7 +384,9 @@ describe('ElementVariations', () => {
 		).toBeInTheDocument();
 
 		expect(
-			screen.queryByRole('button', {name: 'open-sidebar'})
+			screen.queryByRole('button', {
+				name: 'open-element-variations-panel',
+			})
 		).not.toBeInTheDocument();
 	});
 
@@ -351,13 +396,15 @@ describe('ElementVariations', () => {
 		renderElementVariations();
 
 		expect(
-			screen.queryByRole('button', {name: 'open-sidebar'})
+			screen.queryByRole('button', {
+				name: 'open-element-variations-panel',
+			})
 		).not.toBeInTheDocument();
 
 		await userEvent.click(screen.getByRole('button', {name: 'close'}));
 
 		expect(
-			screen.getByRole('button', {name: 'open-sidebar'})
+			screen.getByRole('button', {name: 'open-element-variations-panel'})
 		).toBeInTheDocument();
 	});
 
@@ -368,11 +415,13 @@ describe('ElementVariations', () => {
 
 		await userEvent.click(screen.getByRole('button', {name: 'close'}));
 		await userEvent.click(
-			screen.getByRole('button', {name: 'open-sidebar'})
+			screen.getByRole('button', {name: 'open-element-variations-panel'})
 		);
 
 		expect(
-			screen.queryByRole('button', {name: 'open-sidebar'})
+			screen.queryByRole('button', {
+				name: 'open-element-variations-panel',
+			})
 		).not.toBeInTheDocument();
 	});
 
@@ -383,7 +432,7 @@ describe('ElementVariations', () => {
 		renderElementVariations();
 
 		expect(
-			screen.getByRole('button', {name: 'open-sidebar'})
+			screen.getByRole('button', {name: 'open-element-variations-panel'})
 		).toBeInTheDocument();
 	});
 

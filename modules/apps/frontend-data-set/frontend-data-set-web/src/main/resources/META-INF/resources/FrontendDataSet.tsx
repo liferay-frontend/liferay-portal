@@ -46,7 +46,6 @@ import {
 	InlineNotification,
 } from './inline_notification/InlineNotification';
 import ManagementBar from './management_bar/ManagementBar';
-import {FILTER_IMPLEMENTATIONS} from './management_bar/controls/filters/Filter';
 
 // @ts-ignore
 
@@ -57,9 +56,12 @@ import Modal from './modal/Modal';
 import SidePanel from './side_panel/SidePanel';
 import filterCreationActions from './utils/actionItems/filterCreationActions';
 import {readConfigFromURL} from './utils/configInURL';
+import {IConnectedFDSState} from './utils/connection/types';
+import {useOfferedCustomConfigs} from './utils/connection/useOfferedCustomConfigs';
 import EVENTS from './utils/eventsDefinitions';
 import {activateFilter} from './utils/filters/activateFilter';
 import {deactivateFilter} from './utils/filters/deactivateFilter';
+import {getOdataFiltersStrings} from './utils/filters/getOdataFiltersStrings';
 import {getOrCreateFDSAtom} from './utils/getOrCreateFDSAtom';
 import getRandomId from './utils/getRandomId';
 
@@ -382,6 +384,31 @@ const FrontendDataSetContent = ({
 	const [globalFDSState, setGlobalFDSState] =
 		useLiferayState<IFDSState>(memoizedAtom);
 
+	const {appliedCustomConfigs, connectionFilters, filteringOwnerAppId} =
+		globalFDSState as IConnectedFDSState;
+
+	const [customConfigsOffered, setCustomConfigsOffered] = useState(false);
+
+	const {getCustomConfigs, settled: customConfigsSettled} =
+		useOfferedCustomConfigs({
+			configInURLBehavior,
+			customConfigsOffered,
+			filteringOwnerAppId,
+			id,
+			offeredCustomConfigs: globalFDSState.offeredCustomConfigs,
+			onGiveUp: () => {
+				const unfrozenGlobalFDSState: IFDSState =
+					deepClone(globalFDSState);
+
+				delete unfrozenGlobalFDSState.offeredCustomConfigs;
+
+				setGlobalFDSState(unfrozenGlobalFDSState);
+			},
+		});
+
+	const filteringDelegated =
+		Boolean(filteringOwnerAppId) || !customConfigsSettled;
+
 	const [globalFDSStateInitialized, setGlobalFDSStateInitialized] =
 		useState(false);
 	const [cellClientExtensionsLoaded, setCellClientExtensionsLoaded] =
@@ -670,17 +697,9 @@ const FrontendDataSetContent = ({
 
 			const unfrozenGlobalFDSState: IFDSState = deepClone(globalFDSState);
 
-			const activeFilters: Array<IBaseFilterState> =
-				unfrozenGlobalFDSState.filters.filter(
-					(filter) => filter.active
-				) || [];
-
-			const activeFiltersOdataStrings = activeFilters.map((filter) => {
-				const filterImplementation =
-					FILTER_IMPLEMENTATIONS[filter.type];
-
-				return filterImplementation.getOdataString(filter);
-			});
+			const activeFiltersOdataStrings = getOdataFiltersStrings(
+				unfrozenGlobalFDSState
+			);
 
 			const activeSorts =
 				sorts.length > 1
@@ -727,22 +746,28 @@ const FrontendDataSetContent = ({
 	const onClearFilters = useCallback(() => {
 		const unfrozenGlobalFDSState: IFDSState = deepClone(globalFDSState);
 
-		const filters = unfrozenGlobalFDSState.filters.map((filter) =>
-			deactivateFilter(filter)
-		);
+		// Delegated filters must survive a clear: the user cannot see them, so
+		// removing them would silently change the results.
+
+		const filters = filteringDelegated
+			? unfrozenGlobalFDSState.filters
+			: unfrozenGlobalFDSState.filters.map((filter) =>
+					deactivateFilter(filter)
+				);
 
 		setGlobalFDSState({
 			...unfrozenGlobalFDSState,
 			filters,
 			search: {query: ''},
 		});
-	}, [globalFDSState, setGlobalFDSState]);
+	}, [filteringDelegated, globalFDSState, setGlobalFDSState]);
 
 	const skipSnapshotsUpdatedChangeRef = useRef(true);
 
 	useEffect(() => {
 		if (
 			globalFDSStateInitialized ||
+			!customConfigsSettled ||
 			!filterClientExtensionsLoaded ||
 			!cellClientExtensionsLoaded
 		) {
@@ -752,6 +777,7 @@ const FrontendDataSetContent = ({
 		setGlobalFDSStateInitialized(true);
 	}, [
 		cellClientExtensionsLoaded,
+		customConfigsSettled,
 		filterClientExtensionsLoaded,
 		globalFDSStateInitialized,
 	]);
@@ -797,6 +823,21 @@ const FrontendDataSetContent = ({
 				globalFDSState.filters as Array<any>;
 		}
 
+		const filteredByConnection = Boolean(
+			connectionFilters?.some(({odataFilterString}) => odataFilterString)
+		);
+
+		const shouldUpdateCustomConfigs =
+			filteringOwnerAppId &&
+			(filteredByConnection ||
+				configInURL?.[EConfigInURLKeys.CUSTOM_CONFIGS] !== undefined);
+
+		if (shouldUpdateCustomConfigs) {
+			updateConfig[EConfigInURLKeys.CUSTOM_CONFIGS] = filteredByConnection
+				? appliedCustomConfigs
+				: undefined;
+		}
+
 		if (shouldUpdateSearch) {
 			updateConfig[EConfigInURLKeys.SEARCH_PARAM] =
 				globalFDSState.search.query;
@@ -816,6 +857,9 @@ const FrontendDataSetContent = ({
 			});
 		}
 	}, [
+		appliedCustomConfigs,
+		connectionFilters,
+		filteringOwnerAppId,
 		globalFDSState,
 		globalFDSStateInitialized,
 		id,
@@ -888,6 +932,8 @@ const FrontendDataSetContent = ({
 
 		const searchParam = getSearchParam();
 
+		const offeredCustomConfigs = getCustomConfigs();
+
 		const preloadFilters = (
 			filters: Array<IBaseFilterState> | undefined
 		): Array<IBaseFilterState> => {
@@ -938,9 +984,14 @@ const FrontendDataSetContent = ({
 		else {
 			setFilterClientExtensionsLoaded(true);
 
+			if (offeredCustomConfigs !== undefined) {
+				setCustomConfigsOffered(true);
+			}
+
 			setGlobalFDSState({
 				...globalFDSState,
 				filters: preloadFilters(initialFilters),
+				offeredCustomConfigs,
 				search: {query: searchParam ?? ''},
 			});
 		}
@@ -1026,9 +1077,14 @@ const FrontendDataSetContent = ({
 							return filter;
 						}) || [];
 
+					if (offeredCustomConfigs !== undefined) {
+						setCustomConfigsOffered(true);
+					}
+
 					setGlobalFDSState({
 						...globalFDSState,
 						filters: preloadFilters(newFilters),
+						offeredCustomConfigs,
 						search: {query: searchParam ?? ''},
 					});
 
@@ -1075,6 +1131,7 @@ const FrontendDataSetContent = ({
 		cellClientExtensionsLoading,
 		filterClientExtensionsLoaded,
 		filterClientExtensionsLoading,
+		getCustomConfigs,
 		getSearchParam,
 		globalFDSState,
 		globalFDSStateInitialized,
@@ -1253,8 +1310,19 @@ const FrontendDataSetContent = ({
 			});
 		}
 
+		const customConfigsInURL = getCustomConfigs();
+
+		const offeredCustomConfigs =
+			filteringOwnerAppId || customConfigsInURL !== undefined
+				? customConfigsInURL ?? null
+				: undefined;
+
 		if (activeFilters || searchParam) {
 			const unfrozenGlobalFDSState: IFDSState = deepClone(globalFDSState);
+
+			if (offeredCustomConfigs !== undefined) {
+				setCustomConfigsOffered(true);
+			}
 
 			setGlobalFDSState({
 				...unfrozenGlobalFDSState,
@@ -1262,6 +1330,7 @@ const FrontendDataSetContent = ({
 					newFilters: activeFilters,
 					oldFilters: unfrozenGlobalFDSState.filters,
 				}),
+				offeredCustomConfigs,
 				search: {
 					query: searchParam ?? '',
 				},
@@ -1319,7 +1388,9 @@ const FrontendDataSetContent = ({
 			});
 		}
 	}, [
+		filteringOwnerAppId,
 		getActiveSorts,
+		getCustomConfigs,
 		getDelta,
 		getFilters,
 		getPageNumber,
@@ -1615,6 +1686,7 @@ const FrontendDataSetContent = ({
 				selectedItemsKey={selectedItemsKey}
 				selectedItemsValue={selectedItemsValue}
 				selectionType={selectionType}
+				showFilters={!filteringDelegated}
 				showNavBarWhenSelected={showNavBarWhenSelected}
 				showSearch={showSearch}
 				showSelectAll={showSelectAll}
@@ -1883,11 +1955,19 @@ const FrontendDataSetContent = ({
 		}
 	});
 
+	const offerCustomConfigs = (customConfigs: unknown) =>
+		filteringOwnerAppId || customConfigs !== undefined
+			? customConfigs ?? null
+			: undefined;
+
 	const handleSnapshotChange = ({defaultSnapshot, snapshots, value}: any) => {
 		if (value === 'DEFAULT_VIEW') {
+			const offeredCustomConfigs = offerCustomConfigs(undefined);
+
 			updateConfigInURL({
 				[EConfigInURLKeys.ACTIVE_FILTERS]: defaultSnapshot.filters,
 				[EConfigInURLKeys.ACTIVE_SORTS]: defaultSnapshot.sorts,
+				[EConfigInURLKeys.CUSTOM_CONFIGS]: undefined,
 				[EConfigInURLKeys.DELTA]: {...defaultSnapshot.paginationDelta},
 				[EConfigInURLKeys.VIEW_NAME]: {
 					...defaultSnapshot.activeView.name,
@@ -1903,9 +1983,14 @@ const FrontendDataSetContent = ({
 
 			skipSnapshotsUpdatedChangeRef.current = true;
 
+			if (offeredCustomConfigs !== undefined) {
+				setCustomConfigsOffered(true);
+			}
+
 			setGlobalFDSState({
 				...unfrozenGlobalFDSState,
 				filters: defaultSnapshot.filters,
+				offeredCustomConfigs,
 			});
 		}
 		else {
@@ -1915,6 +2000,10 @@ const FrontendDataSetContent = ({
 					.find((snapshot: ISnapshot) => snapshot.erc === value)
 			);
 
+			const {customConfigs} = snapshot.configuration;
+
+			const offeredCustomConfigs = offerCustomConfigs(customConfigs);
+
 			updateConfigInURL({
 				[EConfigInURLKeys.ACTIVE_FILTERS]:
 					snapshot.configuration.filters,
@@ -1922,6 +2011,7 @@ const FrontendDataSetContent = ({
 					newSorts: snapshot.configuration.sorts,
 					oldSorts: sorts,
 				}),
+				[EConfigInURLKeys.CUSTOM_CONFIGS]: customConfigs,
 				[EConfigInURLKeys.DELTA]:
 					snapshot.configuration.paginationDelta,
 				[EConfigInURLKeys.VIEW_NAME]:
@@ -1937,9 +2027,14 @@ const FrontendDataSetContent = ({
 
 			skipSnapshotsUpdatedChangeRef.current = true;
 
+			if (offeredCustomConfigs !== undefined) {
+				setCustomConfigsOffered(true);
+			}
+
 			setGlobalFDSState({
 				...unfrozenGlobalFDSState,
 				filters: snapshot.configuration.filters,
+				offeredCustomConfigs,
 			});
 		}
 	};
@@ -2114,9 +2209,11 @@ const FrontendDataSetContent = ({
 				onActionDropdownItemClick,
 				onBulkActionItemClick,
 				onClearResultsBar: () => {
-					const filters = unfrozenGlobalFDSState.filters.map(
-						(filter) => deactivateFilter(filter)
-					);
+					const filters = filteringDelegated
+						? unfrozenGlobalFDSState.filters
+						: unfrozenGlobalFDSState.filters.map((filter) =>
+								deactivateFilter(filter)
+							);
 
 					setGlobalFDSState({
 						...unfrozenGlobalFDSState,
