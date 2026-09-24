@@ -46,18 +46,6 @@
 							'aui-set',
 						],
 					},
-					'liferay-menu': {
-						path: 'menu.js',
-						requires: ['aui-debounce', 'aui-node'],
-					},
-					'liferay-menu-filter': {
-						path: 'menu_filter.js',
-						requires: [
-							'autocomplete-base',
-							'autocomplete-filters',
-							'autocomplete-highlighters',
-						],
-					},
 					'liferay-portlet-base': {
 						path: 'portlet_base.js',
 						requires: ['aui-base'],

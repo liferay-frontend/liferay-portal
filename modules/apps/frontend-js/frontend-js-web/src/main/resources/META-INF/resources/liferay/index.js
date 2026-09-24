@@ -36,6 +36,7 @@ import {
 	showLayoutPane,
 	toggleLayoutDetails,
 } from './layout_exporter.es';
+import {Menu, MenuFilter} from './menu';
 
 import './lazy_load';
 
@@ -162,6 +163,16 @@ Liferay.Address = {
  * @deprecated As of Athanasius (7.3.x), with no direct replacement
  */
 Liferay.DynamicSelect = DynamicSelect;
+
+/**
+ * @deprecated As of Athanasius (7.3.x), with no direct replacement
+ */
+Liferay.Menu = Menu;
+
+/**
+ * @deprecated As of Athanasius (7.3.x), with no direct replacement
+ */
+Liferay.MenuFilter = MenuFilter;
 
 Liferay.LayoutExporter = {
 	all: hideLayoutPane,

@@ -726,6 +726,6 @@ AUI.add(
 	},
 	'',
 	{
-		requires: ['aui-base', 'liferay-menu'],
+		requires: ['aui-base'],
 	}
 );
