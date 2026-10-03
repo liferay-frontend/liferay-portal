@@ -1,5 +1,5 @@
 {
-	"@generated": "338f533fa2e2d4031d8e79a89f8c551de6a834bd",
+	"@generated": "db7e7d79f405c72501a0c8b9ebfc4c1d68b59728",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -31,6 +31,9 @@
 			],
 			"frontend-js-web/legacy": [
 				"../../../frontend-js/frontend-js-web/src/main/resources/META-INF/resources/legacy/index.ts"
+			],
+			"frontend-js-web/menu": [
+				"../../../frontend-js/frontend-js-web/src/main/resources/META-INF/resources/menu/index.js"
 			],
 			"staging-taglib": [
 				"../../../staging/staging-taglib/src/main/resources/META-INF/resources/js/index.js"

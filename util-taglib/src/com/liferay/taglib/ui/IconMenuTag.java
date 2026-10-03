@@ -5,7 +5,9 @@
 
 package com.liferay.taglib.ui;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.frontend.esm.FrontendESMUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.servlet.FileAvailabilityUtil;
 import com.liferay.portal.kernel.servlet.taglib.aui.ScriptData;
@@ -410,10 +412,18 @@ public class IconMenuTag extends BaseBodyTagSupport implements BodyTag {
 
 					jspWriter.write("</a>");
 
+					ThemeDisplay themeDisplay =
+						(ThemeDisplay)httpServletRequest.getAttribute(
+							WebKeys.THEME_DISPLAY);
+
 					ScriptTag.doTag(
-						null, null, "liferay-menu",
-						"Liferay.Menu.register('" + _id + "');", bodyContent,
-						pageContext);
+						null, null, null, "module",
+						StringBundler.concat(
+							"import {Menu} from '",
+							FrontendESMUtil.buildURL(
+								themeDisplay, "frontend-js-web", "menu"),
+							"'; Menu.register('", _id, "');"),
+						bodyContent, pageContext);
 
 					jspWriter.write("<ul class=\"dropdown-menu lfr-menu-list");
 					jspWriter.write(" direction-");
@@ -441,13 +451,7 @@ public class IconMenuTag extends BaseBodyTagSupport implements BodyTag {
 
 				jspWriter.write("</ul>");
 
-				if (_showExpanded) {
-					ScriptTag.doTag(
-						null, null, "liferay-menu",
-						"Liferay.Menu.handleFocus('#" + _id + "menu');",
-						bodyContent, pageContext);
-				}
-				else {
+				if (!_showExpanded) {
 					jspWriter.write("</div>");
 				}
 			}

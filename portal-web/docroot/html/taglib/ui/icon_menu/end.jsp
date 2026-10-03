@@ -12,7 +12,3 @@
 		</div>
 	</c:if>
 </div>
-
-<aui:script use="liferay-menu">
-	Liferay.Menu.handleFocus('#<%= GetterUtil.getString((String)request.getAttribute("liferay-ui:icon-menu:id")) %>menu');
-</aui:script>

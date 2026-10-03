@@ -11,6 +11,7 @@ import {
 	runScriptsInElement,
 	toggleDisabled,
 } from 'frontend-js-web';
+import {Menu} from 'frontend-js-web/menu';
 
 import {
 	all,
@@ -652,7 +653,7 @@ export class AutoFields extends Emitter {
 			),
 		});
 
-		Liferay.Menu.register(`${namespace}${namespacedId}Menu`);
+		Menu.register(`${namespace}${namespacedId}Menu`);
 	}
 
 	_resolveFieldIndexes(name) {

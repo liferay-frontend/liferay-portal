@@ -519,6 +519,6 @@ AUI.add(
 	},
 	'',
 	{
-		requires: [],
+		requires: ['aui-node'],
 	}
 );

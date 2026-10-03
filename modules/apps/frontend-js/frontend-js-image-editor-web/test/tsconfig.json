@@ -1,5 +1,5 @@
 {
-	"@generated": "add76ee4fbff1e8d962fcdfac7715d24168432d6",
+	"@generated": "94683f248443296b126ce8e5d0a62952c75d9c5d",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -19,6 +19,9 @@
 			],
 			"frontend-js-web/legacy": [
 				"../../frontend-js-web/src/main/resources/META-INF/resources/legacy/index.ts"
+			],
+			"frontend-js-web/menu": [
+				"../../frontend-js-web/src/main/resources/META-INF/resources/menu/index.js"
 			]
 		},
 		"rootDir": "../../../..",

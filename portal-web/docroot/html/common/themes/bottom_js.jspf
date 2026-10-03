@@ -143,9 +143,7 @@ if (layout != null) {
 	</aui:script>
 </c:if>
 
-<aui:script use="liferay-menu">
-	new Liferay.Menu();
-
+<aui:script>
 	var liferayNotices = Liferay.Data.notices;
 
 	for (var i = 0; i < liferayNotices.length; i++) {

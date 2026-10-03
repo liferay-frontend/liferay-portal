@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+// Captured while this file is still executing synchronously, since
+// document.currentScript is null by the time AUI attaches the module.
+
+const SCRIPT_URL = document.currentScript.src;
+
 AUI.add(
 	'liferay-translation-manager',
 	(A) => {
@@ -602,7 +607,15 @@ AUI.add(
 						instance
 					);
 
-					Liferay.Menu.handleFocus(instance._iconMenuNode);
+					import(
+						Liferay.FrontendESM.buildURL(
+							SCRIPT_URL,
+							'frontend-js-web',
+							'menu'
+						)
+					).then(({Menu}) => {
+						Menu.handleFocus(instance._iconMenuNode);
+					});
 				},
 
 				deleteAvailableLocale(locale) {
@@ -726,6 +739,6 @@ AUI.add(
 	},
 	'',
 	{
-		requires: ['aui-base', 'liferay-menu'],
+		requires: ['aui-base'],
 	}
 );

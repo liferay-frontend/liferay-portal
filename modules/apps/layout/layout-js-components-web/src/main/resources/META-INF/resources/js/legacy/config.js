@@ -13,6 +13,7 @@
 				modules: {
 					'liferay-layout': {
 						path: 'layout.js',
+						requires: ['aui-node'],
 					},
 					'liferay-layout-column': {
 						path: 'layout_column.js',

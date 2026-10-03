@@ -39,6 +39,7 @@ module.exports = {
 		auto_fields:
 			'./src/main/resources/META-INF/resources/auto_fields/index.js',
 		legacy: './src/main/resources/META-INF/resources/legacy/index.ts',
+		menu: './src/main/resources/META-INF/resources/menu/index.js',
 	},
 	typescript: {
 		main: './src/main/resources/META-INF/resources/main/index.d.ts',

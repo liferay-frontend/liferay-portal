@@ -1,5 +1,5 @@
 {
-	"@generated": "3f71331f715b6de4a06444689bb9441f76502d56",
+	"@generated": "9512f4135542a20a5794ef487d03a85c6c5a2f5d",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -16,6 +16,9 @@
 			],
 			"frontend-js-web/legacy": [
 				"./legacy/index.ts"
+			],
+			"frontend-js-web/menu": [
+				"./menu/index.js"
 			]
 		},
 		"rootDir": "../../../../../../../..",

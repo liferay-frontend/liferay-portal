@@ -1,5 +1,5 @@
 {
-	"@generated": "a151715c0ac97b858647df7120262807d6806f87",
+	"@generated": "b2b5dc5198d48e8cfcbd8e499363404b8151100a",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -34,6 +34,9 @@
 			],
 			"frontend-js-web/legacy": [
 				"../../../frontend-js/frontend-js-web/src/main/resources/META-INF/resources/legacy/index.ts"
+			],
+			"frontend-js-web/menu": [
+				"../../../frontend-js/frontend-js-web/src/main/resources/META-INF/resources/menu/index.js"
 			],
 			"style-book-web": [
 				"../../../style-book/style-book-web/src/main/resources/META-INF/resources/js/index.d.ts"

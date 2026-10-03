@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+// Captured while this file is still executing synchronously, since
+// document.currentScript is null by the time AUI attaches the module.
+
+const SCRIPT_URL = document.currentScript.src;
+
 AUI.add(
 	'liferay-kaleo-forms-admin',
 	(A) => {
@@ -233,15 +238,23 @@ AUI.add(
 						formsURL.toString(),
 						formsSearchContainer,
 						() => {
-							A.each(
-								A.all(
-									formsSearchContainer +
-										' .lfr-icon-menu .dropdown-toggle'
-								),
-								(item) => {
-									Liferay.Menu.register(item.get('id'));
-								}
-							);
+							import(
+								Liferay.FrontendESM.buildURL(
+									SCRIPT_URL,
+									'frontend-js-web',
+									'menu'
+								)
+							).then(({Menu}) => {
+								A.each(
+									A.all(
+										formsSearchContainer +
+											' .lfr-icon-menu .dropdown-toggle'
+									),
+									(item) => {
+										Menu.register(item.get('id'));
+									}
+								);
+							});
 
 							resultsContainer.unplug(A.LoadingMask);
 						}

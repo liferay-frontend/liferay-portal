@@ -40,6 +40,17 @@ public class ScriptTag extends BaseScriptTag {
 			PageContext pageContext)
 		throws Exception {
 
+		doTag(
+			position, require, use, null, bodyContentString,
+			previousBodyContent, pageContext);
+	}
+
+	public static void doTag(
+			String position, String require, String use, String type,
+			String bodyContentString, BodyContent previousBodyContent,
+			PageContext pageContext)
+		throws Exception {
+
 		String previousBodyContentString = null;
 
 		if ((previousBodyContent != null) &&
@@ -55,6 +66,7 @@ public class ScriptTag extends BaseScriptTag {
 		scriptTag.setPageContext(pageContext);
 		scriptTag.setPosition(position);
 		scriptTag.setRequire(require);
+		scriptTag.setType(type);
 		scriptTag.setUse(use);
 
 		BodyContent bodyContent = pageContext.pushBody();

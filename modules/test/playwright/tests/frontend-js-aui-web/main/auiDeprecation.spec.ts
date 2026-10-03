@@ -30,7 +30,7 @@ const testWithoutDeprecatedAUIModules = mergeTests(
 testWithDeprecatedAUIModules(
 	'Deprecated AlloyUI modules load while the feature flag is enabled',
 	{
-		tag: '@LPD-104702',
+		tag: ['@LPD-104702', '@LPD-51552'],
 	},
 	async ({auiSamplePage}) => {
 		await expect(auiSamplePage.getChecker()).toHaveAttribute(
@@ -49,13 +49,26 @@ testWithDeprecatedAUIModules(
 			'true'
 		);
 		await expect(autoFields).toHaveAttribute('data-status', 'pass');
+
+		const menu = auiSamplePage.getModule('liferay-menu');
+
+		await expect(menu).toHaveAttribute('data-feature-flag-enabled', 'true');
+		await expect(menu).toHaveAttribute('data-status', 'pass');
+
+		const menuFilter = auiSamplePage.getModule('liferay-menu-filter');
+
+		await expect(menuFilter).toHaveAttribute(
+			'data-feature-flag-enabled',
+			'true'
+		);
+		await expect(menuFilter).toHaveAttribute('data-status', 'pass');
 	}
 );
 
 testWithoutDeprecatedAUIModules(
 	'Deprecated AlloyUI modules are gone while the feature flag is disabled',
 	{
-		tag: '@LPD-104702',
+		tag: ['@LPD-104702', '@LPD-51552'],
 	},
 	async ({auiSamplePage, page}) => {
 		await expect(auiSamplePage.getChecker()).toHaveAttribute(
@@ -74,5 +87,21 @@ testWithoutDeprecatedAUIModules(
 			'false'
 		);
 		await expect(autoFields).toHaveAttribute('data-status', 'pass');
+
+		const menu = auiSamplePage.getModule('liferay-menu');
+
+		await expect(menu).toHaveAttribute(
+			'data-feature-flag-enabled',
+			'false'
+		);
+		await expect(menu).toHaveAttribute('data-status', 'pass');
+
+		const menuFilter = auiSamplePage.getModule('liferay-menu-filter');
+
+		await expect(menuFilter).toHaveAttribute(
+			'data-feature-flag-enabled',
+			'false'
+		);
+		await expect(menuFilter).toHaveAttribute('data-status', 'pass');
 	}
 );

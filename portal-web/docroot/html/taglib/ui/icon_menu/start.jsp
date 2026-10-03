@@ -51,8 +51,10 @@ if (Validator.isNull(icon)) {
 		</c:otherwise>
 	</c:choose>
 
-	<aui:script position="inline" use="liferay-menu">
-		Liferay.Menu.register('<%= id %>');
+	<aui:script type="module">
+		import {Menu} from '<%= FrontendESMUtil.buildURL(themeDisplay, "frontend-js-web", "menu") %>';
+
+		Menu.register('<%= id %>');
 	</aui:script>
 
 	<c:choose>
