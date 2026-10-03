@@ -56,6 +56,28 @@ import HeadlessItemSelector from '../plugins/HeadlessItemSelector';
 import ItemSelector from '../plugins/ItemSelector';
 import {EEditorConfigPreset, EEditorVariant} from './types';
 
+// The CKEditor 5 default palette in hex, because the AntiSamy CSS validator
+// drops any color function other than rgb(). The labels match the CKEditor
+// defaults so that they are still localized.
+
+const FONT_COLORS = [
+	{color: '#000000', label: 'Black'},
+	{color: '#4d4d4d', label: 'Dim grey'},
+	{color: '#999999', label: 'Grey'},
+	{color: '#e6e6e6', label: 'Light grey'},
+	{color: '#ffffff', hasBorder: true, label: 'White'},
+	{color: '#e64c4c', label: 'Red'},
+	{color: '#e6994c', label: 'Orange'},
+	{color: '#e6e64c', label: 'Yellow'},
+	{color: '#99e64c', label: 'Light green'},
+	{color: '#4ce64c', label: 'Green'},
+	{color: '#4ce699', label: 'Aquamarine'},
+	{color: '#4ce6e6', label: 'Turquoise'},
+	{color: '#4c99e6', label: 'Light blue'},
+	{color: '#4c4ce6', label: 'Blue'},
+	{color: '#994ce6', label: 'Purple'},
+];
+
 const getDefaultEditorConfig = ({
 	editorVariant,
 	preset,
@@ -232,6 +254,18 @@ const getDefaultEditorConfig = ({
 	const advancedEditorConfig: EditorConfig = {
 		alignment: {
 			options: ['left', 'center', 'right'],
+		},
+		fontBackgroundColor: {
+			colorPicker: {
+				format: 'hex',
+			},
+			colors: FONT_COLORS,
+		},
+		fontColor: {
+			colorPicker: {
+				format: 'hex',
+			},
+			colors: FONT_COLORS,
 		},
 		heading: {
 			options: [
