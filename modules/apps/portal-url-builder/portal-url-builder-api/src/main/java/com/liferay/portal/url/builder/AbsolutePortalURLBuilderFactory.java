@@ -18,7 +18,7 @@ public interface AbsolutePortalURLBuilderFactory {
 	 * Returns a new Absolute Portal URL Builder instance tied to the given
 	 * request.
 	 *
-	 * @param  httpServletRequest the servlet request
+	 * @param  httpServletRequest the servlet request, or <code>null</code>
 	 * @return an instance of Absolute Portal URL Builder
 	 */
 	public AbsolutePortalURLBuilder getAbsolutePortalURLBuilder(

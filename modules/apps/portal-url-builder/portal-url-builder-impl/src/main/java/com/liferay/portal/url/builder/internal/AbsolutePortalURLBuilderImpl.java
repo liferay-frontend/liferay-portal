@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesRegistry;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.portlet.PortletDependency;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.url.builder.AbsolutePortalURLBuilder;
@@ -19,6 +20,8 @@ import com.liferay.portal.url.builder.BundleScriptAbsolutePortalURLBuilder;
 import com.liferay.portal.url.builder.BundleStylesheetAbsolutePortalURLBuilder;
 import com.liferay.portal.url.builder.ComboRequestAbsolutePortalURLBuilder;
 import com.liferay.portal.url.builder.ESModuleAbsolutePortalURLBuilder;
+import com.liferay.portal.url.builder.ImageTransformationAbsolutePortalURLBuilder;
+import com.liferay.portal.url.builder.ImageTransformationURLRenderer;
 import com.liferay.portal.url.builder.PortalImageAbsolutePortalURLBuilder;
 import com.liferay.portal.url.builder.PortalMainResourceAbsolutePortalURLBuilder;
 import com.liferay.portal.url.builder.PortletDependencyAbsolutePortalURLBuilder;
@@ -99,6 +102,16 @@ public class AbsolutePortalURLBuilderImpl implements AbsolutePortalURLBuilder {
 			_getCDNHost(_httpServletRequest), esModulePath,
 			_hashedFilesRegistry, _httpServletRequest, _pathModule, _pathProxy,
 			webContextName);
+	}
+
+	@Override
+	public ImageTransformationAbsolutePortalURLBuilder forImageTransformation(
+		ImageTransformationURLRenderer imageTransformationURLRenderer,
+		String resourcePath) {
+
+		return new ImageTransformationAbsolutePortalURLBuilderImpl(
+			_getCDNHost(_httpServletRequest), imageTransformationURLRenderer,
+			_pathProxy, resourcePath);
 	}
 
 	@Override
@@ -183,19 +196,38 @@ public class AbsolutePortalURLBuilderImpl implements AbsolutePortalURLBuilder {
 		return pathProxy;
 	}
 
-	private String _getCDNHost(HttpServletRequest httpServletRequest) {
-		String cdnHost;
+	private String _getCDNHost() {
+		Long companyId = CompanyThreadLocal.getCompanyId();
 
-		try {
-			cdnHost = _portal.getCDNHost(httpServletRequest);
+		if ((companyId == null) || (companyId <= 0)) {
+			return StringPool.BLANK;
 		}
-		catch (PortalException portalException) {
-			cdnHost = StringPool.BLANK;
 
-			if (_log.isWarnEnabled()) {
-				_log.warn(
-					"Unable to retrieve CDN host from request",
-					portalException);
+		String cdnHost = _portal.getCDNHostHttps(companyId);
+
+		if (Validator.isBlank(cdnHost)) {
+			cdnHost = _portal.getCDNHostHttp(companyId);
+		}
+
+		return cdnHost;
+	}
+
+	private String _getCDNHost(HttpServletRequest httpServletRequest) {
+		String cdnHost = StringPool.BLANK;
+
+		if (httpServletRequest == null) {
+			cdnHost = _getCDNHost();
+		}
+		else {
+			try {
+				cdnHost = _portal.getCDNHost(httpServletRequest);
+			}
+			catch (PortalException portalException) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						"Unable to retrieve CDN host from request",
+						portalException);
+				}
 			}
 		}
 

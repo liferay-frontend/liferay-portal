@@ -83,6 +83,20 @@ public interface AbsolutePortalURLBuilder {
 		String webContextName, String esModulePath);
 
 	/**
+	 * Returns a URL builder for images that an image optimization provider may
+	 * transform on the fly.
+	 *
+	 * @param  imageTransformationURLRenderer the renderer that spells the
+	 *         image transformations. Passing <code>null</code> makes the builder
+	 *         return the untransformed URL.
+	 * @param  resourcePath the image's portal relative path
+	 * @return a URL builder for the image
+	 */
+	public ImageTransformationAbsolutePortalURLBuilder forImageTransformation(
+		ImageTransformationURLRenderer imageTransformationURLRenderer,
+		String resourcePath);
+
+	/**
 	 * Returns a URL builder for portal images. Image resources live in {@code
 	 * com.liferay.portal.kernel.util.Portal#PATH_IMAGE}.
 	 *
