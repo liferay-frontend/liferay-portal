@@ -12,6 +12,7 @@ type Props = {
 	alignmentByViewport?: boolean;
 	alignmentPosition?: number | AlignPoints;
 	autoBestAlign?: boolean;
+	constrainHeight?: boolean;
 	getOffset?: (points: AlignPoints) => [number, number];
 	isOpen: boolean;
 	ref: React.RefObject<HTMLElement>;
@@ -89,11 +90,84 @@ function defaultOffset(points: AlignPoints) {
 	];
 }
 
+const VERTICAL_FLIP = {b: 't', t: 'b'} as const;
+
+const constrainedSources = new WeakMap<
+	HTMLElement,
+	{constrained: string; previous: string}
+>();
+
+function constrainHeightToViewport(
+	points: AlignPoints,
+	sourceElement: HTMLElement,
+	targetElement: HTMLElement,
+	getOffset: (points: AlignPoints) => [number, number]
+): AlignPoints {
+	const constrainedSource = constrainedSources.get(sourceElement);
+
+	if (constrainedSource) {
+		if (sourceElement.style.maxHeight === constrainedSource.constrained) {
+			sourceElement.style.maxHeight = constrainedSource.previous;
+		}
+
+		constrainedSources.delete(sourceElement);
+	}
+
+	const [sourcePoint, targetPoint] = points;
+
+	if (
+		!(sourcePoint[0] in VERTICAL_FLIP) ||
+		sourcePoint[0] === targetPoint[0]
+	) {
+		return points;
+	}
+
+	const flippedPoints = points.map(
+		(point) =>
+			VERTICAL_FLIP[point[0] as keyof typeof VERTICAL_FLIP] + point[1]
+	) as unknown as AlignPoints;
+
+	const [abovePoints, belowPoints] =
+		sourcePoint[0] === 't'
+			? [flippedPoints, points]
+			: [points, flippedPoints];
+
+	const {height} = sourceElement.getBoundingClientRect();
+	const {bottom, top} = targetElement.getBoundingClientRect();
+
+	const spaceAbove = Math.floor(
+		top - Math.abs(getOffset(abovePoints)?.[1] ?? 0)
+	);
+	const spaceBelow = Math.floor(
+		document.documentElement.clientHeight -
+			bottom -
+			Math.abs(getOffset(belowPoints)?.[1] ?? 0)
+	);
+
+	const space = Math.max(spaceAbove, spaceBelow);
+
+	if (height <= spaceAbove || height <= spaceBelow || space <= 0) {
+		return points;
+	}
+
+	const constrained = `${space}px`;
+
+	constrainedSources.set(sourceElement, {
+		constrained,
+		previous: sourceElement.style.maxHeight,
+	});
+
+	sourceElement.style.maxHeight = constrained;
+
+	return spaceBelow >= spaceAbove ? belowPoints : abovePoints;
+}
+
 export function useOverlayPosition(
 	{
 		alignmentByViewport,
 		alignmentPosition = 5,
 		autoBestAlign = true,
+		constrainHeight = false,
 		getOffset = defaultOffset,
 		isOpen,
 		ref,
@@ -107,6 +181,19 @@ export function useOverlayPosition(
 
 			if (typeof points === 'number') {
 				points = getAlignPoints(points as keyof typeof ALIGN_INVERSE);
+			}
+
+			if (constrainHeight) {
+				const {scrollTop} = ref.current;
+
+				points = constrainHeightToViewport(
+					points,
+					ref.current,
+					triggerRef.current,
+					getOffset
+				);
+
+				ref.current.scrollTop = scrollTop;
 			}
 
 			doAlign({
