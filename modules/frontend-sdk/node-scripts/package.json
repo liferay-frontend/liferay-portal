@@ -4,9 +4,10 @@
 		"node-scripts": "./bin.js"
 	},
 	"com.liferay": {
-		"sha256": "eea4c897ea9e8e9ea69a1ec86704923b8869b3f6a3825870185c6aceddba786a"
+		"sha256": "5059eee7b144530bf255019d53a438efe4b937d2156b05818d58a87533b1ac2f"
 	},
 	"dependencies": {
+		"@babel/eslint-parser": "7.28.6",
 		"@babel/preset-env": "7.24.7",
 		"@babel/preset-react": "7.24.7",
 		"@babel/preset-typescript": "7.10.4",
@@ -22,14 +23,13 @@
 		"@testing-library/user-event-4.2.4": "npm:@testing-library/user-event@4.2.4",
 		"acorn": "8.16.0",
 		"acorn-typescript": "1.4.13",
-		"babel-eslint": "10.1.0",
 		"babel-jest": "25.1.0",
 		"cosmiconfig": "9.0.0",
 		"deepmerge": "4.3.1",
 		"esbuild": "0.21.5",
 		"esbuild-plugin-polyfill-node": "0.3.0",
 		"escodegen": "2.1.0",
-		"eslint": "7.32.0",
+		"eslint": "8.57.1",
 		"estraverse": "5.3.0",
 		"execa": "9.1.0",
 		"fast-glob": "3.3.3",
