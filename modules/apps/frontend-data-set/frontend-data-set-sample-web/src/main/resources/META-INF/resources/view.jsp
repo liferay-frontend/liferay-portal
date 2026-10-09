@@ -88,6 +88,12 @@ String navigation = ParamUtil.getString(request, "navigation", "advanced");
 							navigationItem.setHref(renderResponse.createRenderURL(), "navigation", "single-selection");
 							navigationItem.setLabel("Single Selection");
 						});
+					add(
+						navigationItem -> {
+							navigationItem.setActive(navigation.equals("visualization-mode"));
+							navigationItem.setHref(renderResponse.createRenderURL(), "navigation", "visualization-mode");
+							navigationItem.setLabel("Visualization Mode");
+						});
 				}
 			}
 		%>'
@@ -126,6 +132,9 @@ String navigation = ParamUtil.getString(request, "navigation", "advanced");
 		</c:when>
 		<c:when test='<%= navigation.equals("single-selection") %>'>
 			<liferay-util:include page="/partials/single_selection.jsp" servletContext="<%= application %>" />
+		</c:when>
+		<c:when test='<%= navigation.equals("visualization-mode") %>'>
+			<liferay-util:include page="/partials/visualization_mode.jsp" servletContext="<%= application %>" />
 		</c:when>
 		<c:otherwise>
 			<liferay-util:include page="/partials/advanced.jsp" servletContext="<%= application %>" />

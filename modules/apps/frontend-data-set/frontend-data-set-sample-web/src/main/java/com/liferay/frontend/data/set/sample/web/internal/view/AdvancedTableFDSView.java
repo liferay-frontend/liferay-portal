@@ -41,7 +41,8 @@ import org.osgi.service.component.annotations.Reference;
 	enabled = true,
 	property = {
 		"frontend.data.set.name=" + FDSSampleFDSNames.ADVANCED,
-		"frontend.data.set.name=" + FDSSampleFDSNames.DELEGATED_FILTERS
+		"frontend.data.set.name=" + FDSSampleFDSNames.DELEGATED_FILTERS,
+		"frontend.data.set.name=" + FDSSampleFDSNames.VISUALIZATION_MODE
 	},
 	service = FDSView.class
 )

@@ -13,6 +13,7 @@ import GreenCheckColorTableCell from './GreenCheckColorTableCell';
 import HiddenExcludeTogglePropsTransformer from './HiddenExcludeTogglePropsTransformer';
 import ReactFrontendDataSet from './ReactFrontendDataSet';
 import SingleSelectionPropsTransformer from './SingleSelectionPropsTransformer';
+import VisualizationModePropsTransformer from './VisualizationModePropsTransformer';
 import AdvancedFilters from './fragments/AdvancedFilters';
 import AdvancedSearch from './fragments/AdvancedSearch';
 import ClassicSearch from './fragments/ClassicSearch';
@@ -31,4 +32,5 @@ export {
 	HiddenExcludeTogglePropsTransformer,
 	ReactFrontendDataSet,
 	SingleSelectionPropsTransformer,
+	VisualizationModePropsTransformer,
 };

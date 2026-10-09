@@ -49,4 +49,7 @@ public class FDSSampleFDSNames {
 	public static final String SINGLE_SELECTION =
 		FDSSamplePortletKeys.FDS_SAMPLE + "-singleSelection";
 
+	public static final String VISUALIZATION_MODE =
+		FDSSamplePortletKeys.FDS_SAMPLE + "-visualizationMode";
+
 }
