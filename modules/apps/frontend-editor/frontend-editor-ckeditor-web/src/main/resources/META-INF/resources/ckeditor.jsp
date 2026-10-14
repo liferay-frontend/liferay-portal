@@ -497,6 +497,13 @@ name = HtmlUtil.escapeJS(name);
 		}
 
 		function initEditor(config) {
+			if (config.extraPlugins) {
+				config.extraPlugins = config.extraPlugins
+					.split(',')
+					.filter((extraPlugin) => extraPlugin !== 'aicreator')
+					.join(',');
+			}
+
 			CKEDITOR.<%= inlineEdit ? "inline" : "replace" %>(
 				'<%= name %>',
 				config
