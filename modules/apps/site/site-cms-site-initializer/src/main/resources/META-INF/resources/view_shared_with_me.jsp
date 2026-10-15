@@ -31,6 +31,7 @@ ViewSharedWithMeSectionDisplayContext viewSharedWithMeSectionDisplayContext = (V
 			propsTransformer="{SharedWithMeFDSPropsTransformer} from site-cms-site-initializer"
 			selectedItemsKey="id"
 			selectionType="multiple"
+			style="expanded"
 		/>
 	</div>
 </div>

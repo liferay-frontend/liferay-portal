@@ -29,6 +29,7 @@ ViewBrokenLinksSectionDisplayContext viewBrokenLinksSectionDisplayContext = (Vie
 			id="<%= CMSSiteInitializerFDSNames.BROKEN_LINKS_SECTION %>"
 			itemsPerPage="<%= 20 %>"
 			propsTransformer="{BrokenLinksFDSPropsTransformer} from site-cms-site-initializer"
+			style="expanded"
 			uniformActionsDisplay="<%= true %>"
 		/>
 	</div>

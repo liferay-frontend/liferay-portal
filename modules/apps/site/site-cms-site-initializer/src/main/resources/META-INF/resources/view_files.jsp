@@ -34,6 +34,7 @@ ViewFilesSectionDisplayContext viewFilesSectionDisplayContext = (ViewFilesSectio
 			selectedItemsKey="embedded.id"
 			selectionType="multiple"
 			showSelectAll="<%= true %>"
+			style="expanded"
 		/>
 	</div>
 </div>

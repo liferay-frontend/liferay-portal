@@ -28,5 +28,6 @@ ViewCategoriesDisplayContext viewCategoriesDisplayContext = (ViewCategoriesDispl
 		propsTransformer="{CategoryFDSPropsTransformer} from site-cms-site-initializer"
 		selectedItemsKey="id"
 		selectionType="multiple"
+		style="expanded"
 	/>
 </div>

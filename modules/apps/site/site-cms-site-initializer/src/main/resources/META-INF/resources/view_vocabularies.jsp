@@ -27,5 +27,6 @@ ViewVocabulariesDisplayContext viewVocabulariesDisplayContext = (ViewVocabularie
 		fdsActionDropdownItems="<%= viewVocabulariesDisplayContext.getFDSActionDropdownItems() %>"
 		id="<%= CMSSiteInitializerFDSNames.VOCABULARIES %>"
 		propsTransformer="{VocabularyFDSPropsTransformer} from site-cms-site-initializer"
+		style="expanded"
 	/>
 </div>
