@@ -57,7 +57,16 @@
 
 // The expanded style only reshapes views that read as a table or a list:
 // edge to edge, right under the management bar, with only a soft line under
-// the last row. Cards and the other views keep their regular spacing.
+// the last row. Cards and the other views keep their regular spacing, plus
+// the same 24px side margin the page title uses.
+
+.data-set-wrapper:not(.visualization-mode-table):not(.visualization-mode-list)
+	.data-set-expanded {
+	.data-set-content-wrapper,
+	.data-set-pagination-wrapper {
+		padding-inline: 1.5rem;
+	}
+}
 
 .visualization-mode-table .data-set-expanded,
 .visualization-mode-list .data-set-expanded {
