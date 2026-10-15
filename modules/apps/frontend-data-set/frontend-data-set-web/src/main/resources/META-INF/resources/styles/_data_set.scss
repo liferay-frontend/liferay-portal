@@ -54,3 +54,21 @@
 		margin: -2px;
 	}
 }
+
+// The expanded style only reshapes views that read as a table or a list:
+// edge to edge, right under the management bar, with only a soft line under
+// the last row. Cards and the other views keep their regular spacing.
+
+.visualization-mode-table .data-set-expanded,
+.visualization-mode-list .data-set-expanded {
+	.management-bar-wrapper {
+		margin-bottom: 0;
+	}
+}
+
+.visualization-mode-table .data-set-expanded .table-list {
+	--table-list-border-x-width: 0.5px;
+	--table-list-border-y-width: 0.5px;
+
+	border-width: 0 0 0.5px;
+}

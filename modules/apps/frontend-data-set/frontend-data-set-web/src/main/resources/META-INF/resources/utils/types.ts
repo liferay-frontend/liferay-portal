@@ -403,7 +403,7 @@ export interface IFrontendDataSetProps {
 	snapshots?: Array<ISnapshots>;
 	snapshotsEnabled?: boolean;
 	sorts?: TSort[];
-	style?: 'default' | 'fluid' | 'stacked';
+	style?: 'default' | 'fluid' | 'expanded' | 'stacked';
 	uniformActionsDisplay?: boolean;
 	userConfiguration?: IUserConfiguration | null;
 	views: IView[];
