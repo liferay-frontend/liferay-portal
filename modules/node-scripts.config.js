@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-	hash: '21e7fe24bf6fc22071e8fb3d705155a68e84809824f2c38e4fe7bae040a29af7',
+	hash: '975c98d91c55214bebba16b4a85e7610470738bb4a9083f612ced8df2adb15f8',
 	imports: {
 		'@liferay/accessibility-menu-web': [],
 		'@liferay/accessibility-settings-state-web': [],
@@ -409,7 +409,6 @@ module.exports = {
 			'@ckeditor/ckeditor5-undo/dist/index.js',
 			'@ckeditor/ckeditor5-upload/dist/index.js',
 			'@ckeditor/ckeditor5-utils/dist/index.js',
-			'@ckeditor/ckeditor5-watchdog/dist/index.js',
 			'@ckeditor/ckeditor5-widget/dist/index.js',
 			'@ckeditor/ckeditor5-word-count/dist/index.js',
 			'@codemirror/autocomplete',
