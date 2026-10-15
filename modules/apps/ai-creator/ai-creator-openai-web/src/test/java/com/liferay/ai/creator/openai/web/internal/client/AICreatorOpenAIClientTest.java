@@ -7,20 +7,12 @@ package com.liferay.ai.creator.openai.web.internal.client;
 
 import com.liferay.ai.creator.openai.web.internal.exception.AICreatorOpenAIClientException;
 import com.liferay.petra.function.UnsafeConsumer;
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.json.JSONObjectImpl;
-import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.language.Language;
-import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.Http;
-import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.io.IOException;
@@ -28,9 +20,6 @@ import java.io.InputStream;
 
 import java.net.HttpURLConnection;
 
-import java.util.Locale;
-
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -64,89 +53,6 @@ public class AICreatorOpenAIClientTest {
 
 		ReflectionTestUtil.setFieldValue(
 			_aiCreatorOpenAIClient, "_jsonFactory", _jsonFactory);
-
-		_originalLanguage = LanguageUtil.getLanguage();
-	}
-
-	@After
-	public void tearDown() {
-		LanguageUtil languageUtil = new LanguageUtil();
-
-		languageUtil.setLanguage(_originalLanguage);
-	}
-
-	@Test
-	public void testGetCompletion() throws Exception {
-		String messageContent = RandomTestUtil.randomString();
-
-		JSONObject responseJSONObject = JSONUtil.put(
-			"choices",
-			JSONUtil.put(
-				JSONUtil.put(
-					"message", JSONUtil.put("content", messageContent))));
-
-		Http.Response response = _getMockResponse(
-			HttpURLConnection.HTTP_OK, responseJSONObject);
-
-		_mockLanguage();
-
-		String apiKey = RandomTestUtil.randomString();
-		String content = RandomTestUtil.randomString();
-		String tone = RandomTestUtil.randomString();
-		int words = RandomTestUtil.randomInt();
-
-		Assert.assertEquals(
-			messageContent,
-			_aiCreatorOpenAIClient.getCompletion(
-				apiKey, content, LocaleUtil.getDefault(), tone, words));
-		_assertMessageRoleSystemContent(LocaleUtil.getDefault(), tone, words);
-
-		_assertOptions(
-			apiKey, content, ContentTypes.APPLICATION_JSON,
-			AICreatorOpenAIClientImpl.ENDPOINT_COMPLETION);
-		_assertResponse(response);
-	}
-
-	@Test
-	public void testGetCompletionIOException() throws Exception {
-		_mockLanguage();
-
-		String content = RandomTestUtil.randomString();
-
-		_testIOException(
-			content, ContentTypes.APPLICATION_JSON,
-			AICreatorOpenAIClientImpl.ENDPOINT_COMPLETION,
-			apiKey -> _aiCreatorOpenAIClient.getCompletion(
-				apiKey, content, LocaleUtil.getDefault(),
-				RandomTestUtil.randomString(), RandomTestUtil.randomInt()));
-	}
-
-	@Test
-	public void testGetCompletionResponseWithErrorKey() throws Exception {
-		_mockLanguage();
-
-		String content = RandomTestUtil.randomString();
-
-		_testResponseWithErrorKey(
-			content, ContentTypes.APPLICATION_JSON,
-			AICreatorOpenAIClientImpl.ENDPOINT_COMPLETION,
-			apiKey -> _aiCreatorOpenAIClient.getCompletion(
-				apiKey, content, LocaleUtil.getDefault(),
-				RandomTestUtil.randomString(), RandomTestUtil.randomInt()));
-	}
-
-	@Test
-	public void testGetCompletionUnauthorizedResponseCode() throws Exception {
-		_mockLanguage();
-
-		String content = RandomTestUtil.randomString();
-
-		_testUnauthorizedResponseCode(
-			content, ContentTypes.APPLICATION_JSON,
-			AICreatorOpenAIClientImpl.ENDPOINT_COMPLETION,
-			apiKey -> _aiCreatorOpenAIClient.getCompletion(
-				apiKey, content, LocaleUtil.getDefault(),
-				RandomTestUtil.randomString(), RandomTestUtil.randomInt()));
 	}
 
 	@Test
@@ -169,21 +75,21 @@ public class AICreatorOpenAIClientTest {
 	@Test
 	public void testValidateAPIKeyIOException() throws Exception {
 		_testIOException(
-			null, null, AICreatorOpenAIClientImpl.ENDPOINT_VALIDATION,
+			AICreatorOpenAIClientImpl.ENDPOINT_VALIDATION,
 			apiKey -> _aiCreatorOpenAIClient.validateAPIKey(apiKey));
 	}
 
 	@Test
 	public void testValidateAPIKeyResponseWithErrorKey() throws Exception {
 		_testResponseWithErrorKey(
-			null, null, AICreatorOpenAIClientImpl.ENDPOINT_VALIDATION,
+			AICreatorOpenAIClientImpl.ENDPOINT_VALIDATION,
 			apiKey -> _aiCreatorOpenAIClient.validateAPIKey(apiKey));
 	}
 
 	@Test
 	public void testValidateAPIKeyUnauthorizedResponseCode() throws Exception {
 		_testUnauthorizedResponseCode(
-			null, null, AICreatorOpenAIClientImpl.ENDPOINT_VALIDATION,
+			AICreatorOpenAIClientImpl.ENDPOINT_VALIDATION,
 			apiKey -> _aiCreatorOpenAIClient.validateAPIKey(apiKey));
 	}
 
@@ -199,67 +105,7 @@ public class AICreatorOpenAIClientTest {
 		).getResponseCode();
 	}
 
-	private void _assertBody(String content, Http.Body body) throws Exception {
-		Assert.assertNotNull(body);
-		Assert.assertEquals(
-			ContentTypes.APPLICATION_JSON, body.getContentType());
-		Assert.assertEquals(StringPool.UTF8, body.getCharset());
-		Assert.assertTrue(
-			body.getContent(), JSONUtil.isJSONObject(body.getContent()));
-
-		JSONObject contentJSONObject = new JSONObjectImpl(body.getContent());
-
-		Assert.assertEquals(
-			"gpt-3.5-turbo", contentJSONObject.getString("model"));
-
-		JSONArray messagesJSONArray = contentJSONObject.getJSONArray(
-			"messages");
-
-		Assert.assertNotNull(contentJSONObject.toString(), messagesJSONArray);
-		Assert.assertEquals(
-			messagesJSONArray.toString(), 2, messagesJSONArray.length());
-
-		JSONObject messageJSONObject1 = messagesJSONArray.getJSONObject(0);
-
-		Assert.assertEquals("system", messageJSONObject1.getString("role"));
-
-		JSONObject messageJSONObject2 = messagesJSONArray.getJSONObject(1);
-
-		Assert.assertEquals(content, messageJSONObject2.getString("content"));
-		Assert.assertEquals("user", messageJSONObject2.getString("role"));
-	}
-
-	private void _assertMessageRoleSystemContent(
-		Locale locale, String tone, int words) {
-
-		ArgumentCaptor<String[]> argumentCaptor = ArgumentCaptor.forClass(
-			String[].class);
-
-		Mockito.verify(
-			_language
-		).format(
-			Mockito.eq(locale),
-			Mockito.eq(
-				"i-want-you-to-create-a-text-of-approximately-x-words,-and-" +
-					"using-a-x-tone"),
-			argumentCaptor.capture()
-		);
-
-		String[] arguments = argumentCaptor.getValue();
-
-		Assert.assertEquals(arguments.toString(), 2, arguments.length);
-		Assert.assertEquals(String.valueOf(words), arguments[0]);
-		Assert.assertEquals(tone, arguments[1]);
-	}
-
 	private void _assertOptions(String apiKey, String location)
-		throws Exception {
-
-		_assertOptions(apiKey, null, null, location);
-	}
-
-	private void _assertOptions(
-			String apiKey, String content, String contentType, String location)
 		throws Exception {
 
 		ArgumentCaptor<Http.Options> argumentCaptor = ArgumentCaptor.forClass(
@@ -273,16 +119,10 @@ public class AICreatorOpenAIClientTest {
 
 		Http.Options options = argumentCaptor.getValue();
 
-		if (Validator.isNull(content)) {
-			Assert.assertNull(options.getBody());
-		}
-		else {
-			_assertBody(content, options.getBody());
-		}
-
+		Assert.assertNull(options.getBody());
 		Assert.assertEquals(
 			"Bearer " + apiKey, options.getHeader("Authorization"));
-		Assert.assertEquals(contentType, options.getHeader("Content-Type"));
+		Assert.assertNull(options.getHeader("Content-Type"));
 		Assert.assertEquals(location, options.getLocation());
 	}
 
@@ -343,26 +183,8 @@ public class AICreatorOpenAIClientTest {
 		return response;
 	}
 
-	private void _mockLanguage() {
-		_language = Mockito.mock(Language.class);
-
-		Mockito.when(
-			_language.get(Mockito.any(Locale.class), Mockito.anyString())
-		).thenAnswer(
-			invocationOnMock -> invocationOnMock.getArgument(1, String.class)
-		);
-
-		ReflectionTestUtil.setFieldValue(
-			_aiCreatorOpenAIClient, "_language", _language);
-
-		LanguageUtil languageUtil = new LanguageUtil();
-
-		languageUtil.setLanguage(_language);
-	}
-
 	private void _testIOException(
-			String content, String contentType, String location,
-			UnsafeConsumer<String, Exception> unsafeConsumer)
+			String location, UnsafeConsumer<String, Exception> unsafeConsumer)
 		throws Exception {
 
 		IOException ioException = new IOException();
@@ -385,12 +207,11 @@ public class AICreatorOpenAIClientTest {
 				ioException, aiCreatorOpenAIClientException.getCause());
 		}
 
-		_assertOptions(apiKey, content, contentType, location);
+		_assertOptions(apiKey, location);
 	}
 
 	private void _testResponseWithErrorKey(
-			String content, String contentType, String location,
-			UnsafeConsumer<String, Exception> unsafeConsumer)
+			String location, UnsafeConsumer<String, Exception> unsafeConsumer)
 		throws Exception {
 
 		JSONObject errorJSONObject = JSONUtil.put(
@@ -422,14 +243,13 @@ public class AICreatorOpenAIClientTest {
 				aiCreatorOpenAIClientException.getResponseCode());
 		}
 
-		_assertOptions(apiKey, content, contentType, location);
+		_assertOptions(apiKey, location);
 
 		_assertResponse(response);
 	}
 
 	private void _testUnauthorizedResponseCode(
-			String content, String contentType, String location,
-			UnsafeConsumer<String, Exception> unsafeConsumer)
+			String location, UnsafeConsumer<String, Exception> unsafeConsumer)
 		throws Exception {
 
 		JSONObject responseJSONObject = Mockito.mock(JSONObject.class);
@@ -450,7 +270,7 @@ public class AICreatorOpenAIClientTest {
 				aiCreatorOpenAIClientException.getResponseCode());
 		}
 
-		_assertOptions(apiKey, content, contentType, location);
+		_assertOptions(apiKey, location);
 		_assertResponse(response, Mockito.times(2));
 		_assertResponseJSONObject(responseJSONObject);
 	}
@@ -458,7 +278,5 @@ public class AICreatorOpenAIClientTest {
 	private AICreatorOpenAIClient _aiCreatorOpenAIClient;
 	private Http _http;
 	private JSONFactory _jsonFactory;
-	private Language _language;
-	private Language _originalLanguage;
 
 }

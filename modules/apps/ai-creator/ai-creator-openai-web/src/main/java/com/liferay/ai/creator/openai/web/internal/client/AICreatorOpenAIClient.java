@@ -5,18 +5,11 @@
 
 package com.liferay.ai.creator.openai.web.internal.client;
 
-import java.util.Locale;
-
 /**
  * @author Lourdes Fernández Besada
  * @author Roberto Díaz
  */
 public interface AICreatorOpenAIClient {
-
-	public String getCompletion(
-			String apiKey, String content, Locale locale, String tone,
-			int words)
-		throws Exception;
 
 	public String[] getGenerations(
 			String apiKey, String prompt, String size, int numberOfImages)

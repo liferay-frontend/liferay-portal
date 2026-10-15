@@ -31,11 +31,6 @@ public class AICreatorOpenAIGroupConfigurationDisplayContext
 			WebKeys.THEME_DISPLAY);
 	}
 
-	public boolean isCompanyChatGPTEnabled() throws ConfigurationException {
-		return _aiCreatorOpenAIConfigurationManager.
-			isAICreatorChatGPTCompanyEnabled(_themeDisplay.getCompanyId());
-	}
-
 	public boolean isCompanyDALLEEnabled() throws ConfigurationException {
 		return _aiCreatorOpenAIConfigurationManager.
 			isAICreatorDALLECompanyEnabled(_themeDisplay.getCompanyId());
@@ -45,15 +40,6 @@ public class AICreatorOpenAIGroupConfigurationDisplayContext
 	protected String getAICreatorOpenAIAPIKey() throws ConfigurationException {
 		return _aiCreatorOpenAIConfigurationManager.
 			getAICreatorOpenAIGroupAPIKey(_themeDisplay.getScopeGroupId());
-	}
-
-	@Override
-	protected boolean isAICreatorChatGPTEnabled()
-		throws ConfigurationException {
-
-		return _aiCreatorOpenAIConfigurationManager.
-			isAICreatorChatGPTGroupEnabled(
-				_themeDisplay.getCompanyId(), _themeDisplay.getScopeGroupId());
 	}
 
 	@Override

@@ -13,7 +13,6 @@ const STR_BLANK = '';
 
 export class AICreatorInstanceSettingsPage {
 	readonly apiKeyInput: Locator;
-	readonly chatGPTCheckbox: Locator;
 	readonly dalleCheckbox: Locator;
 	readonly globalMenuPage: GlobalMenuPage;
 	readonly page: Page;
@@ -23,9 +22,6 @@ export class AICreatorInstanceSettingsPage {
 		this.page = page;
 
 		this.apiKeyInput = this.page.getByLabel('API Key');
-		this.chatGPTCheckbox = this.page.getByLabel(
-			'Enable ChatGPT to Create Content'
-		);
 		this.dalleCheckbox = this.page.getByLabel(
 			'Enable DALL-E to Create Images'
 		);
@@ -38,30 +34,6 @@ export class AICreatorInstanceSettingsPage {
 			'Instance Settings',
 			'AI Creator'
 		);
-	}
-
-	async disableChatGPTCreateContent() {
-		await this.goto();
-
-		await this.chatGPTCheckbox.uncheck();
-
-		await expect(this.chatGPTCheckbox).not.toBeChecked();
-
-		await this.saveButton.click();
-
-		await waitForAlert(this.page);
-	}
-
-	async enableChatGPTCreateContent() {
-		await this.goto();
-
-		await this.chatGPTCheckbox.check();
-
-		await expect(this.chatGPTCheckbox).toBeChecked();
-
-		await this.saveButton.click();
-
-		await waitForAlert(this.page);
 	}
 
 	async enableDalleCreateImages() {

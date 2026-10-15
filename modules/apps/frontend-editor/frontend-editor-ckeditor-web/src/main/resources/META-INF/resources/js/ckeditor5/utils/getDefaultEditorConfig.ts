@@ -51,7 +51,6 @@ import {BlockToolbar} from '@ckeditor/ckeditor5-ui/dist/index.js';
 import {WritingAssistant} from '@liferay/ai-hub-cell-js-components-web';
 import {sub} from 'frontend-js-web';
 
-import AICreator from '../plugins/AICreator';
 import HeadlessItemSelector from '../plugins/HeadlessItemSelector';
 import ItemSelector from '../plugins/ItemSelector';
 import {EEditorConfigPreset, EEditorVariant} from './types';
@@ -77,13 +76,11 @@ const FONT_COLORS = [
 const getDefaultEditorConfig = ({
 	editorVariant,
 	preset,
-	showAICreator,
 	showPasteFromOfficeEnhanced,
 	showSourceEditingEnhanced,
 }: {
 	editorVariant: EEditorVariant;
 	preset: EEditorConfigPreset;
-	showAICreator?: boolean;
 	showPasteFromOfficeEnhanced?: boolean;
 	showSourceEditingEnhanced?: boolean;
 }): EditorConfig => {
@@ -180,10 +177,6 @@ const getDefaultEditorConfig = ({
 		TableToolbar,
 	];
 
-	if (showAICreator) {
-		advancedPlugins.push(AICreator);
-	}
-
 	if (editorVariant === EEditorVariant.CLASSIC) {
 		advancedPlugins.push(
 			showSourceEditingEnhanced ? SourceEditingEnhanced : SourceEditing
@@ -232,11 +225,6 @@ const getDefaultEditorConfig = ({
 		'|',
 		'alignment',
 	];
-
-	if (showAICreator) {
-		toolbarItems.push('|');
-		toolbarItems.push('aiCreator');
-	}
 
 	if (editorVariant === EEditorVariant.CLASSIC) {
 		toolbarItems.push('|');

@@ -96,7 +96,7 @@ test('Add a toolbar button to a CKEditor, by applying editor config contributor 
 	).toBeEditable();
 
 	await expect(
-		newEditorConfigContributorPage.aiCreatorEditorToolbarButton
+		newEditorConfigContributorPage.subscriptEditorToolbarButton
 	).toBeVisible();
 });
 
@@ -141,6 +141,66 @@ test('CKEditor is still usable after deploying Client Extension @LPD-31017', asy
 
 		await expect(editorTextBox).toHaveText('LPD-31017');
 	});
+});
+
+test('CKEditor loads when an editor config contributor client extension still adds the aicreator plugin @LPD-108694', async ({
+	clientExtensionsPage,
+	editEditorConfigContributorPage,
+	page,
+}) => {
+	const name = getRandomString();
+	const url = '/o/aicreator-editor-config-contributor/index.js';
+
+	await page.route(`**${url}`, (route) =>
+		route.fulfill({
+			body: `export default {
+				editorConfigTransformer(config) {
+					config['toolbar_' + config.toolbar].push(['Superscript']);
+
+					return {
+						...config,
+						extraPlugins: config.extraPlugins
+							? config.extraPlugins + ',aicreator'
+							: 'aicreator',
+					};
+				},
+			};`,
+			contentType: 'text/javascript',
+		})
+	);
+
+	try {
+		await test.step('Create a client extension that adds the aicreator plugin to the description editor', async () => {
+			await editEditorConfigContributorPage.goto();
+
+			await editEditorConfigContributorPage.nameInput.fill(name);
+			await editEditorConfigContributorPage.urlInput.fill(url);
+			await editEditorConfigContributorPage.editorConfigKeysInput.fill(
+				'description'
+			);
+
+			await editEditorConfigContributorPage.publish(WaitAction.SUCCESS);
+		});
+
+		await test.step(
+			'The description editor loads with the client extension applied',
+			async () => {
+				await editEditorConfigContributorPage.goto();
+
+				await expect(
+					editEditorConfigContributorPage.descriptionContentEditable
+				).toBeEditable();
+				await expect(
+					page.getByTitle('Superscript').first()
+				).toBeVisible();
+			},
+			{timeout: 30000}
+		);
+	}
+	finally {
+		await clientExtensionsPage.goto();
+		await clientExtensionsPage.deleteClientExtension(name);
+	}
 });
 
 test('Check client extension does not apply to new instances @LPD-63018', async ({

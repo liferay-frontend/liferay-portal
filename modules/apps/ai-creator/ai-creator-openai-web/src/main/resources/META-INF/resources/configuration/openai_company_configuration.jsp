@@ -43,22 +43,8 @@ AICreatorOpenAICompanyConfigurationDisplayContext aiCreatorOpenAICompanyConfigur
 	</clay:content-col>
 </clay:content-row>
 
-<clay:content-row>
-	<clay:content-col
-		cssClass="ai-creator-config-checkbox"
-		expand="<%= true %>"
-	>
-		<clay:checkbox
-			checked="<%= aiCreatorOpenAICompanyConfigurationDisplayContext.isChatGPTEnabled() %>"
-			id='<%= liferayPortletResponse.getNamespace() + "enableChatGPT" %>'
-			label='<%= LanguageUtil.get(request, "enable-chatgpt-to-create-content") %>'
-			name='<%= liferayPortletResponse.getNamespace() + "enableChatGPT" %>'
-		/>
-	</clay:content-col>
-</clay:content-row>
-
 <clay:content-row
-	cssClass="ai-creator-config-checkbox c-my-5"
+	cssClass="ai-creator-config-checkbox c-mb-5"
 >
 	<clay:content-col
 		expand="<%= true %>"

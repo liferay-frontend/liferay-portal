@@ -11,9 +11,6 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {journalPagesTest} from '../../journal-web/main/fixtures/journalPagesTest';
 import {aiCreatorPagesTest} from './fixtures/aiCreatorPagesTest';
 
-const LEARN_MORE_HREF =
-	'https://learn.liferay.com/w/dxp/content-authoring-and-management/web-content/web-content-articles/generating-text-content-using-ai';
-
 const test = mergeTests(
 	aiCreatorPagesTest,
 	dataApiHelpersTest,
@@ -31,9 +28,10 @@ test(
 
 		await aiCreatorInstanceSettingsPage.goto();
 
+		await expect(aiCreatorInstanceSettingsPage.dalleCheckbox).toBeChecked();
 		await expect(
 			page.getByLabel('Enable ChatGPT to Create Content')
-		).toBeChecked();
+		).toHaveCount(0);
 		await expect(aiCreatorInstanceSettingsPage.apiKeyInput).toHaveValue('');
 
 		// The OpenAI settings are reachable from the Site Settings
@@ -44,9 +42,10 @@ test(
 			site.friendlyUrlPath
 		);
 
+		await expect(aiCreatorInstanceSettingsPage.dalleCheckbox).toBeChecked();
 		await expect(
 			page.getByLabel('Enable ChatGPT to Create Content')
-		).toBeChecked();
+		).toHaveCount(0);
 		await expect(aiCreatorInstanceSettingsPage.apiKeyInput).toHaveValue('');
 
 		// The How do I get an API key link points to the OpenAI docs
@@ -61,11 +60,29 @@ test(
 );
 
 test(
+	'The AI Creator button is not available in the Web Content editor',
+	{tag: '@LPD-108694'},
+	async ({journalPage, page, site}) => {
+		await journalPage.goto(site.friendlyUrlPath);
+		await journalPage.goToCreateArticle('Basic Web Content');
+
+		await journalPage.articleContentTextBox.click();
+
+		await expect(
+			page.getByRole('button', {name: 'Bold'}).first()
+		).toBeVisible();
+		await expect(
+			page.getByRole('button', {name: 'Create AI Content'})
+		).toHaveCount(0);
+	}
+);
+
+test(
 	'Cannot enable OpenAI from the Site Settings after disabling it from the Instance Settings',
 	{tag: '@LPS-179484'},
 	async ({aiCreatorInstanceSettingsPage, page, site, siteSettingsPage}) => {
 		try {
-			await aiCreatorInstanceSettingsPage.disableChatGPTCreateContent();
+			await aiCreatorInstanceSettingsPage.disableDalleCreateImages();
 
 			await expect(async () => {
 				await siteSettingsPage.goToSiteSetting(
@@ -75,18 +92,18 @@ test(
 				);
 
 				await expect(
-					page.getByLabel('Enable ChatGPT to Create Content')
+					aiCreatorInstanceSettingsPage.dalleCheckbox
 				).toBeDisabled({timeout: 3000});
 			}).toPass({timeout: 30000});
 
 			await expect(
 				page.getByText(
-					'To enable ChatGPT for this site, first enable it for your instance.'
+					'To enable DALL-E for this site, first enable it for your instance.'
 				)
 			).toBeVisible();
 		}
 		finally {
-			await aiCreatorInstanceSettingsPage.enableChatGPTCreateContent();
+			await aiCreatorInstanceSettingsPage.enableDalleCreateImages();
 		}
 	}
 );
@@ -127,173 +144,6 @@ test(
 			await expect(aiCreatorInstanceSettingsPage.apiKeyInput).toHaveValue(
 				'OPENAI_API_IOEXCEPTION'
 			);
-		}
-		finally {
-			await aiCreatorInstanceSettingsPage.removeApiKey();
-		}
-	}
-);
-
-test(
-	'Generate content with AI Creator and append it to the existing content',
-	{tag: ['@LPS-179485', '@LPS-187651']},
-	async ({
-		aiCreatorInstanceSettingsPage,
-		enableMockAICreatorOpenAIClient,
-		journalPage,
-		page,
-		site,
-	}) => {
-		test.slow();
-
-		await enableMockAICreatorOpenAIClient();
-
-		try {
-			await aiCreatorInstanceSettingsPage.addApiKey();
-
-			// Open the AI Creator modal in the web content editor
-
-			await journalPage.goto(site.friendlyUrlPath);
-			await journalPage.goToCreateArticle('Basic Web Content');
-
-			await page.getByRole('button', {name: 'Create AI Content'}).click();
-
-			const modal = page.frameLocator('iframe[title="AI Creator"]');
-
-			// The Learn more about OpenAI integration link is visible
-
-			await expect(
-				modal.getByRole('link', {
-					name: 'Learn more about OpenAI integration.',
-				})
-			).toHaveAttribute('href', LEARN_MORE_HREF);
-
-			// The modal shows the default values
-
-			await expect(
-				modal.getByPlaceholder('Write something...')
-			).toBeVisible();
-			await expect(
-				modal.getByLabel('Tone').locator('option:checked')
-			).toHaveText('Neutral');
-			await expect(modal.getByLabel('Word Count')).toHaveValue('100');
-
-			// A slow generation shows the loading message
-
-			await modal
-				.getByLabel('Description')
-				.fill('USER_CONTENT_SLEEP_MILLIS_5000');
-			await modal.getByRole('button', {name: 'Create'}).click();
-
-			await expect(modal.getByText('Creating content...')).toBeVisible();
-			await expect(
-				modal.getByText('This process may take a while.')
-			).toBeVisible();
-
-			// The generated content can be added to the Content field
-
-			await expect(modal.getByLabel('Content')).toHaveValue(
-				'OPENAI_API_COMPLETION_RESPONSE_CONTENT'
-			);
-			await modal.getByRole('button', {name: 'Add'}).click();
-
-			await expect(journalPage.articleContentTextBox).toContainText(
-				'OPENAI_API_COMPLETION_RESPONSE_CONTENT'
-			);
-
-			// A second generation is appended to the existing content
-
-			await page.getByRole('button', {name: 'Create AI Content'}).click();
-
-			await modal.getByLabel('Description').fill('USER_CONTENT');
-			await modal.getByRole('button', {name: 'Create'}).click();
-
-			await expect(modal.getByLabel('Content')).toHaveValue(
-				'OPENAI_API_COMPLETION_RESPONSE_CONTENT'
-			);
-			await modal.getByRole('button', {name: 'Add'}).click();
-
-			await expect(journalPage.articleContentTextBox).toContainText(
-				'OPENAI_API_COMPLETION_RESPONSE_CONTENTOPENAI_API_COMPLETION_RESPONSE_CONTENT'
-			);
-		}
-		finally {
-			await aiCreatorInstanceSettingsPage.removeApiKey();
-		}
-	}
-);
-
-test(
-	'View error messages when errors happen on generating content',
-	{tag: '@LPS-188490'},
-	async ({
-		aiCreatorInstanceSettingsPage,
-		enableMockAICreatorOpenAIClient,
-		journalPage,
-		page,
-		site,
-	}) => {
-		test.slow();
-
-		await enableMockAICreatorOpenAIClient();
-
-		try {
-			await aiCreatorInstanceSettingsPage.addApiKey();
-
-			await journalPage.goto(site.friendlyUrlPath);
-			await journalPage.goToCreateArticle('Basic Web Content');
-
-			await page.getByRole('button', {name: 'Create AI Content'}).click();
-
-			const modal = page.frameLocator('iframe[title="AI Creator"]');
-
-			// An OpenAI server error 429 is surfaced
-
-			await modal
-				.getByLabel('Description')
-				.fill(
-					'OPENAI_API_You exceeded your current quota, please check your plan and billing details._ERROR_MESSAGE'
-				);
-			await modal.getByRole('button', {name: 'Create'}).click();
-
-			await expect(
-				modal.getByText(
-					'You exceeded your current quota, please check your plan and billing details. Check this link for further information about OpenAI issues.'
-				)
-			).toBeVisible();
-
-			// An OpenAI server error 500 is surfaced
-
-			await modal
-				.getByLabel('Description')
-				.fill(
-					'OPENAI_API_The server had an error while processing your request._ERROR_MESSAGE'
-				);
-			await modal.getByRole('button', {name: 'Create'}).click();
-
-			await expect(
-				modal.getByText(
-					'The server had an error while processing your request. Check this link for further information about OpenAI issues.'
-				)
-			).toBeVisible();
-
-			// A generic error is surfaced
-
-			await modal
-				.getByLabel('Description')
-				.fill('OPENAI_API_IOEXCEPTION');
-			await modal.getByRole('button', {name: 'Create'}).click();
-
-			await expect(
-				modal.getByText('An unexpected error occurred.')
-			).toBeVisible();
-
-			// Close the modal so it does not block later navigation
-
-			await page
-				.getByRole('dialog', {name: 'AI Creator'})
-				.getByRole('button', {name: 'Close'})
-				.click();
 		}
 		finally {
 			await aiCreatorInstanceSettingsPage.removeApiKey();

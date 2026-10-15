@@ -156,11 +156,6 @@
 					"title": "API Key",
 					"type": "string"
 				},
-				"enableChatGPTToCreateContent": {
-					"default": true,
-					"title": "Enable ChatGPT to Create Content",
-					"type": "boolean"
-				},
 				"enableDALLEToCreateImages": {
 					"default": true,
 					"title": "Enable DALL-E to Create Images",

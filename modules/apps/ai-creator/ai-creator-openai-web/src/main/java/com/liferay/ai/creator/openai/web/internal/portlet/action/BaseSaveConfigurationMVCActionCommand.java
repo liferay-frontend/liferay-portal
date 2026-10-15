@@ -75,8 +75,8 @@ public abstract class BaseSaveConfigurationMVCActionCommand
 		}
 
 		saveAICreatorOpenAIConfiguration(
-			apiKey, ParamUtil.getBoolean(actionRequest, "enableChatGPT"),
-			ParamUtil.getBoolean(actionRequest, "enableDALLE"), themeDisplay);
+			apiKey, ParamUtil.getBoolean(actionRequest, "enableDALLE"),
+			themeDisplay);
 
 		SessionMessages.add(
 			actionRequest, "requestProcessed",
@@ -88,8 +88,7 @@ public abstract class BaseSaveConfigurationMVCActionCommand
 	}
 
 	protected abstract void saveAICreatorOpenAIConfiguration(
-			String apiKey, boolean enableChatGPT, boolean enableDALLE,
-			ThemeDisplay themeDisplay)
+			String apiKey, boolean enableDALLE, ThemeDisplay themeDisplay)
 		throws ConfigurationException;
 
 	@Reference(

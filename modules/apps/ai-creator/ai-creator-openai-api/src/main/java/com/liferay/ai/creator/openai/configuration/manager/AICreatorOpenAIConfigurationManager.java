@@ -21,12 +21,6 @@ public interface AICreatorOpenAIConfigurationManager {
 	public String getAICreatorOpenAIGroupAPIKey(long companyId, long groupId)
 		throws ConfigurationException;
 
-	public boolean isAICreatorChatGPTCompanyEnabled(long companyId)
-		throws ConfigurationException;
-
-	public boolean isAICreatorChatGPTGroupEnabled(long companyId, long groupId)
-		throws ConfigurationException;
-
 	public boolean isAICreatorDALLECompanyEnabled(long companyId)
 		throws ConfigurationException;
 
@@ -34,13 +28,11 @@ public interface AICreatorOpenAIConfigurationManager {
 		throws ConfigurationException;
 
 	public void saveAICreatorOpenAICompanyConfiguration(
-			long companyId, String apiKey, boolean enableChatGPT,
-			boolean enableDALLE)
+			long companyId, String apiKey, boolean enableDALLE)
 		throws ConfigurationException;
 
 	public void saveAICreatorOpenAIGroupConfiguration(
-			long groupId, String apiKey, boolean enableChatGPT,
-			boolean enableDALLE)
+			long groupId, String apiKey, boolean enableDALLE)
 		throws ConfigurationException;
 
 }

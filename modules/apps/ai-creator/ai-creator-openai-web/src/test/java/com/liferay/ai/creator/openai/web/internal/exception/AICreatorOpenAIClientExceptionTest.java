@@ -71,9 +71,9 @@ public class AICreatorOpenAIClientExceptionTest {
 	public void testGetLocalizedMessageIOException() {
 		_testGetLocalizedMessageIOException(
 			AICreatorOpenAIClientException.
-				MESSAGE_KEY_AN_UNEXPECTED_ERROR_COMPLETION,
+				MESSAGE_KEY_AN_UNEXPECTED_ERROR_GENERATIONS,
 			(aiCreatorOpenAIClientException, locale) ->
-				aiCreatorOpenAIClientException.getCompletionLocalizedMessage(
+				aiCreatorOpenAIClientException.getGenerationsLocalizedMessage(
 					locale));
 		_testGetLocalizedMessageIOException(
 			AICreatorOpenAIClientException.
@@ -99,7 +99,7 @@ public class AICreatorOpenAIClientExceptionTest {
 
 		Assert.assertEquals(
 			expected,
-			aiCreatorOpenAIClientException.getCompletionLocalizedMessage(
+			aiCreatorOpenAIClientException.getGenerationsLocalizedMessage(
 				LocaleUtil.getDefault()));
 		Assert.assertEquals(
 			expected,

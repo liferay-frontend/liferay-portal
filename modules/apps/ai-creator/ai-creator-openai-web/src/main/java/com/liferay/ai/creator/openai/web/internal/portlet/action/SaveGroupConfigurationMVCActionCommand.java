@@ -43,14 +43,12 @@ public class SaveGroupConfigurationMVCActionCommand
 
 	@Override
 	protected void saveAICreatorOpenAIConfiguration(
-			String apiKey, boolean enableChatGPT, boolean enableDALLE,
-			ThemeDisplay themeDisplay)
+			String apiKey, boolean enableDALLE, ThemeDisplay themeDisplay)
 		throws ConfigurationException {
 
 		_aiCreatorOpenAIConfigurationManager.
 			saveAICreatorOpenAIGroupConfiguration(
-				themeDisplay.getScopeGroupId(), apiKey, enableChatGPT,
-				enableDALLE);
+				themeDisplay.getScopeGroupId(), apiKey, enableDALLE);
 	}
 
 	@Reference

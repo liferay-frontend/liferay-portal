@@ -12,7 +12,6 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -23,8 +22,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import java.io.InputStream;
 
 import java.net.HttpURLConnection;
-
-import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -38,58 +35,6 @@ import org.osgi.service.component.annotations.Reference;
 	service = AICreatorOpenAIClient.class
 )
 public class AICreatorOpenAIClientImpl implements AICreatorOpenAIClient {
-
-	@Override
-	public String getCompletion(
-			String apiKey, String content, Locale locale, String tone,
-			int words)
-		throws Exception {
-
-		Http.Options options = new Http.Options();
-
-		options.addHeader("Authorization", "Bearer " + apiKey);
-		options.addHeader("Content-Type", ContentTypes.APPLICATION_JSON);
-		options.setLocation(ENDPOINT_COMPLETION);
-		options.setBody(
-			JSONUtil.put(
-				"messages",
-				JSONUtil.putAll(
-					JSONUtil.put(
-						"content",
-						_language.format(
-							locale,
-							"i-want-you-to-create-a-text-of-approximately-x-" +
-								"words,-and-using-a-x-tone",
-							new String[] {String.valueOf(words), tone})
-					).put(
-						"role", "system"
-					),
-					JSONUtil.put(
-						"content", content
-					).put(
-						"role", "user"
-					))
-			).put(
-				"model", "gpt-3.5-turbo"
-			).toString(),
-			ContentTypes.APPLICATION_JSON, StringPool.UTF8);
-		options.setPost(true);
-
-		JSONObject responseJSONObject = _getResponseJSONObject(options);
-
-		JSONArray jsonArray = responseJSONObject.getJSONArray("choices");
-
-		if (JSONUtil.isEmpty(jsonArray)) {
-			return StringPool.BLANK;
-		}
-
-		JSONObject choiceJSONObject = jsonArray.getJSONObject(0);
-
-		JSONObject messageJSONObject = choiceJSONObject.getJSONObject(
-			"message");
-
-		return messageJSONObject.getString("content");
-	}
 
 	@Override
 	public String[] getGenerations(
@@ -140,9 +85,6 @@ public class AICreatorOpenAIClientImpl implements AICreatorOpenAIClient {
 
 		_getResponseJSONObject(options);
 	}
-
-	protected static final String ENDPOINT_COMPLETION =
-		"https://api.openai.com/v1/chat/completions";
 
 	protected static final String ENDPOINT_GENERATIONS =
 		"https://api.openai.com/v1/images/generations";
@@ -211,8 +153,5 @@ public class AICreatorOpenAIClientImpl implements AICreatorOpenAIClient {
 
 	@Reference
 	private JSONFactory _jsonFactory;
-
-	@Reference
-	private Language _language;
 
 }

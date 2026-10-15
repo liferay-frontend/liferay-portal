@@ -1,15 +1,11 @@
 {
 	"keys": [
 		"action.HELP",
-		"ai-creator",
 		"an-unexpected-error-occurred-while-uploading-your-file",
 		"audio",
 		"audio-properties",
-		"authentication-is-needed-to-use-this-feature.-contact-your-administrator-to-add-an-api-key-in-instance-or-site-settings",
 		"cited-work",
 		"computer-code",
-		"configure-openai",
-		"create-ai-content",
 		"document",
 		"edit-audio",
 		"edit-video",

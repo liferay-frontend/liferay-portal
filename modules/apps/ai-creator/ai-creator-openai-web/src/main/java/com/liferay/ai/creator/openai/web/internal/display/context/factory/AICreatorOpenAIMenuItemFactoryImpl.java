@@ -81,8 +81,6 @@ public class AICreatorOpenAIMenuItemFactoryImpl
 					).setParameter(
 						"folderId", folderId
 					).setParameter(
-						"generations", true
-					).setParameter(
 						"repositoryId", repositoryId
 					).setPortletMode(
 						PortletMode.VIEW

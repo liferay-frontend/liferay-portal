@@ -33,7 +33,6 @@ export interface LiferayEditorConfig extends EditorConfig {
 	itemSelectorEventName?: string;
 	itemSelectorRememberSelectionFolder?: boolean;
 	preset?: EEditorConfigPreset;
-	showAICreator?: boolean;
 	showPasteFromOfficeEnhanced?: boolean;
 	showSourceEditingEnhanced?: boolean;
 }

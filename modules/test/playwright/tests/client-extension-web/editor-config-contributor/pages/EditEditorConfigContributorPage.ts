@@ -8,21 +8,20 @@ import {Locator, Page} from '@playwright/test';
 import {EditClientExtensionsPage} from '../../pages/EditClientExtensionsPage';
 
 export class EditEditorConfigContributorPage extends EditClientExtensionsPage {
-	readonly aiCreatorEditorToolbarButton: Locator;
 	readonly editorConfigKeysInput: Locator;
 	readonly editorNamesInput: Locator;
 	readonly portletNamesInput: Locator;
+	readonly subscriptEditorToolbarButton: Locator;
 	readonly urlInput: Locator;
 
 	constructor(page: Page) {
 		super(page, 'editorConfigContributor');
 
-		this.aiCreatorEditorToolbarButton =
-			page.getByTitle('Create AI Content');
 		this.urlInput = page.locator(`#_${this.portletName}_url`);
 		this.portletNamesInput = page.locator(
 			`[name=_${this.portletName}_portletNames]`
 		);
+		this.subscriptEditorToolbarButton = page.getByTitle('Subscript');
 		this.editorNamesInput = page.locator(
 			`[name=_${this.portletName}_editorNames]`
 		);

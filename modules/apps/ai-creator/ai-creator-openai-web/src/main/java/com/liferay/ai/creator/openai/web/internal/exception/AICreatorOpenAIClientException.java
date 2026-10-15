@@ -39,11 +39,6 @@ public class AICreatorOpenAIClientException extends RuntimeException {
 		return _code;
 	}
 
-	public String getCompletionLocalizedMessage(Locale locale) {
-		return _getLocalizedMessage(
-			locale, MESSAGE_KEY_AN_UNEXPECTED_ERROR_COMPLETION);
-	}
-
 	public String getGenerationsLocalizedMessage(Locale locale) {
 		return _getLocalizedMessage(
 			locale, MESSAGE_KEY_AN_UNEXPECTED_ERROR_GENERATIONS);
@@ -57,9 +52,6 @@ public class AICreatorOpenAIClientException extends RuntimeException {
 	public int getResponseCode() {
 		return _responseCode;
 	}
-
-	protected static final String MESSAGE_KEY_AN_UNEXPECTED_ERROR_COMPLETION =
-		"an-unexpected-error-occurred";
 
 	protected static final String MESSAGE_KEY_AN_UNEXPECTED_ERROR_GENERATIONS =
 		"an-unexpected-error-occurred";

@@ -126,27 +126,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addGeneratedContent(description = null) {
-		Click.javaScriptClick(locator1 = "CKEditor#TOOLBAR_AI_CREATOR_BUTTON");
-
-		SelectFrame(locator1 = "IFrame#MODAL_BODY");
-
-		InputField.editText(
-			fieldLabel = "Description",
-			text = ${description});
-
-		Button.clickCreate();
-
-		WaitForVisible(
-			key_text = "Try Again",
-			locator1 = "Button#ANY");
-
-		Button.click(button = "Add");
-
-		SelectFrameTop();
-	}
-
-	@summary = "Default summary"
 	macro addSourceContent(content = null, fieldLabel = null) {
 		if (isSet(fieldLabel)) {
 			Click(

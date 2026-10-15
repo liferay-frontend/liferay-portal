@@ -38,14 +38,6 @@ public class AICreatorOpenAICompanyConfigurationDisplayContext
 	}
 
 	@Override
-	protected boolean isAICreatorChatGPTEnabled()
-		throws ConfigurationException {
-
-		return _aiCreatorOpenAIConfigurationManager.
-			isAICreatorChatGPTCompanyEnabled(_themeDisplay.getCompanyId());
-	}
-
-	@Override
 	protected boolean isAICreatorDALLEEnabled() throws ConfigurationException {
 		return _aiCreatorOpenAIConfigurationManager.
 			isAICreatorDALLECompanyEnabled(_themeDisplay.getCompanyId());

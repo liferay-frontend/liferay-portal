@@ -78,34 +78,6 @@ public class AICreatorOpenAIConfigurationManagerImpl
 	}
 
 	@Override
-	public boolean isAICreatorChatGPTCompanyEnabled(long companyId)
-		throws ConfigurationException {
-
-		AICreatorOpenAICompanyConfiguration
-			aiCreatorOpenAICompanyConfiguration =
-				_configurationProvider.getCompanyConfiguration(
-					AICreatorOpenAICompanyConfiguration.class, companyId);
-
-		return aiCreatorOpenAICompanyConfiguration.
-			enableChatGPTToCreateContent();
-	}
-
-	@Override
-	public boolean isAICreatorChatGPTGroupEnabled(long companyId, long groupId)
-		throws ConfigurationException {
-
-		if (!isAICreatorChatGPTCompanyEnabled(companyId)) {
-			return false;
-		}
-
-		AICreatorOpenAIGroupConfiguration aiCreatorOpenAIGroupConfiguration =
-			_configurationProvider.getGroupConfiguration(
-				AICreatorOpenAIGroupConfiguration.class, companyId, groupId);
-
-		return aiCreatorOpenAIGroupConfiguration.enableChatGPTToCreateContent();
-	}
-
-	@Override
 	public boolean isAICreatorDALLECompanyEnabled(long companyId)
 		throws ConfigurationException {
 
@@ -134,8 +106,7 @@ public class AICreatorOpenAIConfigurationManagerImpl
 
 	@Override
 	public void saveAICreatorOpenAICompanyConfiguration(
-			long companyId, String apiKey, boolean enableChatGPT,
-			boolean enableDALLE)
+			long companyId, String apiKey, boolean enableDALLE)
 		throws ConfigurationException {
 
 		_configurationProvider.saveCompanyConfiguration(
@@ -143,16 +114,13 @@ public class AICreatorOpenAIConfigurationManagerImpl
 			HashMapDictionaryBuilder.<String, Object>put(
 				"apiKey", apiKey
 			).put(
-				"enableChatGPTToCreateContent", enableChatGPT
-			).put(
 				"enableDALLEToCreateImages", enableDALLE
 			).build());
 	}
 
 	@Override
 	public void saveAICreatorOpenAIGroupConfiguration(
-			long groupId, String apiKey, boolean enableChatGPT,
-			boolean enableDALLE)
+			long groupId, String apiKey, boolean enableDALLE)
 		throws ConfigurationException {
 
 		Group group = _groupLocalService.fetchGroup(groupId);
@@ -162,8 +130,6 @@ public class AICreatorOpenAIConfigurationManagerImpl
 			groupId,
 			HashMapDictionaryBuilder.<String, Object>put(
 				"apiKey", apiKey
-			).put(
-				"enableChatGPTToCreateContent", enableChatGPT
 			).put(
 				"enableDALLEToCreateImages", enableDALLE
 			).build());
