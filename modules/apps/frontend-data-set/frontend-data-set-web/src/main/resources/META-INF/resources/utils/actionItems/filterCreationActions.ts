@@ -12,7 +12,7 @@ const filterCreationActions = ({
 	customActions: Array<ICreationActionItem>;
 	globalCollectionActions: any;
 }): Array<ICreationActionItem> => {
-	return customActions.filter((action: ICreationActionItem) => {
+	return customActions.flatMap((action: ICreationActionItem) => {
 		if (
 			!action.data?.permissionKey ||
 			(action.data?.permissionKey &&
@@ -26,8 +26,19 @@ const filterCreationActions = ({
 					}
 				}))
 		) {
-			return action;
+			if (action.items) {
+				const items = filterCreationActions({
+					customActions: action.items,
+					globalCollectionActions,
+				});
+
+				return items.length ? [{...action, items}] : [];
+			}
+
+			return [action];
 		}
+
+		return [];
 	});
 };
 
