@@ -2502,8 +2502,16 @@ const FrontendDataSetContent = ({
 							data-testid={`visualization-mode-${activeView.name}`}
 							ref={dataSetWrapperRef}
 						>
-							{style === 'default' && (
-								<div className="data-set data-set-inline">
+							{(style === 'default' || style === 'expanded') && (
+								<div
+									className={classNames(
+										'data-set data-set-inline',
+										{
+											'data-set-expanded':
+												style === 'expanded',
+										}
+									)}
+								>
 									{managementBar}
 
 									{inlineNotificationComponent && (

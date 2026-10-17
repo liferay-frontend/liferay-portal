@@ -29,6 +29,7 @@ ViewPendingWorkflowsSectionDisplayContext viewPendingWorkflowsSectionDisplayCont
 			id="<%= CMSSiteInitializerFDSNames.PENDING_WORKFLOWS_SECTION %>"
 			itemsPerPage="<%= 20 %>"
 			propsTransformer="{PendingWorkflowsFDSPropsTransformer} from site-cms-site-initializer"
+			style="expanded"
 		/>
 	</div>
 </div>

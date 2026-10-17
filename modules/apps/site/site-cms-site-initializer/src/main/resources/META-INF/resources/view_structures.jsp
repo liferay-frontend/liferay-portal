@@ -32,6 +32,7 @@ ViewStructuresDisplayContext viewStructuresDisplayContext = (ViewStructuresDispl
 			propsTransformer="{StructuresFDSPropsTransformer} from site-cms-site-initializer"
 			selectedItemsKey="id"
 			selectionType="multiple"
+			style="expanded"
 		/>
 	</div>
 </div>

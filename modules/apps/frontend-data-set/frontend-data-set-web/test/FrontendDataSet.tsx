@@ -102,6 +102,29 @@ describe('FrontendDataSet', () => {
 		window.history.pushState({}, '', '/');
 	});
 
+	describe.each(['default', 'expanded', 'fluid', 'stacked'] as const)(
+		'With the "%s" style',
+		(style) => {
+			it('shows the items and the search box', async () => {
+				fetch.mockResponseOnce(itemsResponse(['first item']));
+
+				render(
+					<FrontendDataSet
+						apiURL="/o/products"
+						id={id}
+						style={style}
+						views={VIEWS}
+					/>
+				);
+
+				expect(
+					await screen.findByText('first item')
+				).toBeInTheDocument();
+				expect(screen.getByRole('searchbox')).toBeInTheDocument();
+			});
+		}
+	);
+
 	it('cancels a search request superseded by a newer one', async () => {
 		const requests = mockPendingRequests();
 

@@ -34,6 +34,7 @@ ViewContentsSectionDisplayContext viewContentsSectionDisplayContext = (ViewConte
 			selectedItemsKey="embedded.id"
 			selectionType="multiple"
 			showSelectAll="<%= true %>"
+			style="expanded"
 		/>
 	</div>
 </div>
