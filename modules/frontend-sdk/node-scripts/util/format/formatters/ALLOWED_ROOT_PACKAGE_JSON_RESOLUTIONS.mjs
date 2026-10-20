@@ -21,11 +21,22 @@
  */
 export default {
 
-	// The chain does not require a version this high on its own, so this entry holds websocket-driver
-	// up until the packages that pull it in start requiring it themselves.
+	// The AI and real-time collaboration packages of ckeditor5-premium-features declare uuid ^9.0.1,
+	// which does not admit a fixed version, so these entries move them to the first fixed major until
+	// CKEditor starts requiring it itself.
 	//
-	// See https://liferay.atlassian.net/browse/LPD-102337 for more information.
+	// See https://liferay.atlassian.net/browse/LPD-108197 for more information.
 
-	'webpack-dev-server/**/websocket-driver':
-		'Holds the sockjs transports of the AMD loader dev server at a version the sockjs chain does not require on its own.',
+	'**/@aws-sdk/client-bedrock-runtime/uuid':
+		'Holds uuid at a fixed version the ckeditor5-ai chain does not require on its own.',
+	'**/@ckeditor/ckeditor-cloud-services-collaboration/uuid':
+		'Holds uuid at a fixed version the real-time collaboration chain does not require on its own.',
+
+	// The real-time collaboration package of ckeditor5-premium-features pulls socket.io-client, whose
+	// engine.io-client declares ws ~8.17.1, which does not admit a fixed version.
+	//
+	// See https://liferay.atlassian.net/browse/LPD-108197 for more information.
+
+	'**/engine.io-client/ws':
+		'Holds ws at a fixed version the socket.io-client chain does not require on its own.',
 };
