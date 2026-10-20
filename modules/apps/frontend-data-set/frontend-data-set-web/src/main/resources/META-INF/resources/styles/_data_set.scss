@@ -57,14 +57,14 @@
 
 // The expanded style only reshapes views that read as a table or a list:
 // edge to edge, right under the management bar, with only a soft line under
-// the last row. Cards and the other views keep the same side margin as the
-// fluid style.
+// the last row. Cards and the other views get the same 16px margin on the
+// sides as above the content.
 
 .data-set-wrapper:not(.visualization-mode-table):not(.visualization-mode-list)
 	.data-set-expanded {
 	.data-set-content-wrapper,
 	.data-set-pagination-wrapper {
-		padding-inline: 0.75rem;
+		padding-inline: 1rem;
 	}
 }
 
