@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.test.rule.FeatureFlag;
 
 import jakarta.portlet.PortletURL;
 
@@ -64,34 +65,12 @@ public abstract class BaseAMEditorConfigContributorTestCase {
 			_initializeItemSelectorCriterion(new UploadItemSelectorCriterion())
 		};
 
+		String itemSelectorURL = RandomTestUtil.randomString();
+
+		_mockItemSelector(Arrays.asList(itemSelectorCriteria), itemSelectorURL);
+
 		JSONObject jsonObject = JSONUtil.put(
-			"filebrowserImageBrowseLinkUrl", RandomTestUtil.randomString());
-
-		Mockito.when(
-			_itemSelector.getItemSelectorCriteria(Mockito.anyString())
-		).thenReturn(
-			Arrays.asList(itemSelectorCriteria)
-		);
-
-		Mockito.when(
-			_itemSelector.getItemSelectedEventName(Mockito.anyString())
-		).thenReturn(
-			RandomTestUtil.randomString()
-		);
-
-		Mockito.when(
-			_itemSelector.getItemSelectorURL(
-				Mockito.any(RequestBackedPortletURLFactory.class),
-				Mockito.anyString(), Mockito.any(ItemSelectorCriterion[].class))
-		).thenReturn(
-			_portletURL
-		);
-
-		Mockito.when(
-			_portletURL.toString()
-		).thenReturn(
-			RandomTestUtil.randomString()
-		);
+			"filebrowserImageBrowseLinkUrl", itemSelectorURL);
 
 		BaseAMEditorConfigContributor baseAMEditorConfigContributor =
 			getBaseAMEditorConfigContributor();
@@ -120,34 +99,9 @@ public abstract class BaseAMEditorConfigContributorTestCase {
 	public void testAdaptiveMediaFileEntryAttributeNameIsAdded()
 		throws Exception {
 
-		PortletURL itemSelectorPortletURL = Mockito.mock(PortletURL.class);
-
-		Mockito.when(
-			itemSelectorPortletURL.toString()
-		).thenReturn(
-			"itemSelectorPortletURL"
-		);
-
-		Mockito.when(
-			_itemSelector.getItemSelectorURL(
-				Mockito.any(RequestBackedPortletURLFactory.class),
-				Mockito.anyString(), Mockito.any(ItemSelectorCriterion.class))
-		).thenReturn(
-			itemSelectorPortletURL
-		);
-
-		Mockito.when(
-			_itemSelector.getItemSelectedEventName(Mockito.anyString())
-		).thenReturn(
-			"selectedEventName"
-		);
-
-		Mockito.when(
-			_itemSelector.getItemSelectorCriteria(
-				getItemSelectorCriterionFileEntryItemSelectorReturnTypeName())
-		).thenReturn(
-			_getItemSelectorCriterionFileEntryItemSelectorReturnType()
-		);
+		_mockItemSelector(
+			_getItemSelectorCriterionFileEntryItemSelectorReturnType(),
+			getItemSelectorCriterionFileEntryItemSelectorReturnTypeName());
 
 		JSONObject originalJSONObject = JSONUtil.put(
 			"filebrowserImageBrowseLinkUrl",
@@ -171,36 +125,12 @@ public abstract class BaseAMEditorConfigContributorTestCase {
 			jsonObject.get("adaptiveMediaFileEntryAttributeName"));
 	}
 
+	@FeatureFlag("LPD-11235")
 	@Test
 	public void testAdaptiveMediaIsAddedToExtraPlugins() throws Exception {
-		PortletURL itemSelectorPortletURL = Mockito.mock(PortletURL.class);
-
-		Mockito.when(
-			itemSelectorPortletURL.toString()
-		).thenReturn(
-			"itemSelectorPortletURL"
-		);
-
-		Mockito.when(
-			_itemSelector.getItemSelectorURL(
-				Mockito.any(RequestBackedPortletURLFactory.class),
-				Mockito.anyString(), Mockito.any(ItemSelectorCriterion.class))
-		).thenReturn(
-			itemSelectorPortletURL
-		);
-
-		Mockito.when(
-			_itemSelector.getItemSelectedEventName(Mockito.anyString())
-		).thenReturn(
-			"selectedEventName"
-		);
-
-		Mockito.when(
-			_itemSelector.getItemSelectorCriteria(
-				getItemSelectorCriterionFileEntryItemSelectorReturnTypeName())
-		).thenReturn(
-			_getItemSelectorCriterionFileEntryItemSelectorReturnType()
-		);
+		_mockItemSelector(
+			_getItemSelectorCriterionFileEntryItemSelectorReturnType(),
+			getItemSelectorCriterionFileEntryItemSelectorReturnTypeName());
 
 		JSONObject originalJSONObject = JSONUtil.put(
 			"filebrowserImageBrowseLinkUrl",
@@ -223,36 +153,12 @@ public abstract class BaseAMEditorConfigContributorTestCase {
 			"adaptivemedia", jsonObject.getString("extraPlugins"));
 	}
 
+	@FeatureFlag("LPD-11235")
 	@Test
 	public void testAdaptiveMediaIsExtraPlugins() throws Exception {
-		PortletURL itemSelectorPortletURL = Mockito.mock(PortletURL.class);
-
-		Mockito.when(
-			itemSelectorPortletURL.toString()
-		).thenReturn(
-			"itemSelectorPortletURL"
-		);
-
-		Mockito.when(
-			_itemSelector.getItemSelectorURL(
-				Mockito.any(RequestBackedPortletURLFactory.class),
-				Mockito.anyString(), Mockito.any(ItemSelectorCriterion.class))
-		).thenReturn(
-			itemSelectorPortletURL
-		);
-
-		Mockito.when(
-			_itemSelector.getItemSelectedEventName(Mockito.anyString())
-		).thenReturn(
-			"selectedEventName"
-		);
-
-		Mockito.when(
-			_itemSelector.getItemSelectorCriteria(
-				getItemSelectorCriterionFileEntryItemSelectorReturnTypeName())
-		).thenReturn(
-			_getItemSelectorCriterionFileEntryItemSelectorReturnType()
-		);
+		_mockItemSelector(
+			_getItemSelectorCriterionFileEntryItemSelectorReturnType(),
+			getItemSelectorCriterionFileEntryItemSelectorReturnTypeName());
 
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
 			JSONUtil.put(
@@ -275,6 +181,47 @@ public abstract class BaseAMEditorConfigContributorTestCase {
 		Assert.assertEquals(
 			"ae_placeholder,ae_selectionregion,ae_uicore,adaptivemedia",
 			jsonObject.getString("extraPlugins"));
+	}
+
+	@Test
+	public void testAdaptiveMediaIsNotExtraPluginsForCKEditor5()
+		throws Exception {
+
+		_mockItemSelector(
+			_getItemSelectorCriterionFileEntryItemSelectorReturnType(),
+			getItemSelectorCriterionFileEntryItemSelectorReturnTypeName());
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
+			JSONUtil.put(
+				"extraPlugins", "ae_placeholder"
+			).put(
+				"filebrowserImageBrowseLinkUrl",
+				getItemSelectorCriterionFileEntryItemSelectorReturnTypeName()
+			).toString());
+
+		BaseAMEditorConfigContributor baseAMEditorConfigContributor =
+			Mockito.spy(getBaseAMEditorConfigContributor());
+
+		Mockito.doReturn(
+			false
+		).when(
+			baseAMEditorConfigContributor
+		).isCKEditor4(
+			Mockito.any(ThemeDisplay.class)
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			baseAMEditorConfigContributor, "itemSelector", _itemSelector);
+
+		baseAMEditorConfigContributor.populateConfigJSONObject(
+			jsonObject, _inputEditorTaglibAttributes, _themeDisplay,
+			_requestBackedPortletURLFactory);
+
+		Assert.assertEquals(
+			"data-fileentryid",
+			jsonObject.getString("adaptiveMediaFileEntryAttributeName"));
+		Assert.assertEquals(
+			"ae_placeholder", jsonObject.getString("extraPlugins"));
 	}
 
 	@Test
@@ -324,11 +271,13 @@ public abstract class BaseAMEditorConfigContributorTestCase {
 			jsonObject, _inputEditorTaglibAttributes, _themeDisplay,
 			_requestBackedPortletURLFactory);
 
-		JSONObject expectedJSONObject = JSONUtil.put(
-			"allowedContent", "a[*](*); div(*); img[*](*){*};");
-
 		JSONAssert.assertEquals(
-			expectedJSONObject.toString(), jsonObject.toString(), true);
+			JSONUtil.put(
+				"adaptiveMediaFileEntryAttributeName", "data-fileentryid"
+			).put(
+				"allowedContent", "a[*](*); div(*); img[*](*){*};"
+			).toString(),
+			jsonObject.toString(), true);
 	}
 
 	@Test
@@ -345,10 +294,11 @@ public abstract class BaseAMEditorConfigContributorTestCase {
 			jsonObject, _inputEditorTaglibAttributes, _themeDisplay,
 			_requestBackedPortletURLFactory);
 
-		JSONObject expectedJSONObject = JSONFactoryUtil.createJSONObject();
-
 		JSONAssert.assertEquals(
-			expectedJSONObject.toString(), jsonObject.toString(), true);
+			JSONUtil.put(
+				"adaptiveMediaFileEntryAttributeName", "data-fileentryid"
+			).toString(),
+			jsonObject.toString(), true);
 	}
 
 	@Test
@@ -368,11 +318,13 @@ public abstract class BaseAMEditorConfigContributorTestCase {
 			jsonObject, _inputEditorTaglibAttributes, _themeDisplay,
 			_requestBackedPortletURLFactory);
 
-		JSONObject expectedJSONObject = JSONUtil.put(
-			"allowedContent", "a[*](*); div(*); img[*](*){*};");
-
 		JSONAssert.assertEquals(
-			expectedJSONObject.toString(), jsonObject.toString(), true);
+			JSONUtil.put(
+				"adaptiveMediaFileEntryAttributeName", "data-fileentryid"
+			).put(
+				"allowedContent", "a[*](*); div(*); img[*](*){*};"
+			).toString(),
+			jsonObject.toString(), true);
 	}
 
 	@Test
@@ -392,11 +344,13 @@ public abstract class BaseAMEditorConfigContributorTestCase {
 			jsonObject, _inputEditorTaglibAttributes, _themeDisplay,
 			_requestBackedPortletURLFactory);
 
-		JSONObject expectedJSONObject = JSONUtil.put(
-			"allowedContent", Boolean.TRUE.toString());
-
 		JSONAssert.assertEquals(
-			expectedJSONObject.toString(), jsonObject.toString(), true);
+			JSONUtil.put(
+				"adaptiveMediaFileEntryAttributeName", "data-fileentryid"
+			).put(
+				"allowedContent", Boolean.TRUE.toString()
+			).toString(),
+			jsonObject.toString(), true);
 	}
 
 	@Test
@@ -415,10 +369,13 @@ public abstract class BaseAMEditorConfigContributorTestCase {
 			jsonObject, _inputEditorTaglibAttributes, _themeDisplay,
 			_requestBackedPortletURLFactory);
 
-		JSONObject expectedJSONObject = JSONUtil.put("allowedContent", true);
-
 		JSONAssert.assertEquals(
-			expectedJSONObject.toString(), jsonObject.toString(), true);
+			JSONUtil.put(
+				"adaptiveMediaFileEntryAttributeName", "data-fileentryid"
+			).put(
+				"allowedContent", true
+			).toString(),
+			jsonObject.toString(), true);
 	}
 
 	@Test
@@ -448,11 +405,13 @@ public abstract class BaseAMEditorConfigContributorTestCase {
 			Mockito.anyString(), Mockito.any(ItemSelectorCriterion.class)
 		);
 
-		JSONObject expectedJSONObject = JSONFactoryUtil.createJSONObject(
-			originalJSONObject.toString());
-
 		JSONAssert.assertEquals(
-			expectedJSONObject.toString(), jsonObject.toString(), true);
+			JSONUtil.put(
+				"adaptiveMediaFileEntryAttributeName", "data-fileentryid"
+			).put(
+				"filebrowserImageBrowseLinkUrl", StringPool.BLANK
+			).toString(),
+			jsonObject.toString(), true);
 	}
 
 	@Test
@@ -490,45 +449,23 @@ public abstract class BaseAMEditorConfigContributorTestCase {
 			Mockito.anyString(), Mockito.any(ItemSelectorCriterion.class)
 		);
 
-		JSONObject expectedJSONObject = JSONFactoryUtil.createJSONObject(
-			originalJSONObject.toString());
-
 		JSONAssert.assertEquals(
-			expectedJSONObject.toString(), jsonObject.toString(), true);
+			JSONUtil.put(
+				"adaptiveMediaFileEntryAttributeName", "data-fileentryid"
+			).put(
+				"filebrowserImageBrowseLinkUrl",
+				"audioItemSelectorCriterionFileEntryItemSelectorReturnType"
+			).toString(),
+			jsonObject.toString(), true);
 	}
 
 	@Test
 	public void testItemSelectorURLWithFileItemSelectorCriterion()
 		throws Exception {
 
-		PortletURL itemSelectorPortletURL = Mockito.mock(PortletURL.class);
-
-		Mockito.when(
-			itemSelectorPortletURL.toString()
-		).thenReturn(
-			"itemSelectorPortletURL"
-		);
-
-		Mockito.when(
-			_itemSelector.getItemSelectorURL(
-				Mockito.any(RequestBackedPortletURLFactory.class),
-				Mockito.anyString(), Mockito.any(ItemSelectorCriterion.class))
-		).thenReturn(
-			itemSelectorPortletURL
-		);
-
-		Mockito.when(
-			_itemSelector.getItemSelectedEventName(Mockito.anyString())
-		).thenReturn(
-			"selectedEventName"
-		);
-
-		Mockito.when(
-			_itemSelector.getItemSelectorCriteria(
-				"fileItemSelectorCriterionFileEntryItemSelectorReturnType")
-		).thenReturn(
-			_getFileItemSelectorCriterionFileEntryItemSelectorReturnType()
-		);
+		_mockItemSelector(
+			_getFileItemSelectorCriterionFileEntryItemSelectorReturnType(),
+			"fileItemSelectorCriterionFileEntryItemSelectorReturnType");
 
 		JSONObject originalJSONObject = JSONUtil.put(
 			"filebrowserImageBrowseLinkUrl",
@@ -559,34 +496,9 @@ public abstract class BaseAMEditorConfigContributorTestCase {
 	public void testItemSelectorURLWithItemSelectorCriterion()
 		throws Exception {
 
-		PortletURL itemSelectorPortletURL = Mockito.mock(PortletURL.class);
-
-		Mockito.when(
-			itemSelectorPortletURL.toString()
-		).thenReturn(
-			"itemSelectorPortletURL"
-		);
-
-		Mockito.when(
-			_itemSelector.getItemSelectorURL(
-				Mockito.any(RequestBackedPortletURLFactory.class),
-				Mockito.anyString(), Mockito.any(ItemSelectorCriterion.class))
-		).thenReturn(
-			itemSelectorPortletURL
-		);
-
-		Mockito.when(
-			_itemSelector.getItemSelectedEventName(Mockito.anyString())
-		).thenReturn(
-			"selectedEventName"
-		);
-
-		Mockito.when(
-			_itemSelector.getItemSelectorCriteria(
-				getItemSelectorCriterionFileEntryItemSelectorReturnTypeName())
-		).thenReturn(
-			_getItemSelectorCriterionFileEntryItemSelectorReturnType()
-		);
+		_mockItemSelector(
+			_getItemSelectorCriterionFileEntryItemSelectorReturnType(),
+			getItemSelectorCriterionFileEntryItemSelectorReturnTypeName());
 
 		JSONObject originalJSONObject = JSONUtil.put(
 			"filebrowserImageBrowseLinkUrl",
@@ -680,6 +592,31 @@ public abstract class BaseAMEditorConfigContributorTestCase {
 			new ArrayList<ItemSelectorReturnType>());
 
 		return itemSelectorCriterion;
+	}
+
+	private void _mockItemSelector(
+		List<ItemSelectorCriterion> itemSelectorCriteria,
+		String itemSelectorURL) {
+
+		Mockito.when(
+			_itemSelector.getItemSelectedEventName(Mockito.anyString())
+		).thenReturn(
+			RandomTestUtil.randomString()
+		);
+
+		Mockito.when(
+			_itemSelector.getItemSelectorCriteria(itemSelectorURL)
+		).thenReturn(
+			itemSelectorCriteria
+		);
+
+		Mockito.when(
+			_itemSelector.getItemSelectorURL(
+				Mockito.any(RequestBackedPortletURLFactory.class),
+				Mockito.anyString(), Mockito.any(ItemSelectorCriterion[].class))
+		).thenReturn(
+			_portletURL
+		);
 	}
 
 	private final Map<String, Object> _inputEditorTaglibAttributes =

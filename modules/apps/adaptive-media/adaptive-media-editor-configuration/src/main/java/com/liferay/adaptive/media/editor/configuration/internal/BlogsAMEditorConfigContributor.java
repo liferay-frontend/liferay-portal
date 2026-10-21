@@ -12,6 +12,7 @@ import com.liferay.item.selector.criteria.file.criterion.FileItemSelectorCriteri
 import com.liferay.item.selector.criteria.image.criterion.ImageItemSelectorCriterion;
 import com.liferay.item.selector.criteria.upload.criterion.UploadItemSelectorCriterion;
 import com.liferay.portal.kernel.editor.configuration.EditorConfigContributor;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -30,6 +31,11 @@ import org.osgi.service.component.annotations.Component;
 )
 public class BlogsAMEditorConfigContributor
 	extends BaseAMEditorConfigContributor {
+
+	@Override
+	protected boolean isCKEditor4(ThemeDisplay themeDisplay) {
+		return true;
+	}
 
 	@Override
 	protected boolean isItemSelectorCriterionOverridable(
