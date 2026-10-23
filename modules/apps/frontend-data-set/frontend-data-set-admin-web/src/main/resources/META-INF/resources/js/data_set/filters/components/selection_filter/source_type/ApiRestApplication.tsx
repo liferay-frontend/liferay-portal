@@ -100,6 +100,10 @@ function ApiRestApplication({
 		path: string,
 		allowedParameters: string[]
 	): boolean => {
+		if (Liferay.FeatureFlags['LPD-38564']) {
+			return true;
+		}
+
 		const paramsMatcher = RegExp('{(.*?)}', 'g');
 		let matches;
 

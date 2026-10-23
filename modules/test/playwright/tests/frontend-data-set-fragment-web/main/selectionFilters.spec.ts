@@ -1441,3 +1441,107 @@ test(
 		await picklistApiHelpers.deletePicklist(badgePicklistERC);
 	}
 );
+
+test(
+	'Selection filter of type "API REST Application" resolves the tokens of its endpoint and is omitted when they stay unresolved',
+	{tag: '@LPD-105344'},
+	async ({
+		apiHelpers,
+		dataSetFragmentPage,
+		dataSetManagerApiHelpers,
+		layout,
+	}) => {
+		const filterLabel = getRandomString();
+		const taxonomyVocabularyName = getRandomString();
+		const unresolvedFilterLabel = getRandomString();
+
+		const taxonomyVocabulary =
+			await apiHelpers.headlessAdminTaxonomy.postSiteTaxonomyVocabulary({
+				name: taxonomyVocabularyName,
+				siteId: layout.groupId,
+			});
+
+		try {
+			await test.step('Add a field, so FDS has something to show', async () => {
+				await dataSetManagerApiHelpers.createDataSetTableSection({
+					dataSetERC,
+					fieldName: 'label',
+					label_i18n: {en_US: 'Label'},
+					type: 'string',
+				});
+			});
+
+			await test.step('Create a selection filter whose endpoint has a site token', async () => {
+				await dataSetManagerApiHelpers.createDataSetSelectionFilter({
+					dataSetERC,
+					fieldName: 'id',
+					itemKey: 'id',
+					itemLabel: 'name',
+					label_i18n: {en_US: filterLabel},
+					multiple: true,
+					restApplication: '/headless-admin-taxonomy/v1.0',
+					restEndpoint: '/v1.0/sites/{siteId}/taxonomy-vocabularies',
+					restSchema: 'TaxonomyVocabulary',
+					source: '/o/headless-admin-taxonomy/v1.0/sites/{siteId}/taxonomy-vocabularies',
+					sourceType: 'API_REST_APPLICATION',
+				});
+			});
+
+			await test.step('Create a selection filter whose endpoint has a token that nothing resolves', async () => {
+				await dataSetManagerApiHelpers.createDataSetSelectionFilter({
+					dataSetERC,
+					fieldName: 'label',
+					itemKey: 'id',
+					itemLabel: 'name',
+					label_i18n: {en_US: unresolvedFilterLabel},
+					multiple: true,
+					restApplication: '/headless-admin-taxonomy/v1.0',
+					restEndpoint:
+						'/v1.0/taxonomy-vocabularies/{taxonomyVocabularyId}/taxonomy-categories',
+					restSchema: 'TaxonomyCategory',
+					source: '/o/headless-admin-taxonomy/v1.0/taxonomy-vocabularies/{taxonomyVocabularyId}/taxonomy-categories',
+					sourceType: 'API_REST_APPLICATION',
+				});
+			});
+
+			await test.step('Configure Data Set fragment', async () => {
+				await dataSetFragmentPage.configureDataSetFragment({
+					dataSetLabel,
+					layout,
+				});
+			});
+
+			await test.step('Check that only the filter with unresolved tokens is omitted', async () => {
+				await dataSetFragmentPage.filterButton.click();
+
+				await expect(
+					dataSetFragmentPage.dropdownMenu.getByRole('menuitem', {
+						name: filterLabel,
+					})
+				).toBeVisible();
+				await expect(
+					dataSetFragmentPage.dropdownMenu.getByRole('menuitem', {
+						name: unresolvedFilterLabel,
+					})
+				).toBeHidden();
+			});
+
+			await test.step('Check that the filter lists the items of the page site', async () => {
+				await dataSetFragmentPage.dropdownMenu
+					.getByRole('menuitem', {name: filterLabel})
+					.click();
+
+				await expect(
+					dataSetFragmentPage.dropdownMenu.getByRole('checkbox', {
+						name: taxonomyVocabularyName,
+					})
+				).toBeVisible();
+			});
+		}
+		finally {
+			await apiHelpers.headlessAdminTaxonomy.deleteTaxonomyVocabulary(
+				taxonomyVocabulary.id
+			);
+		}
+	}
+);
