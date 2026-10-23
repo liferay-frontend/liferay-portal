@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {expect, mergeTests} from '@playwright/test';
+import {Locator, expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
@@ -25,9 +25,38 @@ const test = mergeTests(
 
 test(
 	'Shows the revamped per-library home with members and connected sites',
-	{tag: ['@LPD-108834', '@LPD-99371']},
+	{tag: ['@LPD-108834', '@LPD-110068', '@LPD-99371']},
 	async ({apiHelpers, designLibrariesPage, page}) => {
 		const designLibraryName = getRandomString();
+
+		const fragmentsMenuItem = page.getByRole('menuitem', {
+			exact: true,
+			name: 'Fragments',
+		});
+		const newBasicFragmentMenuItem = page.getByRole('menuitem', {
+			name: 'New Basic Fragment',
+		});
+
+		const openCreationMenu = async (trigger: Locator) => {
+			await clickAndExpectToBeVisible({
+				target: fragmentsMenuItem,
+				trigger,
+			});
+			await hoverAndExpectToBeVisible({
+				target: newBasicFragmentMenuItem,
+				trigger: fragmentsMenuItem,
+			});
+		};
+
+		const closeCreationMenu = async () => {
+			await expect(async () => {
+				await page.keyboard.press('Escape');
+
+				await expect(fragmentsMenuItem).toBeHidden({
+					timeout: 500,
+				});
+			}).toPass();
+		};
 
 		const createdDesignLibrary =
 			await test.step('Create a new design library via headless', async () => {
@@ -56,44 +85,31 @@ test(
 			});
 
 			await test.step('Add Asset groups the creation actions of each asset type', async () => {
-				const fragmentsMenuItem = page.getByRole('menuitem', {
-					exact: true,
-					name: 'Fragments',
-				});
-
-				await clickAndExpectToBeVisible({
-					target: fragmentsMenuItem,
-					trigger: page.getByRole('button', {name: 'Add Asset'}),
-				});
-
-				const newContentPageTemplateMenuItem = page.getByRole(
-					'menuitem',
-					{name: 'New Content Page Template'}
+				await openCreationMenu(
+					page.getByRole('button', {name: 'Add Asset'})
 				);
 
 				await hoverAndExpectToBeVisible({
-					target: newContentPageTemplateMenuItem,
+					target: page.getByRole('menuitem', {
+						name: 'New Content Page Template',
+					}),
 					trigger: page.getByRole('menuitem', {
 						exact: true,
 						name: 'Page Templates',
 					}),
 				});
-				await hoverAndExpectToBeVisible({
-					target: page.getByRole('menuitem', {
-						name: 'New Basic Fragment',
-					}),
-					trigger: fragmentsMenuItem,
-				});
 
-				await expect(newContentPageTemplateMenuItem).toBeHidden();
+				await expect(newBasicFragmentMenuItem).toBeHidden();
 
-				await expect(async () => {
-					await page.keyboard.press('Escape');
+				await closeCreationMenu();
+			});
 
-					await expect(fragmentsMenuItem).toBeHidden({
-						timeout: 500,
-					});
-				}).toPass();
+			await test.step('New groups the creation actions of each asset type', async () => {
+				await openCreationMenu(
+					page.getByRole('button', {exact: true, name: 'New'})
+				);
+
+				await closeCreationMenu();
 			});
 
 			await test.step('Members section shows the owner and the Users and User Groups tabs', async () => {

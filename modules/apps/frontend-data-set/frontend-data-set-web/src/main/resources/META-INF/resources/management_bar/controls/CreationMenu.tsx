@@ -4,20 +4,39 @@
  */
 
 import ClayButton from '@clayui/button';
-import ClayDropDown from '@clayui/drop-down';
+import ClayDropDown, {ClayDropDownWithItems} from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import {LinkOrButton} from '@clayui/shared';
 import classNames from 'classnames';
 import {sub} from 'frontend-js-web';
 import React, {Ref, useContext, useState} from 'react';
 
-import FrontendDataSetContext from '../../FrontendDataSetContext';
+import FrontendDataSetContext, {
+	IFrontendDataSetContext,
+} from '../../FrontendDataSetContext';
 import {ACTION_ITEM_TARGETS} from '../../utils/actionItems/constants';
 import {triggerAction} from '../../utils/actionItems/triggerAction';
-import {ICreationActionItem} from '../../utils/types';
+import {
+	EItemActionsType,
+	ICreationActionItem,
+	TClayDropDownItem,
+} from '../../utils/types';
 import {useWindowSize} from '../../utils/useWindowSize';
 
 const MEDIUM_BREAKPOINT = 768;
+
+function triggerCreationAction(
+	item: ICreationActionItem,
+	frontendDataSetContext: IFrontendDataSetContext
+) {
+	item.onClick?.({
+		loadData: frontendDataSetContext.loadData,
+	});
+
+	if (item.href || item.target) {
+		triggerAction(item, frontendDataSetContext);
+	}
+}
 
 const DropdownTrigger = React.forwardRef(
 	(
@@ -92,22 +111,62 @@ const DropDown = ({
 }) => {
 	const frontendDataSetContext = useContext(FrontendDataSetContext);
 
-	const {loadData} = frontendDataSetContext;
-
 	const [active, setActive] = useState(false);
+
+	const onItemClick = (item: ICreationActionItem) => {
+		setActive(false);
+
+		triggerCreationAction(item, frontendDataSetContext);
+	};
+
+	const trigger = (
+		<DropdownTrigger
+			hideManagementBarInEmptyState={hideManagementBarInEmptyState}
+			inEmptyState={inEmptyState}
+		/>
+	);
+
+	if (primaryItems.some((item) => item.items)) {
+		const getDropDownItems = (
+			items: Array<ICreationActionItem>
+		): Array<TClayDropDownItem> =>
+			items.map((item) => {
+				if (item.items?.length) {
+					return {
+						items: getDropDownItems(item.items),
+						label: item.label,
+						symbolLeft: item.icon,
+						type: EItemActionsType.CONTEXTUAL,
+					};
+				}
+
+				return {
+					className: item.className,
+					label: item.label,
+					onClick: (event) => {
+						event.preventDefault();
+
+						onItemClick(item);
+					},
+					symbolLeft: item.icon,
+				};
+			});
+
+		return (
+			<ClayDropDownWithItems
+				active={active}
+				items={getDropDownItems(primaryItems)}
+				onActiveChange={setActive}
+				trigger={trigger}
+			/>
+		);
+	}
 
 	return (
 		<ClayDropDown
 			active={active}
 			onActiveChange={setActive}
-			trigger={
-				<DropdownTrigger
-					hideManagementBarInEmptyState={
-						hideManagementBarInEmptyState
-					}
-					inEmptyState={inEmptyState}
-				/>
-			}
+			trigger={trigger}
 		>
 			<ClayDropDown.ItemList>
 				{primaryItems.map((item, i) => (
@@ -117,15 +176,7 @@ const DropDown = ({
 						onClick={(event) => {
 							event.preventDefault();
 
-							setActive(false);
-
-							item.onClick?.({
-								loadData,
-							});
-
-							if (item.href || item.target) {
-								triggerAction(item, frontendDataSetContext);
-							}
+							onItemClick(item);
 						}}
 					>
 						{item.icon && (
@@ -151,8 +202,6 @@ function CreationButton({
 }) {
 	const frontendDataSetContext = useContext(FrontendDataSetContext);
 
-	const {loadData} = frontendDataSetContext;
-
 	const opensInNewTab = firstItem.target === ACTION_ITEM_TARGETS.BLANK;
 
 	const {width} = useWindowSize();
@@ -168,13 +217,7 @@ function CreationButton({
 				return;
 			}
 
-			firstItem.onClick?.({
-				loadData,
-			});
-
-			if (firstItem.href || firstItem.target) {
-				triggerAction(firstItem, frontendDataSetContext);
-			}
+			triggerCreationAction(firstItem, frontendDataSetContext);
 		},
 		target: opensInNewTab ? '_blank' : undefined,
 	};
@@ -251,7 +294,7 @@ function CreationMenu({
 			})}
 		>
 			<li className="nav-item">
-				{primaryItems.length > 1 ? (
+				{primaryItems.length > 1 || primaryItems[0].items?.length ? (
 					<DropDown
 						hideManagementBarInEmptyState={
 							hideManagementBarInEmptyState

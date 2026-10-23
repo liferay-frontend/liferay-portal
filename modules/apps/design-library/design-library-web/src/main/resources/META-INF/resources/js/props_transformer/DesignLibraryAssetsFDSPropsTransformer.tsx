@@ -10,7 +10,7 @@ import {
 import React from 'react';
 
 import {TableCellContentType} from '../constants';
-import getCreationMenuItems from '../getCreationMenuItems';
+import getGroupedCreationMenuItems from '../getGroupedCreationMenuItems';
 import {ActionItem, DesignAsset, DesignLibraryResourceType} from '../types';
 import confirmAndDeleteEntriesAction from './actions/confirmAndDeleteEntriesAction';
 import getDesignAssetsConfirmationMessage from './actions/getDesignAssetsConfirmationMessage';
@@ -33,7 +33,7 @@ export default function DesignLibraryAssetsFDSPropsTransformer({
 	const resourceTypes: DesignLibraryResourceType[] =
 		additionalProps?.resourceTypes || [];
 
-	const primaryItems = getCreationMenuItems(resourceTypes);
+	const primaryItems = getGroupedCreationMenuItems(resourceTypes);
 
 	return {
 		...props,
