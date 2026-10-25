@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.content.security.policy.ContentSecurityPolicyNo
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlag;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManager;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -42,6 +43,7 @@ import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactory;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.PrefsProps;
@@ -115,6 +117,7 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 			_renderLiferayLanguage(sb);
 			_renderLiferayPortlet(sb);
 			_renderLiferayPortletKeys(sb);
+			_renderLiferayProductExperience(httpServletRequest, sb);
 			_renderLiferayPropsValues(httpServletRequest, sb);
 			_renderLiferayThemeDisplay(
 				httpServletRequest, liferayGlobalObjectConfiguration, sb);
@@ -521,6 +524,71 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 			"com_liferay_configuration_admin_web_portlet_" +
 				"InstanceSettingsPortlet");
 		_renderValue("ITEM_SELECTOR", sb, PortletKeys.ITEM_SELECTOR);
+
+		sb.append("},\n");
+	}
+
+	private void _renderLiferayProductExperience(
+		HttpServletRequest httpServletRequest, StringBundler sb) {
+
+		// One object for the product experience tracking scripts. It only
+		// exists when the flag is enabled and there is something to report:
+		// an administrator, or anyone on an administration surface.
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		if ((themeDisplay == null) ||
+			!FeatureFlagManagerUtil.isEnabled(
+				themeDisplay.getCompanyId(),
+				ProductExperienceUtil.FEATURE_FLAG_KEY)) {
+
+			return;
+		}
+
+		boolean admin = ProductExperienceUtil.isAdmin(themeDisplay);
+		boolean backOffice = ProductExperienceUtil.isBackOffice(
+			httpServletRequest, themeDisplay);
+
+		if (!admin && !backOffice) {
+			return;
+		}
+
+		String ppid = themeDisplay.getPpid();
+
+		String screen = null;
+
+		Layout layout = themeDisplay.getLayout();
+
+		if ((layout != null) && layout.isTypeControlPanel() &&
+			Validator.isNotNull(ppid)) {
+
+			String namespace = _portal.getPortletNamespace(ppid);
+
+			screen = ProductExperienceUtil.getScreen(
+				ppid,
+				parameterName -> ParamUtil.getString(
+					httpServletRequest, namespace + parameterName, null));
+		}
+
+		sb.append("ProductExperience: {\n");
+
+		_renderValue(
+			"area", sb,
+			backOffice ? ProductExperienceUtil.AREA_BACK_OFFICE :
+				ProductExperienceUtil.AREA_SITE);
+		_renderValue(
+			"product", sb,
+			ProductExperienceUtil.getProduct(
+				PropsValues.ENTERPRISE_PRODUCT_AI_HUB_ENABLED,
+				ProductExperienceUtil.getSiteFriendlyURL(themeDisplay), ppid));
+		_renderValue(
+			"role", sb,
+			admin ? ProductExperienceUtil.ROLE_ADMIN :
+				ProductExperienceUtil.ROLE_USER);
+		_renderValue(
+			"screen", sb, (screen == null) ? null : HtmlUtil.escapeJS(screen));
 
 		sb.append("},\n");
 	}

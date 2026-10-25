@@ -18,7 +18,9 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManager;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.AuthToken;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.servlet.BrowserMetadata;
 import com.liferay.portal.kernel.servlet.PortalWebResourcesUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -51,6 +53,8 @@ import java.util.function.Predicate;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 
 import org.mockito.MockedStatic;
@@ -65,6 +69,8 @@ import org.springframework.mock.web.MockHttpServletResponse;
  */
 public class LiferayGlobalObjectPreAUIDynamicIncludeTest {
 
+	@ClassRule
+	@Rule
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
@@ -126,6 +132,105 @@ public class LiferayGlobalObjectPreAUIDynamicIncludeTest {
 			contentAsString.contains(
 				"getRemoteHost: () => {throw new Error('Method getRemoteHost " +
 					"has been disabled in Instance Settings');},\n"));
+	}
+
+	@com.liferay.portal.test.rule.FeatureFlag("LPD-101586")
+	@Test
+	public void testProductExperienceForAdministrator() throws Exception {
+		String contentAsString = _includeProductExperience(true);
+
+		Assert.assertTrue(
+			contentAsString,
+			contentAsString.contains(
+				"ProductExperience: {\narea: 'site',\nproduct: 'dxp',\n" +
+					"role: 'admin',\nscreen: null,\n},\n"));
+	}
+
+	@com.liferay.portal.test.rule.FeatureFlag(
+		enable = false, value = "LPD-101586"
+	)
+	@Test
+	public void testProductExperienceWithFeatureFlagDisabled()
+		throws Exception {
+
+		String contentAsString = _includeProductExperience(true);
+
+		Assert.assertFalse(contentAsString.contains("ProductExperience"));
+	}
+
+	@com.liferay.portal.test.rule.FeatureFlag("LPD-101586")
+	@Test
+	public void testProductExperienceWithoutSignals() throws Exception {
+		String contentAsString = _includeProductExperience(false);
+
+		Assert.assertFalse(contentAsString.contains("ProductExperience"));
+	}
+
+	private String _includeProductExperience(boolean administrator)
+		throws Exception {
+
+		LiferayGlobalObjectPreAUIDynamicInclude
+			liferayGlobalObjectPreAUIDynamicInclude =
+				new LiferayGlobalObjectPreAUIDynamicInclude();
+
+		_setUpMocks(liferayGlobalObjectPreAUIDynamicInclude);
+
+		HttpServletRequest httpServletRequest = _mockHttpServletRequest();
+
+		if (administrator) {
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
+			PermissionChecker permissionChecker = Mockito.mock(
+				PermissionChecker.class);
+
+			Mockito.when(
+				permissionChecker.isCompanyAdmin()
+			).thenReturn(
+				true
+			);
+
+			Mockito.when(
+				themeDisplay.getPermissionChecker()
+			).thenReturn(
+				permissionChecker
+			);
+
+			User user = Mockito.mock(User.class);
+
+			Mockito.when(
+				user.getEmailAddress()
+			).thenReturn(
+				"test@liferay.com"
+			);
+
+			Mockito.when(
+				user.getFullName()
+			).thenReturn(
+				"Test Test"
+			);
+
+			Mockito.when(
+				themeDisplay.getUser()
+			).thenReturn(
+				user
+			);
+
+			Mockito.when(
+				themeDisplay.isSignedIn()
+			).thenReturn(
+				true
+			);
+		}
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		liferayGlobalObjectPreAUIDynamicInclude.include(
+			httpServletRequest, mockHttpServletResponse, StringPool.BLANK);
+
+		return mockHttpServletResponse.getContentAsString();
 	}
 
 	private AuthToken _mockAuthToken() {

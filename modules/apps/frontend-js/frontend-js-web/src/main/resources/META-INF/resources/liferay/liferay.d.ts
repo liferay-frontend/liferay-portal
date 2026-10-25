@@ -138,6 +138,25 @@ declare module Liferay {
 		export const ITEM_SELECTOR: string;
 	}
 
+	interface ProductExperienceSignals {
+		readonly area: 'back-office' | 'site';
+		readonly product:
+			| 'ai-hub'
+			| 'cms'
+			| 'commerce'
+			| 'digital-sales-room'
+			| 'dxp';
+		readonly role: 'admin' | 'user';
+		readonly screen: string | null;
+	}
+
+	/**
+	 * Signals for the product experience tracking scripts. Undefined unless
+	 * the LPD-101586 feature flag is enabled and the user is an administrator
+	 * or is on an administration surface.
+	 */
+	export const ProductExperience: ProductExperienceSignals | undefined;
+
 	namespace PropsValues {
 		export const ENTERPRISE_PRODUCT_AI_HUB_ENABLED: boolean;
 		export const UPLOAD_SERVLET_REQUEST_IMPL_MAX_SIZE: number;
