@@ -144,11 +144,11 @@ public class TreeTestUtil {
 	}
 
 	public static void clearRootObjectDefinitionIds() {
-		Map<Long, long[]> rootObjectDefinitionIds =
+		Map<Long, Map<Long, long[]>> rootObjectDefinitionIdsMaps =
 			ReflectionTestUtil.getFieldValue(
-				ObjectDefinitionTreeUtil.class, "_rootObjectDefinitionIds");
+				ObjectDefinitionTreeUtil.class, "_rootObjectDefinitionIdsMaps");
 
-		rootObjectDefinitionIds.clear();
+		rootObjectDefinitionIdsMaps.clear();
 	}
 
 	public static Tree createObjectDefinitionTree(
