@@ -38,7 +38,7 @@ public class RichTextFragmentCKEditor5AMEditorConfigContributorTest {
 
 		_richTextFragmentCKEditor5AMEditorConfigContributor.
 			populateConfigJSONObject(
-				jsonObject, Collections.emptyMap(), _getThemeDisplay(true),
+				jsonObject, Collections.emptyMap(), _mockThemeDisplay(true),
 				null);
 
 		Assert.assertEquals(
@@ -55,13 +55,13 @@ public class RichTextFragmentCKEditor5AMEditorConfigContributorTest {
 
 		_richTextFragmentCKEditor5AMEditorConfigContributor.
 			populateConfigJSONObject(
-				jsonObject, Collections.emptyMap(), _getThemeDisplay(false),
+				jsonObject, Collections.emptyMap(), _mockThemeDisplay(false),
 				null);
 
 		Assert.assertEquals(0, jsonObject.length());
 	}
 
-	private ThemeDisplay _getThemeDisplay(boolean cms) {
+	private ThemeDisplay _mockThemeDisplay(boolean cms) {
 		ThemeDisplay themeDisplay = Mockito.mock(ThemeDisplay.class);
 
 		Group scopeGroup = Mockito.mock(Group.class);
