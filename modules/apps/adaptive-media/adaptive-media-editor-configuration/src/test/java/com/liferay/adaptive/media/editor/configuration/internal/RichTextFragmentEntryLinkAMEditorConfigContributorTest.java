@@ -50,7 +50,6 @@ public class RichTextFragmentEntryLinkAMEditorConfigContributorTest {
 			_richTextFragmentEntryLinkAMEditorConfigContributor.
 				isItemSelectorCriterionOverridable(
 					new ImageItemSelectorCriterion()));
-
 		Assert.assertFalse(
 			_richTextFragmentEntryLinkAMEditorConfigContributor.
 				isItemSelectorCriterionOverridable(
