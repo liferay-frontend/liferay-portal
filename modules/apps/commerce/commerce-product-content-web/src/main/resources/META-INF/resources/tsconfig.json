@@ -1,5 +1,5 @@
 {
-	"@generated": "daec664172d97493f51e7b8d36ff5cafb8116ef0",
+	"@generated": "8964b4a4d6be2c9f08abe1e9b2596dac19a411f8",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -43,9 +43,6 @@
 		"../../../../../../../../global.d.ts"
 	],
 	"references": [
-		{
-			"path": "../../../../../../../asset/asset-taglib/src/main/resources/META-INF/resources/tsconfig.json"
-		},
 		{
 			"path": "../../../../../../commerce-frontend-js/src/main/resources/META-INF/resources/tsconfig.json"
 		},
