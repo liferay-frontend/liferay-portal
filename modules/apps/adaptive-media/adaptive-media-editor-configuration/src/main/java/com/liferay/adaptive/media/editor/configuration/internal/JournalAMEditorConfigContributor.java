@@ -21,7 +21,8 @@ import org.osgi.service.component.annotations.Component;
 @Component(
 	property = {
 		"editor.name=alloyeditor", "editor.name=ckeditor",
-		"editor.name=ckeditor_classic",
+		"editor.name=ckeditor_classic", "editor.name=ckeditor5_balloon",
+		"editor.name=ckeditor5_classic",
 		"jakarta.portlet.name=" + JournalPortletKeys.JOURNAL,
 		"service.ranking:Integer=101"
 	},

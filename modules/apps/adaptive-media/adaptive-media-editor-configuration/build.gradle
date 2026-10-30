@@ -10,6 +10,7 @@ dependencies {
 	compileOnly project(":apps:item-selector:item-selector-criteria-api")
 	compileOnly project(":apps:journal:journal-api")
 	compileOnly project(":apps:journal:journal-item-selector-api")
+	compileOnly project(":apps:layout:layout-content-page-editor-api")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-string")
 	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"

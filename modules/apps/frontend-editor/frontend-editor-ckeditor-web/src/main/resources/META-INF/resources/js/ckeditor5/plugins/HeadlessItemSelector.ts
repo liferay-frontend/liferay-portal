@@ -9,6 +9,8 @@ import {openCMSFileSelectorModal} from '@liferay/frontend-js-item-selector-web';
 
 import getIcon from '../utils/getIcon';
 import getItemSelectorGroupId from '../utils/getItemSelectorGroupId';
+import insertImage from '../utils/insertImage';
+import insertMarkup from '../utils/insertMarkup';
 
 const ALLOWED_IMAGE_FILE_EXTENSIONS = [
 	'apng',
@@ -88,13 +90,7 @@ class HeadlessItemSelector extends Plugin {
 							return;
 						}
 
-						const viewFragment = editor.data.processor.toView(
-							`<img src="${href}">`
-						);
-
-						const modelFragment = editor.data.toModel(viewFragment);
-
-						editor.model.insertContent(modelFragment);
+						insertImage(editor, items[0]?.embedded?.file?.id, href);
 					},
 				});
 			});
@@ -130,13 +126,7 @@ class HeadlessItemSelector extends Plugin {
 							return;
 						}
 
-						const viewFragment = editor.data.processor.toView(
-							`<oembed url="${url}"></oembed>`
-						);
-
-						const modelFragment = editor.data.toModel(viewFragment);
-
-						editor.model.insertContent(modelFragment);
+						insertMarkup(editor, `<oembed url="${url}"></oembed>`);
 					},
 				});
 			});

@@ -9,6 +9,8 @@ import {Config} from '@ckeditor/ckeditor5-utils';
 import {openSelectionModal} from 'frontend-js-components-web';
 
 import getIcon from '../utils/getIcon';
+import insertImage from '../utils/insertImage';
+import insertMarkup from '../utils/insertMarkup';
 import {LiferayEditorConfig} from '../utils/types';
 
 const ITEM_SELECTOR_FOLDER_ID_PARAM =
@@ -97,10 +99,11 @@ class ItemSelector extends Plugin {
 								folderMemory.remember(folderId);
 							}
 
+							let fileEntryId;
 							let url;
 
 							try {
-								url = JSON.parse(value).url;
+								({fileEntryId, url} = JSON.parse(value));
 							}
 							catch (error) {
 								url = value;
@@ -110,14 +113,7 @@ class ItemSelector extends Plugin {
 								return;
 							}
 
-							const viewFragment = editor.data.processor.toView(
-								`<img src="${url}">`
-							);
-
-							const modelFragment =
-								editor.data.toModel(viewFragment);
-
-							editor.model.insertContent(modelFragment);
+							insertImage(editor, fileEntryId, url);
 						},
 						selectEventName: config.get('itemSelectorEventName'),
 						title: Liferay.Language.get('select-item'),
@@ -175,14 +171,10 @@ class ItemSelector extends Plugin {
 								return;
 							}
 
-							const viewFragment = editor.data.processor.toView(
+							insertMarkup(
+								editor,
 								html || `<oembed url="${url}"></oembed>`
 							);
-
-							const modelFragment =
-								editor.data.toModel(viewFragment);
-
-							editor.model.insertContent(modelFragment);
 						},
 						selectEventName: config.get('itemSelectorEventName'),
 						title: Liferay.Language.get('select-item'),
