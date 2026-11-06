@@ -7,8 +7,12 @@ package com.liferay.portal.osgi.web.portlet.container.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.portlet.ConfigurationAction;
+import com.liferay.portal.kernel.portlet.DefaultConfigurationAction;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
+import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
@@ -50,6 +54,108 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class RenderRequestPortletContainerTest
 	extends BasePortletContainerTestCase {
+
+	@Test
+	public void testDoDispatchDoesNotServeConfigurationJSPWithForeignPortletResource()
+		throws Exception {
+
+		String testConfigurablePortletId =
+			"testConfigurablePortletId" + RandomTestUtil.randomString();
+
+		setUpPortlet(
+			new TestPortlet(),
+			HashMapDictionaryBuilder.<String, Object>put(
+				"jakarta.portlet.init-param.config-template",
+				"/" + RandomTestUtil.randomString() + ".jsp"
+			).build(),
+			testConfigurablePortletId, false);
+
+		registerService(
+			ConfigurationAction.class, new DefaultConfigurationAction(),
+			HashMapDictionaryBuilder.<String, Object>put(
+				"jakarta.portlet.name", TEST_PORTLET_ID
+			).build());
+
+		setUpPortlet(
+			new MVCPortlet(),
+			HashMapDictionaryBuilder.<String, Object>put(
+				"jakarta.portlet.init-param.view-template",
+				"/configuration_mode_test/view.jsp"
+			).build(),
+			TEST_PORTLET_ID);
+
+		PortletContainerTestUtil.Response response =
+			PortletContainerTestUtil.request(
+				PortletURLBuilder.create(
+					PortletURLFactoryUtil.create(
+						PortletContainerTestUtil.getHttpServletRequest(
+							group, layout),
+						TEST_PORTLET_ID, layout.getPlid(),
+						PortletRequest.RENDER_PHASE)
+				).setMVCPath(
+					"/configuration.jsp"
+				).setPortletResource(
+					testConfigurablePortletId
+				).buildString());
+
+		Assert.assertEquals(200, response.getCode());
+
+		String body = response.getBody();
+
+		Assert.assertFalse(body.contains("DEFAULT_CONFIGURATION_JSP_MARKER"));
+		Assert.assertTrue(body.contains("VIEW_TEMPLATE_MARKER"));
+	}
+
+	@Test
+	public void testDoTagDoesNotRenderPortletWithoutConfigurationPermission()
+		throws Exception {
+
+		String testPreviewPortletId =
+			"testPreviewPortletId" + RandomTestUtil.randomString();
+
+		setUpPortlet(
+			new TestPortlet(), new HashMapDictionary<String, Object>(),
+			testPreviewPortletId, false);
+
+		testPortlet = new TestPortlet() {
+
+			@Override
+			public void render(
+					RenderRequest renderRequest, RenderResponse renderResponse)
+				throws IOException, PortletException {
+
+				PortletContext portletContext = getPortletContext();
+
+				PortletRequestDispatcher portletRequestDispatcher =
+					portletContext.getRequestDispatcher("/preview_portlet.jsp");
+
+				portletRequestDispatcher.include(renderRequest, renderResponse);
+			}
+
+		};
+
+		setUpPortlet(
+			testPortlet, new HashMapDictionary<String, Object>(),
+			TEST_PORTLET_ID);
+
+		PortletContainerTestUtil.Response response =
+			PortletContainerTestUtil.request(
+				PortletURLBuilder.create(
+					PortletURLFactoryUtil.create(
+						PortletContainerTestUtil.getHttpServletRequest(
+							group, layout),
+						TEST_PORTLET_ID, layout.getPlid(),
+						PortletRequest.RENDER_PHASE)
+				).setPortletResource(
+					testPreviewPortletId
+				).buildString());
+
+		Assert.assertEquals(200, response.getCode());
+
+		String body = response.getBody();
+
+		Assert.assertFalse(body.contains("PREVIEW_PAGE_MARKER"));
+	}
 
 	@Test
 	public void testInvalidPortletId() throws Exception {
