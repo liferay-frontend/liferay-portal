@@ -90,7 +90,7 @@ request.setAttribute("view.jsp-portletURL", portletURL);
 		>
 			<liferay-ui:search-container-row
 				className="com.liferay.commerce.model.CommerceOrderItem"
-				keyProperty="CommerceOrderItemId"
+				keyPropertyName="CommerceOrderItemId"
 				modelVar="commerceOrderItem"
 			>
 

@@ -28,7 +28,7 @@ Map<Long, List<CommerceOrderValidatorResult>> commerceOrderValidatorResultsMap =
 
 		<liferay-ui:search-container-row
 			className="com.liferay.commerce.model.CommerceOrderItem"
-			keyProperty="CommerceOrderItemId"
+			keyPropertyName="CommerceOrderItemId"
 			modelVar="commerceOrderItem"
 		>
 
