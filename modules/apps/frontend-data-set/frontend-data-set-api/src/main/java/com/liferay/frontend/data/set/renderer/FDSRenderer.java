@@ -23,6 +23,11 @@ public interface FDSRenderer {
 		String fdsName, HttpServletRequest httpServletRequest,
 		boolean interpolate, JSONObject tokenResolutionsJSONObject);
 
+	public Map<String, String> getSelectionFilterAPIURLs(
+		String fdsName, HttpServletRequest httpServletRequest,
+		boolean interpolate,
+		Map<String, JSONObject> tokenResolutionsJSONObjects);
+
 	public void render(
 		Map<String, Object> baseProps, String componentId, String fdsName,
 		HttpServletRequest httpServletRequest,
