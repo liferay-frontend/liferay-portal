@@ -21,12 +21,14 @@ import com.liferay.headless.cms.internal.usage.UnlinkedAssetSearcher;
 import com.liferay.headless.cms.internal.util.CMSGroupUtil;
 import com.liferay.headless.cms.resource.v1_0.AssetStatisticsResource;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntryTable;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.sql.dsl.expression.Predicate;
@@ -131,6 +133,11 @@ public class AssetStatisticsResourceImpl
 					() -> _getBrokenLinksCount(
 						objectDefinitionIds, selectedSpaceGroupIds,
 						spaceGroupIds));
+				setCompletedWorkflowTasksCount(
+					() -> _getWorkflowTasksCount(
+						classNames, selectedSpaceGroupIds,
+						KaleoTaskInstanceTokenTable.INSTANCE.completed.eq(
+							true)));
 				setExpiredCount(
 					() -> _getCount(
 						selectedSpaceGroupIds, objectDefinitionIds,
@@ -395,6 +402,8 @@ public class AssetStatisticsResourceImpl
 					_assetListEntryLocalService,
 					_assetListEntryUsageLocalService, _depotEntryLocalService,
 					_layoutLocalService, _layoutPageTemplateEntryLocalService,
+					_layoutPageTemplateStructureLocalService,
+					_objectDefinitionLocalService, _objectFieldLocalService,
 					_portal, _portletPreferencesLocalService);
 			UnlinkedAssetSearcher unlinkedAssetSearcher =
 				new UnlinkedAssetSearcher(
@@ -449,6 +458,7 @@ public class AssetStatisticsResourceImpl
 			{
 				setApprovedCount(() -> 0L);
 				setBrokenLinksCount(() -> 0L);
+				setCompletedWorkflowTasksCount(() -> 0L);
 				setExpiredCount(() -> 0L);
 				setExpiringSoonCount(() -> 0L);
 				setInDraftCount(() -> 0L);
@@ -516,6 +526,10 @@ public class AssetStatisticsResourceImpl
 		_layoutPageTemplateEntryLocalService;
 
 	@Reference
+	private LayoutPageTemplateStructureLocalService
+		_layoutPageTemplateStructureLocalService;
+
+	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Reference
@@ -523,6 +537,9 @@ public class AssetStatisticsResourceImpl
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Reference
+	private ObjectFieldLocalService _objectFieldLocalService;
 
 	@Reference
 	private ObjectRelationshipLocalService _objectRelationshipLocalService;

@@ -42,7 +42,7 @@ SelectAssetVocabularyDisplayContext selectAssetVocabularyDisplayContext = (Selec
 			>
 				<liferay-ui:search-container-row
 					className="com.liferay.asset.kernel.model.AssetVocabulary"
-					keyProperty="assetVocabularyId"
+					keyPropertyName="assetVocabularyId"
 					modelVar="assetVocabulary"
 				>
 					<liferay-ui:search-container-column-text

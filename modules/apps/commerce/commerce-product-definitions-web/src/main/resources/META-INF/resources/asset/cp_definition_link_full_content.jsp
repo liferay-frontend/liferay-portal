@@ -18,7 +18,7 @@
 		<liferay-ui:search-container-row
 			className="com.liferay.commerce.product.model.CPDefinitionLink"
 			escapedModel="<%= true %>"
-			keyProperty="cpDefinitionLinkId"
+			keyPropertyName="cpDefinitionLinkId"
 			modelVar="cpDefinitionLink"
 		>
 			<liferay-ui:search-container-column-text
