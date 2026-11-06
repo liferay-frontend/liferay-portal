@@ -4,7 +4,6 @@
  */
 
 import crypto from 'crypto';
-import fg from 'fast-glob';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -15,6 +14,7 @@ import {
 	MODULES_DIR,
 	SRC_PATH,
 	SRC_TSCONFIG_PATH,
+	TEST_PATH,
 	TSC_BUILDINFO_DIR,
 	TSC_TYPES_DIR,
 } from '../locations.mjs';
@@ -25,24 +25,30 @@ const GENERATED = '@generated';
 
 export default async function visitProjectTsconfig(
 	visitorFunction,
-	projectsEntryPoints,
+	projects,
 	projectDependencies,
 	projectDescription,
 	projectDir = '.',
 	testConfig = false
 ) {
 	const srcPath = testConfig
-		? path.join(projectDir, 'test')
+		? path.join(projectDir, TEST_PATH)
 		: path.join(projectDir, SRC_PATH);
 
-	if (!(await fileExists(srcPath))) {
+	const configPath = path.join(srcPath, 'tsconfig.json');
+
+	const currentProject = projects[projectDescription.name];
+
+	const typeScriptFound = testConfig
+		? currentProject.typeScriptTests
+		: currentProject.typeScriptProject;
+
+	if (!typeScriptFound) {
+		if (await fileExists(configPath)) {
+			await visitorFunction(configPath, null);
+		}
+
 		return;
-	}
-
-	const tsTests = await fg('**/*.{ts,tsx}', {cwd: srcPath});
-
-	if (!tsTests.length) {
-		return false;
 	}
 
 	const globalDTsFileProjectRelativePath = path.posix.relative(
@@ -76,10 +82,8 @@ export default async function visitProjectTsconfig(
 	const paths = {};
 	const references = [];
 
-	const currentProject = projectsEntryPoints[projectDescription.name];
-
-	if (currentProject.path.submodules) {
-		Object.entries(currentProject.path.submodules).forEach(
+	if (currentProject.entryPoints.submodules) {
+		Object.entries(currentProject.entryPoints.submodules).forEach(
 			([submoduleName, subModulePath]) => {
 				paths[`${projectDescription.name}/${submoduleName}`] = [
 					'./' +
@@ -93,25 +97,25 @@ export default async function visitProjectTsconfig(
 	}
 
 	for (const dependency of Object.keys(projectDependencies)) {
-		const projectEntryPoint = projectsEntryPoints[dependency];
+		const dependencyProject = projects[dependency];
 
-		if (!projectEntryPoint) {
+		if (!dependencyProject) {
 			continue;
 		}
 
 		const projectMainEntryPointPath = path.join(
 			MODULES_DIR,
-			...`${projectEntryPoint.dir}/${projectEntryPoint.path.main}`.split(
+			...`${dependencyProject.dir}/${dependencyProject.entryPoints.main}`.split(
 				'/'
 			)
 		);
 
 		const projectSubmodulesEntryPointsPaths = Object.entries(
-			projectEntryPoint.path.submodules ?? {}
+			dependencyProject.entryPoints.submodules ?? {}
 		).reduce((map, [entryPointName, entryPointPath]) => {
 			map[entryPointName] = path.join(
 				MODULES_DIR,
-				...`${projectEntryPoint.dir}/${entryPointPath}`.split('/')
+				...`${dependencyProject.dir}/${entryPointPath}`.split('/')
 			);
 
 			return map;
@@ -129,9 +133,13 @@ export default async function visitProjectTsconfig(
 			}
 		);
 
+		if (!dependencyProject.typeScriptProject) {
+			continue;
+		}
+
 		const projectPath = path.posix.relative(
 			srcPath,
-			path.join(MODULES_DIR, projectEntryPoint.dir)
+			path.join(MODULES_DIR, dependencyProject.dir)
 		);
 
 		references.push({path: `${projectPath}/${SRC_TSCONFIG_PATH}`});
@@ -160,8 +168,6 @@ export default async function visitProjectTsconfig(
 	json[GENERATED] = hash(json);
 
 	let contents = '';
-
-	const configPath = path.join(srcPath, 'tsconfig.json');
 
 	if (await fileExists(configPath)) {
 		contents = await fs.readFile(configPath, 'utf8');

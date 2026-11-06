@@ -10,20 +10,18 @@ import getProjectDescription from '../configuration/getProjectDescription.mjs';
 import getProjectEntryPoints from '../configuration/getProjectEntryPoints.mjs';
 import fileExists from '../fileExists.mjs';
 import getBuildableProjectDirs from '../getBuildableProjectDirs.mjs';
-import {MODULES_DIR, SRC_PATH} from '../locations.mjs';
+import {MODULES_DIR, SRC_PATH, TEST_PATH} from '../locations.mjs';
+import hasTypeScriptFiles from './hasTypeScriptFiles.mjs';
 import visitProjectTsconfig from './visitProjectTsconfig.mjs';
 
 export default async function visitOutdatedTsconfigFiles(visitorFunction) {
 	const projectDirs = await getBuildableProjectDirs();
 
-	const projectsEntryPoints = await getProjectsEntryPoints(
-		projectDirs,
-		MODULES_DIR
-	);
+	const projects = await getProjects(MODULES_DIR, projectDirs);
 
 	await Promise.all([
 		...projectDirs.map((projectDir) =>
-			processProject(projectDir, projectsEntryPoints, visitorFunction)
+			processProject(projectDir, projects, visitorFunction)
 		),
 	]);
 }
@@ -33,35 +31,43 @@ export default async function visitOutdatedTsconfigFiles(visitorFunction) {
  * {
  *	 '@liferay/frontend-js-react-web': {
  *		dir: 'modules/apps/frontend-js/frontend-js-react-web',
- *		path: {
+ *		entryPoints: {
  *			main: 'src/main/resources/META-INF/resources/js/index.ts',
  *			submodules: {
  *				foo: 'src/main/resources/META-INF/resources/js/foo.ts',
  *			}
- *		}
+ *		},
+ *		typeScriptProject: true,
+ *		typeScriptTests: false,
  *	 },
  *	 ...
  * }
  */
-async function getProjectsEntryPoints(projectDirs, modulesDir) {
-	return projectDirs.reduce((projectsEntryPoints, projectDir) => {
-		const {name} = getProjectDescription(projectDir);
-		const {typescript} = getProjectEntryPoints(projectDir);
+async function getProjects(modulesDir, projectDirs) {
+	const projects = {};
 
-		projectsEntryPoints[name] = {
-			dir: path.relative(modulesDir, projectDir),
-			path: typescript,
-		};
+	await Promise.all(
+		projectDirs.map(async (projectDir) => {
+			const {name} = getProjectDescription(projectDir);
+			const {typescript} = getProjectEntryPoints(projectDir);
 
-		return projectsEntryPoints;
-	}, {});
+			projects[name] = {
+				dir: path.relative(modulesDir, projectDir),
+				entryPoints: typescript,
+				typeScriptProject: await hasTypeScriptFiles(
+					path.join(projectDir, SRC_PATH)
+				),
+				typeScriptTests: await hasTypeScriptFiles(
+					path.join(projectDir, TEST_PATH)
+				),
+			};
+		})
+	);
+
+	return projects;
 }
 
-async function processProject(
-	projectDir,
-	projectsEntryPoints,
-	visitorFunction
-) {
+async function processProject(projectDir, projects, visitorFunction) {
 	if (!(await fileExists(path.join(projectDir, SRC_PATH)))) {
 		return;
 	}
@@ -74,14 +80,14 @@ async function processProject(
 	await Promise.all([
 		visitProjectTsconfig(
 			visitorFunction,
-			projectsEntryPoints,
+			projects,
 			projectDependencies,
 			projectDescription,
 			projectDir
 		),
 		visitProjectTsconfig(
 			visitorFunction,
-			projectsEntryPoints,
+			projects,
 			projectDependencies,
 			projectDescription,
 			projectDir,
