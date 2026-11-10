@@ -21,6 +21,7 @@ import jakarta.portlet.PortletURL;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Reference;
 
@@ -38,7 +39,10 @@ public abstract class BaseAMEditorConfigContributor
 
 		String allowedContent = jsonObject.getString("allowedContent");
 
-		if (Validator.isNotNull(allowedContent) &&
+		boolean ckEditor5 = Objects.equals(
+			jsonObject.getString("editorType"), "ckeditor5");
+
+		if (!ckEditor5 && Validator.isNotNull(allowedContent) &&
 			!allowedContent.equals(Boolean.TRUE.toString()) &&
 			!allowedContent.contains(_IMG_TAG_RULE)) {
 
@@ -79,16 +83,18 @@ public abstract class BaseAMEditorConfigContributor
 			"adaptiveMediaFileEntryAttributeName",
 			AMImageHTMLConstants.ATTRIBUTE_NAME_FILE_ENTRY_ID);
 
-		String extraPlugins = jsonObject.getString("extraPlugins");
+		if (!ckEditor5) {
+			String extraPlugins = jsonObject.getString("extraPlugins");
 
-		if (Validator.isNotNull(extraPlugins)) {
-			extraPlugins = extraPlugins + ",adaptivemedia";
-		}
-		else {
-			extraPlugins = "adaptivemedia";
-		}
+			if (Validator.isNotNull(extraPlugins)) {
+				extraPlugins = extraPlugins + ",adaptivemedia";
+			}
+			else {
+				extraPlugins = "adaptivemedia";
+			}
 
-		jsonObject.put("extraPlugins", extraPlugins);
+			jsonObject.put("extraPlugins", extraPlugins);
+		}
 
 		PortletURL itemSelectorPortletURL = itemSelector.getItemSelectorURL(
 			requestBackedPortletURLFactory,

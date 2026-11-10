@@ -172,6 +172,69 @@ public abstract class BaseAMEditorConfigContributorTestCase {
 	}
 
 	@Test
+	public void testAdaptiveMediaFileEntryAttributeNameIsAddedForCKEditor5()
+		throws Exception {
+
+		PortletURL itemSelectorPortletURL = Mockito.mock(PortletURL.class);
+
+		Mockito.when(
+			itemSelectorPortletURL.toString()
+		).thenReturn(
+			"itemSelectorPortletURL"
+		);
+
+		Mockito.when(
+			_itemSelector.getItemSelectorURL(
+				Mockito.any(RequestBackedPortletURLFactory.class),
+				Mockito.anyString(), Mockito.any(ItemSelectorCriterion.class))
+		).thenReturn(
+			itemSelectorPortletURL
+		);
+
+		Mockito.when(
+			_itemSelector.getItemSelectedEventName(Mockito.anyString())
+		).thenReturn(
+			"selectedEventName"
+		);
+
+		Mockito.when(
+			_itemSelector.getItemSelectorCriteria(
+				getItemSelectorCriterionFileEntryItemSelectorReturnTypeName())
+		).thenReturn(
+			_getItemSelectorCriterionFileEntryItemSelectorReturnType()
+		);
+
+		JSONObject jsonObject = JSONUtil.put(
+			"allowedContent", "a[*](*); div(*);"
+		).put(
+			"editorType", "ckeditor5"
+		).put(
+			"filebrowserImageBrowseLinkUrl",
+			getItemSelectorCriterionFileEntryItemSelectorReturnTypeName()
+		);
+
+		BaseAMEditorConfigContributor baseAMEditorConfigContributor =
+			getBaseAMEditorConfigContributor();
+
+		ReflectionTestUtil.setFieldValue(
+			baseAMEditorConfigContributor, "itemSelector", _itemSelector);
+
+		baseAMEditorConfigContributor.populateConfigJSONObject(
+			jsonObject, _inputEditorTaglibAttributes, _themeDisplay,
+			_requestBackedPortletURLFactory);
+
+		Assert.assertEquals(
+			"data-fileentryid",
+			jsonObject.getString("adaptiveMediaFileEntryAttributeName"));
+		Assert.assertEquals(
+			"a[*](*); div(*);", jsonObject.getString("allowedContent"));
+		Assert.assertFalse(jsonObject.has("extraPlugins"));
+		Assert.assertEquals(
+			"itemSelectorPortletURL",
+			jsonObject.getString("filebrowserImageBrowseUrl"));
+	}
+
+	@Test
 	public void testAdaptiveMediaIsAddedToExtraPlugins() throws Exception {
 		PortletURL itemSelectorPortletURL = Mockito.mock(PortletURL.class);
 
