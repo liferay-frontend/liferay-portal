@@ -512,8 +512,6 @@ definition {
 	test ImageVariantsAreGeneratedAfterEditingWebContentWithImage {
 		property portal.acceptance = "false";
 
-		CKEditor.enableCKEditor4();
-
 		WebContentNavigator.openToAddBasicArticle(
 			groupName = "Guest",
 			siteURLKey = "guest");
