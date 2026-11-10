@@ -9,6 +9,7 @@ import {Config} from '@ckeditor/ckeditor5-utils';
 import {openSelectionModal} from 'frontend-js-components-web';
 
 import getIcon from '../utils/getIcon';
+import getImageHTML from '../utils/getImageHTML';
 import {LiferayEditorConfig} from '../utils/types';
 
 const ITEM_SELECTOR_FOLDER_ID_PARAM =
@@ -97,22 +98,19 @@ class ItemSelector extends Plugin {
 								folderMemory.remember(folderId);
 							}
 
-							let url;
+							const imageHTML = getImageHTML(
+								value,
+								config.get(
+									'adaptiveMediaFileEntryAttributeName'
+								)
+							);
 
-							try {
-								url = JSON.parse(value).url;
-							}
-							catch (error) {
-								url = value;
-							}
-
-							if (!url) {
+							if (!imageHTML) {
 								return;
 							}
 
-							const viewFragment = editor.data.processor.toView(
-								`<img src="${url}">`
-							);
+							const viewFragment =
+								editor.data.processor.toView(imageHTML);
 
 							const modelFragment =
 								editor.data.toModel(viewFragment);
