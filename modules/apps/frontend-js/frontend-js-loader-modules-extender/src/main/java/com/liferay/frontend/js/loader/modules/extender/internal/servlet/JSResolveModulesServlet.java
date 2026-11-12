@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletException;
@@ -95,6 +96,12 @@ public class JSResolveModulesServlet extends HttpServlet {
 
 			httpServletResponse.setStatus(
 				HttpServletResponse.SC_REQUEST_URI_TOO_LONG);
+
+			return;
+		}
+
+		if (Validator.isNull(httpServletRequest.getParameter("modules"))) {
+			httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 
 			return;
 		}
