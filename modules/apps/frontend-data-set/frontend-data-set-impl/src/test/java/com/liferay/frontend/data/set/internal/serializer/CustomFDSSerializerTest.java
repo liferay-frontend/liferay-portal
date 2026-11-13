@@ -774,6 +774,21 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 	}
 
 	@Test
+	public void testSerializeHidePagination() throws Exception {
+		_mockSerializeHidePagination(FDS_NAMES[0], true);
+		_mockSerializeHidePagination(FDS_NAMES[1], false);
+
+		Assert.assertTrue(
+			_customFDSSerializer.serializeHidePagination(
+				FDS_NAMES[0], httpServletRequest));
+		Assert.assertFalse(
+			_customFDSSerializer.serializeHidePagination(
+				FDS_NAMES[1], httpServletRequest));
+
+		_resetFDSSerializer();
+	}
+
+	@Test
 	public void testSerializeItemsActions() throws Exception {
 
 		// Different items actions
@@ -1872,6 +1887,24 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 
 		Mockito.when(
 			_customFDSSerializer.serializeHideManagementBarInEmptyState(
+				fdsName, httpServletRequest)
+		).thenCallRealMethod();
+	}
+
+	private void _mockSerializeHidePagination(
+		String fdsName, boolean hidePagination) {
+
+		Mockito.when(
+			_customFDSSerializer.getDataSetObjectEntryProperties(
+				fdsName, httpServletRequest)
+		).thenReturn(
+			HashMapBuilder.<String, Object>put(
+				"hidePagination", hidePagination
+			).build()
+		);
+
+		Mockito.when(
+			_customFDSSerializer.serializeHidePagination(
 				fdsName, httpServletRequest)
 		).thenCallRealMethod();
 	}

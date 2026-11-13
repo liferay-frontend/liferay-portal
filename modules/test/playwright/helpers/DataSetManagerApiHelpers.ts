@@ -31,6 +31,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		defaultVisualizationMode,
 		description = 'Sample description',
 		erc = 'sampleDataSetERC',
+		hidePagination = false,
 		keywords,
 		label = DEFAULT_LABEL.DATA_SET,
 		listOfItemsPerPage = '4, 8, 20, 40, 60',
@@ -45,6 +46,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		defaultVisualizationMode?: string;
 		description?: string;
 		erc?: string;
+		hidePagination?: boolean;
 		keywords?: Array<string>;
 		label?: string;
 		listOfItemsPerPage?: string;
@@ -62,6 +64,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 			defaultVisualizationMode,
 			description,
 			externalReferenceCode: erc,
+			hidePagination,
 			keywords,
 			label,
 			listOfItemsPerPage,
@@ -468,6 +471,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		defaultVisualizationMode,
 		erc = DEFAULT_DATA_SET_ERC,
 		filtersOrder,
+		hidePagination,
 		keywords,
 		label,
 		listOfItemsPerPage,
@@ -481,6 +485,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		defaultVisualizationMode?: string;
 		erc?: string;
 		filtersOrder?: string;
+		hidePagination?: boolean;
 		keywords?: Array<string>;
 		label?: string;
 		listOfItemsPerPage?: string;
@@ -498,6 +503,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 			defaultItemsPerPage,
 			defaultVisualizationMode,
 			filtersOrder,
+			hidePagination,
 			keywords,
 			label,
 			listOfItemsPerPage,
