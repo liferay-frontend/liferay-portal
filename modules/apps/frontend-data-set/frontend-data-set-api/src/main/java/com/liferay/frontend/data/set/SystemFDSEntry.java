@@ -30,6 +30,10 @@ public interface SystemFDSEntry {
 		return false;
 	}
 
+	public default boolean getHidePagination() {
+		return false;
+	}
+
 	public default int[] getListOfItemsPerPage() {
 		return PropsValues.SEARCH_CONTAINER_PAGE_DELTA_VALUES;
 	}

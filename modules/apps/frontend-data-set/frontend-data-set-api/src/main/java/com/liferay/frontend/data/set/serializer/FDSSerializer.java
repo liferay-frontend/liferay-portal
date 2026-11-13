@@ -72,6 +72,12 @@ public interface FDSSerializer {
 	public boolean serializeHideManagementBarInEmptyState(
 		String fdsName, HttpServletRequest httpServletRequest);
 
+	public default boolean serializeHidePagination(
+		String fdsName, HttpServletRequest httpServletRequest) {
+
+		return false;
+	}
+
 	public List<FDSActionDropdownItem> serializeItemsActions(
 		String fdsName, HttpServletRequest httpServletRequest);
 

@@ -144,6 +144,23 @@
 					"type": "Boolean"
 				},
 				{
+					"DBType": "Boolean",
+					"businessType": "Boolean",
+					"defaultValue": false,
+					"externalReferenceCode": "HIDE_PAGINATION",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Hide Pagination"
+					},
+					"localized": false,
+					"name": "hidePagination",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "Boolean"
+				},
+				{
 					"DBType": "Clob",
 					"businessType": "LongText",
 					"externalReferenceCode": "ITEM_ACTIONS_ORDER",

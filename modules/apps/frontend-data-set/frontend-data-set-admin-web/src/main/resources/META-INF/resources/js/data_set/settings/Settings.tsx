@@ -63,6 +63,9 @@ const Settings = ({
 	const [searchSuggestionsEnabled, setSearchSuggestionsEnabled] = useState(
 		dataSet.searchSuggestionsEnabled ?? false
 	);
+	const [hidePagination, setHidePagination] = useState(
+		dataSet.hidePagination ?? false
+	);
 	const [showSearch, setShowSearch] = useState(dataSet.showSearch ?? true);
 	const [visualizationModes, setVisualizationModes] = useState<
 		Array<IDataSetVisualizationMode>
@@ -107,6 +110,7 @@ const Settings = ({
 		const body = {
 			defaultVisualizationMode,
 			hideManagementBarInEmptyState,
+			hidePagination,
 			searchAsYouType,
 			searchSuggestionsEnabled,
 			showSearch,
@@ -429,6 +433,28 @@ const Settings = ({
 									toggled={hideManagementBarInEmptyState}
 								/>
 							</div>
+						</ClayLayout.Col>
+					</ClayLayout.Row>
+
+					<ClayLayout.Row className="align-items-center justify-content-between mb-4">
+						<ClayLayout.Col size={9}>
+							<div>
+								<label htmlFor="hide-pagination-toggle">
+									{Liferay.Language.get('hide-pagination')}
+								</label>
+							</div>
+
+							<div>
+								{Liferay.Language.get('hide-pagination-help')}
+							</div>
+						</ClayLayout.Col>
+
+						<ClayLayout.Col className="align-self-start" size={1}>
+							<ClayToggle
+								id="hide-pagination-toggle"
+								onToggle={setHidePagination}
+								toggled={hidePagination}
+							/>
 						</ClayLayout.Col>
 					</ClayLayout.Row>
 

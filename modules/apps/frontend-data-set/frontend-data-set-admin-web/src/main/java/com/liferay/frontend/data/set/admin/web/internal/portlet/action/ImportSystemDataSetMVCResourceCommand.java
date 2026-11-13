@@ -116,6 +116,8 @@ public class ImportSystemDataSetMVCResourceCommand
 				"hideManagementBarInEmptyState",
 				systemFDSEntry.getHideManagementBarInEmptyState()
 			).put(
+				"hidePagination", systemFDSEntry.getHidePagination()
+			).put(
 				"label", systemFDSEntry.getTitle()
 			).put(
 				"listOfItemsPerPage",

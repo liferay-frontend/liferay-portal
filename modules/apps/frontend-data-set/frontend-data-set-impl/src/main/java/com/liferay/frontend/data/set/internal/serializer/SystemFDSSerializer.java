@@ -224,6 +224,20 @@ public class SystemFDSSerializer
 	}
 
 	@Override
+	public boolean serializeHidePagination(
+		String fdsName, HttpServletRequest httpServletRequest) {
+
+		SystemFDSEntry systemFDSEntry =
+			systemFDSEntryRegistry.getSystemFDSEntry(fdsName);
+
+		if (systemFDSEntry == null) {
+			return _systemFDSEntry.getHidePagination();
+		}
+
+		return systemFDSEntry.getHidePagination();
+	}
+
+	@Override
 	public List<FDSActionDropdownItem> serializeItemsActions(
 		String fdsName, HttpServletRequest httpServletRequest) {
 
