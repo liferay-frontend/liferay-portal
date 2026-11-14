@@ -51,21 +51,22 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemBuilder;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerCustomizerFactory;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -74,8 +75,6 @@ import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
-
-import org.mockito.Mockito;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -109,20 +108,6 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 
 		systemFDSSerializer.fdsAPIURLResolverRegistry =
 			new FDSAPIURLResolverRegistryImpl(serviceTrackerMap);
-
-		ThemeDisplay themeDisplay = Mockito.mock(ThemeDisplay.class);
-
-		Mockito.when(
-			httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY)
-		).thenReturn(
-			themeDisplay
-		);
-
-		Mockito.when(
-			themeDisplay.getUser()
-		).thenReturn(
-			Mockito.mock(User.class)
-		);
 
 		_registerServices(_registerSystemFDSEntry(FDS_NAMES[0]));
 
@@ -169,20 +154,6 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 
 		systemFDSSerializer.fdsAPIURLResolverRegistry =
 			new FDSAPIURLResolverRegistryImpl(serviceTrackerMap);
-
-		ThemeDisplay themeDisplay = Mockito.mock(ThemeDisplay.class);
-
-		Mockito.when(
-			httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY)
-		).thenReturn(
-			themeDisplay
-		);
-
-		Mockito.when(
-			themeDisplay.getUser()
-		).thenReturn(
-			Mockito.mock(User.class)
-		);
 
 		_registerServices(_registerSystemFDSEntry(FDS_NAMES[0]));
 
@@ -752,6 +723,42 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 
 		_unregisterServices();
 
+		// Selection filter with tokens
+
+		_registerServices(
+			_registerFDSFilter(
+				_createSelectionFDSFilter(
+					"/o/app/{siteId}/{" + _TOKEN_NAME + "}/endpoint", true,
+					IDS[0]),
+				FDS_NAMES[0]),
+			bundleContext.registerService(
+				FDSFilterContextContributor.class,
+				new SelectionFDSFilterContextContributor(),
+				MapUtil.singletonDictionary(
+					"frontend.data.set.filter.type", "selection")),
+			_registerSystemFDSEntry(FDS_NAMES[0]));
+
+		JSONArray jsonArray = systemFDSSerializer.serializeFilters(
+			FDS_NAMES[0], httpServletRequest,
+			Collections.singletonMap(
+				IDS[0], JSONUtil.put(_TOKEN_NAME, _TOKEN_VALUE)));
+
+		JSONObject jsonObject = jsonArray.getJSONObject(0);
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				"/o/app/", SCOPE_GROUP_ID, "/", _TOKEN_VALUE, "/endpoint"),
+			jsonObject.getString("apiURL"));
+
+		JSONAssert.assertEquals(
+			"[]",
+			systemFDSSerializer.serializeFilters(
+				FDS_NAMES[0], httpServletRequest, null
+			).toString(),
+			JSONCompareMode.STRICT);
+
+		_unregisterServices();
+
 		// Shared filters
 
 		FDSFilter dateRangeFDSFilter = _createFDSFilterDate(
@@ -1246,6 +1253,48 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 				FDS_NAMES[0], httpServletRequest));
 
 		_unregisterServices();
+	}
+
+	@Test
+	public void testSerializeSelectionFilterAPIURLs() throws Exception {
+		ServiceTrackerMap
+			<String,
+			 List<ServiceTrackerCustomizerFactory.ServiceWrapper<FDSFilter>>>
+				serviceTrackerMap = ServiceTrackerMapFactory.openMultiValueMap(
+					bundleContext, FDSFilter.class, "frontend.data.set.name",
+					ServiceTrackerCustomizerFactory.<FDSFilter>serviceWrapper(
+						bundleContext));
+
+		systemFDSSerializer.fdsFilterRegistry = new FDSFilterRegistryImpl(
+			serviceTrackerMap);
+
+		_registerServices(
+			_registerFDSFilter(
+				_createSelectionFDSFilter(
+					"/o/app/{siteId}/{" + _TOKEN_NAME + "}/endpoint", true,
+					IDS[0]),
+				FDS_NAMES[0]),
+			_registerFDSFilter(
+				_createSelectionFDSFilter(URL, false, IDS[1]), FDS_NAMES[0]));
+
+		Assert.assertEquals(
+			Collections.singletonMap(
+				IDS[0], "/o/app/{siteId}/{" + _TOKEN_NAME + "}/endpoint"),
+			systemFDSSerializer.serializeSelectionFilterAPIURLs(
+				FDS_NAMES[0], httpServletRequest, false, null));
+		Assert.assertEquals(
+			Collections.singletonMap(
+				IDS[0],
+				StringBundler.concat(
+					"/o/app/", SCOPE_GROUP_ID, "/", _TOKEN_VALUE, "/endpoint")),
+			systemFDSSerializer.serializeSelectionFilterAPIURLs(
+				FDS_NAMES[0], httpServletRequest, true,
+				Collections.singletonMap(
+					IDS[0], JSONUtil.put(_TOKEN_NAME, _TOKEN_VALUE))));
+
+		_unregisterServices();
+
+		serviceTrackerMap.close();
 	}
 
 	@Test
@@ -1838,6 +1887,34 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 		};
 	}
 
+	private FDSFilter _createSelectionFDSFilter(
+		String apiURL, boolean autocompleteEnabled, String id) {
+
+		return new BaseSelectionFDSFilter() {
+
+			@Override
+			public String getAPIURL() {
+				return apiURL;
+			}
+
+			@Override
+			public String getId() {
+				return id;
+			}
+
+			@Override
+			public String getLabel() {
+				return LABELS[0];
+			}
+
+			@Override
+			public boolean isAutocompleteEnabled() {
+				return autocompleteEnabled;
+			}
+
+		};
+	}
+
 	private ServiceRegistration<FDSCreationMenu> _registerFDSCreationMenu(
 		CreationMenu creationMenu, String fdsName) {
 
@@ -1947,6 +2024,10 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 
 		_serviceRegistrations.clear();
 	}
+
+	private static final String _TOKEN_NAME = RandomTestUtil.randomString();
+
+	private static final String _TOKEN_VALUE = RandomTestUtil.randomString();
 
 	private final List<ServiceRegistration<?>> _serviceRegistrations =
 		new ArrayList<>();

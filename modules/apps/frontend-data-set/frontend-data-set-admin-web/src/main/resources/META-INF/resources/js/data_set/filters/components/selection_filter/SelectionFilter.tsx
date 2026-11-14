@@ -29,6 +29,10 @@ import ObjectPicklist from './source_type/ObjectPicklist';
 
 import type {TItem} from '@clayui/form/src/SelectBox';
 
+function hasTokens(url?: string) {
+	return /{.*?}/.test(url ?? '');
+}
+
 function Header() {
 	return <>{Liferay.Language.get('new-selection-filter')}</>;
 }
@@ -125,6 +129,8 @@ function Body({
 
 	const isValidSingleMode =
 		multiple || (!multiple && !(preselectedValues.length > 1));
+
+	const hasSourceTokens = hasTokens(source);
 
 	const isi18nFilterLabelsValid = (
 		i18nFilterLabels: Partial<Liferay.Language.FullyLocalizedValue<string>>
@@ -500,6 +506,11 @@ function Body({
 										setSource(
 											`/o${selectedRESTApplication.replace('v1.0', '')}${selectedRESTEndpoint}`
 										);
+
+										if (hasTokens(selectedRESTEndpoint)) {
+											setPreselectedValueInput('');
+											setPreselectedValues([]);
+										}
 									}
 
 									setSourceValidationError(false);
@@ -574,6 +585,7 @@ function Body({
 											aria-label={Liferay.Language.get(
 												'preselected-values'
 											)}
+											disabled={hasSourceTokens}
 											inputName={
 												preselectedValuesFormElementId
 											}
@@ -593,6 +605,14 @@ function Body({
 											sourceItems={filteredSourceItems}
 											value={preselectedValueInput}
 										/>
+
+										{hasSourceTokens && (
+											<ClayForm.Text>
+												{Liferay.Language.get(
+													'values-cannot-be-preselected-for-an-endpoint-with-tokens'
+												)}
+											</ClayForm.Text>
+										)}
 
 										{!isValidSingleMode && (
 											<ClayForm.FeedbackGroup>

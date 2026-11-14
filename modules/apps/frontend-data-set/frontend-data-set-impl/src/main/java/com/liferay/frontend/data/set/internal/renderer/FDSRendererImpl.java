@@ -37,6 +37,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.Writer;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,6 +95,24 @@ public class FDSRendererImpl implements FDSRenderer {
 	}
 
 	@Override
+	public Map<String, String> getSelectionFilterAPIURLs(
+		String fdsName, HttpServletRequest httpServletRequest,
+		boolean interpolate,
+		Map<String, JSONObject> tokenResolutionsJSONObjects) {
+
+		FDSSerializer fdsSerializer = _getFDSSerializer(
+			fdsName, httpServletRequest);
+
+		if (fdsSerializer == null) {
+			return Collections.emptyMap();
+		}
+
+		return fdsSerializer.serializeSelectionFilterAPIURLs(
+			fdsName, httpServletRequest, interpolate,
+			tokenResolutionsJSONObjects);
+	}
+
+	@Override
 	public void render(
 		Map<String, Object> baseProps, String componentId, String fdsName,
 		HttpServletRequest httpServletRequest,
@@ -141,7 +160,8 @@ public class FDSRendererImpl implements FDSRenderer {
 						String additionalAPIURLParameters =
 							fdsSerializer.serializeAdditionalAPIURLParameters(
 								fdsName, httpServletRequest, true,
-								(JSONObject)props.get("tokenResolutions"));
+								(JSONObject)props.get(
+									"apiURLTokenResolutions"));
 
 						if (Validator.isNull(additionalAPIURLParameters)) {
 							return null;
@@ -154,7 +174,7 @@ public class FDSRendererImpl implements FDSRenderer {
 					() -> {
 						String apiURL = fdsSerializer.serializeAPIURL(
 							fdsName, httpServletRequest, true,
-							(JSONObject)props.get("tokenResolutions"));
+							(JSONObject)props.get("apiURLTokenResolutions"));
 
 						if (Validator.isNull(apiURL)) {
 							return null;
@@ -195,7 +215,9 @@ public class FDSRendererImpl implements FDSRenderer {
 					() -> {
 						JSONArray filtersJSONArray =
 							fdsSerializer.serializeFilters(
-								fdsName, httpServletRequest);
+								fdsName, httpServletRequest,
+								(Map<String, JSONObject>)props.get(
+									"selectionFilterAPIURLTokenResolutions"));
 
 						if (JSONUtil.isEmpty(filtersJSONArray)) {
 							return null;
