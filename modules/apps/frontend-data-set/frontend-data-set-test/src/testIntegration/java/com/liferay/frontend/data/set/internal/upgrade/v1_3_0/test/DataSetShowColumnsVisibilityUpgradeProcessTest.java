@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -88,8 +89,6 @@ public class DataSetShowColumnsVisibilityUpgradeProcessTest {
 				fetchObjectDefinitionByExternalReferenceCode(
 					"L_DATA_SET", TestPropsValues.getCompanyId());
 
-		Assert.assertNotNull(dataSetObjectDefinition);
-
 		return _objectEntryLocalService.addObjectEntry(
 			0, TestPropsValues.getUserId(),
 			dataSetObjectDefinition.getObjectDefinitionId(),
@@ -98,15 +97,15 @@ public class DataSetShowColumnsVisibilityUpgradeProcessTest {
 			HashMapBuilder.<String, Serializable>put(
 				"defaultItemsPerPage", 20
 			).put(
-				"label", "Data Set"
+				"label", RandomTestUtil.randomString()
 			).put(
 				"listOfItemsPerPage", "10, 20, 50"
 			).put(
-				"restApplication", "restApplication"
+				"restApplication", RandomTestUtil.randomString()
 			).put(
-				"restEndpoint", "restEndpoint"
+				"restEndpoint", RandomTestUtil.randomString()
 			).put(
-				"restSchema", "restSchema"
+				"restSchema", RandomTestUtil.randomString()
 			).build(),
 			new ServiceContext());
 	}
