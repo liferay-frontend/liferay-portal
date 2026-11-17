@@ -53,8 +53,8 @@ public class DataSetShowColumnsVisibilityUpgradeProcess extends UpgradeProcess {
 		if (objectDefinition == null) {
 			if (_log.isWarnEnabled()) {
 				_log.warn(
-					"L_DATA_SET object definition was not found for company " +
-						companyId);
+					"\"L_DATA_SET\" object definition was not found for " +
+						"company " + companyId);
 			}
 
 			return;
