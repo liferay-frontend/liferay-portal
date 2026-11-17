@@ -12,6 +12,7 @@ import com.liferay.item.selector.ItemSelectorCriterion;
 import com.liferay.item.selector.ItemSelectorReturnType;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.editor.configuration.BaseEditorConfigContributor;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -35,6 +36,10 @@ public abstract class BaseAMEditorConfigContributor
 		JSONObject jsonObject, Map<String, Object> inputEditorTaglibAttributes,
 		ThemeDisplay themeDisplay,
 		RequestBackedPortletURLFactory requestBackedPortletURLFactory) {
+
+		jsonObject.put(
+			"adaptiveMediaFileEntryAttributeName",
+			AMImageHTMLConstants.ATTRIBUTE_NAME_FILE_ENTRY_ID);
 
 		String allowedContent = jsonObject.getString("allowedContent");
 
@@ -75,20 +80,18 @@ public abstract class BaseAMEditorConfigContributor
 			return;
 		}
 
-		jsonObject.put(
-			"adaptiveMediaFileEntryAttributeName",
-			AMImageHTMLConstants.ATTRIBUTE_NAME_FILE_ENTRY_ID);
+		if (isCKEditor4(themeDisplay)) {
+			String extraPlugins = jsonObject.getString("extraPlugins");
 
-		String extraPlugins = jsonObject.getString("extraPlugins");
+			if (Validator.isNotNull(extraPlugins)) {
+				extraPlugins = extraPlugins + ",adaptivemedia";
+			}
+			else {
+				extraPlugins = "adaptivemedia";
+			}
 
-		if (Validator.isNotNull(extraPlugins)) {
-			extraPlugins = extraPlugins + ",adaptivemedia";
+			jsonObject.put("extraPlugins", extraPlugins);
 		}
-		else {
-			extraPlugins = "adaptivemedia";
-		}
-
-		jsonObject.put("extraPlugins", extraPlugins);
 
 		PortletURL itemSelectorPortletURL = itemSelector.getItemSelectorURL(
 			requestBackedPortletURLFactory,
@@ -110,6 +113,11 @@ public abstract class BaseAMEditorConfigContributor
 
 		desiredItemSelectorReturnTypes.add(
 			0, new AMImageFileEntryItemSelectorReturnType());
+	}
+
+	protected boolean isCKEditor4(ThemeDisplay themeDisplay) {
+		return FeatureFlagManagerUtil.isEnabled(
+			themeDisplay.getCompanyId(), "LPD-11235");
 	}
 
 	protected abstract boolean isItemSelectorCriterionOverridable(

@@ -24,6 +24,7 @@ export enum EEditorVariant {
 }
 
 export interface LiferayEditorConfig extends EditorConfig {
+	adaptiveMediaFileEntryAttributeName?: string;
 	editorTransformerURLs?: Array<string>;
 	editorType?: EEditorType;
 	editorVariant?: EEditorVariant;

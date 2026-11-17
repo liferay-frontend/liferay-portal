@@ -21,6 +21,7 @@ interface CMSFile {
 	description: string;
 	embedded: {
 		file?: {
+			id: number;
 			link?: {
 				href?: string;
 			};
