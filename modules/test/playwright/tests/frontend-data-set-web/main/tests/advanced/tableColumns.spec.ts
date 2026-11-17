@@ -371,7 +371,12 @@ test(
 test(
 	'Item actions column is not shown when the columns visibility dropdown is hidden and there are no item actions',
 	{tag: '@LPD-112704'},
-	async ({dataSetManagerApiHelpers, fdsSamplePage, page, systemDataSetsPage}) => {
+	async ({
+		dataSetManagerApiHelpers,
+		fdsSamplePage,
+		page,
+		systemDataSetsPage,
+	}) => {
 		const erc =
 			'com_liferay_frontend_data_set_sample_web_internal_portlet_FDSSamplePortlet-delegatedFilters';
 
