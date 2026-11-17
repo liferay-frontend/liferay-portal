@@ -135,6 +135,9 @@ public class ImportSystemDataSetMVCResourceCommand
 				"searchSuggestionsEnabled",
 				systemFDSEntry.getSearchSuggestionsEnabled()
 			).put(
+				"showColumnsVisibility",
+				systemFDSEntry.getShowColumnsVisibility()
+			).put(
 				"showSearch", systemFDSEntry.getShowSearch()
 			).put(
 				"snapshotsEnabled", systemFDSEntry.getSnapshotsEnabled()
