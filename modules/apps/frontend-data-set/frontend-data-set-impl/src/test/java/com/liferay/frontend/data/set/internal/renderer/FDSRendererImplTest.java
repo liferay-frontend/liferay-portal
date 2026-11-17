@@ -136,7 +136,7 @@ public class FDSRendererImplTest {
 	public void testRenderWhenPaginationIsHiddenByCode() throws Exception {
 		_registerFDSSerializer(FDSSerializer.TYPE_CUSTOM);
 
-		Map<String, Object> props = _renderWithPaginationHiddenByCode();
+		Map<String, Object> props = _render(false);
 
 		Assert.assertFalse((boolean)props.get("showPagination"));
 	}
@@ -221,12 +221,6 @@ public class FDSRendererImplTest {
 		);
 
 		return argumentCaptor.getValue();
-	}
-
-	private Map<String, Object> _renderWithPaginationHiddenByCode()
-		throws Exception {
-
-		return _render(false);
 	}
 
 	private Map<String, Object> _renderWithPaginationShownByCode()
