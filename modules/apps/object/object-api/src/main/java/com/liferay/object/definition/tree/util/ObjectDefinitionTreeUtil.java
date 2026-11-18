@@ -251,10 +251,6 @@ public class ObjectDefinitionTreeUtil {
 		}
 	}
 
-	public static void removeRootObjectDefinitionIds(long companyId) {
-		_rootObjectDefinitionIdsMaps.remove(companyId);
-	}
-
 	public static void unbindObjectDefinitions(
 			ObjectActionPersistence objectActionPersistence,
 			ObjectDefinitionLocalService objectDefinitionLocalService,
