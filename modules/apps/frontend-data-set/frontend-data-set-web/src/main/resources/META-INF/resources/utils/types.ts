@@ -46,6 +46,7 @@ export declare function FrontendDataSet({
 	selectedItems,
 	selectedItemsKey,
 	selectionType,
+	showColumnsVisibility,
 	showManagementBar,
 	showPagination,
 	showSearch,
@@ -402,6 +403,7 @@ export interface IFrontendDataSetProps {
 	selectionType?: 'single' | 'multiple';
 	showBulkActionsManagementBar?: boolean;
 	showBulkActionsManagementBarActions?: boolean;
+	showColumnsVisibility?: boolean;
 	showManagementBar?: boolean;
 	showNavBarWhenSelected?: boolean;
 	showPagination?: boolean;
