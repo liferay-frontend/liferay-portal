@@ -1299,8 +1299,17 @@ const FrontendDataSetContent = ({
 		setSelectedItems(newSelectedItems);
 	}
 
-	function selectItems(value: any, forceSingleSelection = false) {
+	function selectItems(
+		value: any,
+		forceSingleSelection = false,
+		selectedItem?: any
+	) {
 		const values = Array.isArray(value) ? value : [value];
+
+		// A view can render rows that are not in the data set items, like
+		// nested rows, so the clicked row is part of the lookup.
+
+		const knownItems = selectedItem ? [...items, selectedItem] : items;
 
 		if (forceSingleSelection) {
 			setSelectedItems(
@@ -1308,7 +1317,7 @@ const FrontendDataSetContent = ({
 					selectedItemsValue.includes(value)
 					? []
 					: [
-							items.find(
+							knownItems.find(
 								(item) =>
 									getObjectValueFromPath({
 										object: item,
@@ -1337,7 +1346,7 @@ const FrontendDataSetContent = ({
 
 		const nextSelectedItems = nextSelectedValues
 			.map((val) =>
-				[...selectedItems, ...items].find(
+				[...selectedItems, ...knownItems].find(
 					(item) =>
 						getObjectValueFromPath({
 							object: item,
@@ -1894,7 +1903,8 @@ const FrontendDataSetContent = ({
 										object: selectedItem,
 										path: selectedItemsKey,
 									}),
-									forceSingleSelection
+									forceSingleSelection,
+									selectedItem
 								);
 							}
 						}}
