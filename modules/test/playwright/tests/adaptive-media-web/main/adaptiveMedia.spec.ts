@@ -16,10 +16,8 @@ test('Warns against using Adaptive Media with AI-generated content', async ({
 	await new GlobalMenuPage(page).goToControlPanel('Adaptive Media');
 
 	await expect(
-		page
-			.locator('.alert-warning')
-			.filter({
-				hasText: 'is not intended for use with AI-generated content',
-			})
+		page.locator('.alert-warning').filter({
+			hasText: 'is not intended for use with AI-generated content',
+		})
 	).toBeVisible();
 });
