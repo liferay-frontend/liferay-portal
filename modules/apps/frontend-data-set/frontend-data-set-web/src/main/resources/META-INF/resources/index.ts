@@ -62,6 +62,7 @@ export {
 	IClientExtensionRenderer,
 	IListSchema,
 	ICreationActionItem,
+	IDataSetData,
 	IFDSState,
 	IFileDropSettings,
 	IFrontendDataSetProps,
