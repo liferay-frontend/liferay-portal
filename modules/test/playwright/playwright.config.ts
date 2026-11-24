@@ -10,6 +10,7 @@ import 'dotenv/config';
 import {liferayConfig} from './liferay.config';
 import {config as accessibilityMenuWeb} from './tests/accessibility-menu-web/main/config';
 import {config as accountAdminWebConfig} from './tests/account-admin-web/main/config';
+import {config as adaptiveMediaWebConfig} from './tests/adaptive-media-web/main/config';
 import {config as addressWebConfig} from './tests/address-web/main/config';
 import {config as aiCreatorOpenAIWebConfig} from './tests/ai-creator-openai-web/main/config';
 import {config as aiHubSiteInitializerConfig} from './tests/ai-hub-site-initializer/main/config';
@@ -305,6 +306,7 @@ export default defineConfig({
 	projects: [
 		accessibilityMenuWeb,
 		accountAdminWebConfig,
+		adaptiveMediaWebConfig,
 		addressWebConfig,
 		aiCreatorOpenAIWebConfig,
 		aiHubSiteInitializerConfig,
