@@ -38,6 +38,11 @@ int totalImages = GetterUtil.getInteger(request.getAttribute(AMWebKeys.TOTAL_IMA
 	>
 		<liferay-util:include page="/adaptive_media/success_messages.jsp" servletContext="<%= application %>" />
 
+		<clay:alert
+			displayType="warning"
+			message="adaptive-media-ai-generated-content-disclaimer"
+		/>
+
 		<c:choose>
 			<c:when test='<%= SessionMessages.contains(request, "configurationEntryUpdated") %>'>
 
