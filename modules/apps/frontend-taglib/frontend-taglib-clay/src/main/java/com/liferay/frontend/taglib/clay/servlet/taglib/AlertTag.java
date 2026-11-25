@@ -245,7 +245,7 @@ public class AlertTag extends BaseContainerTag {
 
 	private String _getIcon(String displayType) {
 		if (displayType.equals("danger")) {
-			return "exclamation-full";
+			return "times-circle-full";
 		}
 		else if (displayType.equals("success")) {
 			return "check-circle-full";

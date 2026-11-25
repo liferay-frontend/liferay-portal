@@ -217,7 +217,7 @@ public class ErrorTag extends IncludeTag implements BodyTag {
 
 	private String _getAlertIcon() {
 		if ((_key != null) && Validator.isNull(_message)) {
-			return "exclamation-full";
+			return "times-circle-full";
 		}
 
 		HttpServletRequest httpServletRequest = getRequest();
@@ -230,7 +230,7 @@ public class ErrorTag extends IncludeTag implements BodyTag {
 			return "warning-full";
 		}
 
-		return "exclamation-full";
+		return "times-circle-full";
 	}
 
 	private String _getAlertMessage() {
