@@ -12,8 +12,8 @@
 >
 	<c:choose>
 		<c:when test="<%= type == AlertType.ERROR.getAlertCode() %>">
-			<svg aria-hidden="true" class="lexicon-icon lexicon-icon-exclamation-full">
-				<use xlink:href="<%= spritemap %>#exclamation-full" />
+			<svg aria-hidden="true" class="lexicon-icon lexicon-icon-times-circle-full">
+				<use xlink:href="<%= spritemap %>#times-circle-full" />
 			</svg>
 
 			<strong class="lead"><liferay-ui:message key="autosave-error" />: </strong>
