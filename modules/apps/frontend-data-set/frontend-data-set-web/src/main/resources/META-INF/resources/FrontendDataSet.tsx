@@ -1525,11 +1525,12 @@ const FrontendDataSetContent = ({
 	]);
 
 	// Fetches a page with the current search, filters and sorts, and changes
-	// nothing in the Data Set: what to do with the page is up to the view.
+	// nothing in the Data Set: what to do with the page is up to the view,
+	// which can also abort the request with its own signal.
 
 	const requestPage = useCallback(
-		(page: number): Promise<IDataSetData> => {
-			const request = requestData(undefined, page, false);
+		(page: number, signal?: AbortSignal): Promise<IDataSetData> => {
+			const request = requestData(signal, page, false);
 
 			return request
 				? request.then(({data}) => ({

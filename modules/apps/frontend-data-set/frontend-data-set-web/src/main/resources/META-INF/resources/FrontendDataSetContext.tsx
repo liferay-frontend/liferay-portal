@@ -80,7 +80,7 @@ export interface IFrontendDataSetContext {
 	openModal: Function;
 	openSidePanel: Function;
 	portletId?: string;
-	requestPage?: (page: number) => Promise<IDataSetData>;
+	requestPage?: (page: number, signal?: AbortSignal) => Promise<IDataSetData>;
 	saveDataSetUserConfigurationURL?: string;
 	searchAsYouType: boolean;
 	searchParam?: string;
