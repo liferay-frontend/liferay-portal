@@ -6,7 +6,7 @@
 import {act, render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetch from 'jest-fetch-mock';
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 
 import '@testing-library/jest-dom';
 
@@ -283,6 +283,45 @@ describe('FrontendDataSet', () => {
 
 		expect(screen.queryByText('stale-refresh')).not.toBeInTheDocument();
 		expect(screen.getByText('newer')).toBeInTheDocument();
+	});
+
+	it('offers Select All while a view has more selectable items than the data set', async () => {
+		fetch.mockResponse(itemsResponse(['Blue', 'Red']));
+
+		// A cell renderer stands in for a view with nested rows, which can
+		// select more items than the data set has
+
+		function NestedRowsProbe({itemData}: {itemData: {name: string}}) {
+			const {updateTotalSelectableItems} = useContext(
+				FrontendDataSetContext
+			);
+
+			useEffect(() => {
+				updateTotalSelectableItems(5);
+			}, [updateTotalSelectableItems]);
+
+			return <span>{itemData.name}</span>;
+		}
+
+		render(
+			<FrontendDataSet
+				apiURL="/o/products"
+				bulkActions={[{data: {id: 'delete'}, label: 'Delete'}]}
+				customDataRenderers={{default: NestedRowsProbe}}
+				id={id}
+				selectionType="multiple"
+				showSelectAll
+				views={VIEWS}
+			/>
+		);
+
+		await screen.findByText('Red');
+
+		await userEvent.click(screen.getByTitle('select-items'));
+
+		expect(
+			screen.getByRole('button', {name: 'select-all'})
+		).toBeInTheDocument();
 	});
 
 	it('renders client extension cells when a view without fields follows the table', async () => {
