@@ -345,7 +345,7 @@
 
 						var updateMessage = function (message) {
 							connectionMessages.html(
-								'<div class="alert alert-danger"><span class="alert-indicator"><svg aria-hidden="true" class="lexicon-icon lexicon-icon-exclamation-full"><use xlink:href="<%= themeDisplay.getPathThemeSpritemap() %>#exclamation-full"></use></svg></span><strong class="lead"><liferay-ui:message key="error-colon" /></strong>' +
+								'<div class="alert alert-danger"><span class="alert-indicator"><svg aria-hidden="true" class="lexicon-icon lexicon-icon-times-circle-full"><use xlink:href="<%= themeDisplay.getPathThemeSpritemap() %>#times-circle-full"></use></svg></span><strong class="lead"><liferay-ui:message key="error-colon" /></strong>' +
 									message +
 									'</div>'
 							);
