@@ -24,7 +24,7 @@ const CLASS_NAME_MAP = {
 	warn: 'warning',
 };
 const ICON_MAP = {
-	error: 'exclamation-full',
+	error: 'times-circle-full',
 	warn: 'warning-full',
 };
 
