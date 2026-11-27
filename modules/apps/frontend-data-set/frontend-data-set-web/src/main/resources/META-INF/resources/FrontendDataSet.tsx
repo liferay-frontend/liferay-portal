@@ -2520,6 +2520,7 @@ const FrontendDataSetContent = ({
 				searchParam: unfrozenGlobalFDSState.search.query,
 				searchSuggestionsEnabled,
 				searching,
+				selectItems,
 				selectable,
 				selectedItems,
 				selectedItemsKey,

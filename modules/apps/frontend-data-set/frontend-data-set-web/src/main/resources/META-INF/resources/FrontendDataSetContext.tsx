@@ -85,6 +85,7 @@ export interface IFrontendDataSetContext {
 	searchParam?: string;
 	searchSuggestionsEnabled: boolean;
 	searching: boolean;
+	selectItems: (value: any) => void;
 	selectable?: boolean;
 	selectedItems?: Array<any>;
 	selectedItemsKey: string;
@@ -139,6 +140,7 @@ const FrontendDataSetContext = React.createContext({
 	openSidePanel: () => {},
 	searchAsYouType: false,
 	searchSuggestionsEnabled: false,
+	selectItems: () => {},
 	selectable: false,
 	selectedItems: [],
 	selectedItemsValue: [],
