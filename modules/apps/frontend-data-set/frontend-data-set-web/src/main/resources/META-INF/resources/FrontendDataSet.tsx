@@ -506,6 +506,10 @@ const FrontendDataSetContent = ({
 
 	const [total, setTotal] = useState(0);
 
+	// A view can count the selectable items that are not in the data set items
+
+	const [totalSelectableItems, setTotalSelectableItems] = useState<number>();
+
 	const isMounted = useIsMounted();
 
 	const updateFilterActivation = ({
@@ -1828,7 +1832,7 @@ const FrontendDataSetContent = ({
 				showNavBarWhenSelected={showNavBarWhenSelected}
 				showSearch={showSearch}
 				showSelectAll={showSelectAll}
-				total={total}
+				total={totalSelectableItems ?? total}
 			/>
 		</div>
 	) : null;
@@ -2535,6 +2539,7 @@ const FrontendDataSetContent = ({
 				updateDataSetItems,
 				updateFilters,
 				updateItem,
+				updateTotalSelectableItems: setTotalSelectableItems,
 				updateUserConfiguration,
 				updateView,
 				updateVisibleFields,
