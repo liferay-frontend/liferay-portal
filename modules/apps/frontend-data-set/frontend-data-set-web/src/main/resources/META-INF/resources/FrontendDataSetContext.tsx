@@ -85,6 +85,7 @@ export interface IFrontendDataSetContext {
 	searchParam?: string;
 	searchSuggestionsEnabled: boolean;
 	searching: boolean;
+	selectItems: (value: any) => void;
 	selectable?: boolean;
 	selectedItems?: Array<any>;
 	selectedItemsKey: string;
@@ -110,6 +111,7 @@ export interface IFrontendDataSetContext {
 	}: IDataSetData) => void;
 	updateFilters: IConfigInURLUpdaterThunk<EConfigInURLKeys.ACTIVE_FILTERS>;
 	updateItem: Function;
+	updateTotalSelectableItems: (totalSelectableItems?: number) => void;
 	updateUserConfiguration: (
 		configuration: IUserConfiguration
 	) => Promise<void>;
@@ -138,6 +140,7 @@ const FrontendDataSetContext = React.createContext({
 	openSidePanel: () => {},
 	searchAsYouType: false,
 	searchSuggestionsEnabled: false,
+	selectItems: () => {},
 	selectable: false,
 	selectedItems: [],
 	selectedItemsValue: [],
@@ -146,6 +149,7 @@ const FrontendDataSetContext = React.createContext({
 	updateAdditionalAPIURLParameters: () => {},
 	updateDataSetItems: () => {},
 	updateItem: () => {},
+	updateTotalSelectableItems: () => {},
 } as unknown as IFrontendDataSetContext);
 
 export default FrontendDataSetContext;
